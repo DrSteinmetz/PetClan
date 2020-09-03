@@ -1,9 +1,5 @@
 *.iml
-*.gradle
-*.jks
-*.pro
-*.json
-*.properties
+.gradle
 /local.properties
 /.idea/caches
 /.idea/libraries
@@ -16,13 +12,3 @@
 /captures
 .externalNativeBuild
 .cxx
-.gradle
-/gradlew.bat
-/gradlew
-/app/build
-/app/src/androidTest
-/app/src/test
-/app/src/main/res/drawable
-/app/src/main/res/raw
-/app/src/main/res/values-ar
-/app/libs

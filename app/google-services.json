@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "551828731720",
+    "firebase_url": "https://petclan-2fdce.firebaseio.com",
+    "project_id": "petclan-2fdce",
+    "storage_bucket": "petclan-2fdce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:551828731720:android:b01ea75f9b6587d413257d",
+        "android_client_info": {
+          "package_name": "com.example.android2project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "551828731720-2h562e83eao70ccmlg8rck12q0b723hi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADt2DStxumE6984coXZChx1hrW5rs34-A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "551828731720-2h562e83eao70ccmlg8rck12q0b723hi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
