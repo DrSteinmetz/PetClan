@@ -1,4 +1,4 @@
-package com.example.android2project;
+package com.example.android2project.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,6 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+
+import com.example.android2project.R;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,7 +30,8 @@ public class LoginRegistrationFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    interface LoginRegisterFragmentListener {
+    public interface LoginRegisterFragmentListener {
+        void onSignIn(String screenName);
         void onJoin();
     }
 
@@ -39,8 +43,8 @@ public class LoginRegistrationFragment extends Fragment {
     public static LoginRegistrationFragment newInstance() {
         LoginRegistrationFragment fragment = new LoginRegistrationFragment();
         Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
+        /*args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);*/
         fragment.setArguments(args);
         return fragment;
     }
@@ -69,8 +73,18 @@ public class LoginRegistrationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView =  inflater.inflate(R.layout.fragment_login_registration, container, false);
-        
+
+        TextView signInTv = rootView.findViewById(R.id.sign_in_tv);
         Button joinBtn = rootView.findViewById(R.id.join_btn);
+
+        signInTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    listener.onSignIn("LoginRegistration");
+                }
+            }
+        });
 
         joinBtn.setOnClickListener(new View.OnClickListener() {
             @Override

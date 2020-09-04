@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.UserPictureFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/title_1_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_centerHorizontal="true"
+            android:text="About You"
+            android:textSize="20sp"
+            android:textColor="@color/colorPrimary"
+            android:textAllCaps="false" />
+
+        <TextView
+            android:id="@+id/title_2_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title_1_tv"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="50dp"
+            android:gravity="center"
+            android:text="Welcome!\nChoose how people see you"
+            android:textSize="30sp"
+            android:textColor="@color/colorPrimary"
+            android:textAllCaps="false" />
+
+        <ImageView
+            android:id="@+id/user_pic"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_below="@id/title_2_tv"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/rounded_shape"
+            android:src="@mipmap/ic_launcher"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:id="@+id/choose_picture_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_pic"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:text="Choose your profile picture"
+            android:textSize="20sp"
+            android:textColor="@color/colorPrimary"
+            android:textAllCaps="false" />
+
+        <LinearLayout
+            android:id="@+id/pic_btn_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/choose_picture_tv"
+            android:gravity="center">
+            <ImageButton
+                android:id="@+id/gallery_btn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="50dp"
+                android:src="@drawable/ic_round_add_photo_gallery_50"
+                android:background="@null"
+                android:scaleType="centerCrop" />
+
+            <ImageButton
+                android:id="@+id/camera_btn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_round_add_photo_camera_50"
+                android:background="@null"
+                android:scaleType="centerCrop" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/finish_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/pic_btn_layout"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="30dp"
+            android:layout_marginHorizontal="30dp"
+            style="@style/Widget.MaterialComponents.Button"
+            android:text="Finish"
+            android:textSize="20sp"
+            android:textAllCaps="false" />
+
+    </RelativeLayout>
+
+</ScrollView>

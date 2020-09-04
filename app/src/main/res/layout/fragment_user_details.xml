@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.UserDetailsFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/title_1_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_centerHorizontal="true"
+            android:text="About You"
+            android:textSize="20sp"
+            android:textColor="@color/colorPrimary"
+            android:textAllCaps="false" />
+
+        <TextView
+            android:id="@+id/title_2_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title_1_tv"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="50dp"
+            android:gravity="center"
+            android:text="Welcome!\nWho are you?"
+            android:textSize="30sp"
+            android:textColor="@color/colorPrimary"
+            android:textAllCaps="false" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/first_name_layout"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_below="@id/title_2_tv"
+            android:gravity="bottom"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginHorizontal="30dp"
+            app:errorEnabled="true">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/first_name_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:gravity="start"
+                android:maxLines="1"
+                android:hint="First Name"
+                android:textSize="20sp"
+                android:textColor="@color/colorPrimary"
+                android:textAllCaps="false"
+                android:inputType="textPersonName"
+                android:textCursorDrawable="@color/colorPrimary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/last_name_layout"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_below="@id/first_name_layout"
+            android:gravity="bottom"
+            android:layout_marginVertical="5dp"
+            android:layout_marginHorizontal="30dp"
+            app:errorEnabled="true">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/last_name_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:gravity="start"
+                android:maxLines="1"
+                android:hint="Last Name"
+                android:textSize="20sp"
+                android:textColor="@color/colorPrimary"
+                android:textAllCaps="false"
+                android:inputType="textPersonName"
+                android:textCursorDrawable="@color/colorPrimary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <RelativeLayout
+            android:id="@+id/business_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/last_name_layout">
+
+            <CheckBox
+                android:id="@+id/is_business_cb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="30dp"
+                android:text="Are you a business?"
+                android:textSize="20sp"
+                android:textColor="@color/colorPrimary"
+                android:textAllCaps="false" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/business_name_layout"
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:layout_below="@id/is_business_cb"
+                android:gravity="bottom"
+                android:layout_marginVertical="5dp"
+                android:layout_marginHorizontal="30dp"
+                app:errorEnabled="true"
+                android:visibility="gone">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/business_name_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:gravity="start"
+                    android:maxLines="1"
+                    android:hint="Business Name"
+                    android:textSize="20sp"
+                    android:textColor="@color/colorPrimary"
+                    android:textAllCaps="false"
+                    android:inputType="text"
+                    android:textCursorDrawable="@color/colorPrimary" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </RelativeLayout>
+
+
+        <Button
+            android:id="@+id/next_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/business_layout"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="30dp"
+            android:layout_marginHorizontal="30dp"
+            style="@style/Widget.MaterialComponents.Button"
+            android:text="Next"
+            android:textSize="20sp"
+            android:textAllCaps="false" />
+
+    </RelativeLayout>
+
+</ScrollView>
