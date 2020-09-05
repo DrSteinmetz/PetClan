@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.example.android2project.R;
@@ -33,7 +34,7 @@ public class SignUpDetailsFragment extends Fragment {
     public interface SignUpDetailsListener {
         void onFacebook(String screenName);
         void onGoogle(String screenName);
-        void onNext(String screenName);
+        void onNext(String screenName, String email, String password);
     }
 
     private SignUpDetailsListener listener;
@@ -74,9 +75,12 @@ public class SignUpDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_sign_up_details, container, false);
 
-        ImageView facebookBtn = rootView.findViewById(R.id.facebook_btn);
-        ImageView googleBtn = rootView.findViewById(R.id.google_btn);
-        Button nextBtn=rootView.findViewById(R.id.next_btn);
+        final ImageView facebookBtn = rootView.findViewById(R.id.facebook_btn);
+        final ImageView googleBtn = rootView.findViewById(R.id.google_btn);
+        final Button nextBtn = rootView.findViewById(R.id.next_btn);
+
+        final EditText emailEt = rootView.findViewById(R.id.email_et);
+        final EditText passwordEt = rootView.findViewById(R.id.password_et);
 
         facebookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +104,12 @@ public class SignUpDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.onNext("SignUpDetails");
+                    String email = emailEt.getText().toString();
+                    String password = passwordEt.getText().toString();
+
+                    //TODO: Verify valid Email and password
+
+                    listener.onNext("SignUpDetails", email, password);
                 }
             }
         });

@@ -2,15 +2,13 @@ package com.example.android2project.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.example.android2project.R;
 
@@ -74,7 +72,7 @@ public class LoginRegistrationFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView =  inflater.inflate(R.layout.fragment_login_registration, container, false);
 
-        TextView signInTv = rootView.findViewById(R.id.sign_in_tv);
+        Button signInTv = rootView.findViewById(R.id.sign_in_btn);
         Button joinBtn = rootView.findViewById(R.id.join_btn);
 
         signInTv.setOnClickListener(new View.OnClickListener() {

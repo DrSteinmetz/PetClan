@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
@@ -27,7 +28,7 @@ public class LoginDetailsFragment extends Fragment {
     public interface LoginDetailsListener {
         void onFacebook(String screenName);
         void onGoogle(String screenName);
-        void onSignIn(String screenName);
+        void onSignIn(String screenName, String email, String password);
     }
 
     private LoginDetailsListener listener;
@@ -69,9 +70,12 @@ public class LoginDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_login_details, container, false);
 
-        ImageButton facebookBtn = rootView.findViewById(R.id.facebook_btn);
-        ImageButton googleBtn = rootView.findViewById(R.id.google_btn);
-        Button signInBtn = rootView.findViewById(R.id.sign_in_btn);
+        final ImageButton facebookBtn = rootView.findViewById(R.id.facebook_btn);
+        final ImageButton googleBtn = rootView.findViewById(R.id.google_btn);
+        final Button signInBtn = rootView.findViewById(R.id.sign_in_btn);
+
+        final EditText emailEt = rootView.findViewById(R.id.email_et);
+        final EditText passwordEt = rootView.findViewById(R.id.password_et);
 
         facebookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,7 +99,10 @@ public class LoginDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.onSignIn("LoginDetails");
+                    String email = emailEt.getText().toString();
+                    String password = passwordEt.getText().toString();
+
+                    listener.onSignIn("LoginDetails", email, password);
                 }
             }
         });
