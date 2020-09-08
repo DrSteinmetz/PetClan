@@ -16,18 +16,9 @@ import com.example.android2project.R;
 
 public class UserPictureFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public interface UserPictureListener {
-        void onGallery();
-        void onCamera();
+        void onGallery(ImageView imageView);
+        void onCamera(ImageView imageView);
         void onFinish();
     }
 
@@ -35,13 +26,8 @@ public class UserPictureFragment extends Fragment {
 
     public UserPictureFragment() {}
 
-    // TODO: Rename and change types and number of parameters
     public static UserPictureFragment newInstance() {
         UserPictureFragment fragment = new UserPictureFragment();
-        Bundle args = new Bundle();
-        /*args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);*/
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -57,20 +43,11 @@ public class UserPictureFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_user_picture, container, false);
 
-        ImageView userPicture = rootView.findViewById(R.id.user_pic);
+        final ImageView userPicture = rootView.findViewById(R.id.user_pic);
         ImageButton galleryBtn = rootView.findViewById(R.id.gallery_btn);
         ImageButton cameraBtn = rootView.findViewById(R.id.camera_btn);
         Button finishBtn = rootView.findViewById(R.id.finish_btn);
@@ -81,7 +58,7 @@ public class UserPictureFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.onGallery();
+                    listener.onGallery(userPicture);
                 }
             }
         });
@@ -90,7 +67,7 @@ public class UserPictureFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.onCamera();
+                    listener.onCamera(userPicture);
                 }
             }
         });

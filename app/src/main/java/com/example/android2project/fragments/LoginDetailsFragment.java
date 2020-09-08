@@ -25,6 +25,8 @@ public class LoginDetailsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private final String TAG = "LoginDetailsFragment";
+
     public interface LoginDetailsListener {
         void onFacebook(String screenName);
         void onGoogle(String screenName);

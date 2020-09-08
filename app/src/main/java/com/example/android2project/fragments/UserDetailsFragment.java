@@ -2,14 +2,12 @@ package com.example.android2project.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -17,23 +15,9 @@ import androidx.fragment.app.Fragment;
 import com.example.android2project.R;
 import com.google.android.material.textfield.TextInputLayout;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link UserDetailsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class UserDetailsFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
     private final String TAG = "UserDetailsFragment";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public interface UserDetailsListener {
         void onNext(String screenName);
@@ -43,13 +27,8 @@ public class UserDetailsFragment extends Fragment {
 
     public UserDetailsFragment() {}
 
-    // TODO: Rename and change types and number of parameters
     public static UserDetailsFragment newInstance() {
         UserDetailsFragment fragment = new UserDetailsFragment();
-        Bundle args = new Bundle();
-        /*args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);*/
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -61,15 +40,6 @@ public class UserDetailsFragment extends Fragment {
             listener = (UserDetailsListener) context;
         } catch (ClassCastException ex) {
             throw new ClassCastException("The activity must implement UserDetails Listener!");
-        }
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
