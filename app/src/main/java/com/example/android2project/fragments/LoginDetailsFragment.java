@@ -16,6 +16,8 @@ import com.example.android2project.R;
 
 public class LoginDetailsFragment extends Fragment {
 
+    private final String mEmailRegex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -72,12 +74,11 @@ public class LoginDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_login_details, container, false);
 
+        final EditText emailEt = rootView.findViewById(R.id.email_et);
+        final EditText passwordEt = rootView.findViewById(R.id.password_et);
         final ImageButton facebookBtn = rootView.findViewById(R.id.facebook_btn);
         final ImageButton googleBtn = rootView.findViewById(R.id.google_btn);
         final Button signInBtn = rootView.findViewById(R.id.sign_in_btn);
-
-        final EditText emailEt = rootView.findViewById(R.id.email_et);
-        final EditText passwordEt = rootView.findViewById(R.id.password_et);
 
         facebookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,7 +105,23 @@ public class LoginDetailsFragment extends Fragment {
                     String email = emailEt.getText().toString();
                     String password = passwordEt.getText().toString();
 
-                    listener.onSignIn("LoginDetails", email, password);
+                    if (email.trim().length() > 0 && password.trim().length() > 0) {
+                        emailEt.setError(null);
+                        passwordEt.setError(null);
+
+                        listener.onSignIn("LoginDetails", email, password);
+                    } else {
+                        if (email.trim().length() < 1) {
+                            emailEt.setError("You must enter email!");
+                        } else {
+                            emailEt.setError(null);
+                        }
+                        if (password.trim().length() < 1) {
+                            passwordEt.setError("You must enter a password!");
+                        } else {
+                            passwordEt.setError(null);
+                        }
+                    }
                 }
             }
         });

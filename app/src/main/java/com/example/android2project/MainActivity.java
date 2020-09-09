@@ -24,6 +24,7 @@ import com.example.android2project.fragments.LoginRegistrationFragment;
 import com.example.android2project.fragments.SignUpDetailsFragment;
 import com.example.android2project.fragments.UserDetailsFragment;
 import com.example.android2project.fragments.UserPictureFragment;
+import com.example.android2project.model.User;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -36,22 +37,32 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuth.AuthStateListener;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements
         LoginRegistrationFragment.LoginRegisterFragmentListener,
@@ -68,7 +79,14 @@ public class MainActivity extends AppCompatActivity implements
 
     private final String TAG = "MainActivity";
 
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private AuthStateListener mAuthStateListener;
+
+    FirebaseFirestore mCloudDB = FirebaseFirestore.getInstance();
+    CollectionReference mCloudUsers = mCloudDB.collection("users");
+
+    FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+    DatabaseReference mUsersDB = mDatabase.getReference("users");
 
     private CallbackManager mCallbackManager;
 
@@ -93,14 +111,9 @@ public class MainActivity extends AppCompatActivity implements
                 .replace(R.id.root_layout, LoginRegistrationFragment.newInstance(), SIGN_REG_FRAG)
                 .commit();
 
-        mAuth = FirebaseAuth.getInstance();
         mCallbackManager = CallbackManager.Factory.create();
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myUsersDB = database.getReference("users");
-
-        myUsersDB.setValue("Hello World!");
-        myUsersDB.addValueEventListener(new ValueEventListener() {
+        /*mUsersDB.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String value = snapshot.getValue(String.class);
@@ -111,7 +124,8 @@ public class MainActivity extends AppCompatActivity implements
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.d(TAG, "Failed to read value.", error.toException());
             }
-        });
+        });*/
+
 
         LoginManager.getInstance().registerCallback(mCallbackManager,
                 new FacebookCallback<LoginResult>() {
@@ -171,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements
                     firebaseAuthWithGoogle(account.getIdToken());
                 } catch (ApiException e) {
                     // Google Sign In failed, update UI appropriately
-                    Log.w(TAG, "Google sign in failed", e);
+                    Log.w(TAG, "Google sign in FAILED", e);
                 }
             } else if (requestCode == CAMERA_REQUEST) {
                 if (mUserPicIv != null) {
@@ -222,8 +236,33 @@ public class MainActivity extends AppCompatActivity implements
 
     /**<-------Sets SignUpDetailsFragment buttons------->**/
     @Override
-    public void onNext(String screenName, String email, String password) {
-        createUserWithDetails(email, password);
+    public void onNext(String screenName, String param1, String param2) {
+        if (screenName.equals("UserDetails")) {
+            final FirebaseUser user = mAuth.getCurrentUser();
+
+            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(param1 + " " + param2)
+                    .build();
+
+            if (user != null) {
+                user.updateProfile(profileUpdates)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d(TAG, "Username: " + user.getDisplayName());
+                                }
+                            }
+                        });
+            }
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.root_layout, UserPictureFragment.newInstance(), USER_PIC_FRAG)
+                    .addToBackStack(null)
+                    .commit();
+        } else if (screenName.equals("SignUpDetails")) {
+            createUserWithDetails(param1, param2);
+        }
     }
 
     /**<-------Sets UserDetailsFragment buttons------->**/
@@ -249,13 +288,13 @@ public class MainActivity extends AppCompatActivity implements
         googleSignIn();
     }
 
-    @Override
+    /*@Override
     public void onNext(String screenName) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.root_layout, UserPictureFragment.newInstance(), USER_PIC_FRAG)
                 .addToBackStack(null)
                 .commit();
-    }
+    }*/
 
     /**<-------Sets UserPictureFragment buttons------->**/
     @Override
@@ -278,6 +317,14 @@ public class MainActivity extends AppCompatActivity implements
             if (hasWritePermission != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         WRITE_PERMISSION_REQUEST);
+            } else {
+                mFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                        "petclan" + System.nanoTime() + "pic.jpg");
+                mSelectedImage = FileProvider.getUriForFile(MainActivity.this,
+                        "com.example.android2project.provider", mFile);
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, mSelectedImage);
+                startActivityForResult(intent, CAMERA_REQUEST);
             }
         }
 
@@ -287,8 +334,26 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onFinish() {
         Toast.makeText(this, "Finish!", Toast.LENGTH_SHORT).show();
-        // TODO: Add the user to our users list
-        // FirebaseUser user = mAuth.getCurrentUser();
+
+        if (mUserPicIv != null) {
+            final FirebaseUser user = mAuth.getCurrentUser();
+
+            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                    .setPhotoUri(mSelectedImage)
+                    .build();
+
+            if (user != null) {
+                user.updateProfile(profileUpdates)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    createNewCloudUser(user);
+                                }
+                            }
+                        });
+            }
+        }
     }
 
 
@@ -308,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                            Toast.makeText(MainActivity.this, task.getException().getMessage(),
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -324,10 +389,12 @@ public class MainActivity extends AppCompatActivity implements
                             // Sign in success, update UI with the signed-in user's information
                             Toast.makeText(MainActivity.this,
                                     "Signed In Successfully", Toast.LENGTH_SHORT).show();
+                            //TODO: Enter to the app's Feed
+
                             // FirebaseUser user = mAuth.getCurrentUser();
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Log.w(TAG, "signInWithEmail: FAILURE", task.getException());
                             Toast.makeText(MainActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -335,23 +402,23 @@ public class MainActivity extends AppCompatActivity implements
                 });
     }
 
-    private void getCurrentUser() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            // Name, email address, and profile photo Url
-             String name = user.getDisplayName();
-            String email = user.getEmail();
-            Uri photoUrl = user.getPhotoUrl();
-
-            // Check if user's email is verified
-            boolean emailVerified = user.isEmailVerified();
-
-            // The user's ID, unique to the Firebase project. Do NOT use this value to
-            // authenticate with your backend server, if you have one. Use
-            // FirebaseUser.getIdToken() instead.
-            String uid = user.getUid();
-        }
-    }
+//    private void getCurrentUser() {
+//        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+//        if (firebaseUser != null) {
+//            // Name, email address, and profile photo Url
+//             String name = firebaseUser.getDisplayName();
+//            String email = firebaseUser.getEmail();
+//            Uri photoUrl = firebaseUser.getPhotoUrl();
+//
+//            // Check if firebaseUser's email is verified
+//            boolean emailVerified = firebaseUser.isEmailVerified();
+//
+//            // The firebaseUser's ID, unique to the Firebase project. Do NOT use this value to
+//            // authenticate with your backend server, if you have one. Use
+//            // FirebaseUser.getIdToken() instead.
+//            String uid = firebaseUser.getUid();
+//        }
+//    }
 
     /**<-------Google sign in Methods------->**/
     private void googleSignIn() {
@@ -367,9 +434,14 @@ public class MainActivity extends AppCompatActivity implements
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Toast.makeText(MainActivity.this, "Google Success",
-                                    Toast.LENGTH_SHORT).show();
-                            //FirebaseUser user = mAuth.getCurrentUser();
+                            Log.d(TAG, "Signed in with Google Successfully");
+
+                            final FirebaseUser user = mAuth.getCurrentUser();
+
+                            if (user != null) {
+                                mSelectedImage = user.getPhotoUrl();
+                                createNewCloudUser(user);
+                            }
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential: Failure", task.getException());
@@ -389,15 +461,31 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(MainActivity.this,
-                            "Sign in with credentials successfully", Toast.LENGTH_SHORT).show();
-                    mSelectedImage = Uri.parse(mAuth.getCurrentUser().getPhotoUrl().toString() + "?type=large");
-                    Log.d(TAG, "onComplete: " + mSelectedImage.toString());
+                    Log.d(TAG, "Signed in to Facebook with credentials successfully");
+
+                    final FirebaseUser user = mAuth.getCurrentUser();
+                    if (user != null) {
+                        mSelectedImage = Uri.parse(user.getPhotoUrl().toString() + "?type=large");
+                        createNewCloudUser(user);
+                    }
                 } else {
                     Log.d(TAG, "Sign in with credentials FAILED");
                 }
             }
         });
+    }
+
+    private void createNewCloudUser(final FirebaseUser firebaseUser) {
+        String[] fullName = firebaseUser.getDisplayName().split(" ");
+        String firstName = fullName[0];
+        String lastName = fullName[1];
+
+        User user = new User(firebaseUser.getEmail(), firstName, lastName,
+                mSelectedImage.toString());
+
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("email", user);
+        mCloudUsers.document(user.getEmail()).set(userMap);
     }
 
     @Override
@@ -429,7 +517,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onDestroy() {
-        FirebaseAuth.getInstance().signOut();
+        mAuth.signOut();
 
         super.onDestroy();
     }
