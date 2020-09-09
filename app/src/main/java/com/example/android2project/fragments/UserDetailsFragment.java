@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -20,7 +21,7 @@ public class UserDetailsFragment extends Fragment {
     private final String TAG = "UserDetailsFragment";
 
     public interface UserDetailsListener {
-        void onNext(String screenName);
+        void onNext(String screenName,String firstName,String LastName);
     }
 
     private UserDetailsListener listener;
@@ -47,7 +48,8 @@ public class UserDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_user_details, container, false);
-
+        final EditText firstNameET = rootView.findViewById(R.id.first_name_et);
+        final EditText lastNameET = rootView.findViewById(R.id.last_name_et);
         final Button nextBtn = rootView.findViewById(R.id.next_btn);
         final CheckBox businessCb = rootView.findViewById(R.id.is_business_cb);
         final TextInputLayout businessEt = rootView.findViewById(R.id.business_name_layout);
@@ -56,7 +58,7 @@ public class UserDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.onNext("UserDetails");
+                    listener.onNext("UserDetails",firstNameET.getText().toString(),lastNameET.getText().toString());
                 }
             }
         });

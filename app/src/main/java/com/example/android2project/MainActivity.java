@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
+
 import com.bumptech.glide.Glide;
 import com.example.android2project.fragments.LoginDetailsFragment;
 import com.example.android2project.fragments.LoginRegistrationFragment;
@@ -44,6 +45,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -70,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private FirebaseAuth mAuth;
 
+
     private CallbackManager mCallbackManager;
 
     private GoogleSignInClient mGoogleSignInClient;
@@ -84,6 +87,10 @@ public class MainActivity extends AppCompatActivity implements
     private final int GALLERY_REQUEST = 2;
     private final int WRITE_PERMISSION_REQUEST = 7;
 
+
+    private FirebaseDatabase database;
+    private DatabaseReference myUsersDB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,22 +103,9 @@ public class MainActivity extends AppCompatActivity implements
         mAuth = FirebaseAuth.getInstance();
         mCallbackManager = CallbackManager.Factory.create();
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myUsersDB = database.getReference("users");
+        database = FirebaseDatabase.getInstance();
+        myUsersDB = database.getReference();
 
-        myUsersDB.setValue("Hello World!");
-        myUsersDB.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String value = snapshot.getValue(String.class);
-                Log.d(TAG, "Value is: " + value);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d(TAG, "Failed to read value.", error.toException());
-            }
-        });
 
         LoginManager.getInstance().registerCallback(mCallbackManager,
                 new FacebookCallback<LoginResult>() {
@@ -135,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 }
         );
+
 
         //MainViewModel viewModel = new ViewModelProvider(this).get(MainViewModel.class);
     }
@@ -197,7 +192,9 @@ public class MainActivity extends AppCompatActivity implements
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    /**<-------Sets LoginRegistrationFragment buttons------->**/
+    /**
+     * <-------Sets LoginRegistrationFragment buttons------->
+     **/
     @Override
     public void onJoin() {
         getSupportFragmentManager().beginTransaction()
@@ -214,19 +211,52 @@ public class MainActivity extends AppCompatActivity implements
                 .commit();
     }
 
-    /**<-------Sets LoginDetailsFragment buttons------->**/
+    /**
+     * <-------Sets LoginDetailsFragment buttons------->
+     **/
     @Override
     public void onSignIn(String screenName, String email, String password) {
         signInExistingUser(email, password);
     }
 
-    /**<-------Sets SignUpDetailsFragment buttons------->**/
+    /**
+     * <-------Sets SignUpDetailsFragment buttons------->
+     **/
     @Override
-    public void onNext(String screenName, String email, String password) {
-        createUserWithDetails(email, password);
+    public void onNext(String screenName, String param1, String param2) {
+        if (screenName.equals("UserDetails")){
+            final FirebaseUser user=mAuth.getCurrentUser();
+
+            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(param1+""+param2)
+                    .build();
+
+            if(user!=null) {
+                user.updateProfile(profileUpdates)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(MainActivity.this, user.getDisplayName(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.root_layout, UserPictureFragment.newInstance(), USER_PIC_FRAG)
+                    .addToBackStack(null)
+                    .commit();
+
+        }
+        else {
+            createUserWithDetails(param1, param2);
+        }
     }
 
-    /**<-------Sets UserDetailsFragment buttons------->**/
+    /**
+     * <-------Sets UserDetailsFragment buttons------->
+     **/
     @Override
     public void onFacebook(String screenName) {
         //TODO: Check where the click came from
@@ -249,15 +279,11 @@ public class MainActivity extends AppCompatActivity implements
         googleSignIn();
     }
 
-    @Override
-    public void onNext(String screenName) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.root_layout, UserPictureFragment.newInstance(), USER_PIC_FRAG)
-                .addToBackStack(null)
-                .commit();
-    }
 
-    /**<-------Sets UserPictureFragment buttons------->**/
+
+    /**
+     * <-------Sets UserPictureFragment buttons------->
+     **/
     @Override
     public void onGallery(ImageView userPicIv) {
         Toast.makeText(this, "Gallery!", Toast.LENGTH_SHORT).show();
@@ -286,13 +312,39 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onFinish() {
-        Toast.makeText(this, "Finish!", Toast.LENGTH_SHORT).show();
+        if(mUserPicIv!=null){
+            FirebaseUser user=mAuth.getCurrentUser();
+
+            Log.d("user",user.getEmail());
+
+            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                    .setPhotoUri(mSelectedImage)
+                    .build();
+            user.updateProfile(profileUpdates)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(MainActivity.this, "User pic updated", Toast.LENGTH_SHORT).show();
+                                User nUser=new User(mAuth.getCurrentUser().getDisplayName(),mAuth.getCurrentUser().getEmail(),mAuth.getCurrentUser().getPhotoUrl().toString());
+                                myUsersDB.child("users").child(mAuth.getCurrentUser().getUid()).setValue(nUser);
+
+                            }
+                        }
+                    });
+//            User nUser=new User(mAuth.getCurrentUser().getDisplayName(),mAuth.getCurrentUser().getEmail(),mAuth.getCurrentUser().getPhotoUrl().toString());
+//            myUsersDB.child("users").child(mAuth.getCurrentUser().getUid()).setValue(nUser);
+        }
+//        Toast.makeText(this, "Finish!", Toast.LENGTH_SHORT).show();
         // TODO: Add the user to our users list
+
         // FirebaseUser user = mAuth.getCurrentUser();
     }
 
 
-    /**<-------Fire Base Authentication Methods------->**/
+    /**
+     * <-------Fire Base Authentication Methods------->
+     **/
     private void createUserWithDetails(String email, String password) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -339,7 +391,7 @@ public class MainActivity extends AppCompatActivity implements
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             // Name, email address, and profile photo Url
-             String name = user.getDisplayName();
+            String name = user.getDisplayName();
             String email = user.getEmail();
             Uri photoUrl = user.getPhotoUrl();
 
@@ -353,7 +405,9 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    /**<-------Google sign in Methods------->**/
+    /**
+     * <-------Google sign in Methods------->
+     **/
     private void googleSignIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -380,7 +434,9 @@ public class MainActivity extends AppCompatActivity implements
                 });
     }
 
-    /**<-------Facebook login Methods------->**/
+    /**
+     * <-------Facebook login Methods------->
+     **/
     private void handleFacebookToken(AccessToken token) {
         Log.d(TAG, "handleFacebookToken: " + token);
 
@@ -423,14 +479,15 @@ public class MainActivity extends AppCompatActivity implements
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            Toast.makeText(this, currentUser.getEmail(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Welecome "+currentUser.getDisplayName(), Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     protected void onDestroy() {
-        FirebaseAuth.getInstance().signOut();
-
         super.onDestroy();
+        if(mAuth.getCurrentUser()!=null){
+            mAuth.signOut();
+        }
     }
 }
