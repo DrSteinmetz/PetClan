@@ -447,7 +447,7 @@ public class MainActivity extends AppCompatActivity implements
                 if (task.isSuccessful()) {
                     Toast.makeText(MainActivity.this,
                             "Sign in with credentials successfully", Toast.LENGTH_SHORT).show();
-                    mSelectedImage = Uri.parse(mAuth.getCurrentUser().getPhotoUrl().toString() + "?type=large");
+                    mSelectedImage = Uri.parse(mAuth.getCurrentUser().getPhotoUrl().toString());
                     Log.d(TAG, "onComplete: " + mSelectedImage.toString());
                 } else {
                     Log.d(TAG, "Sign in with credentials FAILED");
