@@ -155,47 +155,34 @@ public class MainActivity extends AppCompatActivity implements
 
     /**<-------Sets SignUpDetailsFragment buttons------->**/
     @Override
-    public void onNext(String screenName, String param1, String param2) {
-        final FirebaseUser user = mAuth.getCurrentUser();
-
-        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                .setDisplayName(param1 + " " + param2)
-                .build();
-
-        if (user != null) {
-            user.updateProfile(profileUpdates)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Log.d(TAG, "Username: " + user.getDisplayName());
-                            }
-                        }
-                    });
-        }
-
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.root_layout, UserPictureFragment.newInstance(), USER_PIC_FRAG)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    @Override
     public void onNext(String screenName) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.root_layout, UserDetailsFragment.newInstance(), USER_DETAILS_FRAG)
-                .addToBackStack(null)
-                .commit();
+        if (screenName.equals("SignUpDetails")) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.root_layout, UserDetailsFragment.newInstance(), USER_DETAILS_FRAG)
+                    .addToBackStack(null)
+                    .commit();
+        } else if (screenName.equals("UserDetails")) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.root_layout, UserPictureFragment.newInstance(), USER_PIC_FRAG)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 
     /**<-------Sets UserDetailsFragment buttons------->**/
     @Override
     public void onFacebook(String screenName) {
+        if (screenName.equals("LoginDetails")) {
+        } else if (screenName.equals("SignUpDetails")) {
+        }
         //TODO: check if login or registration and move o next screen accordingly
     }
 
     @Override
     public void onGoogle(String screenName) {
+        if (screenName.equals("LoginDetails")) {
+        } else if (screenName.equals("SignUpDetails")) {
+        }
         //TODO: check if login or registration and move o next screen accordingly
     }
 

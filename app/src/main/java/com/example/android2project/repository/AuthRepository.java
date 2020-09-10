@@ -29,6 +29,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -77,6 +78,18 @@ public class AuthRepository {
 
     public void setRegistrationListener(RepositoryRegistrationInterface repositoryRegistrationInterface) {
         this.mRegistrationListener = repositoryRegistrationInterface;
+    }
+
+    /**<-------Details Setting interface------->**/
+    public interface RepositoryDetailsSetInterface {
+        void onDetailsSetSucceed(String uId);
+        void onDetailsSetFailed(String error);
+    }
+
+    private RepositoryDetailsSetInterface mDetailsSetListener;
+
+    public void setDetailsSetListener(RepositoryDetailsSetInterface repositoryDetailsSetInterface) {
+        this.mDetailsSetListener = repositoryDetailsSetInterface;
     }
 
     public static AuthRepository getInstance(Context context) {
@@ -255,6 +268,30 @@ public class AuthRepository {
                 }
             }
         });
+    }
+
+    /**<-------Update user details------->**/
+    public void onUserDetailsInsertion(String firstName, String lastName) {
+        final FirebaseUser user = mAuth.getCurrentUser();
+
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(firstName + " " + lastName)
+                .build();
+
+        if (user != null) {
+            user.updateProfile(profileUpdates)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                mDetailsSetListener.onDetailsSetSucceed(user.getUid());
+                                Log.d(TAG, "Username: " + user.getDisplayName());
+                            } else {
+                                mDetailsSetListener.onDetailsSetFailed(task.getException().getMessage());
+                            }
+                        }
+                    });
+        }
     }
 
     private void loginOrCreateNewUser(FirebaseUser user, Task<DocumentSnapshot> task) {

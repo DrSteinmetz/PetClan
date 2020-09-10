@@ -35,6 +35,9 @@ public class LoginDetailsFragment extends Fragment {
     private Observer<String> mLoginSucceedObserver;
     private Observer<String> mLoginFailedObserver;
 
+    private boolean mIsGoogle;
+    private boolean mIsFacebook;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     /*private static final String ARG_PARAM1 = "param1";
@@ -92,7 +95,16 @@ public class LoginDetailsFragment extends Fragment {
         mLoginSucceedObserver = new Observer<String>() {
             @Override
             public void onChanged(String uId) {
-                //TODO: Move to app's feed
+                if (listener != null) {
+                    if (!mIsGoogle && !mIsFacebook) {
+                        //TODO: move to app's feed
+                        Toast.makeText(getContext(), uId, Toast.LENGTH_SHORT).show();
+                    } else if (mIsFacebook) {
+                        listener.onFacebook("LoginDetails");
+                    } else {
+                        listener.onGoogle("LoginDetails");
+                    }
+                }
                 Toast.makeText(getContext(), uId, Toast.LENGTH_SHORT).show();
             }
         };
@@ -123,9 +135,8 @@ public class LoginDetailsFragment extends Fragment {
         facebookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listener != null) {
-                    listener.onFacebook("LoginDetails");
-                }
+                mIsFacebook = true;
+                mIsGoogle = false;
                 if (mViewModel != null) {
                     mViewModel.onFacebook(LoginDetailsFragment.this);
                 }
@@ -135,9 +146,8 @@ public class LoginDetailsFragment extends Fragment {
         googleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listener != null) {
-                    listener.onGoogle("LoginDetails");
-                }
+                mIsFacebook = false;
+                mIsGoogle = true;
                 if (mViewModel != null) {
                     mViewModel.onGoogle(LoginDetailsFragment.this);
                 }
@@ -147,6 +157,8 @@ public class LoginDetailsFragment extends Fragment {
         signInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mIsFacebook = false;
+                mIsGoogle = false;
                 if (listener != null) {
                     String email = emailEt.getText().toString();
                     String password = passwordEt.getText().toString();

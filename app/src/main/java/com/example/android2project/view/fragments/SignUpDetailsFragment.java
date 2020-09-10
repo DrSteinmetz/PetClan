@@ -78,8 +78,14 @@ public class SignUpDetailsFragment extends Fragment {
         mRegisterSucceedObserver = new Observer<String>() {
             @Override
             public void onChanged(String uId) {
-                if (listener != null && !mIsGoogle && !mIsFacebook) {
-                    listener.onNext("SignUpDetails");
+                if (listener != null) {
+                    if (!mIsGoogle && !mIsFacebook) {
+                        listener.onNext("SignUpDetails");
+                    } else if (mIsFacebook) {
+                        listener.onFacebook("SignUpDetails");
+                    } else {
+                        listener.onGoogle("SignUpDetails");
+                    }
                 }
             }
         };
@@ -110,9 +116,6 @@ public class SignUpDetailsFragment extends Fragment {
                 mIsGoogle = false;
                 mIsFacebook = true;
                 startObservation();
-                if (listener != null) {
-                    listener.onFacebook("SignUpDetails");
-                }
                 if (mViewModel != null) {
                     mViewModel.onFacebook(SignUpDetailsFragment.this);
                 }
@@ -125,9 +128,6 @@ public class SignUpDetailsFragment extends Fragment {
                 mIsGoogle = true;
                 mIsFacebook = false;
                 startObservation();
-                if (listener != null) {
-                    listener.onGoogle("SignUpDetails");
-                }
                 if (mViewModel != null) {
                     mViewModel.onGoogle(SignUpDetailsFragment.this);
                 }

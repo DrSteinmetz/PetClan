@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModel;
 import com.example.android2project.repository.AuthRepository;
 
 public class UserDetailsViewModel extends ViewModel {
-    private MutableLiveData<String> mRegisterSucceed;
-    private MutableLiveData<String> mRegisterFailed;
+    private MutableLiveData<String> mSetDetailsSucceed;
+    private MutableLiveData<String> mSetDetailsFailed;
 
     private AuthRepository mAuthRepository;
 
@@ -18,32 +18,36 @@ public class UserDetailsViewModel extends ViewModel {
     }
 
     public MutableLiveData<String> getRegisterSucceed() {
-        if (mRegisterSucceed == null) {
-            mRegisterSucceed = new MutableLiveData<>();
-            attachRegistrationListener();
+        if (mSetDetailsSucceed == null) {
+            mSetDetailsSucceed = new MutableLiveData<>();
+            attachSetDetailsListener();
         }
-        return mRegisterSucceed;
+        return mSetDetailsSucceed;
     }
 
     public MutableLiveData<String> getRegisterFailed() {
-        if (mRegisterFailed == null) {
-            mRegisterFailed = new MutableLiveData<>();
-            attachRegistrationListener();
+        if (mSetDetailsFailed == null) {
+            mSetDetailsFailed = new MutableLiveData<>();
+            attachSetDetailsListener();
         }
-        return mRegisterFailed;
+        return mSetDetailsFailed;
     }
 
-    private void attachRegistrationListener() {
-        mAuthRepository.setRegistrationListener(new AuthRepository.RepositoryRegistrationInterface() {
+    private void attachSetDetailsListener() {
+        mAuthRepository.setDetailsSetListener(new AuthRepository.RepositoryDetailsSetInterface() {
             @Override
-            public void onRegistrationSucceed(String uId) {
-                mRegisterSucceed.setValue(uId);
+            public void onDetailsSetSucceed(String uId) {
+                mSetDetailsSucceed.setValue(uId);
             }
 
             @Override
-            public void onRegistrationFailed(String error) {
-                mRegisterFailed.setValue(error);
+            public void onDetailsSetFailed(String error) {
+                mSetDetailsFailed.setValue(error);
             }
         });
+    }
+
+    public void onUserDetailsInsertion(String firstName, String lastName) {
+        mAuthRepository.onUserDetailsInsertion(firstName, lastName);
     }
 }

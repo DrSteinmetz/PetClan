@@ -36,10 +36,10 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     objToReturn = (T) new LoginRegistrationViewModel(mContext);
                 }
                 break;
-            case Register:
-                /*if (modelClass.isAssignableFrom(.class)) {
-                    objToReturn = (T) new LoginDetailsViewModel(mContext);
-                }*/
+            case UserDetails:
+                if (modelClass.isAssignableFrom(UserDetailsViewModel.class)) {
+                    objToReturn = (T) new UserDetailsViewModel(mContext);
+                }
                 break;
         }
 
