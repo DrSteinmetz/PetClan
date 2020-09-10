@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.LoginRegistrationFragment">
+    tools:context=".view.fragments.LoginRegistrationFragment">
 
     <TextView
         android:id="@+id/app_logo_tv"
@@ -63,7 +63,7 @@
         android:layout_marginHorizontal="30dp"
         android:layout_marginBottom="50dp"
         style="@style/Widget.MaterialComponents.Button"
-        android:text="Join Now"
+        android:text="Join Our Clan"
         android:textSize="20sp"
         android:textAllCaps="false" />
 

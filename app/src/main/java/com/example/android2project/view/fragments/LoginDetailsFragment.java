@@ -1,38 +1,55 @@
-package com.example.android2project.fragments;
+package com.example.android2project.view.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.android2project.R;
+import com.example.android2project.model.ViewModelEnum;
+import com.example.android2project.repository.AuthRepository;
+import com.example.android2project.viewmodel.LoginRegistrationViewModel;
+import com.example.android2project.viewmodel.ViewModelFactory;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 
 public class LoginDetailsFragment extends Fragment {
 
-    private final String mEmailRegex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
+    private LoginRegistrationViewModel mViewModel;
+
+    private Observer<String> mLoginSucceedObserver;
+    private Observer<String> mLoginFailedObserver;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    /*private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";*/
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    /*private String mParam1;
+    private String mParam2;*/
 
     private final String TAG = "LoginDetailsFragment";
 
     public interface LoginDetailsListener {
         void onFacebook(String screenName);
         void onGoogle(String screenName);
-        void onSignIn(String screenName, String email, String password);
+        void onSignIn(String screenName);
     }
 
     private LoginDetailsListener listener;
@@ -42,10 +59,10 @@ public class LoginDetailsFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static LoginDetailsFragment newInstance() {
         LoginDetailsFragment fragment = new LoginDetailsFragment();
-        Bundle args = new Bundle();
-        /*args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);*/
-        fragment.setArguments(args);
+        /*Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);*/
         return fragment;
     }
 
@@ -63,15 +80,38 @@ public class LoginDetailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+
+        /*if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        }*/
+
+        mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
+                ViewModelEnum.Login)).get(LoginRegistrationViewModel.class);
+
+        mLoginSucceedObserver = new Observer<String>() {
+            @Override
+            public void onChanged(String uId) {
+                //TODO: Move to app's feed
+                Toast.makeText(getContext(), uId, Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        mLoginFailedObserver = new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                //TODO: Let the user know login failed
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+            }
+        };
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mViewModel.getLoginSucceed().observe(this, mLoginSucceedObserver);
+        mViewModel.getLoginFailed().observe(this, mLoginFailedObserver);
+
         View rootView = inflater.inflate(R.layout.fragment_login_details, container, false);
 
         final EditText emailEt = rootView.findViewById(R.id.email_et);
@@ -86,6 +126,9 @@ public class LoginDetailsFragment extends Fragment {
                 if (listener != null) {
                     listener.onFacebook("LoginDetails");
                 }
+                if (mViewModel != null) {
+                    mViewModel.onFacebook(LoginDetailsFragment.this);
+                }
             }
         });
 
@@ -94,6 +137,9 @@ public class LoginDetailsFragment extends Fragment {
             public void onClick(View v) {
                 if (listener != null) {
                     listener.onGoogle("LoginDetails");
+                }
+                if (mViewModel != null) {
+                    mViewModel.onGoogle(LoginDetailsFragment.this);
                 }
             }
         });
@@ -109,7 +155,8 @@ public class LoginDetailsFragment extends Fragment {
                         emailEt.setError(null);
                         passwordEt.setError(null);
 
-                        listener.onSignIn("LoginDetails", email, password);
+                        listener.onSignIn("LoginDetails");
+                        mViewModel.loginWithDetails(email, password);
                     } else {
                         if (email.trim().length() < 1) {
                             emailEt.setError("You must enter email!");
@@ -127,5 +174,34 @@ public class LoginDetailsFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (resultCode == getActivity().RESULT_OK && requestCode == AuthRepository.RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
+                mViewModel.firebaseAuthWithGoogle(account.getIdToken());
+            } catch (ApiException e) {
+                // Google Sign In failed, update UI appropriately
+                Log.w(TAG, "Google sign in FAILED", e);
+            }
+        }
+
+        AuthRepository.mCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        mViewModel.getLoginSucceed().removeObserver(mLoginSucceedObserver);
+        mViewModel.getLoginFailed().removeObserver(mLoginFailedObserver);
     }
 }
