@@ -31,7 +31,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         T objToReturn = null;
 
         switch (mViewModelEnum) {
-            case Login:
+            case LoginRegistration:
                 if (modelClass.isAssignableFrom(LoginRegistrationViewModel.class)) {
                     objToReturn = (T) new LoginRegistrationViewModel(mContext);
                 }
@@ -39,6 +39,11 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             case UserDetails:
                 if (modelClass.isAssignableFrom(UserDetailsViewModel.class)) {
                     objToReturn = (T) new UserDetailsViewModel(mContext);
+                }
+                break;
+            case Picture:
+                if (modelClass.isAssignableFrom(UserPictureViewModel.class)) {
+                    objToReturn = (T) new UserPictureViewModel(mApplication);
                 }
                 break;
         }

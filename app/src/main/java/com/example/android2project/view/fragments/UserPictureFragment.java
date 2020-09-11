@@ -1,7 +1,18 @@
 package com.example.android2project.view.fragments;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,15 +21,40 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.example.android2project.R;
+import com.example.android2project.model.ViewModelEnum;
+import com.example.android2project.viewmodel.UserPictureViewModel;
+import com.example.android2project.viewmodel.ViewModelFactory;
+
+import java.io.File;
+import java.util.Objects;
 
 public class UserPictureFragment extends Fragment {
 
+    private UserPictureViewModel mViewModel;
+
+    private Observer<String> mCreateUserSucceedObserver;
+    private Observer<String> mCreateUserFailedObserver;
+
+    ImageView mUserPictureIv;
+
+    private File mFile;
+    private Uri mSelectedImage = Uri.parse("/users_profile_picture/default_user_pic.jpg");
+
+    private final int CAMERA_REQUEST = 1;
+    private final int GALLERY_REQUEST = 2;
+    private final int WRITE_PERMISSION_REQUEST = 7;
+
+    private final String TAG = "UserPictureFragment";
+
     public interface UserPictureListener {
-        void onGallery(ImageView imageView);
-        void onCamera(ImageView imageView);
         void onFinish();
     }
 
@@ -43,31 +79,71 @@ public class UserPictureFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mViewModel = new ViewModelProvider(this, new ViewModelFactory(getActivity().getApplication(),
+                ViewModelEnum.Picture)).get(UserPictureViewModel.class);
+
+        mCreateUserSucceedObserver = new Observer<String>() {
+            @Override
+            public void onChanged(String uId) {
+                if (listener != null) {
+                    listener.onFinish();
+                }
+            }
+        };
+
+        mCreateUserFailedObserver = new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+            }
+        };
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        startObservation();
+
         View rootView = inflater.inflate(R.layout.fragment_user_picture, container, false);
 
-        final ImageView userPicture = rootView.findViewById(R.id.user_pic);
+        mUserPictureIv = rootView.findViewById(R.id.user_pic);
         ImageButton galleryBtn = rootView.findViewById(R.id.gallery_btn);
         ImageButton cameraBtn = rootView.findViewById(R.id.camera_btn);
         Button finishBtn = rootView.findViewById(R.id.finish_btn);
 
-        userPicture.setClipToOutline(true);
+        mUserPictureIv.setClipToOutline(true);
 
         galleryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listener != null) {
-                    listener.onGallery(userPicture);
-                }
+                Intent intent = new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(Intent.createChooser(intent,
+                        "Choose your profile picture"), GALLERY_REQUEST);
             }
         });
 
         cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listener != null) {
-                    listener.onCamera(userPicture);
+                /**<-------Requesting user permissions------->**/
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    int hasWritePermission = Objects.requireNonNull(getContext()).
+                            checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                    if (hasWritePermission != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                WRITE_PERMISSION_REQUEST);
+                    } else {
+                        mFile = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                                "petclan" + System.nanoTime() + "pic.jpg");
+                        mSelectedImage = FileProvider.getUriForFile(getContext(),
+                                "com.example.android2project.provider", mFile);
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, mSelectedImage);
+                        startActivityForResult(intent, CAMERA_REQUEST);
+                    }
                 }
             }
         });
@@ -75,12 +151,60 @@ public class UserPictureFragment extends Fragment {
         finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listener != null) {
-                    listener.onFinish();
-                }
+                mViewModel.createNewUser(mSelectedImage);
             }
         });
 
         return rootView;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == WRITE_PERMISSION_REQUEST) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                mFile = new File(Objects.requireNonNull(getContext()).
+                        getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                        "petclan" + System.nanoTime() + "pic.jpg");
+                mSelectedImage = FileProvider.getUriForFile(getContext(),
+                        "com.example.android2project.provider", mFile);
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, mSelectedImage);
+                startActivityForResult(intent, CAMERA_REQUEST);
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == CAMERA_REQUEST) {
+                if (mUserPictureIv != null) {
+                    Glide.with(this)
+                            .load(mSelectedImage)
+                            .error(R.drawable.ic_petclan_logo)
+                            .into(mUserPictureIv);
+                }
+            } else if (requestCode == GALLERY_REQUEST) {
+                if (data != null) {
+                    mSelectedImage = data.getData();
+
+                    if (mUserPictureIv != null) {
+                        Glide.with(this)
+                                .load(mSelectedImage)
+                                .error(R.drawable.ic_petclan_logo)
+                                .into(mUserPictureIv);
+                    }
+                }
+            }
+        }
+    }
+
+    public void startObservation() {
+        mViewModel.getCreateUserSucceed().observe(this, mCreateUserSucceedObserver);
+        mViewModel.getCreateUserFailed().observe(this, mCreateUserFailedObserver);
     }
 }

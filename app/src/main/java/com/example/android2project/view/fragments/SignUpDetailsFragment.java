@@ -73,7 +73,7 @@ public class SignUpDetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
-                ViewModelEnum.Login)).get(LoginRegistrationViewModel.class);
+                ViewModelEnum.LoginRegistration)).get(LoginRegistrationViewModel.class);
 
         mRegisterSucceedObserver = new Observer<String>() {
             @Override

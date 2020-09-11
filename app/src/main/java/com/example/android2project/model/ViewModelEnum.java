@@ -1,7 +1,7 @@
 package com.example.android2project.model;
 
 public enum ViewModelEnum {
-    Login,
+    LoginRegistration,
     UserDetails,
     Picture
 }

@@ -90,7 +90,7 @@ public class LoginDetailsFragment extends Fragment {
         }*/
 
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
-                ViewModelEnum.Login)).get(LoginRegistrationViewModel.class);
+                ViewModelEnum.LoginRegistration)).get(LoginRegistrationViewModel.class);
 
         mLoginSucceedObserver = new Observer<String>() {
             @Override

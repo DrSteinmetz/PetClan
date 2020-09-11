@@ -37,6 +37,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class AuthRepository {
     private static AuthRepository authRepository;
@@ -92,6 +93,18 @@ public class AuthRepository {
         this.mDetailsSetListener = repositoryDetailsSetInterface;
     }
 
+    /**<-------User Creation interface------->**/
+    public interface RepositoryCreateUserInterface {
+        void onCreateUserSucceed(String uId);
+        void onCreateUserFailed(String error);
+    }
+
+    private RepositoryCreateUserInterface mCreateUserListener;
+
+    public void setCreateUserListener(RepositoryCreateUserInterface repositoryCreateUserInterface) {
+        this.mCreateUserListener = repositoryCreateUserInterface;
+    }
+
     public static AuthRepository getInstance(Context context) {
         if (authRepository == null) {
             authRepository = new AuthRepository(context);
@@ -127,6 +140,10 @@ public class AuthRepository {
                     }
                 }
         );
+    }
+
+    public String getUserId() {
+        return Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
     }
 
     /**<-------Fire Base Authentication Methods------->**/
@@ -326,4 +343,31 @@ public class AuthRepository {
         userMap.put("email", user);
         mCloudUsers.document(user.getEmail()).set(userMap);
     }
+
+    public void createNewCloudUser(String imagePath) {
+        mSelectedImage = Uri.parse(imagePath);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null) {
+            createNewCloudUser(user);
+        }
+    }
+
+    /*private void getCurrentUser() {
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        if (firebaseUser != null) {
+            // Name, email address, and profile photo Url
+             String name = firebaseUser.getDisplayName();
+            String email = firebaseUser.getEmail();
+            Uri photoUrl = firebaseUser.getPhotoUrl();
+
+            // Check if firebaseUser's email is verified
+            boolean emailVerified = firebaseUser.isEmailVerified();
+
+            // The firebaseUser's ID, unique to the Firebase project. Do NOT use this value to
+            // authenticate with your backend server, if you have one. Use
+            // FirebaseUser.getIdToken() instead.
+            String uid = firebaseUser.getUid();
+        }
+    }*/
 }
