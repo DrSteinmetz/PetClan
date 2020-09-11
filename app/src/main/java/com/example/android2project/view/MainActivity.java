@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onFinish() {
         Toast.makeText(this, "Finish!", Toast.LENGTH_SHORT).show();
+        //TODO: Move to app's feed
     }
 
     @Override

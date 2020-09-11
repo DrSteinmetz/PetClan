@@ -5,14 +5,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -204,7 +201,19 @@ public class UserPictureFragment extends Fragment {
     }
 
     public void startObservation() {
-        mViewModel.getCreateUserSucceed().observe(this, mCreateUserSucceedObserver);
-        mViewModel.getCreateUserFailed().observe(this, mCreateUserFailedObserver);
+        if (mCreateUserSucceedObserver != null) {
+            mViewModel.getCreateUserSucceed().observe(this, mCreateUserSucceedObserver);
+        }
+        if (mCreateUserFailedObserver != null) {
+            mViewModel.getCreateUserFailed().observe(this, mCreateUserFailedObserver);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        mViewModel.getCreateUserSucceed().removeObserver(mCreateUserSucceedObserver);
+        mViewModel.getCreateUserFailed().removeObserver(mCreateUserFailedObserver);
     }
 }

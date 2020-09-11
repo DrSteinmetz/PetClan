@@ -158,7 +158,8 @@ public class AuthRepository {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail: FAILURE", task.getException());
-                            mRegistrationListener.onRegistrationFailed(task.getException().getMessage());
+                            mRegistrationListener.onRegistrationFailed(Objects
+                                    .requireNonNull(task.getException()).getMessage());
                             /*Toast.makeText(MainActivity.this, task.getException().getMessage(),
                                     Toast.LENGTH_SHORT).show();*/
                         }
@@ -184,7 +185,8 @@ public class AuthRepository {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail: FAILURE", task.getException());
                             if (mLoginListener != null) {
-                                mLoginListener.onLoginFailed(task.getException().getMessage());
+                                mLoginListener.onLoginFailed(Objects.
+                                        requireNonNull(task.getException()).getMessage());
                             }
                             /*Toast.makeText(MainActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();*/
@@ -223,7 +225,8 @@ public class AuthRepository {
                             Log.d(TAG, "Signed in to Google with credentials successfully");
 
                             if (user != null) {
-                                mCloudDB.collection("users").document(user.getEmail())
+                                mCloudDB.collection("users")
+                                        .document(Objects.requireNonNull(user.getEmail()))
                                         .get()
                                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                             @Override
@@ -265,7 +268,8 @@ public class AuthRepository {
                     Log.d(TAG, "Signed in to Facebook with credentials successfully");
 
                     if (user != null) {
-                        mCloudDB.collection("users").document(user.getEmail())
+                        mCloudDB.collection("users")
+                                .document(Objects.requireNonNull(user.getEmail()))
                                 .get()
                                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                     @Override
@@ -304,7 +308,8 @@ public class AuthRepository {
                                 mDetailsSetListener.onDetailsSetSucceed(user.getUid());
                                 Log.d(TAG, "Username: " + user.getDisplayName());
                             } else {
-                                mDetailsSetListener.onDetailsSetFailed(task.getException().getMessage());
+                                mDetailsSetListener.onDetailsSetFailed(Objects.requireNonNull(task.
+                                        getException()).getMessage());
                             }
                         }
                     });
@@ -313,7 +318,7 @@ public class AuthRepository {
 
     private void loginOrCreateNewUser(FirebaseUser user, Task<DocumentSnapshot> task) {
         DocumentSnapshot document = task.getResult();
-        if (document.exists()) {
+        if (document != null && document.exists()) {
             //TODO: User exists and move on to app's feed
             if (mLoginListener != null) {
                 mLoginListener.onLoginSucceed(user.getUid());
@@ -321,7 +326,8 @@ public class AuthRepository {
             Log.d(TAG, "onComplete: sign up " + user.getUid());
         } else {
             //TODO: Put photo in Storage
-            mSelectedImage = Uri.parse(user.getPhotoUrl().toString() + "?type=large");
+            mSelectedImage = Uri.parse(Objects.requireNonNull(user.getPhotoUrl())
+                    .toString() + "?type=large");
             createNewCloudUser(user);
             if (mRegistrationListener != null) {
                 mRegistrationListener.onRegistrationSucceed(user.getUid());
@@ -332,16 +338,31 @@ public class AuthRepository {
 
 
     private void createNewCloudUser(final FirebaseUser firebaseUser) {
-        String[] fullName = firebaseUser.getDisplayName().split(" ");
+        String[] fullName = Objects.requireNonNull(firebaseUser.getDisplayName()).split(" ");
         String firstName = fullName[0];
         String lastName = fullName[1];
 
-        User user = new User(firebaseUser.getEmail(), firstName, lastName,
+        final User user = new User(firebaseUser.getEmail(), firstName, lastName,
                 mSelectedImage.toString());
 
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("email", user);
-        mCloudUsers.document(user.getEmail()).set(userMap);
+        mCloudUsers.document(user.getEmail()).set(userMap)
+        .addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    if (mCreateUserListener != null) {
+                        mCreateUserListener.onCreateUserSucceed(firebaseUser.getUid());
+                    }
+                } else {
+                    if (mCreateUserListener != null) {
+                        mCreateUserListener.onCreateUserFailed(Objects.requireNonNull(task
+                                .getException()).getMessage());
+                    }
+                }
+            }
+        });
     }
 
     public void createNewCloudUser(String imagePath) {
