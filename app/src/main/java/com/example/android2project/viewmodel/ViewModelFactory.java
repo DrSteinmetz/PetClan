@@ -1,6 +1,5 @@
 package com.example.android2project.viewmodel;
 
-import android.app.Application;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
@@ -11,7 +10,7 @@ import com.example.android2project.model.ViewModelEnum;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
     private Context mContext;
-    private Application mApplication;
+    //private Application mApplication;
 
     private ViewModelEnum mViewModelEnum;
 
@@ -20,10 +19,10 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.mViewModelEnum = viewModelEnum;
     }
 
-    public ViewModelFactory(Application mApplication, ViewModelEnum viewModelEnum) {
+    /*public ViewModelFactory(Application mApplication, ViewModelEnum viewModelEnum) {
         this.mApplication = mApplication;
         this.mViewModelEnum = viewModelEnum;
-    }
+    }*/
 
     @NonNull
     @Override
@@ -43,7 +42,12 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                 break;
             case Picture:
                 if (modelClass.isAssignableFrom(UserPictureViewModel.class)) {
-                    objToReturn = (T) new UserPictureViewModel(mApplication);
+                    objToReturn = (T) new UserPictureViewModel(mContext);
+                }
+                break;
+            case Welcome:
+                if (modelClass.isAssignableFrom(WelcomeViewModel.class)) {
+                    objToReturn = (T) new WelcomeViewModel(mContext);
                 }
                 break;
         }

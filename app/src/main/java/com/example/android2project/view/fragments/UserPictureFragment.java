@@ -79,7 +79,7 @@ public class UserPictureFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mViewModel = new ViewModelProvider(this, new ViewModelFactory(getActivity().getApplication(),
+        mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Picture)).get(UserPictureViewModel.class);
 
         mCreateUserSucceedObserver = new Observer<String>() {

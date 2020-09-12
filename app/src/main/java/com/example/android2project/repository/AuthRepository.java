@@ -22,6 +22,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -105,6 +107,18 @@ public class AuthRepository {
         this.mCreateUserListener = repositoryCreateUserInterface;
     }
 
+    /**<-------User Deletion interface------->**/
+    public interface RepositoryDeleteUserInterface {
+        void onDeleteUserSucceed(boolean value);
+    }
+
+    private RepositoryDeleteUserInterface mDeleteUserListener;
+
+    public void setDeleteUserListener(RepositoryDeleteUserInterface repositoryDeleteUserInterface) {
+        this.mDeleteUserListener = repositoryDeleteUserInterface;
+    }
+
+    /**<-------Singleton------->**/
     public static AuthRepository getInstance(Context context) {
         if (authRepository == null) {
             authRepository = new AuthRepository(context);
@@ -154,12 +168,16 @@ public class AuthRepository {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
-                            mRegistrationListener.onRegistrationSucceed(user.getUid());
+                            if (mRegistrationListener != null && user != null) {
+                                mRegistrationListener.onRegistrationSucceed(user.getUid());
+                            }
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail: FAILURE", task.getException());
-                            mRegistrationListener.onRegistrationFailed(Objects
-                                    .requireNonNull(task.getException()).getMessage());
+                            if (mRegistrationListener != null) {
+                                mRegistrationListener.onRegistrationFailed(Objects
+                                        .requireNonNull(task.getException()).getMessage());
+                            }
                             /*Toast.makeText(MainActivity.this, task.getException().getMessage(),
                                     Toast.LENGTH_SHORT).show();*/
                         }
@@ -328,7 +346,9 @@ public class AuthRepository {
             //TODO: Put photo in Storage
             mSelectedImage = Uri.parse(Objects.requireNonNull(user.getPhotoUrl())
                     .toString() + "?type=large");
+            Log.d(TAG, "loginOrCreateNewUser before");
             createNewCloudUser(user);
+            Log.d(TAG, "loginOrCreateNewUser after");
             if (mRegistrationListener != null) {
                 mRegistrationListener.onRegistrationSucceed(user.getUid());
             }
@@ -341,7 +361,7 @@ public class AuthRepository {
         String[] fullName = Objects.requireNonNull(firebaseUser.getDisplayName()).split(" ");
         String firstName = fullName[0];
         String lastName = fullName[1];
-
+        Log.d(TAG, "createNewCloudUser");
         final User user = new User(firebaseUser.getEmail(), firstName, lastName,
                 mSelectedImage.toString());
 
@@ -374,6 +394,38 @@ public class AuthRepository {
         }
     }
 
+    public boolean isUserLoggedIn() {
+        boolean isUserLoggedIn = false;
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user != null) {
+            isUserLoggedIn = true;
+        }
+
+        return isUserLoggedIn;
+    }
+
+    public void deleteUserFromAuth() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            user.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    if (mDeleteUserListener != null) {
+                        mDeleteUserListener.onDeleteUserSucceed(true);
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    if (mDetailsSetListener != null) {
+                        mDeleteUserListener.onDeleteUserSucceed(false);
+                    }
+                }
+            });
+        }
+    }
+
     /*private void getCurrentUser() {
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
         if (firebaseUser != null) {
@@ -391,4 +443,13 @@ public class AuthRepository {
             String uid = firebaseUser.getUid();
         }
     }*/
+
+    public String getUserName() {
+        String name = "No Name Found";
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            name = user.getDisplayName();
+        }
+        return name;
+    }
 }

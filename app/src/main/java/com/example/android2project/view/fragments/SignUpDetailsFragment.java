@@ -3,13 +3,6 @@ package com.example.android2project.view.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.android2project.R;
 import com.example.android2project.model.ViewModelEnum;
@@ -74,6 +73,8 @@ public class SignUpDetailsFragment extends Fragment {
 
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.LoginRegistration)).get(LoginRegistrationViewModel.class);
+
+        removeViewModelObservers();
 
         mRegisterSucceedObserver = new Observer<String>() {
             @Override
@@ -201,15 +202,27 @@ public class SignUpDetailsFragment extends Fragment {
     }
 
     private void startObservation() {
-        mViewModel.getRegisterSucceed().observe(this, mRegisterSucceedObserver);
-        mViewModel.getRegisterFailed().observe(this, mRegisterFailedObserver);
+        if (mViewModel != null) {
+            mViewModel.getRegisterSucceed().observe(this, mRegisterSucceedObserver);
+            mViewModel.getRegisterFailed().observe(this, mRegisterFailedObserver);
+        }
+    }
+
+    private void removeViewModelObservers() {
+        if (mViewModel != null) {
+            mViewModel.getRegisterSucceed().removeObservers(this);
+            mViewModel.getRegisterFailed().removeObservers(this);
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        Log.d(TAG, "onDestroyView");
 
-        mViewModel.getRegisterSucceed().removeObserver(mRegisterSucceedObserver);
-        mViewModel.getRegisterFailed().removeObserver(mRegisterFailedObserver);
+        // For some reason, if the below code is being enabled, there's a bug which makes
+        // a press on the Facebook/Google button bring you straight to the MainActivity
+        // after pressing the Next button and returning to the SignUpDetails Fragment...
+        // removeAllViewModelObservers();
     }
 }

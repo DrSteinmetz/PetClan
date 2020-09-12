@@ -1,17 +1,15 @@
 package com.example.android2project.viewmodel;
 
-import android.app.Application;
+import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.repository.StorageRepository;
 
-public class UserPictureViewModel extends AndroidViewModel {
+public class UserPictureViewModel extends ViewModel {
     private MutableLiveData<String> mCreateUserSucceed;
     private MutableLiveData<String> mCreateUserFailed;
 
@@ -21,10 +19,9 @@ public class UserPictureViewModel extends AndroidViewModel {
 
     private final String TAG = "UserPictureViewModel";
 
-    public UserPictureViewModel(@NonNull Application application) {
-        super(application);
-        mAuthRepository = AuthRepository.getInstance(application.getApplicationContext());
-        mStorageRepository = new StorageRepository(application.getApplicationContext());
+    public UserPictureViewModel(final Context context) {
+        mAuthRepository = AuthRepository.getInstance(context);
+        mStorageRepository = new StorageRepository(context);
     }
 
     public MutableLiveData<String> getCreateUserSucceed() {
