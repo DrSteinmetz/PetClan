@@ -97,4 +97,9 @@ public class MainViewModel extends ViewModel {
     public void signOutUser () {
         mAuthRepository.signOutUser();
     }
+
+    public void downloadUserProfilePicture() {
+        String userId = mAuthRepository.getUserId();
+        mStorageRepository.downloadFile(userId);
+    }
 }
