@@ -118,6 +118,28 @@ public class AuthRepository {
         this.mDeleteUserListener = repositoryDeleteUserInterface;
     }
 
+    /**<-------User Get User Name interface------->**/
+    public interface RepositoryGetUserNameInterface {
+        void onGetUserNameSucceed(String value);
+    }
+
+    private RepositoryGetUserNameInterface mGetUserNameListener;
+
+    public void setGetUserNameListener(RepositoryGetUserNameInterface repositoryGetUserNameInterface) {
+        this.mGetUserNameListener = repositoryGetUserNameInterface;
+    }
+
+    /**<-------User Sign Out User interface------->**/
+    public interface RepositorySignOutUserInterface {
+        void onSignOutUserSucceed(boolean value);
+    }
+
+    private RepositorySignOutUserInterface mSignOutUserListener;
+
+    public void setSignOutUserListener(RepositorySignOutUserInterface repositorySignOutUserInterface) {
+        this.mSignOutUserListener = repositorySignOutUserInterface;
+    }
+
     /**<-------Singleton------->**/
     public static AuthRepository getInstance(Context context) {
         if (authRepository == null) {
@@ -444,12 +466,30 @@ public class AuthRepository {
         }
     }*/
 
-    public String getUserName() {
+    public void getUserName() {
         String name = "No Name Found";
         FirebaseUser user = mAuth.getCurrentUser();
+
         if (user != null) {
             name = user.getDisplayName();
         }
-        return name;
+
+        if (mGetUserNameListener != null) {
+            mGetUserNameListener.onGetUserNameSucceed(name);
+        }
+    }
+
+    public void signOutUser() {
+        mAuth.signOut();
+        FirebaseUser user = mAuth.getCurrentUser();
+        boolean result = false;
+
+        if (user == null) {
+            result = true;
+        }
+
+        if (mSignOutUserListener != null) {
+            mSignOutUserListener.onSignOutUserSucceed(result);
+        }
     }
 }

@@ -50,6 +50,11 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     objToReturn = (T) new WelcomeViewModel(mContext);
                 }
                 break;
+            case Main:
+                if (modelClass.isAssignableFrom(MainViewModel.class)) {
+                    objToReturn = (T) new MainViewModel(mContext);
+                }
+                break;
         }
 
         return objToReturn;

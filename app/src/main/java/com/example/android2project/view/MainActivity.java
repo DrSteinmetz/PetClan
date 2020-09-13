@@ -1,15 +1,22 @@
 package com.example.android2project.view;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.RelativeLayout;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.android2project.R;
 import com.example.android2project.model.MenuAdapter;
-import com.example.android2project.repository.AuthRepository;
+import com.example.android2project.model.ViewModelEnum;
+import com.example.android2project.viewmodel.MainViewModel;
+import com.example.android2project.viewmodel.ViewModelFactory;
 
 import java.util.ArrayList;
 
@@ -20,11 +27,12 @@ import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 public class MainActivity extends AppCompatActivity {
     private DuoDrawerLayout mDrawerLayout;
 
+    private MainViewModel mViewModel;
+
+    private Observer<String> mGetUserNameObserver;
+    private Observer<Boolean> mSignOutUserObserver;
+
     ArrayList<String> mMenuOptions = new ArrayList<>();
-
-    private AuthRepository mAuthRepository;
-
-    private RelativeLayout mHeader;
 
     private final String TAG = "MainActivity";
 
@@ -33,12 +41,37 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //mHeader = (RelativeLayout) getResources().getLayout(R.layout.drawer_header);
+        final ImageView userProfilePicture = findViewById(R.id.user_pic_iv);
+        final TextView userNameTv = findViewById(R.id.user_name_tv);
+        final Button logOutBtn = findViewById(R.id.log_out_btn);
 
-        mAuthRepository = AuthRepository.getInstance(this);
+        mViewModel = new ViewModelProvider(this, new ViewModelFactory(this,
+                ViewModelEnum.Main)).get(MainViewModel.class);
 
-        TextView userNameTv = findViewById(R.id.user_name_tv);
-        userNameTv.setText(mAuthRepository.getUserName());
+        mGetUserNameObserver = new Observer<String>() {
+            @Override
+            public void onChanged(String username) {
+                userNameTv.setText(username);
+            }
+        };
+
+        mSignOutUserObserver = new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                startActivity(new Intent(MainActivity.this, WelcomeActivity.class));
+                finish();
+            }
+        };
+
+        mViewModel.getGetUserName().observe(this, mGetUserNameObserver);
+        mViewModel.getSignOutSucceed().observe(this, mSignOutUserObserver);
+
+        logOutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mViewModel.signOutUser();
+            }
+        });
 
         mDrawerLayout = findViewById(R.id.main_drawer_layout);
 
@@ -58,5 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
         mDrawerLayout.setDrawerListener(drawerToggle);
         drawerToggle.syncState();
+
+        mViewModel.getUserName();
     }
 }

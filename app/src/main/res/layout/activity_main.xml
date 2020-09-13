@@ -13,8 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/menu"
-        android:tag="menu"
-        app:footer="@layout/drawer_footer">
+        android:tag="menu">
         <!--app:header="@layout/drawer_header"-->
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -25,7 +24,8 @@
                 android:id="@+id/user_pic_iv"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:layout_margin="30dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginVertical="20dp"
                 android:src="@drawable/ic_default_user_pic" />
 
             <TextView
@@ -33,10 +33,30 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/user_pic_iv"
-                android:layout_margin="30dp"
+                android:layout_margin="10dp"
                 android:layout_centerVertical="true"
                 android:textSize="20sp"
                 android:textColor="@color/colorWhite"
+                android:textAllCaps="false" />
+
+        </RelativeLayout>
+        <!--app:footer="@layout/drawer_footer"-->
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:tag="footer">
+
+            <Button
+                android:id="@+id/log_out_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.Button"
+                android:padding="15dp"
+                android:text="Log Out"
+                android:textSize="30sp"
+                android:textColor="@color/colorWhite"
+                android:background="@drawable/rounded_shape"
                 android:textAllCaps="false" />
 
         </RelativeLayout>

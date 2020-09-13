@@ -10,18 +10,21 @@ import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.repository.StorageRepository;
 
 public class UserPictureViewModel extends ViewModel {
-    private MutableLiveData<String> mCreateUserSucceed;
-    private MutableLiveData<String> mCreateUserFailed;
-
     private AuthRepository mAuthRepository;
 
     private StorageRepository mStorageRepository;
+
+    private MutableLiveData<String> mCreateUserSucceed;
+    private MutableLiveData<String> mCreateUserFailed;
+
+    private MutableLiveData<Boolean> mUploadPicSucceed;
+    private MutableLiveData<String> mUploadPicFailed;
 
     private final String TAG = "UserPictureViewModel";
 
     public UserPictureViewModel(final Context context) {
         mAuthRepository = AuthRepository.getInstance(context);
-        mStorageRepository = new StorageRepository(context);
+        mStorageRepository = StorageRepository.getInstance(context);
     }
 
     public MutableLiveData<String> getCreateUserSucceed() {
@@ -50,6 +53,36 @@ public class UserPictureViewModel extends ViewModel {
             @Override
             public void onCreateUserFailed(String error) {
                 mCreateUserFailed.setValue(error);
+            }
+        });
+    }
+
+    public MutableLiveData<Boolean> getUploadPicSucceed() {
+        if (mUploadPicSucceed == null) {
+            mUploadPicSucceed = new MutableLiveData<>();
+            attachUploadPicListener();
+        }
+        return mUploadPicSucceed;
+    }
+
+    public MutableLiveData<String> getUploadPicFailed() {
+        if (mUploadPicFailed == null) {
+            mUploadPicFailed = new MutableLiveData<>();
+            attachUploadPicListener();
+        }
+        return mUploadPicFailed;
+    }
+
+    private void attachUploadPicListener () {
+        mStorageRepository.setUploadPicListener(new StorageRepository.StorageUploadPicInterface() {
+            @Override
+            public void onUploadPicSuccess(boolean value) {
+                mUploadPicSucceed.setValue(value);
+            }
+
+            @Override
+            public void onUploadPicFailed(String error) {
+                mUploadPicFailed.setValue(error);
             }
         });
     }

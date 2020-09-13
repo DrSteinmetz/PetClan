@@ -97,15 +97,13 @@ public class LoginDetailsFragment extends Fragment {
             public void onChanged(String uId) {
                 if (listener != null) {
                     if (!mIsGoogle && !mIsFacebook) {
-                        //TODO: move to app's feed
-                        Toast.makeText(getContext(), uId, Toast.LENGTH_SHORT).show();
+                        listener.onSignIn("LoginDetails");
                     } else if (mIsFacebook) {
                         listener.onFacebook("LoginDetails");
                     } else {
                         listener.onGoogle("LoginDetails");
                     }
                 }
-                Toast.makeText(getContext(), uId, Toast.LENGTH_SHORT).show();
             }
         };
 
@@ -121,8 +119,8 @@ public class LoginDetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mViewModel.getLoginSucceed().observe(this, mLoginSucceedObserver);
-        mViewModel.getLoginFailed().observe(this, mLoginFailedObserver);
+        mViewModel.getLoginSucceed().observe(getViewLifecycleOwner(), mLoginSucceedObserver);
+        mViewModel.getLoginFailed().observe(getViewLifecycleOwner(), mLoginFailedObserver);
 
         View rootView = inflater.inflate(R.layout.fragment_login_details, container, false);
 
@@ -167,7 +165,6 @@ public class LoginDetailsFragment extends Fragment {
                         emailEt.setError(null);
                         passwordEt.setError(null);
 
-                        listener.onSignIn("LoginDetails");
                         mViewModel.loginWithDetails(email, password);
                     } else {
                         if (email.trim().length() < 1) {

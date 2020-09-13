@@ -149,7 +149,7 @@ public class WelcomeActivity extends AppCompatActivity implements
     private void startMainActivity() {
         Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
         startActivity(intent);
-        //finish();
+        finish();
     }
 
     @Override
@@ -177,7 +177,6 @@ public class WelcomeActivity extends AppCompatActivity implements
 
     @Override
     protected void onDestroy() {
-        mAuth.signOut();
         mViewModel.getUserDeletionSucceed().removeObserver(mUserDeletedObserver);
         super.onDestroy();
     }
