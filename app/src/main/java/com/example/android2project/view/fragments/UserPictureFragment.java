@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,7 +32,6 @@ import com.example.android2project.viewmodel.UserPictureViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
 
 import java.io.File;
-import java.util.Objects;
 
 public class UserPictureFragment extends Fragment {
 
@@ -39,6 +39,8 @@ public class UserPictureFragment extends Fragment {
 
     private Observer<String> mCreateUserSucceedObserver;
     private Observer<String> mCreateUserFailedObserver;
+    private Observer<Boolean> mUploadUserPicSucceedObserver;
+    private Observer<String> mUploadUserPicFailedObserver;
 
     ImageView mUserPictureIv;
 
@@ -94,6 +96,20 @@ public class UserPictureFragment extends Fragment {
         mCreateUserFailedObserver = new Observer<String>() {
             @Override
             public void onChanged(String error) {
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        mUploadUserPicSucceedObserver = new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+            }
+        };
+
+        mUploadUserPicFailedObserver = new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
             }
         };
     }
@@ -127,7 +143,7 @@ public class UserPictureFragment extends Fragment {
             public void onClick(View v) {
                 /**<-------Requesting user permissions------->**/
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    int hasWritePermission = Objects.requireNonNull(getContext()).
+                    int hasWritePermission = requireContext().
                             checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
                     if (hasWritePermission != PackageManager.PERMISSION_GRANTED) {
                         requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
@@ -161,7 +177,7 @@ public class UserPictureFragment extends Fragment {
 
         if (requestCode == WRITE_PERMISSION_REQUEST) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                mFile = new File(Objects.requireNonNull(getContext()).
+                mFile = new File(requireContext().
                         getExternalFilesDir(Environment.DIRECTORY_PICTURES),
                         "petclan" + System.nanoTime() + "pic.jpg");
                 mSelectedImage = FileProvider.getUriForFile(getContext(),
@@ -202,10 +218,16 @@ public class UserPictureFragment extends Fragment {
 
     public void startObservation() {
         if (mCreateUserSucceedObserver != null) {
-            mViewModel.getCreateUserSucceed().observe(this, mCreateUserSucceedObserver);
+            mViewModel.getCreateUserSucceed().observe(getViewLifecycleOwner(), mCreateUserSucceedObserver);
         }
         if (mCreateUserFailedObserver != null) {
-            mViewModel.getCreateUserFailed().observe(this, mCreateUserFailedObserver);
+            mViewModel.getCreateUserFailed().observe(getViewLifecycleOwner(), mCreateUserFailedObserver);
+        }
+        if (mUploadUserPicSucceedObserver != null) {
+            mViewModel.getUploadPicSucceed().observe(getViewLifecycleOwner(), mUploadUserPicSucceedObserver);
+        }
+        if (mUploadUserPicFailedObserver != null) {
+            mViewModel.getUploadPicFailed().observe(getViewLifecycleOwner(), mUploadUserPicFailedObserver);
         }
     }
 

@@ -3,11 +3,12 @@ package com.example.android2project.view;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -20,6 +21,7 @@ import com.example.android2project.R;
 import com.example.android2project.model.MenuAdapter;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.viewmodel.MainViewModel;
+import com.example.android2project.viewmodel.UserPictureViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
 
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private DuoDrawerLayout mDrawerLayout;
 
     private MainViewModel mViewModel;
+    private UserPictureViewModel mUserPictureViewModel;
 
     private Observer<String> mGetUserNameObserver;
     private Observer<Boolean> mSignOutUserObserver;
@@ -53,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
 
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(this,
                 ViewModelEnum.Main)).get(MainViewModel.class);
+        mUserPictureViewModel = new ViewModelProvider(this, new ViewModelFactory(this,
+                ViewModelEnum.Picture)).get(UserPictureViewModel.class);
 
         mGetUserNameObserver = new Observer<String>() {
             @Override
@@ -64,7 +69,9 @@ public class MainActivity extends AppCompatActivity {
         mSignOutUserObserver = new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                startActivity(new Intent(MainActivity.this, WelcomeActivity.class));
+                Intent welcomeIntent = new Intent(MainActivity.this,
+                        WelcomeActivity.class);
+                startActivity(welcomeIntent);
                 finish();
             }
         };
@@ -87,7 +94,14 @@ public class MainActivity extends AppCompatActivity {
         mDownloadUserProfilePicFailedObserver = new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                Toast.makeText(MainActivity.this, error, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "On Downloading User Profile Picture: " + error);
+                //Toast.makeText(MainActivity.this, error, Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mViewModel.downloadUserProfilePicture();
+                    }
+                }, 2500);
             }
         };
 

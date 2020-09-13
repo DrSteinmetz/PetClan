@@ -90,6 +90,10 @@ public class MainViewModel extends ViewModel {
         });
     }
 
+    public String getUserId() {
+        return mAuthRepository.getUserId();
+    }
+
     public void getUserName() {
         mAuthRepository.getUserName();
     }
