@@ -79,15 +79,9 @@ public class MainActivity extends AppCompatActivity {
         mDownloadUserProfilePicSucceedObserver = new Observer<Uri>() {
             @Override
             public void onChanged(Uri uri) {
-                RequestOptions options = new RequestOptions()
-                        .circleCrop()
-                        .placeholder(R.drawable.ic_default_user_pic)
-                        .error(R.drawable.ic_default_user_pic);
+                Log.d(TAG, "URL of downloaded picture: " + uri.toString());
 
-                Glide.with(MainActivity.this)
-                        .load(uri)
-                        .apply(options)
-                        .into(userProfilePictureIv);
+                loadProfilePictureWithGlide(uri.toString(), userProfilePictureIv);
             }
         };
 
@@ -95,13 +89,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(String error) {
                 Log.d(TAG, "On Downloading User Profile Picture: " + error);
-                //Toast.makeText(MainActivity.this, error, Toast.LENGTH_SHORT).show();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mViewModel.downloadUserProfilePicture();
-                    }
-                }, 2500);
             }
         };
 
@@ -137,6 +124,25 @@ public class MainActivity extends AppCompatActivity {
         drawerToggle.syncState();
 
         mViewModel.getUserName();
-        mViewModel.downloadUserProfilePicture();
+
+        String imageUri = mViewModel.downloadUserProfilePicture();
+        if (imageUri != null) {
+            imageUri += "?height=1000";
+            Log.d(TAG, "URL of downloaded picture: " + imageUri);
+
+            loadProfilePictureWithGlide(imageUri, userProfilePictureIv);
+        }
+    }
+
+    private void loadProfilePictureWithGlide(String uri, ImageView imageView) {
+        RequestOptions options = new RequestOptions()
+                .circleCrop()
+                .placeholder(R.drawable.ic_default_user_pic)
+                .error(R.drawable.ic_default_user_pic);
+
+        Glide.with(MainActivity.this)
+                .load(uri)
+                .apply(options)
+                .into(imageView);
     }
 }

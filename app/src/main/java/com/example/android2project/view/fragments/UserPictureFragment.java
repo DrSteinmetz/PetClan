@@ -87,9 +87,6 @@ public class UserPictureFragment extends Fragment {
         mCreateUserSucceedObserver = new Observer<String>() {
             @Override
             public void onChanged(String uId) {
-                if (listener != null) {
-                    listener.onFinish();
-                }
             }
         };
 
@@ -103,6 +100,10 @@ public class UserPictureFragment extends Fragment {
         mUploadUserPicSucceedObserver = new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
+                if (listener != null && aBoolean) {
+                    //TODO: Finish loading animation
+                    listener.onFinish();
+                }
             }
         };
 
@@ -165,6 +166,7 @@ public class UserPictureFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mViewModel.createNewUser(mSelectedImage);
+                //TODO: Start loading animation
             }
         });
 

@@ -35,6 +35,9 @@ public class LoginDetailsFragment extends Fragment {
     private Observer<String> mLoginSucceedObserver;
     private Observer<String> mLoginFailedObserver;
 
+    private Observer<String> mRegisterSucceedObserver;
+    private Observer<String> mRegisterFailedObserver;
+
     private boolean mIsGoogle;
     private boolean mIsFacebook;
 
@@ -114,13 +117,32 @@ public class LoginDetailsFragment extends Fragment {
                 Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
             }
         };
+
+        mRegisterSucceedObserver = new Observer<String>() {
+            @Override
+            public void onChanged(String uId) {
+                if (listener != null) {
+                    if (mIsFacebook) {
+                        listener.onFacebook("LoginDetails");
+                    } else if (mIsGoogle){
+                        listener.onGoogle("LoginDetails");
+                    }
+                }
+            }
+        };
+
+        mRegisterFailedObserver = new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+            }
+        };
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mViewModel.getLoginSucceed().observe(getViewLifecycleOwner(), mLoginSucceedObserver);
-        mViewModel.getLoginFailed().observe(getViewLifecycleOwner(), mLoginFailedObserver);
+        startObservation();
 
         View rootView = inflater.inflate(R.layout.fragment_login_details, container, false);
 
@@ -206,11 +228,20 @@ public class LoginDetailsFragment extends Fragment {
         AuthRepository.mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
+    private void startObservation() {
+        mViewModel.getLoginSucceed().observe(getViewLifecycleOwner(), mLoginSucceedObserver);
+        mViewModel.getLoginFailed().observe(getViewLifecycleOwner(), mLoginFailedObserver);
+        mViewModel.getRegisterSucceed().observe(getViewLifecycleOwner(), mRegisterSucceedObserver);
+        mViewModel.getRegisterFailed().observe(getViewLifecycleOwner(), mRegisterFailedObserver);
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
 
-        mViewModel.getLoginSucceed().removeObserver(mLoginSucceedObserver);
-        mViewModel.getLoginFailed().removeObserver(mLoginFailedObserver);
+        mViewModel.getLoginSucceed().removeObservers(this);
+        mViewModel.getLoginFailed().removeObservers(this);
+        mViewModel.getRegisterSucceed().removeObservers(this);
+        mViewModel.getRegisterFailed().removeObservers(this);
     }
 }

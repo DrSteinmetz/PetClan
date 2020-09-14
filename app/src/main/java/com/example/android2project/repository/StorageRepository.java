@@ -109,8 +109,8 @@ public class StorageRepository {
         return stringToReturn[0];
     }
 
-    public void downloadFile(String uId) {
-        StorageReference fileToDownload = mStorage.child("users_profile_picture/" + uId + ".jpg");
+    public void downloadFile(String imageUri) {
+        StorageReference fileToDownload = mStorage.child(imageUri);
 
         fileToDownload.getDownloadUrl()
                 .addOnSuccessListener(new OnSuccessListener<Uri>() {

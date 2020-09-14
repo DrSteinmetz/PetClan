@@ -367,7 +367,7 @@ public class AuthRepository {
         } else {
             //TODO: Put photo in Storage
             mSelectedImage = Uri.parse(Objects.requireNonNull(user.getPhotoUrl())
-                    .toString() + "?type=large");
+                    .toString() /*+ "?height=1000"*/);
             Log.d(TAG, "loginOrCreateNewUser before");
             createNewCloudUser(user);
             Log.d(TAG, "loginOrCreateNewUser after");
@@ -380,6 +380,22 @@ public class AuthRepository {
 
 
     private void createNewCloudUser(final FirebaseUser firebaseUser) {
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setPhotoUri(mSelectedImage)
+                .build();
+
+        if (firebaseUser != null) {
+            firebaseUser.updateProfile(profileUpdates)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "Photo URL: " + firebaseUser.getPhotoUrl());
+                            }
+                        }
+                    });
+        }
+
         String[] fullName = Objects.requireNonNull(firebaseUser.getDisplayName()).split(" ");
         String firstName = fullName[0];
         String lastName = fullName[1];
@@ -409,7 +425,7 @@ public class AuthRepository {
 
     public void createNewCloudUser(String imagePath) {
         mSelectedImage = Uri.parse(imagePath);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (user != null) {
             createNewCloudUser(user);
@@ -491,5 +507,26 @@ public class AuthRepository {
         if (mSignOutUserListener != null) {
             mSignOutUserListener.onSignOutUserSucceed(result);
         }
+    }
+
+    public String getUserImageUri() {
+        final String[] imageUri = new String[1];
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+
+        if (firebaseUser != null) {
+            imageUri[0] = Objects.requireNonNull(firebaseUser.getPhotoUrl()).toString();
+            /*mCloudUsers.document(Objects.requireNonNull(firebaseUser.getEmail())).get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            User user = documentSnapshot.toObject(User.class);
+                            if (user != null) {
+                                imageUri[0] = user.getPhotoUri();
+                            }
+                        }
+                    });*/
+        }
+
+        return imageUri[0];
     }
 }
