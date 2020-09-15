@@ -514,6 +514,7 @@ public class AuthRepository {
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
         if (firebaseUser != null) {
+            Log.d(TAG, "getUserImageUri: " + firebaseUser.getPhotoUrl());
             imageUri[0] = Objects.requireNonNull(firebaseUser.getPhotoUrl()).toString();
             /*mCloudUsers.document(Objects.requireNonNull(firebaseUser.getEmail())).get()
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

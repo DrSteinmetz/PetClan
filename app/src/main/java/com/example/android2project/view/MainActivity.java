@@ -3,7 +3,6 @@ package com.example.android2project.view;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +19,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.android2project.R;
 import com.example.android2project.model.MenuAdapter;
 import com.example.android2project.model.ViewModelEnum;
+import com.example.android2project.view.fragments.FeedFragment;
 import com.example.android2project.viewmodel.MainViewModel;
 import com.example.android2project.viewmodel.UserPictureViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private Observer<String> mDownloadUserProfilePicFailedObserver;
 
     ArrayList<String> mMenuOptions = new ArrayList<>();
+
+    private final String FEED_FRAG = "feed_fragment";
 
     private final String TAG = "MainActivity";
 
@@ -132,6 +134,10 @@ public class MainActivity extends AppCompatActivity {
 
             loadProfilePictureWithGlide(imageUri, userProfilePictureIv);
         }
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_content_layout, FeedFragment.newInstance(), FEED_FRAG)
+                .commit();
     }
 
     private void loadProfilePictureWithGlide(String uri, ImageView imageView) {

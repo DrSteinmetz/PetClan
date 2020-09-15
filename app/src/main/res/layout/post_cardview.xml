@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="0dp"
+    android:id="@+id/post_card_layout">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/post_header_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:background="@color/colorAccent">
+
+            <ImageView
+                android:id="@+id/author_pic_iv"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_default_user_pic" />
+
+            <TextView
+                android:id="@+id/author_name_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/author_pic_iv"
+                android:layout_centerVertical="true"
+                android:text="Author"
+                android:textSize="18sp"
+                android:textColor="@color/colorBlack"
+                android:background="@null"
+                android:textAllCaps="false" />
+
+            <TextView
+                android:id="@+id/time_age_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="3 minutes ago"
+                android:layout_centerVertical="true"
+                android:textSize="16sp"
+                android:textColor="@color/colorWhite"
+                android:textAllCaps="false" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/post_content_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/post_header_layout"
+            android:padding="10dp">
+
+            <com.skyhope.showmoretextview.ShowMoreTextView
+                android:id="@+id/post_content_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/colorBlack"
+                android:textAllCaps="false" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/post_buttons_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/post_content_layout"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/post_like_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="Like"
+                    android:textSize="14sp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textAllCaps="false" />
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_like"
+                    android:scaleType="centerInside"
+                    android:background="@null" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/post_comment_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="Comment"
+                    android:textSize="14sp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textAllCaps="false" />
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_comment"
+                    android:scaleType="centerInside"
+                    android:background="@null" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>
