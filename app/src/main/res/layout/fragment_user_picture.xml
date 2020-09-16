@@ -36,7 +36,7 @@
         <ImageView
             android:id="@+id/user_pic"
             android:layout_width="100dp"
-            android:layout_height="120dp"
+            android:layout_height="100dp"
             android:layout_below="@id/title_2_tv"
             android:layout_centerHorizontal="true"
             android:background="@drawable/rounded_shape"

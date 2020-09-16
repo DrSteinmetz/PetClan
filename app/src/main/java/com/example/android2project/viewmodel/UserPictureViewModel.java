@@ -14,7 +14,7 @@ public class UserPictureViewModel extends ViewModel {
 
     private StorageRepository mStorageRepository;
 
-    private MutableLiveData<String> mCreateUserSucceed;
+    private MutableLiveData<Boolean> mCreateUserSucceed;
     private MutableLiveData<String> mCreateUserFailed;
 
     private MutableLiveData<Boolean> mUploadPicSucceed;
@@ -27,7 +27,7 @@ public class UserPictureViewModel extends ViewModel {
         mStorageRepository = StorageRepository.getInstance(context);
     }
 
-    public MutableLiveData<String> getCreateUserSucceed() {
+    public MutableLiveData<Boolean> getCreateUserSucceed() {
         if (mCreateUserSucceed == null) {
             mCreateUserSucceed = new MutableLiveData<>();
             attachCreateUserListener();
@@ -46,8 +46,8 @@ public class UserPictureViewModel extends ViewModel {
     private void attachCreateUserListener() {
         mAuthRepository.setCreateUserListener(new AuthRepository.RepositoryCreateUserInterface() {
             @Override
-            public void onCreateUserSucceed(String uId) {
-                mCreateUserSucceed.setValue(uId);
+            public void onCreateUserSucceed(boolean isDefaultPic) {
+                mCreateUserSucceed.setValue(isDefaultPic);
             }
 
             @Override
@@ -90,7 +90,7 @@ public class UserPictureViewModel extends ViewModel {
     public void createNewUser(Uri imageUri) {
         String userId = mAuthRepository.getUserId();
         String selectedImage = imageUri.toString();
-        if (!selectedImage.equals("/users_profile_picture/default_user_pic.jpg")) {
+        if (!selectedImage.equals("/users_profile_picture/default_user_pic.png")) {
             selectedImage = mStorageRepository.uploadFile(imageUri, userId);
         }
         mAuthRepository.createNewCloudUser(selectedImage);

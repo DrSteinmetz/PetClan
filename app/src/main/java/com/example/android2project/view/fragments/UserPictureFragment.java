@@ -37,7 +37,7 @@ public class UserPictureFragment extends Fragment {
 
     private UserPictureViewModel mViewModel;
 
-    private Observer<String> mCreateUserSucceedObserver;
+    private Observer<Boolean> mCreateUserSucceedObserver;
     private Observer<String> mCreateUserFailedObserver;
     private Observer<Boolean> mUploadUserPicSucceedObserver;
     private Observer<String> mUploadUserPicFailedObserver;
@@ -45,7 +45,7 @@ public class UserPictureFragment extends Fragment {
     ImageView mUserPictureIv;
 
     private File mFile;
-    private Uri mSelectedImage = Uri.parse("/users_profile_picture/default_user_pic.jpg");
+    private Uri mSelectedImage = Uri.parse("/users_profile_picture/default_user_pic.png");
 
     private final int CAMERA_REQUEST = 1;
     private final int GALLERY_REQUEST = 2;
@@ -84,9 +84,12 @@ public class UserPictureFragment extends Fragment {
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Picture)).get(UserPictureViewModel.class);
 
-        mCreateUserSucceedObserver = new Observer<String>() {
+        mCreateUserSucceedObserver = new Observer<Boolean>() {
             @Override
-            public void onChanged(String uId) {
+            public void onChanged(Boolean isDefaultPic) {
+                if (isDefaultPic) {
+                    MoveToApp();
+                }
             }
         };
 
@@ -101,8 +104,7 @@ public class UserPictureFragment extends Fragment {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (listener != null && aBoolean) {
-                    //TODO: Finish loading animation
-                    listener.onFinish();
+                    MoveToApp();
                 }
             }
         };
@@ -218,7 +220,7 @@ public class UserPictureFragment extends Fragment {
         }
     }
 
-    public void startObservation() {
+    private void startObservation() {
         if (mCreateUserSucceedObserver != null) {
             mViewModel.getCreateUserSucceed().observe(getViewLifecycleOwner(), mCreateUserSucceedObserver);
         }
@@ -231,6 +233,11 @@ public class UserPictureFragment extends Fragment {
         if (mUploadUserPicFailedObserver != null) {
             mViewModel.getUploadPicFailed().observe(getViewLifecycleOwner(), mUploadUserPicFailedObserver);
         }
+    }
+
+    private void MoveToApp() {
+        //TODO: Finish loading animation
+        listener.onFinish();
     }
 
     @Override

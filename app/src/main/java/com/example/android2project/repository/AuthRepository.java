@@ -97,7 +97,7 @@ public class AuthRepository {
 
     /**<-------User Creation interface------->**/
     public interface RepositoryCreateUserInterface {
-        void onCreateUserSucceed(String uId);
+        void onCreateUserSucceed(boolean isDefaultPic);
         void onCreateUserFailed(String error);
     }
 
@@ -369,7 +369,7 @@ public class AuthRepository {
             mSelectedImage = Uri.parse(Objects.requireNonNull(user.getPhotoUrl())
                     .toString() /*+ "?height=1000"*/);
             Log.d(TAG, "loginOrCreateNewUser before");
-            createNewCloudUser(user);
+            createNewCloudUser(user, false);
             Log.d(TAG, "loginOrCreateNewUser after");
             if (mRegistrationListener != null) {
                 mRegistrationListener.onRegistrationSucceed(user.getUid());
@@ -379,7 +379,10 @@ public class AuthRepository {
     }
 
 
-    private void createNewCloudUser(final FirebaseUser firebaseUser) {
+    private void createNewCloudUser(final FirebaseUser firebaseUser, final boolean isDefaultPic) {
+        final boolean[] isImageUploaded = {false};
+        final boolean[] isUserCreatedInCloud = {false};
+
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setPhotoUri(mSelectedImage)
                 .build();
@@ -390,7 +393,11 @@ public class AuthRepository {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
+                                isImageUploaded[0] = true;
                                 Log.d(TAG, "Photo URL: " + firebaseUser.getPhotoUrl());
+                                if (mCreateUserListener != null && isUserCreatedInCloud[0]) {
+                                    mCreateUserListener.onCreateUserSucceed(isDefaultPic);
+                                }
                             }
                         }
                     });
@@ -410,8 +417,9 @@ public class AuthRepository {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    if (mCreateUserListener != null) {
-                        mCreateUserListener.onCreateUserSucceed(firebaseUser.getUid());
+                    isUserCreatedInCloud[0] = true;
+                    if (mCreateUserListener != null && isImageUploaded[0]) {
+                        mCreateUserListener.onCreateUserSucceed(isDefaultPic);
                     }
                 } else {
                     if (mCreateUserListener != null) {
@@ -423,12 +431,16 @@ public class AuthRepository {
         });
     }
 
-    public void createNewCloudUser(String imagePath) {
+    public void createNewCloudUser(final String imagePath) {
         mSelectedImage = Uri.parse(imagePath);
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (user != null) {
-            createNewCloudUser(user);
+            boolean isDefaultPic = false;
+            if (imagePath.equals("/users_profile_picture/default_user_pic.png")) {
+                isDefaultPic = true;
+            }
+            createNewCloudUser(user, isDefaultPic);
         }
     }
 

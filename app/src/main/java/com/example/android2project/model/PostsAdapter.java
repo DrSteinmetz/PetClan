@@ -32,6 +32,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
     public interface PostListener {
         void onAuthorImageClicked(int position, View view);
+        void onCommentsTvClicked(int position, View view);
         void onLikeBtnClicked(int position, View view);
         void onCommentBtnClicked(int position, View view);
     }
@@ -46,8 +47,11 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         CardView cardLayout;
         ImageView authorPicIv;
         TextView authorNameTv;
-        ShowMoreTextView contentTv;
         TextView postTimeAgo;
+        ShowMoreTextView contentTv;
+        ImageView likesAmountIv;
+        TextView likesAmountTv;
+        TextView commentsAmountTv;
         LinearLayout likeBtn;
         LinearLayout commentBtn;
 
@@ -57,8 +61,11 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             cardLayout = itemView.findViewById(R.id.post_card_layout);
             authorPicIv = itemView.findViewById(R.id.author_pic_iv);
             authorNameTv = itemView.findViewById(R.id.author_name_tv);
-            contentTv = itemView.findViewById(R.id.post_content_tv);
             postTimeAgo = itemView.findViewById(R.id.time_age_tv);
+            contentTv = itemView.findViewById(R.id.post_content_tv);
+            likesAmountIv = itemView.findViewById(R.id.like_amount_iv);
+            likesAmountTv = itemView.findViewById(R.id.likes_amount_tv);
+            commentsAmountTv = itemView.findViewById(R.id.comments_amount_tv);
             likeBtn = itemView.findViewById(R.id.post_like_btn);
             commentBtn = itemView.findViewById(R.id.post_comment_btn);
 
@@ -69,6 +76,15 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                 public void onClick(View v) {
                     if (listener != null) {
                         listener.onAuthorImageClicked(getAdapterPosition(), v);
+                    }
+                }
+            });
+
+            commentsAmountTv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        listener.onCommentsTvClicked(getAdapterPosition(), v);
                     }
                 }
             });
@@ -126,6 +142,20 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         holder.authorNameTv.setText(post.getAuthorName());
 
         holder.postTimeAgo.setText(post.getPostTimeAgo());
+
+        if (post.getComments().size() > 0) {
+            holder.likesAmountIv.setVisibility(View.VISIBLE);
+            holder.likesAmountTv.setVisibility(View.VISIBLE);
+        } else {
+            holder.likesAmountIv.setVisibility(View.GONE);
+            holder.likesAmountTv.setVisibility(View.GONE);
+        }
+
+        if (post.getLikesCount() > 0) {
+            holder.commentsAmountTv.setVisibility(View.VISIBLE);
+        } else {
+            holder.commentsAmountTv.setVisibility(View.GONE);
+        }
 
         holder.contentTv.setText(post.getAuthorContent());
     }

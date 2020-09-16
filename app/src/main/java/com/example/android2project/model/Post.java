@@ -7,8 +7,8 @@ public class Post {
     private String mAuthorEmail;
     private String mAuthorName;
     private String mAuthorImageUri;
-    private String mAuthorContent;
     private String mPostTimeAgo;
+    private String mAuthorContent;
     private List<Comment> mComments = new ArrayList<>();
     private int mLikesCount = 0;
 
@@ -25,32 +25,32 @@ public class Post {
         return mAuthorName;
     }
 
-    public void setAuthorName(String mAuthorName) {
-        this.mAuthorName = mAuthorName;
+    public void setAuthorName(String authorName) {
+        this.mAuthorName = authorName;
     }
 
     public String getAuthorImageUri() {
         return mAuthorImageUri;
     }
 
-    public void setAuthorImageUri(String mAuthorImageUri) {
-        this.mAuthorImageUri = mAuthorImageUri;
+    public void setAuthorImageUri(String authorImageUri) {
+        this.mAuthorImageUri = authorImageUri;
     }
 
     public String getAuthorContent() {
         return mAuthorContent;
     }
 
-    public void setAuthorContent(String mAuthorContent) {
-        this.mAuthorContent = mAuthorContent;
+    public void setAuthorContent(String authorContent) {
+        this.mAuthorContent = authorContent;
     }
 
     public String getPostTimeAgo() {
         return mPostTimeAgo;
     }
 
-    public void setPostTimeAgo(String mPostTimeAgo) {
-        this.mPostTimeAgo = mPostTimeAgo;
+    public void setPostTimeAgo(String postTimeAgo) {
+        this.mPostTimeAgo = postTimeAgo;
     }
 
     public List<Comment> getComments() {
@@ -59,5 +59,13 @@ public class Post {
 
     public void setComments(List<Comment> comments) {
         this.mComments = comments;
+    }
+
+    public int getLikesCount() {
+        return mLikesCount;
+    }
+
+    public void setLikesCount(int likesCount) {
+        this.mLikesCount = likesCount;
     }
 }

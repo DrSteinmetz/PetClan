@@ -49,6 +49,8 @@ public class FeedFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
 
         mRecyclerView = rootView.findViewById(R.id.feed_recycler_view);
+        final RecyclerView commentsRecyclerView = rootView.findViewById(R.id.comments_recycler_view);
+        final boolean[] isCommentsShown = {false};
         mRecyclerView.setHasFixedSize(true);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -58,6 +60,12 @@ public class FeedFragment extends Fragment {
         mPostsAdapter.setPostListener(new PostsAdapter.PostListener() {
             @Override
             public void onAuthorImageClicked(int position, View view) {
+            }
+
+            @Override
+            public void onCommentsTvClicked(int position, View view) {
+                isCommentsShown[0] = !isCommentsShown[0];
+                commentsRecyclerView.setVisibility(isCommentsShown[0] ? View.GONE : View.VISIBLE);
             }
 
             @Override
