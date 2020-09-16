@@ -1,10 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:id="@+id/root_layout">
+    tools:context=".view.MainActivity"
+    app:menu="@menu/navigation_bar_menu"
+    android:id="@+id/main_drawer_layout">
 
-</RelativeLayout>
+    <nl.psdcompany.duonavigationdrawer.views.DuoMenuView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/menu"
+        android:tag="menu">
+        <!--app:header="@layout/drawer_header"-->
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tag="header">
+
+            <ImageView
+                android:id="@+id/user_pic_iv"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginVertical="20dp"
+                android:src="@drawable/ic_default_user_pic" />
+
+            <TextView
+                android:id="@+id/user_name_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/user_pic_iv"
+                android:layout_margin="10dp"
+                android:layout_centerVertical="true"
+                android:textSize="20sp"
+                android:textColor="@color/colorWhite"
+                android:textAllCaps="false" />
+
+        </RelativeLayout>
+        <!--app:footer="@layout/drawer_footer"-->
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:tag="footer">
+
+            <Button
+                android:id="@+id/log_out_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.Button"
+                android:padding="15dp"
+                android:text="Log Out"
+                android:textSize="30sp"
+                android:textColor="@color/colorWhite"
+                android:background="@drawable/rounded_shape"
+                android:textAllCaps="false" />
+
+        </RelativeLayout>
+
+    </nl.psdcompany.duonavigationdrawer.views.DuoMenuView>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:tag="content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorWhite">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/app_bar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+                    app:layout_scrollFlags="scroll|enterAlways"
+                    app:layout_collapseMode="pin" />
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <RelativeLayout
+                android:id="@+id/main_content_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/app_bar_layout"
+                android:layout_above="@id/bottomBar" />
+
+            <me.ibrahimsn.lib.SmoothBottomBar
+                android:id="@+id/bottomBar"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                app:backgroundColor="@color/colorPrimary"
+                app:menu="@menu/navigation_bar_menu"
+                android:layout_alignParentBottom="true" />
+
+        </RelativeLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+
+</nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout>

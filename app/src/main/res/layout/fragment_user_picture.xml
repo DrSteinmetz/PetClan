@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.UserPictureFragment">
+    tools:context=".view.fragments.UserPictureFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -36,11 +36,11 @@
         <ImageView
             android:id="@+id/user_pic"
             android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_height="120dp"
             android:layout_below="@id/title_2_tv"
             android:layout_centerHorizontal="true"
             android:background="@drawable/rounded_shape"
-            android:src="@mipmap/ic_launcher"
+            android:src="@drawable/ic_default_user_pic"
             android:scaleType="centerCrop" />
 
         <TextView
