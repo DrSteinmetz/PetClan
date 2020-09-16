@@ -11,8 +11,10 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -25,7 +27,9 @@ import com.example.android2project.viewmodel.UserPictureViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import me.ibrahimsn.lib.SmoothBottomBar;
 import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
 import nl.psdcompany.duonavigationdrawer.views.DuoMenuView;
 import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
@@ -43,6 +47,10 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<String> mMenuOptions = new ArrayList<>();
 
+    private ViewPager mViewPager;
+    private ViewPagerAdapter mPageAdapter;
+    private SmoothBottomBar mBottomBar;
+
     private final String FEED_FRAG = "feed_fragment";
 
     private final String TAG = "MainActivity";
@@ -55,11 +63,31 @@ public class MainActivity extends AppCompatActivity {
         final ImageView userProfilePictureIv = findViewById(R.id.user_pic_iv);
         final TextView userNameTv = findViewById(R.id.user_name_tv);
         final Button logOutBtn = findViewById(R.id.log_out_btn);
+        mViewPager = findViewById(R.id.view_pager);
+        mBottomBar = findViewById(R.id.bottomBar);
+        mPageAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getFragments());
 
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(this,
                 ViewModelEnum.Main)).get(MainViewModel.class);
         mUserPictureViewModel = new ViewModelProvider(this, new ViewModelFactory(this,
                 ViewModelEnum.Picture)).get(UserPictureViewModel.class);
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                mBottomBar.setItemActiveIndex(position);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+
+        mViewPager.setAdapter(mPageAdapter);
 
         mGetUserNameObserver = new Observer<String>() {
             @Override
@@ -116,8 +144,8 @@ public class MainActivity extends AppCompatActivity {
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
 
-        mMenuOptions.add("Settings");
         mMenuOptions.add("Profile");
+        mMenuOptions.add("Settings");
 
         MenuAdapter menuAdapter = new MenuAdapter(mMenuOptions);
         duoMenuView.setAdapter(menuAdapter);
@@ -134,10 +162,6 @@ public class MainActivity extends AppCompatActivity {
 
             loadProfilePictureWithGlide(imageUri, userProfilePictureIv);
         }
-
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_content_layout, FeedFragment.newInstance(), FEED_FRAG)
-                .commit();
     }
 
     private void loadProfilePictureWithGlide(String uri, ImageView imageView) {
@@ -150,5 +174,12 @@ public class MainActivity extends AppCompatActivity {
                 .load(uri)
                 .apply(options)
                 .into(imageView);
+    }
+
+    private List<Fragment> getFragments() {
+        List<Fragment> fragmentList = new ArrayList<Fragment>();
+        fragmentList.add(FeedFragment.newInstance());
+
+        return fragmentList;
     }
 }

@@ -40,7 +40,11 @@ public class FeedFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mPosts.add(new Post("John Doe", "", getString(R.string.large_text), "3 minutes ago"));
+        Post post = new Post("John Doe",
+                "",
+                getString(R.string.large_text),
+                "3 minutes ago");
+        mPosts.add(post);
     }
 
     @Override

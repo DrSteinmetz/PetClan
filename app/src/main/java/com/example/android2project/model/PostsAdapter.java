@@ -143,7 +143,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
         holder.postTimeAgo.setText(post.getPostTimeAgo());
 
-        if (post.getComments().size() > 0) {
+        if (post.getLikesCount() > 0) {
+            String likeString = post.getLikesCount() + " " + holder.likesAmountTv.getText();
+            holder.likesAmountTv.setText(likeString);
             holder.likesAmountIv.setVisibility(View.VISIBLE);
             holder.likesAmountTv.setVisibility(View.VISIBLE);
         } else {
@@ -151,7 +153,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             holder.likesAmountTv.setVisibility(View.GONE);
         }
 
-        if (post.getLikesCount() > 0) {
+        if (post.getComments().size() > 0) {
             holder.commentsAmountTv.setVisibility(View.VISIBLE);
         } else {
             holder.commentsAmountTv.setVisibility(View.GONE);
