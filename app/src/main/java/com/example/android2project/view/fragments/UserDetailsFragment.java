@@ -33,15 +33,8 @@ public class UserDetailsFragment extends Fragment {
     private final String TAG = "UserDetailsFragment";
 
     public interface UserDetailsListener {
-<<<<<<< HEAD:app/src/main/java/com/example/android2project/fragments/UserDetailsFragment.java
-<<<<<<< HEAD
-        void onNext(String screenName,String firstName,String LastName);
-=======
-        void onNext(String screenName, String firstName, String lastName);
->>>>>>> 824ca9738a0e73dff2f8b5672e7df0c7a8d743a3
-=======
+
         void onNext(String screenName);
->>>>>>> 3f348628efe00ac7e116d201875ea6b4056b2fea:app/src/main/java/com/example/android2project/view/fragments/UserDetailsFragment.java
     }
 
     private UserDetailsListener listener;
@@ -103,13 +96,7 @@ public class UserDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-<<<<<<< HEAD:app/src/main/java/com/example/android2project/fragments/UserDetailsFragment.java
-<<<<<<< HEAD
-                    listener.onNext("UserDetails",firstNameET.getText().toString(),lastNameET.getText().toString());
-=======
-=======
                     startObservation();
->>>>>>> 3f348628efe00ac7e116d201875ea6b4056b2fea:app/src/main/java/com/example/android2project/view/fragments/UserDetailsFragment.java
                     String firstName = firstNameEt.getText().toString().trim();
                     String lastName = lastNameEt.getText().toString().trim();
                     String businessName = null;
@@ -144,7 +131,6 @@ public class UserDetailsFragment extends Fragment {
                             businessNameEt.setError(null);
                         }
                     }
->>>>>>> 824ca9738a0e73dff2f8b5672e7df0c7a8d743a3
                 }
             }
         });

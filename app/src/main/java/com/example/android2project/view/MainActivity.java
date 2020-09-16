@@ -11,8 +11,12 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -25,7 +29,9 @@ import com.example.android2project.viewmodel.UserPictureViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import me.ibrahimsn.lib.SmoothBottomBar;
 import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
 import nl.psdcompany.duonavigationdrawer.views.DuoMenuView;
 import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
@@ -43,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<String> mMenuOptions = new ArrayList<>();
 
+    private ViewPager mViewPager;
+    private MyPageAdapter mPageAdapter;
+    private SmoothBottomBar mBottomBar;
+
     private final String FEED_FRAG = "feed_fragment";
 
     private final String TAG = "MainActivity";
@@ -55,12 +65,32 @@ public class MainActivity extends AppCompatActivity {
         final ImageView userProfilePictureIv = findViewById(R.id.user_pic_iv);
         final TextView userNameTv = findViewById(R.id.user_name_tv);
         final Button logOutBtn = findViewById(R.id.log_out_btn);
+        mViewPager=findViewById(R.id.pager);
+        mBottomBar =findViewById(R.id.bottomBar);
+
+        mPageAdapter =new MyPageAdapter(getSupportFragmentManager(),getFragments());
 
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(this,
                 ViewModelEnum.Main)).get(MainViewModel.class);
         mUserPictureViewModel = new ViewModelProvider(this, new ViewModelFactory(this,
                 ViewModelEnum.Picture)).get(UserPictureViewModel.class);
 
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                    mBottomBar.setItemActiveIndex(position);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         mGetUserNameObserver = new Observer<String>() {
             @Override
             public void onChanged(String username) {
@@ -126,14 +156,15 @@ public class MainActivity extends AppCompatActivity {
         drawerToggle.syncState();
 
         mViewModel.getUserName();
-
+        mViewPager.setAdapter(mPageAdapter);
         String imageUri = mViewModel.downloadUserProfilePicture();
         if (imageUri != null) {
             imageUri += "?height=1000";
             Log.d(TAG, "URL of downloaded picture: " + imageUri);
-
             loadProfilePictureWithGlide(imageUri, userProfilePictureIv);
         }
+
+
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_content_layout, FeedFragment.newInstance(), FEED_FRAG)
@@ -150,5 +181,46 @@ public class MainActivity extends AppCompatActivity {
                 .load(uri)
                 .apply(options)
                 .into(imageView);
+    }
+    private List<Fragment> getFragments(){
+
+        List<Fragment> fList = new ArrayList<Fragment>();
+        fList.add(FeedFragment.newInstance());
+
+
+        return fList;
+
+    }
+
+    class MyPageAdapter extends FragmentPagerAdapter {
+
+        private List<Fragment> fragments;
+
+
+        public MyPageAdapter(FragmentManager fm, List<Fragment> fragments) {
+
+            super(fm);
+
+            this.fragments = fragments;
+
+        }
+
+        @Override
+
+        public Fragment getItem(int position) {
+
+            return this.fragments.get(position);
+
+        }
+
+
+        @Override
+
+        public int getCount() {
+
+            return this.fragments.size();
+
+        }
+
     }
 }

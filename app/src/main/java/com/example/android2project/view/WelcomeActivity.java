@@ -111,6 +111,8 @@ public class WelcomeActivity extends AppCompatActivity implements
         }
     }
 
+
+
     /**<-------Sets SignUpDetailsFragment buttons------->**/
     @Override
     public void onNext(String screenName) {
