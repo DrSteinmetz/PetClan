@@ -1,24 +1,31 @@
 package com.example.android2project.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
-public class Post {
+public class Comment {
     private String mAuthorEmail;
     private String mAuthorName;
     private String mAuthorImageUri;
     private String mAuthorContent;
-    private String mPostTimeAgo;
-    private List<Comment> mComments = new ArrayList<>();
+    private Date mTime;
     private int mLikesCount = 0;
 
-    public Post() {}
+    public Comment() {}
 
-    public Post(String mAuthorName, String mAuthorImageUri, String mAuthorContent, String mPostTimeAgo) {
+    public Comment(String mAuthorEmail, String mAuthorName, String mAuthorImageUri, String mAuthorContent) {
+        this.mAuthorEmail = mAuthorEmail;
         this.mAuthorName = mAuthorName;
         this.mAuthorImageUri = mAuthorImageUri;
         this.mAuthorContent = mAuthorContent;
-        this.mPostTimeAgo = mPostTimeAgo;
+        this.mTime = new Date(System.currentTimeMillis());
+    }
+
+    public String getAuthorEmail() {
+        return mAuthorEmail;
+    }
+
+    public void setAuthorEmail(String mAuthorEmail) {
+        this.mAuthorEmail = mAuthorEmail;
     }
 
     public String getAuthorName() {
@@ -45,19 +52,19 @@ public class Post {
         this.mAuthorContent = mAuthorContent;
     }
 
-    public String getPostTimeAgo() {
-        return mPostTimeAgo;
+    public Date getTime() {
+        return mTime;
     }
 
-    public void setPostTimeAgo(String mPostTimeAgo) {
-        this.mPostTimeAgo = mPostTimeAgo;
+    public void setTime(Date mTime) {
+        this.mTime = mTime;
     }
 
-    public List<Comment> getComments() {
-        return mComments;
+    public int getLikesCount() {
+        return mLikesCount;
     }
 
-    public void setComments(List<Comment> comments) {
-        this.mComments = comments;
+    public void setLikesCount(int mLikesCount) {
+        this.mLikesCount = mLikesCount;
     }
 }

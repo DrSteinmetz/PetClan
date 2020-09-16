@@ -1,7 +1,6 @@
 package com.example.android2project.model;
 
 import android.content.Context;
-import android.content.pm.ShortcutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.borjabravo.readmoretextview.ReadMoreTextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.android2project.R;
@@ -98,8 +96,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             contentTv.setShowingLine(5);
             contentTv.setShowMoreColor(mContext.getColor(R.color.colorPrimary));
             contentTv.setShowLessTextColor(mContext.getColor(R.color.colorPrimary));
-            contentTv.addShowMoreText(mContext.getString(R.string.read_more));
-            contentTv.addShowLessText(mContext.getString(R.string.read_less));
+            contentTv.addShowMoreText(mContext.getString(R.string.show_more));
+            contentTv.addShowLessText(mContext.getString(R.string.show_less));
         }
     }
 

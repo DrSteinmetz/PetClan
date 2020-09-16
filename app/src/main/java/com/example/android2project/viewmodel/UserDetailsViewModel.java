@@ -8,10 +8,10 @@ import androidx.lifecycle.ViewModel;
 import com.example.android2project.repository.AuthRepository;
 
 public class UserDetailsViewModel extends ViewModel {
+    private AuthRepository mAuthRepository;
+
     private MutableLiveData<String> mSetDetailsSucceed;
     private MutableLiveData<String> mSetDetailsFailed;
-
-    private AuthRepository mAuthRepository;
 
     public UserDetailsViewModel(final Context context) {
         this.mAuthRepository = AuthRepository.getInstance(context);
