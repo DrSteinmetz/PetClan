@@ -17,13 +17,19 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.android2project.R;
 import com.skyhope.showmoretextview.ShowMoreTextView;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Locale;
 
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHolder> {
 
     private List<Post> mPosts;
 
     private Context mContext;
+
+    private boolean isLikeBtnPressed = false;
 
     public PostsAdapter(List<Post> mPosts, Context mContext) {
         this.mPosts = mPosts;
@@ -53,6 +59,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         TextView likesAmountTv;
         TextView commentsAmountTv;
         LinearLayout likeBtn;
+        ImageView likeBtnIv;
+        TextView likeBtnTv;
         LinearLayout commentBtn;
 
         public PostViewHolder(@NonNull View itemView) {
@@ -67,6 +75,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             likesAmountTv = itemView.findViewById(R.id.likes_amount_tv);
             commentsAmountTv = itemView.findViewById(R.id.comments_amount_tv);
             likeBtn = itemView.findViewById(R.id.post_like_btn);
+            likeBtnIv = itemView.findViewById(R.id.post_like_btn_iv);
+            likeBtnTv = itemView.findViewById(R.id.post_like_btn_tv);
             commentBtn = itemView.findViewById(R.id.post_comment_btn);
 
             setContentTvProperties();
@@ -94,6 +104,10 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                 public void onClick(View v) {
                     if (listener != null) {
                         listener.onLikeBtnClicked(getAdapterPosition(), v);
+                        likeBtnTv.setText(isLikeBtnPressed ? "Unlike" : "Like");
+                        likeBtnIv.setRotation(isLikeBtnPressed ? 180 : 0);
+                        isLikeBtnPressed = !isLikeBtnPressed;
+                        //TODO: Something is wrong here!@##@$
                     }
                 }
             });
@@ -108,7 +122,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             });
         }
 
-        private void setContentTvProperties() {
+        public void setContentTvProperties() {
             contentTv.setShowingLine(5);
             contentTv.setShowMoreColor(mContext.getColor(R.color.colorPrimary));
             contentTv.setShowLessTextColor(mContext.getColor(R.color.colorPrimary));
@@ -141,10 +155,10 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
         holder.authorNameTv.setText(post.getAuthorName());
 
-        holder.postTimeAgo.setText(post.getPostTimeAgo());
+        holder.postTimeAgo.setText(timestampToTimeAgo(post.getPostTime()));
 
         if (post.getLikesCount() > 0) {
-            String likeString = post.getLikesCount() + " " + holder.likesAmountTv.getText();
+            String likeString = post.getLikesCount() + " Likes";
             holder.likesAmountTv.setText(likeString);
             holder.likesAmountIv.setVisibility(View.VISIBLE);
             holder.likesAmountTv.setVisibility(View.VISIBLE);
@@ -154,16 +168,25 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         }
 
         if (post.getComments().size() > 0) {
+            String commentString = post.getComments().size() + " Comments";
+            holder.commentsAmountTv.setText(commentString);
             holder.commentsAmountTv.setVisibility(View.VISIBLE);
         } else {
             holder.commentsAmountTv.setVisibility(View.GONE);
         }
 
         holder.contentTv.setText(post.getAuthorContent());
+        holder.setContentTvProperties();
     }
 
     @Override
     public int getItemCount() {
         return mPosts.size();
+    }
+
+    private String timestampToTimeAgo(Timestamp timestamp) {
+        String language = Locale.getDefault().getLanguage();
+        PrettyTime prettyTime = new PrettyTime(new Locale(language));
+        return prettyTime.format(timestamp);
     }
 }

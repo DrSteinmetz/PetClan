@@ -1,24 +1,26 @@
 package com.example.android2project.model;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Post {
     private String mAuthorEmail;
     private String mAuthorName;
     private String mAuthorImageUri;
-    private String mPostTimeAgo;
+    private Timestamp mPostTime;
     private String mAuthorContent;
     private List<Comment> mComments = new ArrayList<>();
     private int mLikesCount = 0;
 
     public Post() {}
 
-    public Post(String mAuthorName, String mAuthorImageUri, String mAuthorContent, String mPostTimeAgo) {
+    public Post(String mAuthorName, String mAuthorImageUri, String mAuthorContent) {
         this.mAuthorName = mAuthorName;
         this.mAuthorImageUri = mAuthorImageUri;
         this.mAuthorContent = mAuthorContent;
-        this.mPostTimeAgo = mPostTimeAgo;
+        this.mPostTime = new Timestamp(new Date().getTime());
     }
 
     public String getAuthorName() {
@@ -45,12 +47,12 @@ public class Post {
         this.mAuthorContent = authorContent;
     }
 
-    public String getPostTimeAgo() {
-        return mPostTimeAgo;
+    public Timestamp getPostTime() {
+        return mPostTime;
     }
 
-    public void setPostTimeAgo(String postTimeAgo) {
-        this.mPostTimeAgo = postTimeAgo;
+    public void setPostTimeAgo(Timestamp postTime) {
+        this.mPostTime = postTime;
     }
 
     public List<Comment> getComments() {

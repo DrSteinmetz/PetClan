@@ -43,6 +43,7 @@ dependencies {
     implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.7.6'
     implementation 'nl.psdcompany:duo-navigation-drawer:3.0.0'
     implementation 'com.github.mahimrocky:ShowMoreText:1.0.2'
+    implementation 'org.ocpsoft.prettytime:prettytime:4.0.4.Final'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

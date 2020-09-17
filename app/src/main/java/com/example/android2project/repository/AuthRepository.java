@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.android2project.R;
+import com.example.android2project.model.Post;
 import com.example.android2project.model.User;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -33,11 +34,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -129,7 +132,7 @@ public class AuthRepository {
         this.mGetUserNameListener = repositoryGetUserNameInterface;
     }
 
-    /**<-------User Sign Out User interface------->**/
+    /**<-------Sign Out User interface------->**/
     public interface RepositorySignOutUserInterface {
         void onSignOutUserSucceed(boolean value);
     }
@@ -138,6 +141,18 @@ public class AuthRepository {
 
     public void setSignOutUserListener(RepositorySignOutUserInterface repositorySignOutUserInterface) {
         this.mSignOutUserListener = repositorySignOutUserInterface;
+    }
+
+    /**<-------Post Uploading interface------->**/
+    public interface RepositoryPostUploadInterface {
+        void onPostUploadSucceed(Post post);
+        void onPostUploadFailed(String error);
+    }
+
+    private RepositoryPostUploadInterface mPostUploadListener;
+
+    public void setPostUploadListener(RepositoryPostUploadInterface repositoryPostUploadInterface) {
+        this.mPostUploadListener = repositoryPostUploadInterface;
     }
 
     /**<-------Singleton------->**/
@@ -516,7 +531,7 @@ public class AuthRepository {
             result = true;
         }
 
-        if (mSignOutUserListener != null) {
+        if (mPostUploadListener != null) {
             mSignOutUserListener.onSignOutUserSucceed(result);
         }
     }
@@ -528,18 +543,50 @@ public class AuthRepository {
         if (firebaseUser != null) {
             Log.d(TAG, "getUserImageUri: " + firebaseUser.getPhotoUrl());
             imageUri[0] = Objects.requireNonNull(firebaseUser.getPhotoUrl()).toString();
-            /*mCloudUsers.document(Objects.requireNonNull(firebaseUser.getEmail())).get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            User user = documentSnapshot.toObject(User.class);
-                            if (user != null) {
-                                imageUri[0] = user.getPhotoUri();
-                            }
-                        }
-                    });*/
         }
 
         return imageUri[0];
+    }
+
+    public void uploadNewPost(String postContent) {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            final Post post = new Post(user.getDisplayName(),
+                    Objects.requireNonNull(user.getPhotoUrl()).toString(),
+                    postContent);
+
+            Map<String, List<Post>> userPostsMap = new HashMap<>();
+
+            /*final List<Post> posts = new ArrayList<>();
+
+            mCloudPosts.document(Objects.requireNonNull(user.getEmail()))
+                    .collection("user_posts")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            for (DocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+                                posts.add(document.toObject(Post.class));
+                            }
+                            posts.add(post);
+                        }
+                    });*/
+
+            mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
+                    .collection("posts")
+                    .add(post)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            mPostUploadListener.onPostUploadSucceed(post);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            mPostUploadListener.onPostUploadFailed(e.getMessage());
+                        }
+                    });
+        }
     }
 }

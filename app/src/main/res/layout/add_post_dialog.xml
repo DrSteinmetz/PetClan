@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/layoutDialogContainer"
+    android:layout_margin="20dp"
+    android:padding="20dp">
+
+    <EditText
+        android:id="@+id/new_post_content_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start|top"
+        android:maxHeight="400dp"
+        android:hint="What's On Your Mind?"
+        android:textSize="20sp"
+        android:inputType="textMultiLine"
+        android:minHeight="200dp" />
+
+    <Button
+        android:id="@+id/post_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/new_post_content_et"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="Post"
+        android:textSize="20sp"
+        android:textColor="@color/colorBlack"
+        android:textStyle="bold"
+        android:textAllCaps="false" />
+
+</RelativeLayout>

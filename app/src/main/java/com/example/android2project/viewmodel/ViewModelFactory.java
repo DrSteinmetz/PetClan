@@ -55,6 +55,11 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     objToReturn = (T) new MainViewModel(mContext);
                 }
                 break;
+            case Feed:
+                if (modelClass.isAssignableFrom(FeedViewModel.class)) {
+                    objToReturn = (T) new FeedViewModel(mContext);
+                }
+                break;
         }
 
         return objToReturn;

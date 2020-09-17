@@ -5,5 +5,6 @@ public enum ViewModelEnum {
     LoginRegistration,
     UserDetails,
     Picture,
-    Main
+    Main,
+    Feed
 }
