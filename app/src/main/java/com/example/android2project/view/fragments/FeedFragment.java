@@ -38,6 +38,9 @@ public class FeedFragment extends Fragment {
     private PostsAdapter mPostsAdapter;
     private List<Post> mPosts = new ArrayList<>();
 
+    private Observer<List<Post>> mOnPostDownloadSucceed;
+    private Observer<String> mOnPostDownloadFailed;
+
     private Observer<Post> mOnPostUploadSucceed;
     private Observer<String> mOnPostUploadFailed;
 
@@ -59,14 +62,24 @@ public class FeedFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Post post = new Post("John Doe",
-                "",
-                getString(R.string.large_text));
-
-        mPosts.add(post);
-
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Feed)).get(FeedViewModel.class);
+
+        mOnPostDownloadSucceed = new Observer<List<Post>>() {
+            @Override
+            public void onChanged(List<Post> posts) {
+                mPosts.clear();
+                mPosts.addAll(posts);
+                mPostsAdapter.notifyDataSetChanged();
+            }
+        };
+
+        mOnPostDownloadFailed = new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+            }
+        };
 
         mOnPostUploadSucceed = new Observer<Post>() {
             @Override
@@ -83,8 +96,7 @@ public class FeedFragment extends Fragment {
             }
         };
 
-        mViewModel.getPostUploadSucceed().observe(this, mOnPostUploadSucceed);
-        mViewModel.getPostUploadFailed().observe(this, mOnPostUploadFailed);
+        startObservation();
     }
 
     @Override
@@ -147,6 +159,15 @@ public class FeedFragment extends Fragment {
         //commentsRecyclerView.setAdapter(commentsAdapter);
 
         return rootView;
+    }
+
+    private void startObservation() {
+        if (mViewModel != null) {
+            mViewModel.getPostDownloadSucceed().observe(this, mOnPostDownloadSucceed);
+            mViewModel.getPostDownloadFailed().observe(this, mOnPostDownloadFailed);
+            mViewModel.getPostUploadSucceed().observe(this, mOnPostUploadSucceed);
+            mViewModel.getPostUploadFailed().observe(this, mOnPostUploadFailed);
+        }
     }
 
     private void showPostAddingDialog() {

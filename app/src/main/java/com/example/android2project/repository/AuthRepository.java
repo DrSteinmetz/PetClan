@@ -37,7 +37,10 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -141,6 +144,18 @@ public class AuthRepository {
 
     public void setSignOutUserListener(RepositorySignOutUserInterface repositorySignOutUserInterface) {
         this.mSignOutUserListener = repositorySignOutUserInterface;
+    }
+
+    /**<-------Post Downloading interface------->**/
+    public interface RepositoryPostDownloadInterface {
+        void onPostDownloadSucceed(List<Post> posts);
+        void onPostDownloadFailed(String error);
+    }
+
+    private RepositoryPostDownloadInterface mPostDownloadListener;
+
+    public void setPostDownloadListener(RepositoryPostDownloadInterface repositoryPostDownloadInterface) {
+        this.mPostDownloadListener = repositoryPostDownloadInterface;
     }
 
     /**<-------Post Uploading interface------->**/
@@ -548,6 +563,62 @@ public class AuthRepository {
         return imageUri[0];
     }
 
+    public void downloadPosts() {
+        final List<Post> posts = new ArrayList<>();
+        FirebaseUser user = mAuth.getCurrentUser();
+
+
+        if (user != null) {
+            mCloudDB.collectionGroup("posts")
+                    //.orderBy("postTime", Query.Direction.ASCENDING) //Not Working
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+                                    Log.d(TAG, "onComplete: " + document.getData());
+                                    posts.add(document.toObject(Post.class));
+                                }
+                                if (mPostDownloadListener != null) {
+                                    Log.d(TAG, "onComplete: posts size: " + posts.size());
+                                    mPostDownloadListener.onPostDownloadSucceed(posts);
+                                }
+                            } else {
+                                Log.d(TAG, "onComplete: " + Objects.requireNonNull(task.getException()).getMessage());
+                                if (mPostDownloadListener != null) {
+                                    mPostDownloadListener.onPostDownloadFailed(task.getException().getMessage());
+                                }
+                            }
+                        }
+                    });
+
+            /*mCloudUsers.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+                            document.getReference()
+                                    .collection("posts")
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+                                                    Log.d(TAG, "onComplete: " + document.getData());
+                                                    posts.add(document.toObject(Post.class));
+                                                }
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                }
+            });*/
+        }
+    }
+
     public void uploadNewPost(String postContent) {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
@@ -556,21 +627,6 @@ public class AuthRepository {
                     postContent);
 
             Map<String, List<Post>> userPostsMap = new HashMap<>();
-
-            /*final List<Post> posts = new ArrayList<>();
-
-            mCloudPosts.document(Objects.requireNonNull(user.getEmail()))
-                    .collection("user_posts")
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            for (DocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                                posts.add(document.toObject(Post.class));
-                            }
-                            posts.add(post);
-                        }
-                    });*/
 
             mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
                     .collection("posts")

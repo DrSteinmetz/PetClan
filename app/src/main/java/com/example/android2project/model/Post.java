@@ -1,5 +1,7 @@
 package com.example.android2project.model;
 
+import androidx.annotation.NonNull;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;

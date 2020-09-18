@@ -29,7 +29,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
     private Context mContext;
 
-    private boolean isLikeBtnPressed = false;
+    private boolean mIsLikeBtnPressed = false;
 
     public PostsAdapter(List<Post> mPosts, Context mContext) {
         this.mPosts = mPosts;
@@ -104,10 +104,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                 public void onClick(View v) {
                     if (listener != null) {
                         listener.onLikeBtnClicked(getAdapterPosition(), v);
-                        likeBtnTv.setText(isLikeBtnPressed ? "Unlike" : "Like");
-                        likeBtnIv.setRotation(isLikeBtnPressed ? 180 : 0);
-                        isLikeBtnPressed = !isLikeBtnPressed;
-                        //TODO: Something is wrong here!@##@$
+                        mIsLikeBtnPressed = !mIsLikeBtnPressed;
                     }
                 }
             });
@@ -157,6 +154,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
         holder.postTimeAgo.setText(timestampToTimeAgo(post.getPostTime()));
 
+        holder.likeBtnTv.setText(mIsLikeBtnPressed ? "Unlike" : "Like");
+        holder.likeBtnIv.setRotation(mIsLikeBtnPressed ? 180 : 0);
         if (post.getLikesCount() > 0) {
             String likeString = post.getLikesCount() + " Likes";
             holder.likesAmountTv.setText(likeString);

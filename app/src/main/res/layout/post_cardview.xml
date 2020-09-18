@@ -134,15 +134,15 @@
                 android:gravity="center">
 
                 <TextView
-                android:id="@+id/post_like_btn_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Like"
-                android:textSize="14sp"
-                android:textColor="@color/colorPrimaryDark"
-                android:textStyle="bold"
-                android:textAllCaps="false" />
+                    android:id="@+id/post_like_btn_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="Like"
+                    android:textSize="14sp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textAllCaps="false" />
 
                 <ImageView
                     android:id="@+id/post_like_btn_iv"
