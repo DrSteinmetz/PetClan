@@ -39,7 +39,7 @@ public class UserPictureFragment extends Fragment {
 
     private Observer<Boolean> mCreateUserSucceedObserver;
     private Observer<String> mCreateUserFailedObserver;
-    private Observer<Boolean> mUploadUserPicSucceedObserver;
+    private Observer<String> mUploadUserPicSucceedObserver;
     private Observer<String> mUploadUserPicFailedObserver;
 
     ImageView mUserPictureIv;
@@ -87,9 +87,7 @@ public class UserPictureFragment extends Fragment {
         mCreateUserSucceedObserver = new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean isDefaultPic) {
-                if (isDefaultPic) {
-                    MoveToApp();
-                }
+                MoveToApp();
             }
         };
 
@@ -100,12 +98,9 @@ public class UserPictureFragment extends Fragment {
             }
         };
 
-        mUploadUserPicSucceedObserver = new Observer<Boolean>() {
+        mUploadUserPicSucceedObserver = new Observer<String>() {
             @Override
-            public void onChanged(Boolean aBoolean) {
-                if (listener != null && aBoolean) {
-                    MoveToApp();
-                }
+            public void onChanged(String imagePath) {
             }
         };
 

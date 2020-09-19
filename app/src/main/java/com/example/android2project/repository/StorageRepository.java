@@ -42,7 +42,7 @@ public class StorageRepository {
 
     /**<-------Picture Upload interface------->**/
     public interface StorageUploadPicInterface {
-        void onUploadPicSuccess(boolean value);
+        void onUploadPicSuccess(String imagePath);
         void onUploadPicFailed(String error);
     }
 
@@ -80,14 +80,19 @@ public class StorageRepository {
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            String downloadUrl = Objects.requireNonNull(
-                                    Objects.requireNonNull(taskSnapshot.getMetadata()).getReference())
+                            Objects.requireNonNull(Objects.requireNonNull(
+                                    Objects.requireNonNull(taskSnapshot.getMetadata())
+                                            .getReference())
                                     .getDownloadUrl()
-                                    .toString();
-                            if (mUploadPicListener != null) {
-                                mUploadPicListener.onUploadPicSuccess(true);
-                            }
-                            Log.d(TAG, "onSuccess: " + downloadUrl);
+                                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            if (mUploadPicListener != null) {
+                                                mUploadPicListener.onUploadPicSuccess(uri.toString());
+                                            }
+                                            Log.d(TAG, "onSuccess: " + uri.toString());
+                                        }
+                                    }));
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {

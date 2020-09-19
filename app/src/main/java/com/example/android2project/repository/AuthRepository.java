@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.android2project.R;
@@ -34,14 +35,23 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.MetadataChanges;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -168,6 +178,18 @@ public class AuthRepository {
 
     public void setPostUploadListener(RepositoryPostUploadInterface repositoryPostUploadInterface) {
         this.mPostUploadListener = repositoryPostUploadInterface;
+    }
+
+    /**<-------Post Likes Updating interface------->**/
+    public interface RepositoryPostLikesUpdatingInterface {
+        void onPostLikesUpdateSucceed(Post post);
+        void onPostLikesUpdateFailed(String error);
+    }
+
+    private RepositoryPostLikesUpdatingInterface mPostLikesUpdatingListener;
+
+    public void setPostLikesUpdatingListener(RepositoryPostLikesUpdatingInterface repositoryPostLikesUpdatingInterface) {
+        this.mPostLikesUpdatingListener = repositoryPostLikesUpdatingInterface;
     }
 
     /**<-------Singleton------->**/
@@ -436,7 +458,7 @@ public class AuthRepository {
         String[] fullName = Objects.requireNonNull(firebaseUser.getDisplayName()).split(" ");
         String firstName = fullName[0];
         String lastName = fullName[1];
-        Log.d(TAG, "createNewCloudUser");
+        Log.d(TAG, "createNewCloudUser: " + mSelectedImage.toString());
         final User user = new User(firebaseUser.getEmail(), firstName, lastName,
                 mSelectedImage.toString());
 
@@ -524,6 +546,17 @@ public class AuthRepository {
         }
     }*/
 
+    public String getUserEmail() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        String userEmail = null;
+
+        if (user != null) {
+            userEmail = user.getEmail();
+        }
+
+        return userEmail;
+    }
+
     public void getUserName() {
         String name = "No Name Found";
         FirebaseUser user = mAuth.getCurrentUser();
@@ -567,73 +600,49 @@ public class AuthRepository {
         final List<Post> posts = new ArrayList<>();
         FirebaseUser user = mAuth.getCurrentUser();
 
-
         if (user != null) {
             mCloudDB.collectionGroup("posts")
-                    //.orderBy("postTime", Query.Direction.ASCENDING) //Not Working
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
                                 for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                                    Log.d(TAG, "onComplete: " + document.getData());
                                     posts.add(document.toObject(Post.class));
+                                    Log.d(TAG, "onComplete: " + document.toObject(Post.class).toString());
                                 }
                                 if (mPostDownloadListener != null) {
-                                    Log.d(TAG, "onComplete: posts size: " + posts.size());
+                                    Collections.sort(posts);
                                     mPostDownloadListener.onPostDownloadSucceed(posts);
                                 }
                             } else {
-                                Log.d(TAG, "onComplete: " + Objects.requireNonNull(task.getException()).getMessage());
                                 if (mPostDownloadListener != null) {
-                                    mPostDownloadListener.onPostDownloadFailed(task.getException().getMessage());
+                                    Log.wtf(TAG, "onComplete: ", task.getException());
+                                    mPostDownloadListener.onPostDownloadFailed(Objects
+                                            .requireNonNull(task.getException()).getMessage());
                                 }
                             }
                         }
                     });
-
-            /*mCloudUsers.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                            document.getReference()
-                                    .collection("posts")
-                                    .get()
-                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                                                    Log.d(TAG, "onComplete: " + document.getData());
-                                                    posts.add(document.toObject(Post.class));
-                                                }
-                                            }
-                                        }
-                                    });
-                        }
-                    }
-                }
-            });*/
         }
     }
 
     public void uploadNewPost(String postContent) {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            final Post post = new Post(user.getDisplayName(),
+            final Post post = new Post(user.getEmail(), user.getDisplayName(),
                     Objects.requireNonNull(user.getPhotoUrl()).toString(),
                     postContent);
 
-            Map<String, List<Post>> userPostsMap = new HashMap<>();
+            post.setPostId(System.nanoTime() + "");
 
             mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
                     .collection("posts")
-                    .add(post)
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    .document(post.getPostId())
+                    .set(post)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
-                        public void onSuccess(DocumentReference documentReference) {
+                        public void onSuccess(Void aVoid) {
                             mPostUploadListener.onPostUploadSucceed(post);
                         }
                     })
@@ -644,5 +653,41 @@ public class AuthRepository {
                         }
                     });
         }
+    }
+
+    public void updatePostLikes(final Post post, final boolean isLike) {
+        int likesAmount = post.getLikesCount() + (isLike ? 1 : -1);
+        post.setLikesCount(likesAmount);
+        if (isLike) {
+            post.getLikesMap().put(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail(), true);
+        } else {
+            post.getLikesMap().remove(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail());
+        }
+
+        Map<String, Object> updateLikesMap = new HashMap<>();
+        updateLikesMap.put("likesCount", likesAmount);
+        updateLikesMap.put("likesMap", post.getLikesMap());
+
+        Log.d(TAG, "updatePostLikes: " + post.toString());
+        mCloudUsers.document(post.getAuthorEmail())
+                .collection("posts")
+                .document(post.getPostId())
+                .update(updateLikesMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        if (mPostLikesUpdatingListener != null) {
+                            mPostLikesUpdatingListener.onPostLikesUpdateSucceed(post);
+                        }
+                    }
+                })
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                if (mPostLikesUpdatingListener != null) {
+                    mPostLikesUpdatingListener.onPostLikesUpdateFailed(e.getMessage());
+                }
+            }
+        });
     }
 }

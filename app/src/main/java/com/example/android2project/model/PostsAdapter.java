@@ -1,6 +1,7 @@
 package com.example.android2project.model;
 
 import android.content.Context;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.android2project.R;
+import com.example.android2project.repository.AuthRepository;
 import com.skyhope.showmoretextview.ShowMoreTextView;
 
 import org.ocpsoft.prettytime.PrettyTime;
 
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -29,17 +31,20 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
     private Context mContext;
 
-    private boolean mIsLikeBtnPressed = false;
+    private String mUserEmail;
+
+    private final String TAG = "PostsAdapter";
 
     public PostsAdapter(List<Post> mPosts, Context mContext) {
         this.mPosts = mPosts;
         this.mContext = mContext;
+        this.mUserEmail = AuthRepository.getInstance(mContext).getUserEmail();
     }
 
     public interface PostListener {
         void onAuthorImageClicked(int position, View view);
         void onCommentsTvClicked(int position, View view);
-        void onLikeBtnClicked(int position, View view);
+        void onLikeBtnClicked(int position, View view, boolean isLike);
         void onCommentBtnClicked(int position, View view);
     }
 
@@ -102,10 +107,22 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             likeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Post post = mPosts.get(getAdapterPosition());
+                    boolean isLike;
+
                     if (listener != null) {
-                        listener.onLikeBtnClicked(getAdapterPosition(), v);
-                        mIsLikeBtnPressed = !mIsLikeBtnPressed;
+                        if (likeBtnTv.getText().toString().equals("Like")) {
+                            post.getLikesMap().put(mUserEmail, true);
+                            isLike = true;
+                        } else {
+                            post.getLikesMap().remove(mUserEmail);
+                            isLike = false;
+                        }
+                        listener.onLikeBtnClicked(getAdapterPosition(), v, isLike);
                     }
+
+                    /**<-------In order to prevent double click------->**/
+                    likeBtn.setEnabled(false);
                 }
             });
 
@@ -154,8 +171,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
         holder.postTimeAgo.setText(timestampToTimeAgo(post.getPostTime()));
 
-        holder.likeBtnTv.setText(mIsLikeBtnPressed ? "Unlike" : "Like");
-        holder.likeBtnIv.setRotation(mIsLikeBtnPressed ? 180 : 0);
+        boolean isUserLikedPost = post.getLikesMap().containsKey(mUserEmail);
+        holder.likeBtnTv.setText(isUserLikedPost ? "Unlike" : "Like");
+        holder.likeBtnIv.setRotation(isUserLikedPost ? 180 : 0);
         if (post.getLikesCount() > 0) {
             String likeString = post.getLikesCount() + " Likes";
             holder.likesAmountTv.setText(likeString);
@@ -176,6 +194,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
         holder.contentTv.setText(post.getAuthorContent());
         holder.setContentTvProperties();
+
+        holder.likeBtn.setEnabled(true);
     }
 
     @Override
@@ -183,9 +203,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         return mPosts.size();
     }
 
-    private String timestampToTimeAgo(Timestamp timestamp) {
+    private String timestampToTimeAgo(Date date) {
         String language = Locale.getDefault().getLanguage();
         PrettyTime prettyTime = new PrettyTime(new Locale(language));
-        return prettyTime.format(timestamp);
+        return prettyTime.format(date);
     }
 }

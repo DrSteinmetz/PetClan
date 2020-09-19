@@ -1,12 +1,16 @@
 package com.example.android2project.model;
 
-public class User {
+import java.util.HashMap;
+import java.util.Map;
+
+public class User implements Comparable<Object> {
     private String mEmail;
     private String mFirstName;
     private String mLastName;
     private String mPhotoUri;
     private boolean mIsBusiness = false;
     private String mBusinessName = null;
+    private Map<User, Boolean> mFriendsMap = new HashMap<>();
 
     public User() {}
 
@@ -63,5 +67,27 @@ public class User {
 
     public void setBusinessName(String businessName) {
         this.mBusinessName = businessName;
+    }
+
+    public Map<User, Boolean> getFriendsMap() {
+        return mFriendsMap;
+    }
+
+    public void setFriendsMap(Map<User, Boolean> friendsMap) {
+        this.mFriendsMap = friendsMap;
+    }
+
+    @Override
+    public int compareTo(Object object) {
+        if (object instanceof User) {
+            User otherUser = (User) object;
+            if (otherUser.getFirstName().compareTo(this.mFirstName) == 0) {
+                return (otherUser.getLastName().compareTo(this.mLastName));
+            } else {
+                return (otherUser.getFirstName().compareTo(this.mFirstName));
+            }
+        }
+
+        return 0;
     }
 }

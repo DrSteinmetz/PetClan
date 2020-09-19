@@ -44,6 +44,11 @@ public class FeedFragment extends Fragment {
     private Observer<Post> mOnPostUploadSucceed;
     private Observer<String> mOnPostUploadFailed;
 
+    private Observer<Post> mOnPostLikesUpdateSucceed;
+    private Observer<String> mOnPostLikesUpdateFailed;
+
+    private int mPosition;
+
     private final String TAG = "FeedFragment";
 
     public FeedFragment() {}
@@ -84,12 +89,26 @@ public class FeedFragment extends Fragment {
         mOnPostUploadSucceed = new Observer<Post>() {
             @Override
             public void onChanged(Post post) {
-                mPosts.add(post);
-                mPostsAdapter.notifyDataSetChanged();
+                mPosts.add(0, post);
+                mPostsAdapter.notifyItemInserted(0);
             }
         };
 
         mOnPostUploadFailed = new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        mOnPostLikesUpdateSucceed = new Observer<Post>() {
+            @Override
+            public void onChanged(Post post) {
+                mPostsAdapter.notifyItemChanged(mPosition);
+            }
+        };
+
+        mOnPostLikesUpdateFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
                 Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
@@ -109,7 +128,6 @@ public class FeedFragment extends Fragment {
         final FloatingActionButton addPostBtn = rootView.findViewById(R.id.add_post_btn);
 
         final boolean[] isCommentsShown = {false};
-        final boolean[] isUnlike = {false};
 
         addPostBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,17 +154,10 @@ public class FeedFragment extends Fragment {
             }
 
             @Override
-            public void onLikeBtnClicked(int position, View view) {
+            public void onLikeBtnClicked(int position, View view, boolean isLike) {
+                mPosition = position;
                 Post post = mPosts.get(position);
-
-                if (isUnlike[0]) {
-                    post.setLikesCount(post.getLikesCount() - 1);
-                } else {
-                    post.setLikesCount(post.getLikesCount() + 1);
-                }
-                isUnlike[0] = !isUnlike[0];
-
-                mPostsAdapter.notifyItemChanged(position);
+                mViewModel.updatePostLikes(post, isLike);
             }
 
             @Override
@@ -167,6 +178,8 @@ public class FeedFragment extends Fragment {
             mViewModel.getPostDownloadFailed().observe(this, mOnPostDownloadFailed);
             mViewModel.getPostUploadSucceed().observe(this, mOnPostUploadSucceed);
             mViewModel.getPostUploadFailed().observe(this, mOnPostUploadFailed);
+            mViewModel.getPostLikesUpdateSucceed().observe(this, mOnPostLikesUpdateSucceed);
+            mViewModel.getPostLikesUpdateFailed().observe(this, mOnPostLikesUpdateFailed);
         }
     }
 
