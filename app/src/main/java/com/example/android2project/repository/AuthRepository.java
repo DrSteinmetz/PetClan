@@ -8,7 +8,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.android2project.R;
@@ -18,6 +17,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -35,23 +35,14 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.MetadataChanges;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -366,6 +357,7 @@ public class AuthRepository {
                                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        mSelectedImage = Uri.parse("facebook");
                                         loginOrCreateNewUser(user, task);
                                     }
                                 });
@@ -411,15 +403,16 @@ public class AuthRepository {
     private void loginOrCreateNewUser(FirebaseUser user, Task<DocumentSnapshot> task) {
         DocumentSnapshot document = task.getResult();
         if (document != null && document.exists()) {
-            //TODO: User exists and move on to app's feed
             if (mLoginListener != null) {
                 mLoginListener.onLoginSucceed(user.getUid());
             }
             Log.d(TAG, "onComplete: sign up " + user.getUid());
         } else {
-            //TODO: Put photo in Storage
-            mSelectedImage = Uri.parse(Objects.requireNonNull(user.getPhotoUrl())
-                    .toString() /*+ "?height=1000"*/);
+            if (mSelectedImage.toString().equals("facebook")) {
+                mSelectedImage = Profile.getCurrentProfile().getProfilePictureUri(200, 200);
+            } else {
+                mSelectedImage = Uri.parse(Objects.requireNonNull(user.getPhotoUrl()).toString());
+            }
             Log.d(TAG, "loginOrCreateNewUser before");
             createNewCloudUser(user, false);
             Log.d(TAG, "loginOrCreateNewUser after");

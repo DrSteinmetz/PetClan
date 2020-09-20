@@ -157,9 +157,7 @@ public class MainActivity extends AppCompatActivity {
 
         String imageUri = mViewModel.downloadUserProfilePicture();
         if (imageUri != null) {
-            imageUri += "?height=1000";
             Log.d(TAG, "URL of downloaded picture: " + imageUri);
-
             loadProfilePictureWithGlide(imageUri, userProfilePictureIv);
         }
     }

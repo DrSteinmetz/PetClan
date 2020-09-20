@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="0dp"
+    android:layout_marginVertical="5dp"
+    android:id="@+id/comment_card_layout">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/comment_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="5dp"
+            android:paddingHorizontal="10dp">
+
+            <ImageView
+                android:id="@+id/author_pic_iv"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/ic_default_user_pic" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/author_pic_iv"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/rounded_shape">
+
+                <TextView
+                    android:id="@+id/author_name_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Author Name"
+                    android:textSize="15sp"
+                    android:textColor="@color/colorBlack"
+                    android:textStyle="bold"
+                    android:background="@null"
+                    android:textAllCaps="false" />
+
+                <TextView
+                    android:id="@+id/time_ago_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/author_name_tv"
+                    android:layout_toEndOf="@id/author_name_tv"
+                    android:layout_marginStart="10dp"
+                    android:text="moments ago"
+                    android:textSize="13sp"
+                    android:textAllCaps="false" />
+
+                <com.skyhope.showmoretextview.ShowMoreTextView
+                    android:id="@+id/comment_content_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/author_name_tv"
+                    android:textSize="15sp"
+                    android:textColor="@color/colorBlack"
+                    android:textAllCaps="false" />
+
+            </RelativeLayout>
+
+            <ImageButton
+                android:id="@+id/comment_options_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="5dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_round_more_vert_24"
+                android:background="@null"
+                android:scaleType="centerInside" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

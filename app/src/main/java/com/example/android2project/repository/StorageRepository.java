@@ -65,11 +65,10 @@ public class StorageRepository {
         this.mContext = context;
     }
 
-    public String uploadFile(Uri uri, String uId) {
+    public void uploadFile(Uri uri, String uId) {
         StorageReference fileToUpload = mStorage.child("users_profile_picture/" + uId + ".jpg");
 
-        final String[] stringToReturn = new String[1];
-        stringToReturn[0] = "users_profile_picture/" + uId + ".jpg";
+        //TODO: need to rotate the picture if needed
 
         try {
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
@@ -110,8 +109,6 @@ public class StorageRepository {
             }
             e.printStackTrace();
         }
-
-        return stringToReturn[0];
     }
 
     public void downloadFile(String imageUri) {

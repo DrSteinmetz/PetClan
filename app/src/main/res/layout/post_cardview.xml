@@ -45,7 +45,7 @@
                     android:textAllCaps="false" />
 
                 <TextView
-                    android:id="@+id/time_age_tv"
+                    android:id="@+id/time_ago_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="moments ago"
@@ -181,13 +181,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/comments_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/post_buttons_layout"
-            android:visibility="visible" />
 
     </RelativeLayout>
 

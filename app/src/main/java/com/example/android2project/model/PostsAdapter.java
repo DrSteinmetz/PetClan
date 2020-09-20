@@ -1,10 +1,10 @@
 package com.example.android2project.model;
 
 import android.content.Context;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -35,10 +35,10 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
     private final String TAG = "PostsAdapter";
 
-    public PostsAdapter(List<Post> mPosts, Context mContext) {
-        this.mPosts = mPosts;
-        this.mContext = mContext;
-        this.mUserEmail = AuthRepository.getInstance(mContext).getUserEmail();
+    public PostsAdapter(List<Post> posts, Context context) {
+        this.mPosts = posts;
+        this.mContext = context;
+        this.mUserEmail = AuthRepository.getInstance(context).getUserEmail();
     }
 
     public interface PostListener {
@@ -55,7 +55,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
     }
 
     public class PostViewHolder extends RecyclerView.ViewHolder {
-        CardView cardLayout;
         ImageView authorPicIv;
         TextView authorNameTv;
         TextView postTimeAgo;
@@ -67,14 +66,14 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         ImageView likeBtnIv;
         TextView likeBtnTv;
         LinearLayout commentBtn;
+        ImageButton optionsBtn;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            cardLayout = itemView.findViewById(R.id.post_card_layout);
             authorPicIv = itemView.findViewById(R.id.author_pic_iv);
             authorNameTv = itemView.findViewById(R.id.author_name_tv);
-            postTimeAgo = itemView.findViewById(R.id.time_age_tv);
+            postTimeAgo = itemView.findViewById(R.id.time_ago_tv);
             contentTv = itemView.findViewById(R.id.post_content_tv);
             likesAmountIv = itemView.findViewById(R.id.like_amount_iv);
             likesAmountTv = itemView.findViewById(R.id.likes_amount_tv);
@@ -83,6 +82,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             likeBtnIv = itemView.findViewById(R.id.post_like_btn_iv);
             likeBtnTv = itemView.findViewById(R.id.post_like_btn_tv);
             commentBtn = itemView.findViewById(R.id.post_comment_btn);
+            optionsBtn = itemView.findViewById(R.id.post_options_menu);
 
             setContentTvProperties();
 
@@ -134,9 +134,15 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                     }
                 }
             });
+
+            optionsBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                }
+            });
         }
 
-        public void setContentTvProperties() {
+        private void setContentTvProperties() {
             contentTv.setShowingLine(5);
             contentTv.setShowMoreColor(mContext.getColor(R.color.colorPrimary));
             contentTv.setShowLessTextColor(mContext.getColor(R.color.colorPrimary));
@@ -195,6 +201,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         holder.contentTv.setText(post.getAuthorContent());
         holder.setContentTvProperties();
 
+        /**<-------In order to prevent double click------->**/
         holder.likeBtn.setEnabled(true);
     }
 
