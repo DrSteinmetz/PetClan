@@ -1,21 +1,18 @@
 package com.example.android2project.model;
 
-import android.graphics.Point;
-
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class Post implements Comparable<Object> {
+public class Post implements Serializable, Comparable<Object> {
     private String mPostId;
     private String mAuthorEmail;
     private String mAuthorName;
     private String mAuthorImageUri;
     private Date mPostTime;
     private String mAuthorContent;
-    private List<Comment> mComments = new ArrayList<>();
+    private int mCommentsCount = 0;
     private Map<String, Boolean> mLikesMap = new HashMap<>();
     private int mLikesCount = 0;
 
@@ -78,12 +75,12 @@ public class Post implements Comparable<Object> {
         this.mPostTime = postTime;
     }
 
-    public List<Comment> getComments() {
-        return mComments;
+    public int getCommentsCount() {
+        return mCommentsCount;
     }
 
-    public void setComments(List<Comment> comments) {
-        this.mComments = comments;
+    public void setCommentsCount(int commentsCount) {
+        this.mCommentsCount = Math.max(commentsCount, 0);
     }
 
     public int getLikesCount() {
@@ -91,7 +88,7 @@ public class Post implements Comparable<Object> {
     }
 
     public void setLikesCount(int likesCount) {
-        this.mLikesCount = likesCount >= 0 ? likesCount : 0;
+        this.mLikesCount = Math.max(likesCount, 0);
     }
 
     public Map<String, Boolean> getLikesMap() {
@@ -110,14 +107,14 @@ public class Post implements Comparable<Object> {
                 ", AuthorImageUri='" + mAuthorImageUri + '\'' +
                 ", PostTime=" + mPostTime +
                 ", AuthorContent='" + mAuthorContent + '\'' +
-                ", Comments=" + mComments +
+                ", CommentsCount=" + mCommentsCount +
                 ", LikesMap=" + mLikesMap +
                 ", LikesCount=" + mLikesCount +
                 '}';
     }
 
     @Override
-    public int compareTo(Object object) {
+    public int compareTo(final Object object) {
         if (object instanceof Post) {
             Post otherPost = (Post) object;
             return otherPost.getPostTime().compareTo(this.mPostTime);

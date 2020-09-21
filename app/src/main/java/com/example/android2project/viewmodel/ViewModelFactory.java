@@ -60,6 +60,11 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     objToReturn = (T) new FeedViewModel(mContext);
                 }
                 break;
+            case Comments:
+                if (modelClass.isAssignableFrom(CommentsViewModel.class)) {
+                    objToReturn = (T) new CommentsViewModel(mContext);
+                }
+                break;
         }
 
         return objToReturn;

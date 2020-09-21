@@ -62,14 +62,8 @@ public class LoginDetailsFragment extends Fragment {
 
     public LoginDetailsFragment() {}
 
-    // TODO: Rename and change types and number of parameters
     public static LoginDetailsFragment newInstance() {
-        LoginDetailsFragment fragment = new LoginDetailsFragment();
-        /*Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);*/
-        return fragment;
+        return new LoginDetailsFragment();
     }
 
     @Override
@@ -86,11 +80,6 @@ public class LoginDetailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        /*if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }*/
 
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.LoginRegistration)).get(LoginRegistrationViewModel.class);

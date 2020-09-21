@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHolder> {
-
     private List<Post> mPosts;
 
     private Context mContext;
@@ -224,8 +223,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             holder.likesAmountTv.setVisibility(View.GONE);
         }
 
-        if (post.getComments().size() > 0) {
-            String commentString = post.getComments().size() + " Comments";
+        if (post.getCommentsCount() > 0) {
+            String commentString = post.getCommentsCount() + " Comments";
             holder.commentsAmountTv.setText(commentString);
             holder.commentsAmountTv.setVisibility(View.VISIBLE);
         } else {

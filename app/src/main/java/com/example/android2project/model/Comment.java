@@ -2,13 +2,13 @@ package com.example.android2project.model;
 
 import java.util.Date;
 
-public class Comment {
+public class Comment implements Comparable<Object> {
+    private String mCommentId;
     private String mAuthorEmail;
     private String mAuthorName;
     private String mAuthorImageUri;
     private String mAuthorContent;
     private Date mTime;
-    private int mLikesCount = 0;
 
     public Comment() {}
 
@@ -18,6 +18,14 @@ public class Comment {
         this.mAuthorImageUri = mAuthorImageUri;
         this.mAuthorContent = mAuthorContent;
         this.mTime = new Date(System.currentTimeMillis());
+    }
+
+    public String getCommentId() {
+        return mCommentId;
+    }
+
+    public void setCommentId(String commentId) {
+        this.mCommentId = commentId;
     }
 
     public String getAuthorEmail() {
@@ -60,11 +68,24 @@ public class Comment {
         this.mTime = mTime;
     }
 
-    public int getLikesCount() {
-        return mLikesCount;
+    @Override
+    public int compareTo(final Object object) {
+        if (object instanceof Comment) {
+            Comment otherPost = (Comment) object;
+            return this.mTime.compareTo(otherPost.getTime());
+        }
+        return 0;
     }
 
-    public void setLikesCount(int mLikesCount) {
-        this.mLikesCount = mLikesCount;
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "mCommentId='" + mCommentId + '\'' +
+                ", mAuthorEmail='" + mAuthorEmail + '\'' +
+                ", mAuthorName='" + mAuthorName + '\'' +
+                ", mAuthorImageUri='" + mAuthorImageUri + '\'' +
+                ", mAuthorContent='" + mAuthorContent + '\'' +
+                ", mTime=" + mTime +
+                '}';
     }
 }

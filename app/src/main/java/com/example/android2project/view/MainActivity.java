@@ -20,7 +20,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.android2project.R;
 import com.example.android2project.model.MenuAdapter;
+import com.example.android2project.model.Post;
 import com.example.android2project.model.ViewModelEnum;
+import com.example.android2project.view.fragments.CommentsFragment;
 import com.example.android2project.view.fragments.FeedFragment;
 import com.example.android2project.viewmodel.MainViewModel;
 import com.example.android2project.viewmodel.UserPictureViewModel;
@@ -34,7 +36,8 @@ import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
 import nl.psdcompany.duonavigationdrawer.views.DuoMenuView;
 import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements
+        FeedFragment.FeedListener {
     private DuoDrawerLayout mDrawerLayout;
 
     private MainViewModel mViewModel;
@@ -52,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private SmoothBottomBar mBottomBar;
 
     private final String FEED_FRAG = "feed_fragment";
+    private final String COMMENTS_FRAG = "comments_fragment";
 
     private final String TAG = "MainActivity";
 
@@ -122,10 +126,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        mViewModel.getGetUserName().observe(this, mGetUserNameObserver);
-        mViewModel.getSignOutSucceed().observe(this, mSignOutUserObserver);
-        mViewModel.getDownloadPicSucceed().observe(this, mDownloadUserProfilePicSucceedObserver);
-        mViewModel.getDownloadPicFailed().observe(this, mDownloadUserProfilePicFailedObserver);
+        startObservation();
 
         logOutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,6 +163,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void startObservation() {
+        mViewModel.getGetUserName().observe(this, mGetUserNameObserver);
+        mViewModel.getSignOutSucceed().observe(this, mSignOutUserObserver);
+        mViewModel.getDownloadPicSucceed().observe(this, mDownloadUserProfilePicSucceedObserver);
+        mViewModel.getDownloadPicFailed().observe(this, mDownloadUserProfilePicFailedObserver);
+    }
+
     private void loadProfilePictureWithGlide(String uri, ImageView imageView) {
         RequestOptions options = new RequestOptions()
                 .circleCrop()
@@ -179,5 +187,11 @@ public class MainActivity extends AppCompatActivity {
         fragmentList.add(FeedFragment.newInstance());
 
         return fragmentList;
+    }
+
+    @Override
+    public void onComment(Post post) {
+        CommentsFragment.newInstance(post)
+                .show(getSupportFragmentManager().beginTransaction(), COMMENTS_FRAG);
     }
 }

@@ -19,7 +19,7 @@ public class FeedViewModel extends ViewModel {
     private MutableLiveData<Post> mPostUploadSucceed;
     private MutableLiveData<String> mPostUploadFailed;
 
-    private MutableLiveData<String> mPostUpdateSucceed;
+    private MutableLiveData<Post> mPostUpdateSucceed;
     private MutableLiveData<String> mPostUpdatedFailed;
 
     private MutableLiveData<Post> mPostLikesUpdateSucceed;
@@ -65,7 +65,7 @@ public class FeedViewModel extends ViewModel {
         });
     }
 
-    public MutableLiveData<String> getPostUpdateSucceed() {
+    public MutableLiveData<Post> getPostUpdateSucceed() {
         if (mPostUpdateSucceed == null) {
             mPostUpdateSucceed = new MutableLiveData<>();
             attachSetPostUpdateListener();
@@ -84,8 +84,8 @@ public class FeedViewModel extends ViewModel {
     private void attachSetPostUpdateListener() {
         mAuthRepository.setPostUpdatingListener(new AuthRepository.RepositoryPostUpdatingInterface() {
             @Override
-            public void onPostUpdatingSucceed(String updatedPostContent) {
-                mPostUpdateSucceed.setValue(updatedPostContent);
+            public void onPostUpdatingSucceed(Post updatedPost) {
+                mPostUpdateSucceed.setValue(updatedPost);
             }
 
             @Override
@@ -189,8 +189,8 @@ public class FeedViewModel extends ViewModel {
         mAuthRepository.uploadNewPost(postContent);
     }
 
-    public void updatePost(String postContent, String postId) {
-        mAuthRepository.updatePost(postContent, postId);
+    public void updatePost(Post post) {
+        mAuthRepository.updatePost(post);
     }
 
     public void refreshPosts() {

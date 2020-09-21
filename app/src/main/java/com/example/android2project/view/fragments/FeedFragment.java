@@ -35,7 +35,6 @@ import java.util.List;
 public class FeedFragment extends Fragment {
     private FeedViewModel mViewModel;
 
-    private RecyclerView mRecyclerView;
     private PostsAdapter mPostsAdapter;
     private List<Post> mPosts = new ArrayList<>();
 
@@ -45,7 +44,7 @@ public class FeedFragment extends Fragment {
     private Observer<Post> mOnPostUploadSucceed;
     private Observer<String> mOnPostUploadFailed;
 
-    private Observer<String> mOnPostUpdateSucceed;
+    private Observer<Post> mOnPostUpdateSucceed;
     private Observer<String> mOnPostUpdateFailed;
 
     private Observer<Post> mOnPostLikesUpdateSucceed;
@@ -58,16 +57,25 @@ public class FeedFragment extends Fragment {
 
     private final String TAG = "FeedFragment";
 
-    public FeedFragment() {}
+    public interface FeedListener {
+        void onComment(Post post);
+    }
+
+    private FeedListener listener;
 
     public static FeedFragment newInstance() {
-        FeedFragment fragment = new FeedFragment();
-        return fragment;
+        return new FeedFragment();
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+
+        try {
+            listener = (FeedListener) context;
+        } catch (ClassCastException ex) {
+            throw new ClassCastException("The activity must implement Feed Listener!");
+        }
     }
 
     @Override
@@ -101,10 +109,11 @@ public class FeedFragment extends Fragment {
             }
         };
 
-        mOnPostUpdateSucceed = new Observer<String>() {
+        mOnPostUpdateSucceed = new Observer<Post>() {
             @Override
-            public void onChanged(String updatedPostContent) {
-                mPosts.get(mPosition).setAuthorContent(updatedPostContent);
+            public void onChanged(Post updatedPost) {
+                mPosts.get(mPosition).setAuthorContent(updatedPost.getAuthorContent());
+                mPosts.get(mPosition).setCommentsCount(updatedPost.getCommentsCount());
                 mPostsAdapter.notifyItemChanged(mPosition);
             }
         };
@@ -143,7 +152,6 @@ public class FeedFragment extends Fragment {
                 if (mPosts.get(mPosition).getPostId().equals(postId)) {
                     mPosts.remove(mPosition);
                     mPostsAdapter.notifyItemRemoved(mPosition);
-                    Log.d(TAG, "onChanged: " + postId);
                 }
             }
         };
@@ -161,13 +169,10 @@ public class FeedFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
 
-        mRecyclerView = rootView.findViewById(R.id.feed_recycler_view);
-        final RecyclerView commentsRecyclerView = rootView.findViewById(R.id.comments_recycler_view);
+        final RecyclerView recyclerView = rootView.findViewById(R.id.feed_recycler_view);
         final FloatingActionButton addPostBtn = rootView.findViewById(R.id.add_post_btn);
-
-        final boolean[] isCommentsShown = {false};
 
         addPostBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,8 +181,8 @@ public class FeedFragment extends Fragment {
             }
         });
 
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mPostsAdapter = new PostsAdapter(mPosts, getContext());
 
@@ -189,8 +194,9 @@ public class FeedFragment extends Fragment {
 
             @Override
             public void onCommentsTvClicked(int position, View view) {
-                isCommentsShown[0] = !isCommentsShown[0];
-                commentsRecyclerView.setVisibility(isCommentsShown[0] ? View.GONE : View.VISIBLE);
+                if (listener != null) {
+                    listener.onComment(mPosts.get(position));
+                }
             }
 
             @Override
@@ -202,7 +208,9 @@ public class FeedFragment extends Fragment {
 
             @Override
             public void onCommentBtnClicked(int position, View view) {
-                //TODO: Open a comment dialog and add the comment to the comments list
+                if (listener != null) {
+                    listener.onComment(mPosts.get(position));
+                }
             }
 
             @Override
@@ -218,8 +226,7 @@ public class FeedFragment extends Fragment {
             }
         });
 
-        mRecyclerView.setAdapter(mPostsAdapter);
-        //commentsRecyclerView.setAdapter(commentsAdapter);
+        recyclerView.setAdapter(mPostsAdapter);
 
         return rootView;
     }
@@ -314,7 +321,8 @@ public class FeedFragment extends Fragment {
         updateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mViewModel.updatePost(postContentEt.getText().toString(), postToEdit.getPostId());
+                postToEdit.setAuthorContent(postContentEt.getText().toString());
+                mViewModel.updatePost(postToEdit);
                 alertDialog.dismiss();
             }
         });

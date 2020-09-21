@@ -13,19 +13,29 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.android2project.R;
+import com.example.android2project.repository.AuthRepository;
 import com.skyhope.showmoretextview.ShowMoreTextView;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.CommentViewHolder> {
     private List<Comment> mComments;
 
     private Context mContext;
 
+    private String mUserEmail;
+
     public CommentsAdapter(List<Comment> comments, Context context) {
         this.mComments = comments;
         this.mContext = context;
+        this.mUserEmail = AuthRepository.getInstance(context).getUserEmail();
     }
 
     public interface CommentListener {
@@ -108,10 +118,40 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
 
     @Override
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
+        Comment comment = mComments.get(position);
+
+        RequestOptions options = new RequestOptions()
+                .circleCrop()
+                .placeholder(R.drawable.ic_default_user_pic)
+                .error(R.drawable.ic_default_user_pic);
+
+        Glide.with(mContext)
+                .load(comment.getAuthorImageUri())
+                .apply(options)
+                .into(holder.authorPicIv);
+
+        holder.authorNameTv.setText(comment.getAuthorName());
+
+        holder.postTimeAgo.setText(timestampToTimeAgo(comment.getTime()));
+
+        if (comment.getAuthorEmail().equals(mUserEmail)) {
+            holder.optionsBtn.setVisibility(View.VISIBLE);
+        } else {
+            holder.optionsBtn.setVisibility(View.GONE);
+        }
+
+        holder.contentTv.setText(comment.getAuthorContent());
+        holder.setContentTvProperties();
     }
 
     @Override
     public int getItemCount() {
         return mComments.size();
+    }
+
+    private String timestampToTimeAgo(Date date) {
+        String language = Locale.getDefault().getLanguage();
+        PrettyTime prettyTime = new PrettyTime(new Locale(language));
+        return prettyTime.format(date);
     }
 }
