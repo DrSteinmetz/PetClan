@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,8 +45,14 @@ public class FeedFragment extends Fragment {
     private Observer<Post> mOnPostUploadSucceed;
     private Observer<String> mOnPostUploadFailed;
 
+    private Observer<String> mOnPostUpdateSucceed;
+    private Observer<String> mOnPostUpdateFailed;
+
     private Observer<Post> mOnPostLikesUpdateSucceed;
     private Observer<String> mOnPostLikesUpdateFailed;
+
+    private Observer<String> mOnPostDeletionSucceed;
+    private Observer<String> mOnPostDeletionFailed;
 
     private int mPosition;
 
@@ -94,6 +101,21 @@ public class FeedFragment extends Fragment {
             }
         };
 
+        mOnPostUpdateSucceed = new Observer<String>() {
+            @Override
+            public void onChanged(String updatedPostContent) {
+                mPosts.get(mPosition).setAuthorContent(updatedPostContent);
+                mPostsAdapter.notifyItemChanged(mPosition);
+            }
+        };
+
+        mOnPostUpdateFailed = new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+            }
+        };
+
         mOnPostUploadFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
@@ -109,6 +131,24 @@ public class FeedFragment extends Fragment {
         };
 
         mOnPostLikesUpdateFailed = new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        mOnPostDeletionSucceed = new Observer<String>() {
+            @Override
+            public void onChanged(String postId) {
+                if (mPosts.get(mPosition).getPostId().equals(postId)) {
+                    mPosts.remove(mPosition);
+                    mPostsAdapter.notifyItemRemoved(mPosition);
+                    Log.d(TAG, "onChanged: " + postId);
+                }
+            }
+        };
+
+        mOnPostDeletionFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
                 Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
@@ -164,6 +204,18 @@ public class FeedFragment extends Fragment {
             public void onCommentBtnClicked(int position, View view) {
                 //TODO: Open a comment dialog and add the comment to the comments list
             }
+
+            @Override
+            public void onEditOptionClicked(int position, View view) {
+                mPosition = position;
+                showPostEditingDialog(mPosts.get(position));
+            }
+
+            @Override
+            public void onDeleteOptionClicked(int position, View view) {
+                mPosition = position;
+                showDeletePostDialog(mPosts.get(position));
+            }
         });
 
         mRecyclerView.setAdapter(mPostsAdapter);
@@ -178,8 +230,12 @@ public class FeedFragment extends Fragment {
             mViewModel.getPostDownloadFailed().observe(this, mOnPostDownloadFailed);
             mViewModel.getPostUploadSucceed().observe(this, mOnPostUploadSucceed);
             mViewModel.getPostUploadFailed().observe(this, mOnPostUploadFailed);
+            mViewModel.getPostUpdateSucceed().observe(this, mOnPostUpdateSucceed);
+            mViewModel.getPostUpdatedFailed().observe(this, mOnPostUpdateFailed);
             mViewModel.getPostLikesUpdateSucceed().observe(this, mOnPostLikesUpdateSucceed);
             mViewModel.getPostLikesUpdateFailed().observe(this, mOnPostLikesUpdateFailed);
+            mViewModel.getPostDeletionSucceed().observe(this, mOnPostDeletionSucceed);
+            mViewModel.getPostDeletionFailed().observe(this, mOnPostDeletionFailed);
         }
     }
 
@@ -195,6 +251,7 @@ public class FeedFragment extends Fragment {
 
         final EditText postContentEt = view.findViewById(R.id.new_post_content_et);
         final Button postBtn = view.findViewById(R.id.post_btn);
+        postBtn.setText("Post");
         postBtn.setEnabled(false);
 
         final AlertDialog alertDialog = builder.create();
@@ -216,6 +273,75 @@ public class FeedFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mViewModel.uploadNewPost(postContentEt.getText().toString());
+                alertDialog.dismiss();
+            }
+        });
+
+        alertDialog.show();
+    }
+
+    private void showPostEditingDialog(final Post postToEdit) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        ViewGroup root;
+        View view = LayoutInflater.from(getContext())
+                .inflate(R.layout.add_post_dialog,
+                        (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));
+
+        builder.setView(view);
+        builder.setCancelable(true);
+
+        final EditText postContentEt = view.findViewById(R.id.new_post_content_et);
+        postContentEt.setText(postToEdit.getAuthorContent());
+        final Button updateBtn = view.findViewById(R.id.post_btn);
+        updateBtn.setText("Update");
+        updateBtn.setEnabled(false);
+
+        final AlertDialog alertDialog = builder.create();
+
+        postContentEt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updateBtn.setEnabled(s.toString().trim().length() > 0);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        updateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mViewModel.updatePost(postContentEt.getText().toString(), postToEdit.getPostId());
+                alertDialog.dismiss();
+            }
+        });
+
+        alertDialog.show();
+    }
+
+    private void showDeletePostDialog(final Post postToDelete) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        ViewGroup root;
+        View view = LayoutInflater.from(getContext())
+                .inflate(R.layout.add_post_dialog,
+                        (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));
+
+        builder.setView(view);
+        builder.setCancelable(true);
+
+        final EditText postContentEt = view.findViewById(R.id.new_post_content_et);
+        postContentEt.setText(postToDelete.getAuthorContent());
+        final Button updateBtn = view.findViewById(R.id.post_btn);
+
+        final AlertDialog alertDialog = builder.create();
+
+        updateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mViewModel.deletePost(postToDelete.getPostId());
                 alertDialog.dismiss();
             }
         });

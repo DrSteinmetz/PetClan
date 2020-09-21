@@ -2,10 +2,12 @@ package com.example.android2project.model;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,7 +29,8 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
     }
 
     public interface CommentListener {
-        void onOptionsBtnClicked(int position, View view);
+        void onEditOptionClicked(int position, View view);
+        void onDeleteOptionClicked(int position, View view);
     }
 
     private CommentListener listener;
@@ -57,6 +60,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
             optionsBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    showPopUpMenu(v);
                 }
             });
         }
@@ -67,6 +71,30 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
             contentTv.setShowLessTextColor(mContext.getColor(R.color.colorPrimary));
             contentTv.addShowMoreText(mContext.getString(R.string.show_more));
             contentTv.addShowLessText(mContext.getString(R.string.show_less));
+        }
+
+        private void showPopUpMenu(final View view) {
+            PopupMenu popupMenu = new PopupMenu(mContext, optionsBtn);
+            popupMenu.inflate(R.menu.option_menu);
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.option_edit:
+                            if (listener != null) {
+                                listener.onEditOptionClicked(getAdapterPosition(), view);
+                            }
+                            break;
+                        case R.id.option_delete:
+                            if (listener != null) {
+                                listener.onDeleteOptionClicked(getAdapterPosition(), view);
+                            }
+                            break;
+                    }
+                    return false;
+                }
+            });
+            popupMenu.show();
         }
     }
 

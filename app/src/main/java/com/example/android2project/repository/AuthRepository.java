@@ -171,6 +171,18 @@ public class AuthRepository {
         this.mPostUploadListener = repositoryPostUploadInterface;
     }
 
+    /**<-------Post Updating interface------->**/
+    public interface RepositoryPostUpdatingInterface {
+        void onPostUpdatingSucceed(String updatedPostContent);
+        void onPostUpdatingFailed(String error);
+    }
+
+    private RepositoryPostUpdatingInterface mPostUpdatingListener;
+
+    public void setPostUpdatingListener(RepositoryPostUpdatingInterface repositoryPostUpdatingInterface) {
+        this.mPostUpdatingListener = repositoryPostUpdatingInterface;
+    }
+
     /**<-------Post Likes Updating interface------->**/
     public interface RepositoryPostLikesUpdatingInterface {
         void onPostLikesUpdateSucceed(Post post);
@@ -181,6 +193,18 @@ public class AuthRepository {
 
     public void setPostLikesUpdatingListener(RepositoryPostLikesUpdatingInterface repositoryPostLikesUpdatingInterface) {
         this.mPostLikesUpdatingListener = repositoryPostLikesUpdatingInterface;
+    }
+
+    /**<-------Post Deleting interface------->**/
+    public interface RepositoryPostDeletingInterface {
+        void onPostDeletingSucceed(String postId);
+        void onPostDeletingFailed(String error);
+    }
+
+    private RepositoryPostDeletingInterface mPostDeletingListener;
+
+    public void setPostDeletingListener(RepositoryPostDeletingInterface repositoryPostDeletingInterface) {
+        this.mPostDeletingListener = repositoryPostDeletingInterface;
     }
 
     /**<-------Singleton------->**/
@@ -648,6 +672,36 @@ public class AuthRepository {
         }
     }
 
+    public void updatePost(final String updatedPostContent, String postId) {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+
+            Map<String, Object> updatePostMap = new HashMap<>();
+            updatePostMap.put("authorContent", updatedPostContent);
+
+            mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
+                    .collection("posts")
+                    .document(postId)
+                    .update(updatePostMap)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            if (mPostUpdatingListener != null) {
+                                mPostUpdatingListener.onPostUpdatingSucceed(updatedPostContent);
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            if (mPostUpdatingListener != null) {
+                                mPostUpdatingListener.onPostUpdatingFailed(e.getMessage());
+                            }
+                        }
+                    });
+        }
+    }
+
     public void updatePostLikes(final Post post, final boolean isLike) {
         int likesAmount = post.getLikesCount() + (isLike ? 1 : -1);
         post.setLikesCount(likesAmount);
@@ -682,5 +736,32 @@ public class AuthRepository {
                 }
             }
         });
+    }
+
+    public void deletePost(final String postId) {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
+                    .collection("posts")
+                    .document(postId)
+                    .delete()
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            if (mPostDeletingListener != null) {
+                                Log.d(TAG, "onSuccess: " + postId);
+                                mPostDeletingListener.onPostDeletingSucceed(postId);
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            if (mPostDeletingListener != null) {
+                                mPostDeletingListener.onPostDeletingFailed(e.getMessage());
+                            }
+                        }
+                    });
+        }
     }
 }

@@ -19,8 +19,14 @@ public class FeedViewModel extends ViewModel {
     private MutableLiveData<Post> mPostUploadSucceed;
     private MutableLiveData<String> mPostUploadFailed;
 
+    private MutableLiveData<String> mPostUpdateSucceed;
+    private MutableLiveData<String> mPostUpdatedFailed;
+
     private MutableLiveData<Post> mPostLikesUpdateSucceed;
     private MutableLiveData<String> mPostLikesUpdateFailed;
+
+    private MutableLiveData<String> mPostDeletionSucceed;
+    private MutableLiveData<String> mPostDeletionFailed;
 
     private final String TAG = "FeedViewModel";
 
@@ -55,6 +61,36 @@ public class FeedViewModel extends ViewModel {
             @Override
             public void onPostUploadFailed(String error) {
                 mPostUploadFailed.setValue(error);
+            }
+        });
+    }
+
+    public MutableLiveData<String> getPostUpdateSucceed() {
+        if (mPostUpdateSucceed == null) {
+            mPostUpdateSucceed = new MutableLiveData<>();
+            attachSetPostUpdateListener();
+        }
+        return mPostUpdateSucceed;
+    }
+
+    public MutableLiveData<String> getPostUpdatedFailed() {
+        if (mPostUpdatedFailed == null) {
+            mPostUpdatedFailed = new MutableLiveData<>();
+            attachSetPostUpdateListener();
+        }
+        return mPostUpdatedFailed;
+    }
+
+    private void attachSetPostUpdateListener() {
+        mAuthRepository.setPostUpdatingListener(new AuthRepository.RepositoryPostUpdatingInterface() {
+            @Override
+            public void onPostUpdatingSucceed(String updatedPostContent) {
+                mPostUpdateSucceed.setValue(updatedPostContent);
+            }
+
+            @Override
+            public void onPostUpdatingFailed(String error) {
+                mPostUpdatedFailed.setValue(error);
             }
         });
     }
@@ -119,8 +155,42 @@ public class FeedViewModel extends ViewModel {
         });
     }
 
+    public MutableLiveData<String> getPostDeletionSucceed() {
+        if (mPostDeletionSucceed == null) {
+            mPostDeletionSucceed = new MutableLiveData<>();
+            attachSetPostDeletionListener();
+        }
+        return mPostDeletionSucceed;
+    }
+
+    public MutableLiveData<String> getPostDeletionFailed() {
+        if (mPostDeletionFailed == null) {
+            mPostDeletionFailed = new MutableLiveData<>();
+            attachSetPostDeletionListener();
+        }
+        return mPostDeletionFailed;
+    }
+
+    private void attachSetPostDeletionListener() {
+        mAuthRepository.setPostDeletingListener(new AuthRepository.RepositoryPostDeletingInterface() {
+            @Override
+            public void onPostDeletingSucceed(String postId) {
+                mPostDeletionSucceed.setValue(postId);
+            }
+
+            @Override
+            public void onPostDeletingFailed(String error) {
+                mPostDeletionFailed.setValue(error);
+            }
+        });
+    }
+
     public void uploadNewPost(String postContent) {
         mAuthRepository.uploadNewPost(postContent);
+    }
+
+    public void updatePost(String postContent, String postId) {
+        mAuthRepository.updatePost(postContent, postId);
     }
 
     public void refreshPosts() {
@@ -129,5 +199,9 @@ public class FeedViewModel extends ViewModel {
 
     public void updatePostLikes(Post post, final boolean isLike) {
         mAuthRepository.updatePostLikes(post, isLike);
+    }
+
+    public void deletePost(String postId) {
+        mAuthRepository.deletePost(postId);
     }
 }
