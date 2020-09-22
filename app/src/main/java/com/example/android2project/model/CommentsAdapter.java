@@ -39,6 +39,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
     }
 
     public interface CommentListener {
+        void onAuthorImageClicked(int position, View view);
         void onEditOptionClicked(int position, View view);
         void onDeleteOptionClicked(int position, View view);
     }
@@ -71,6 +72,15 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
                 @Override
                 public void onClick(View v) {
                     showPopUpMenu(v);
+                }
+            });
+
+            authorPicIv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        listener.onAuthorImageClicked(getAdapterPosition(), v);
+                    }
                 }
             });
         }

@@ -112,6 +112,7 @@ public class FeedFragment extends Fragment {
         mOnPostUpdateSucceed = new Observer<Post>() {
             @Override
             public void onChanged(Post updatedPost) {
+                Log.d(TAG, "onChanged: " + mPosition);
                 mPosts.get(mPosition).setAuthorContent(updatedPost.getAuthorContent());
                 mPosts.get(mPosition).setCommentsCount(updatedPost.getCommentsCount());
                 mPostsAdapter.notifyItemChanged(mPosition);
@@ -194,6 +195,7 @@ public class FeedFragment extends Fragment {
 
             @Override
             public void onCommentsTvClicked(int position, View view) {
+                mPosition = position;
                 if (listener != null) {
                     listener.onComment(mPosts.get(position));
                 }
@@ -208,6 +210,7 @@ public class FeedFragment extends Fragment {
 
             @Override
             public void onCommentBtnClicked(int position, View view) {
+                mPosition = position;
                 if (listener != null) {
                     listener.onComment(mPosts.get(position));
                 }

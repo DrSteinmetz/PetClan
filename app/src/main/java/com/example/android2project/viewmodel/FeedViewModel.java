@@ -6,12 +6,12 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.android2project.model.Post;
-import com.example.android2project.repository.AuthRepository;
+import com.example.android2project.repository.Repository;
 
 import java.util.List;
 
 public class FeedViewModel extends ViewModel {
-    private AuthRepository mAuthRepository;
+    private Repository mRepository;
 
     private MutableLiveData<List<Post>> mPostDownloadSucceed;
     private MutableLiveData<String> mPostDownloadFailed;
@@ -31,8 +31,8 @@ public class FeedViewModel extends ViewModel {
     private final String TAG = "FeedViewModel";
 
     public FeedViewModel(final Context context) {
-        this.mAuthRepository = AuthRepository.getInstance(context);
-        mAuthRepository.downloadPosts();
+        this.mRepository = Repository.getInstance(context);
+        mRepository.downloadPosts();
     }
 
     public MutableLiveData<Post> getPostUploadSucceed() {
@@ -52,7 +52,7 @@ public class FeedViewModel extends ViewModel {
     }
 
     private void attachSetPostUploadListener() {
-        mAuthRepository.setPostUploadListener(new AuthRepository.RepositoryPostUploadInterface() {
+        mRepository.setPostUploadListener(new Repository.RepositoryPostUploadInterface() {
             @Override
             public void onPostUploadSucceed(Post post) {
                 mPostUploadSucceed.setValue(post);
@@ -82,7 +82,7 @@ public class FeedViewModel extends ViewModel {
     }
 
     private void attachSetPostUpdateListener() {
-        mAuthRepository.setPostUpdatingListener(new AuthRepository.RepositoryPostUpdatingInterface() {
+        mRepository.setPostUpdatingListener(new Repository.RepositoryPostUpdatingInterface() {
             @Override
             public void onPostUpdatingSucceed(Post updatedPost) {
                 mPostUpdateSucceed.setValue(updatedPost);
@@ -112,7 +112,7 @@ public class FeedViewModel extends ViewModel {
     }
 
     private void attachSetPostDownloadListener() {
-        mAuthRepository.setPostDownloadListener(new AuthRepository.RepositoryPostDownloadInterface() {
+        mRepository.setPostDownloadListener(new Repository.RepositoryPostDownloadInterface() {
             @Override
             public void onPostDownloadSucceed(List<Post> posts) {
                 mPostDownloadSucceed.setValue(posts);
@@ -142,7 +142,7 @@ public class FeedViewModel extends ViewModel {
     }
 
     private void attachSetPostLikesUpdateListener() {
-        mAuthRepository.setPostLikesUpdatingListener(new AuthRepository.RepositoryPostLikesUpdatingInterface() {
+        mRepository.setPostLikesUpdatingListener(new Repository.RepositoryPostLikesUpdatingInterface() {
             @Override
             public void onPostLikesUpdateSucceed(Post post) {
                 mPostLikesUpdateSucceed.setValue(post);
@@ -172,7 +172,7 @@ public class FeedViewModel extends ViewModel {
     }
 
     private void attachSetPostDeletionListener() {
-        mAuthRepository.setPostDeletingListener(new AuthRepository.RepositoryPostDeletingInterface() {
+        mRepository.setPostDeletingListener(new Repository.RepositoryPostDeletingInterface() {
             @Override
             public void onPostDeletingSucceed(String postId) {
                 mPostDeletionSucceed.setValue(postId);
@@ -186,22 +186,22 @@ public class FeedViewModel extends ViewModel {
     }
 
     public void uploadNewPost(String postContent) {
-        mAuthRepository.uploadNewPost(postContent);
+        mRepository.uploadNewPost(postContent);
     }
 
     public void updatePost(Post post) {
-        mAuthRepository.updatePost(post);
+        mRepository.updatePost(post);
     }
 
     public void refreshPosts() {
-        mAuthRepository.downloadPosts();
+        mRepository.downloadPosts();
     }
 
     public void updatePostLikes(Post post, final boolean isLike) {
-        mAuthRepository.updatePostLikes(post, isLike);
+        mRepository.updatePostLikes(post, isLike);
     }
 
     public void deletePost(String postId) {
-        mAuthRepository.deletePost(postId);
+        mRepository.deletePost(postId);
     }
 }

@@ -7,12 +7,12 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.android2project.model.Comment;
 import com.example.android2project.model.Post;
-import com.example.android2project.repository.AuthRepository;
+import com.example.android2project.repository.Repository;
 
 import java.util.List;
 
 public class CommentsViewModel extends ViewModel {
-    private AuthRepository mAuthRepository;
+    private Repository mRepository;
 
     private MutableLiveData<List<Comment>> mCommentsDownloadSucceed;
     private MutableLiveData<String> mCommentsDownloadFailed;
@@ -29,7 +29,7 @@ public class CommentsViewModel extends ViewModel {
     private final String TAG = "FeedViewModel";
 
     public CommentsViewModel(final Context context) {
-        this.mAuthRepository = AuthRepository.getInstance(context);
+        this.mRepository = Repository.getInstance(context);
     }
 
     public MutableLiveData<List<Comment>> getCommentsDownloadSucceed() {
@@ -49,7 +49,7 @@ public class CommentsViewModel extends ViewModel {
     }
 
     private void attachSetCommentsDownloadListener() {
-        mAuthRepository.setCommentDownloadListener(new AuthRepository.RepositoryCommentDownloadInterface() {
+        mRepository.setCommentDownloadListener(new Repository.RepositoryCommentDownloadInterface() {
             @Override
             public void onCommentDownloadSucceed(List<Comment> comments) {
                 mCommentsDownloadSucceed.setValue(comments);
@@ -79,7 +79,7 @@ public class CommentsViewModel extends ViewModel {
     }
 
     private void attachSetCommentUploadListener() {
-        mAuthRepository.setCommentUploadListener(new AuthRepository.RepositoryCommentUploadInterface() {
+        mRepository.setCommentUploadListener(new Repository.RepositoryCommentUploadInterface() {
             @Override
             public void onCommentUploadSucceed(final Comment comment) {
                 mCommentUploadSucceed.setValue(comment);
@@ -109,7 +109,7 @@ public class CommentsViewModel extends ViewModel {
     }
 
     private void attachSetCommentUpdateListener() {
-        mAuthRepository.setCommentUpdatingListener(new AuthRepository.RepositoryCommentUpdatingInterface() {
+        mRepository.setCommentUpdatingListener(new Repository.RepositoryCommentUpdatingInterface() {
             @Override
             public void onCommentUpdatingSucceed(String updatedCommentContent) {
                 mCommentUpdateSucceed.setValue(updatedCommentContent);
@@ -139,7 +139,7 @@ public class CommentsViewModel extends ViewModel {
     }
 
     private void attachSetCommentDeletionListener() {
-        mAuthRepository.setCommentDeletingListener(new AuthRepository.RepositoryCommentDeletingInterface() {
+        mRepository.setCommentDeletingListener(new Repository.RepositoryCommentDeletingInterface() {
             @Override
             public void onCommentDeletingSucceed(String commentId) {
                 mCommentDeletionSucceed.setValue(commentId);
@@ -153,18 +153,18 @@ public class CommentsViewModel extends ViewModel {
     }
 
     public void downloadComments(final Post post) {
-        mAuthRepository.downloadComments(post);
+        mRepository.downloadComments(post);
     }
 
     public void uploadComment(final Post post, final String commentContent) {
-        mAuthRepository.uploadComment(post, commentContent);
+        mRepository.uploadComment(post, commentContent);
     }
 
     public void editComment(final Post post, final String commentId, final String commentContent) {
-        mAuthRepository.updateComment(post, commentId, commentContent);
+        mRepository.updateComment(post, commentId, commentContent);
     }
 
     public void deleteComment(final Post post, final String commentId) {
-        mAuthRepository.deleteComment(post, commentId);
+        mRepository.deleteComment(post, commentId);
     }
 }

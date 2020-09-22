@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,11 +98,7 @@ public class CommentsFragment extends DialogFragment {
             public void onChanged(List<Comment> comments) {
                 mComments.clear();
                 mComments.addAll(comments);
-                if (mComments.size() > 0) {
-                    mNoCommentsTv.setVisibility(View.GONE);
-                } else {
-                    mNoCommentsTv.setVisibility(View.VISIBLE);
-                }
+                mNoCommentsTv.setVisibility(mComments.size() > 0 ? View.GONE : View.VISIBLE);
 
                 mCommentsAdapter.notifyDataSetChanged();
             }
@@ -150,6 +147,9 @@ public class CommentsFragment extends DialogFragment {
             public void onChanged(String commentId) {
                 if (mComments.get(mPosition).getCommentId().equals(commentId)) {
                     mComments.remove(mPosition);
+
+                    mNoCommentsTv.setVisibility(mComments.size() > 0 ? View.GONE : View.VISIBLE);
+
                     mCommentsAdapter.notifyItemRemoved(mPosition);
                 }
             }
@@ -187,6 +187,11 @@ public class CommentsFragment extends DialogFragment {
         mCommentsAdapter = new CommentsAdapter(mComments, getContext());
 
         mCommentsAdapter.setCommentListener(new CommentsAdapter.CommentListener() {
+            @Override
+            public void onAuthorImageClicked(int position, View view) {
+                //TODO: Open the Author's Profile/big profile image
+            }
+
             @Override
             public void onEditOptionClicked(int position, View view) {
                 mPosition = position;
