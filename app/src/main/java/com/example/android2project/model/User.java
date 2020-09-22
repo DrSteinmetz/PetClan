@@ -11,6 +11,7 @@ public class User implements Comparable<Object> {
     private boolean mIsBusiness = false;
     private String mBusinessName = null;
     private Map<User, Boolean> mFriendsMap = new HashMap<>();
+    private String mLocation;
 
     public User() {}
 
