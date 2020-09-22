@@ -288,6 +288,7 @@ public class MainActivity extends AppCompatActivity implements
                                 cityName = addressList.get(0).getLocality();
                                 Log.d(TAG, cityName + "");
                                 if (cityName != null) {
+                                    Toast.makeText(MainActivity.this, cityName, Toast.LENGTH_SHORT).show();
                                     mHandler.removeCallbacks(this);
                                     mfusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
                                 }
@@ -301,8 +302,8 @@ public class MainActivity extends AppCompatActivity implements
             };
             LocationRequest locationRequest = LocationRequest.create();
             locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-            locationRequest.setInterval(1000);
-            locationRequest.setFastestInterval(500);
+            locationRequest.setInterval(500);
+            locationRequest.setFastestInterval(250);
 
             if (Build.VERSION.SDK_INT >= 23 && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 mfusedLocationProviderClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
