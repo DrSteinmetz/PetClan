@@ -347,11 +347,15 @@ public class AuthRepository {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                mDetailsSetListener.onDetailsSetSucceed(user.getUid());
+                                if (mDetailsSetListener != null) {
+                                    mDetailsSetListener.onDetailsSetSucceed(user.getUid());
+                                }
                                 Log.d(TAG, "Username: " + user.getDisplayName());
                             } else {
-                                mDetailsSetListener.onDetailsSetFailed(Objects.requireNonNull(task.
-                                        getException()).getMessage());
+                                if (mDetailsSetListener != null) {
+                                    mDetailsSetListener.onDetailsSetFailed(Objects.requireNonNull(task.
+                                            getException()).getMessage());
+                                }
                             }
                         }
                     });
@@ -381,7 +385,6 @@ public class AuthRepository {
         }
     }
 
-
     private void createNewCloudUser(final FirebaseUser firebaseUser, final boolean isDefaultPic) {
         final boolean[] isImageUploaded = {false};
         final boolean[] isUserCreatedInCloud = {false};
@@ -404,34 +407,34 @@ public class AuthRepository {
                             }
                         }
                     });
-        }
 
-        String[] fullName = Objects.requireNonNull(firebaseUser.getDisplayName()).split(" ");
-        String firstName = fullName[0];
-        String lastName = fullName[1];
-        Log.d(TAG, "createNewCloudUser: " + mSelectedImage.toString());
-        final User user = new User(firebaseUser.getEmail(), firstName, lastName,
-                mSelectedImage.toString());
+            String[] fullName = Objects.requireNonNull(firebaseUser.getDisplayName()).split(" ");
+            String firstName = fullName[0];
+            String lastName = fullName[1];
+            Log.d(TAG, "createNewCloudUser: " + mSelectedImage.toString());
+            final User user = new User(firebaseUser.getEmail(), firstName, lastName,
+                    mSelectedImage.toString());
 
-        Map<String, Object> userMap = new HashMap<>();
-        userMap.put("email", user);
-        mCloudUsers.document(user.getEmail()).set(userMap)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            isUserCreatedInCloud[0] = true;
-                            if (mCreateUserListener != null && isImageUploaded[0]) {
-                                mCreateUserListener.onCreateUserSucceed(isDefaultPic);
-                            }
-                        } else {
-                            if (mCreateUserListener != null) {
-                                mCreateUserListener.onCreateUserFailed(Objects.requireNonNull(task
-                                        .getException()).getMessage());
+            Map<String, Object> userMap = new HashMap<>();
+            userMap.put("email", user);
+            mCloudUsers.document(user.getEmail()).set(userMap)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                isUserCreatedInCloud[0] = true;
+                                if (mCreateUserListener != null && isImageUploaded[0]) {
+                                    mCreateUserListener.onCreateUserSucceed(isDefaultPic);
+                                }
+                            } else {
+                                if (mCreateUserListener != null) {
+                                    mCreateUserListener.onCreateUserFailed(Objects.requireNonNull(task
+                                            .getException()).getMessage());
+                                }
                             }
                         }
-                    }
-                });
+                    });
+        }
     }
 
     public void createNewCloudUser(final String imagePath) {
@@ -475,7 +478,7 @@ public class AuthRepository {
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    if (mDetailsSetListener != null) {
+                    if (mDeleteUserListener != null) {
                         mDeleteUserListener.onDeleteUserSucceed(false);
                     }
                 }
@@ -540,14 +543,14 @@ public class AuthRepository {
     }
 
     public String getUserImageUri() {
-        final String[] imageUri = new String[1];
+        String imageUri = null;
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
         if (firebaseUser != null) {
             Log.d(TAG, "getUserImageUri: " + firebaseUser.getPhotoUrl());
-            imageUri[0] = Objects.requireNonNull(firebaseUser.getPhotoUrl()).toString();
+            imageUri = Objects.requireNonNull(firebaseUser.getPhotoUrl()).toString();
         }
 
-        return imageUri[0];
+        return imageUri;
     }
 }

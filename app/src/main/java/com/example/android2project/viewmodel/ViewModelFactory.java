@@ -65,6 +65,11 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     objToReturn = (T) new CommentsViewModel(mContext);
                 }
                 break;
+            case UserProfile:
+                if (modelClass.isAssignableFrom(UserProfileViewModel.class)) {
+                    objToReturn = (T) new UserProfileViewModel(mContext);
+                }
+                break;
         }
 
         return objToReturn;

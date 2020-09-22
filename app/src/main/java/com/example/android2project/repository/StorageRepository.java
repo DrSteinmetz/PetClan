@@ -52,6 +52,18 @@ public class StorageRepository {
         this.mUploadPicListener = storageUploadPicInterface;
     }
 
+    /**<-------Picture Deletion interface------->**/
+    public interface StorageDeletePicInterface {
+        void onDeletePicSuccess(String imagePath);
+        void onDeletePicFailed(String error);
+    }
+
+    StorageDeletePicInterface mDeletePicListener;
+
+    public void setDeletePicListener(StorageDeletePicInterface storageDeletePicInterface) {
+        this.mDeletePicListener = storageDeletePicInterface;
+    }
+
     /**<-------Singleton------->**/
     public static StorageRepository getInstance(Context context) {
         if (storageRepository == null) {
@@ -60,13 +72,13 @@ public class StorageRepository {
         return storageRepository;
     }
 
-    private StorageRepository(Context context) {
+    private StorageRepository(final Context context) {
         this.mStorage = FirebaseStorage.getInstance().getReference();
         this.mContext = context;
     }
 
-    public void uploadFile(Uri uri, String uId) {
-        StorageReference fileToUpload = mStorage.child("users_profile_picture/" + uId + ".jpg");
+    public void uploadFile(final Uri uri, final String userId) {
+        StorageReference fileToUpload = mStorage.child("users_profile_picture/" + userId + ".jpg");
 
         //TODO: need to rotate the picture if needed
 
@@ -111,7 +123,7 @@ public class StorageRepository {
         }
     }
 
-    public void downloadFile(String imageUri) {
+    public void downloadFile(final String imageUri) {
         StorageReference fileToDownload = mStorage.child(imageUri);
 
         fileToDownload.getDownloadUrl()
@@ -132,5 +144,26 @@ public class StorageRepository {
                     }
                 });
 
+    }
+
+    public void deleteFile(final String userId) {
+        final StorageReference fileToDelete = mStorage.child("users_profile_picture/" + userId + ".jpg");
+
+        fileToDelete.delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        if (mDeletePicListener != null) {
+                            mDeletePicListener.onDeletePicSuccess(fileToDelete.toString());
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                if (mDeletePicListener != null) {
+                    mDeletePicListener.onDeletePicFailed(e.getMessage());
+                }
+            }
+        });
     }
 }

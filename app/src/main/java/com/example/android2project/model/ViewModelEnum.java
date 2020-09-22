@@ -7,5 +7,6 @@ public enum ViewModelEnum {
     Picture,
     Main,
     Feed,
-    Comments
+    Comments,
+    UserProfile
 }

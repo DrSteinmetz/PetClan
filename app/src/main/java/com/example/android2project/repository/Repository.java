@@ -1,6 +1,7 @@
 package com.example.android2project.repository;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -37,6 +39,7 @@ public class Repository {
 
     private final String TAG = "Repository";
 
+    /**<-------Posts Interfaces------->**/
     /**<-------Post Downloading interface------->**/
     public interface RepositoryPostDownloadInterface {
         void onPostDownloadSucceed(List<Post> posts);
@@ -97,6 +100,7 @@ public class Repository {
         this.mPostDeletingListener = repositoryPostDeletingInterface;
     }
 
+    /**<-------Comments Interfaces------->**/
     /**<-------Comment Downloading interface------->**/
     public interface RepositoryCommentDownloadInterface {
         void onCommentDownloadSucceed(List<Comment> comments);
@@ -133,7 +137,7 @@ public class Repository {
         this.mCommentUpdatingListener = repositoryCommentUpdatingInterface;
     }
 
-    /**<-------Post Deleting interface------->**/
+    /**<-------Comment Deleting interface------->**/
     public interface RepositoryCommentDeletingInterface {
         void onCommentDeletingSucceed(String commentId);
         void onCommentDeletingFailed(String error);
@@ -143,6 +147,55 @@ public class Repository {
 
     public void setCommentDeletingListener(RepositoryCommentDeletingInterface repositoryCommentDeletingInterface) {
         this.mCommentDeletingListener = repositoryCommentDeletingInterface;
+    }
+
+    /**<-------Settings Interfaces------->**/
+    /**<-------Update User Name interface------->**/
+    public interface RepositoryUpdateUserNameInterface {
+        void onUpdateUserNameSucceed(String newUserName);
+        void onUpdateUserNameFailed(String error);
+    }
+
+    private RepositoryUpdateUserNameInterface mUpdateUserNameListener;
+
+    public void setUpdateUserNameListener(RepositoryUpdateUserNameInterface repositoryUpdateUserNameInterface) {
+        this.mUpdateUserNameListener = repositoryUpdateUserNameInterface;
+    }
+
+    /**<-------Update User Image interface------->**/
+    public interface RepositoryUpdateUserImageInterface {
+        void onUpdateUserImageSucceed(String newUserProfilePic);
+        void onUpdateUserImageFailed(String error);
+    }
+
+    private RepositoryUpdateUserImageInterface mUpdateUserImageListener;
+
+    public void setUpdateUserImageListener(RepositoryUpdateUserImageInterface repositoryUpdateUserImageInterface) {
+        this.mUpdateUserImageListener = repositoryUpdateUserImageInterface;
+    }
+
+    /**<-------Update User Cover Image interface------->**/
+    public interface RepositoryUpdateUserCoverImageInterface {
+        void onUpdateUserCoverImageSucceed(String newUserProfileCoverPic);
+        void onUpdateUserCoverImageFailed(String error);
+    }
+
+    private RepositoryUpdateUserCoverImageInterface mUpdateUserCoverImageListener;
+
+    public void setUpdateUserCoverImageListener(RepositoryUpdateUserCoverImageInterface repositoryUpdateUserCoverImageInterface) {
+        this.mUpdateUserCoverImageListener = repositoryUpdateUserCoverImageInterface;
+    }
+
+    /**<-------User Deletion interface------->**/
+    public interface RepositoryUserDeletionInterface {
+        void onUserDeletionSucceed(String userId);
+        void onUserDeletionFailed(String error);
+    }
+
+    private RepositoryUserDeletionInterface mUserDeletionListener;
+
+    public void setUserDeletionListener(RepositoryUserDeletionInterface repositoryUserDeletionInterface) {
+        this.mUserDeletionListener = repositoryUserDeletionInterface;
     }
 
     public static Repository getInstance(final Context context) {
@@ -157,9 +210,10 @@ public class Repository {
         mAuth = FirebaseAuth.getInstance();
     }
 
+    /**<-------Posts methods------->**/
     public void downloadPosts() {
         final List<Post> posts = new ArrayList<>();
-        FirebaseUser user = mAuth.getCurrentUser();
+        final FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {
             mCloudDB.collectionGroup("posts")
@@ -189,7 +243,7 @@ public class Repository {
     }
 
     public void uploadNewPost(String postContent) {
-        FirebaseUser user = mAuth.getCurrentUser();
+        final FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {
             final Post post = new Post(user.getEmail(), user.getDisplayName(),
@@ -222,7 +276,7 @@ public class Repository {
     }
 
     public void updatePost(final Post updatedPost) {
-        FirebaseUser user = mAuth.getCurrentUser();
+        final FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {
             final String postId = updatedPost.getPostId();
@@ -291,7 +345,7 @@ public class Repository {
     }
 
     public void deletePost(final String postId) {
-        FirebaseUser user = mAuth.getCurrentUser();
+        final FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {
             mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
@@ -319,7 +373,7 @@ public class Repository {
 
     public void downloadComments(final Post post) {
         final List<Comment> comments = new ArrayList<>();
-        FirebaseUser user = mAuth.getCurrentUser();
+        final FirebaseUser user = mAuth.getCurrentUser();
 
         final String postId = post.getPostId();
         final String authorEmail = post.getAuthorEmail();
@@ -354,8 +408,9 @@ public class Repository {
         }
     }
 
+    /**<-------Comments methods------->**/
     public void uploadComment(final Post post, final String commentContent) {
-        FirebaseUser user = mAuth.getCurrentUser();
+        final FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {
             final String postId = post.getPostId();
@@ -395,7 +450,7 @@ public class Repository {
     }
 
     public void updateComment(final Post post, final String commentId, final String updatedComment) {
-        FirebaseUser user = mAuth.getCurrentUser();
+        final FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {
             final String postId = post.getPostId();
@@ -460,7 +515,7 @@ public class Repository {
     }
 
     public void deleteComment(final Post post, final String commentId) {
-        FirebaseUser user = mAuth.getCurrentUser();
+        final FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {
             final String postId = post.getPostId();
@@ -487,6 +542,109 @@ public class Repository {
                         public void onFailure(@NonNull Exception e) {
                             if (mCommentDeletingListener != null) {
                                 mCommentDeletingListener.onCommentDeletingFailed(e.getMessage());
+                            }
+                        }
+                    });
+        }
+    }
+
+    public void updateUserName(String newUserName) {
+        final FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user != null) {
+            final String firstName = newUserName.split(" ")[0];
+            final String lastName = newUserName.split(" ")[1];
+
+            Map<String, Object> updateUserNameMap = new HashMap<>();
+            updateUserNameMap.put("firstName", firstName);
+            updateUserNameMap.put("lastName", lastName);
+
+            mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
+                    .update(updateUserNameMap)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            if (mUpdateUserNameListener != null) {
+                                mUpdateUserNameListener.onUpdateUserNameSucceed(user.getUid());
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    if (mUpdateUserNameListener != null) {
+                        mUpdateUserNameListener.onUpdateUserNameFailed(e.getMessage());
+                    }
+                }
+            });
+        }
+    }
+
+    public void updateUserProfileImage(final String newProfilePic) {
+        final FirebaseUser user = mAuth.getCurrentUser();
+        final boolean[] isImageUploaded = {false};
+        final boolean[] isImageUpdated = {false};
+
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setPhotoUri(Uri.parse(newProfilePic))
+                .build();
+
+        if (user != null) {
+            user.updateProfile(profileUpdates)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                isImageUpdated[0] = true;
+                                if (mUpdateUserImageListener != null && isImageUploaded[0]) {
+                                    mUpdateUserImageListener.onUpdateUserImageSucceed(newProfilePic);
+                                }
+                            }
+                        }
+                    });
+
+            Map<String, Object> updateUserProfilePicMap = new HashMap<>();
+            updateUserProfilePicMap.put("photoUri", newProfilePic);
+
+            mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
+                    .update(updateUserProfilePicMap)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            isImageUploaded[0] = true;
+                            if (mUpdateUserImageListener != null && isImageUpdated[0]) {
+                                mUpdateUserImageListener.onUpdateUserImageSucceed(newProfilePic);
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    if (mUpdateUserImageListener != null) {
+                        mUpdateUserImageListener.onUpdateUserImageFailed(e.getMessage());
+                    }
+                }
+            });
+        }
+    }
+
+    public void deleteUser() {
+        final FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user != null) {
+            mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
+                    .delete()
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            if (mUserDeletionListener != null) {
+                                mUserDeletionListener.onUserDeletionSucceed(user.getUid());
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            if (mUserDeletionListener != null) {
+                                mUserDeletionListener.onUserDeletionFailed(e.getMessage());
                             }
                         }
                     });

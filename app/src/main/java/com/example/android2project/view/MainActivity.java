@@ -1,7 +1,6 @@
 package com.example.android2project.view;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +23,7 @@ import com.example.android2project.model.Post;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.view.fragments.CommentsFragment;
 import com.example.android2project.view.fragments.FeedFragment;
+import com.example.android2project.view.fragments.UserProfileFragment;
 import com.example.android2project.viewmodel.MainViewModel;
 import com.example.android2project.viewmodel.UserPictureViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
@@ -45,8 +45,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private Observer<String> mGetUserNameObserver;
     private Observer<Boolean> mSignOutUserObserver;
-    private Observer<Uri> mDownloadUserProfilePicSucceedObserver;
-    private Observer<String> mDownloadUserProfilePicFailedObserver;
 
     ArrayList<String> mMenuOptions = new ArrayList<>();
 
@@ -110,22 +108,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         };
 
-        mDownloadUserProfilePicSucceedObserver = new Observer<Uri>() {
-            @Override
-            public void onChanged(Uri uri) {
-                Log.d(TAG, "URL of downloaded picture: " + uri.toString());
-
-                loadProfilePictureWithGlide(uri.toString(), userProfilePictureIv);
-            }
-        };
-
-        mDownloadUserProfilePicFailedObserver = new Observer<String>() {
-            @Override
-            public void onChanged(String error) {
-                Log.d(TAG, "On Downloading User Profile Picture: " + error);
-            }
-        };
-
         startObservation();
 
         logOutBtn.setOnClickListener(new View.OnClickListener() {
@@ -156,18 +138,16 @@ public class MainActivity extends AppCompatActivity implements
 
         mViewModel.getUserName();
 
-        String imageUri = mViewModel.downloadUserProfilePicture();
-        if (imageUri != null) {
-            Log.d(TAG, "URL of downloaded picture: " + imageUri);
-            loadProfilePictureWithGlide(imageUri, userProfilePictureIv);
+        String userProfileImageUri = mViewModel.downloadUserProfilePicture();
+        if (userProfileImageUri != null) {
+            Log.d(TAG, "URL of downloaded picture: " + userProfileImageUri);
+            loadProfilePictureWithGlide(userProfileImageUri, userProfilePictureIv);
         }
     }
 
     private void startObservation() {
         mViewModel.getGetUserName().observe(this, mGetUserNameObserver);
         mViewModel.getSignOutSucceed().observe(this, mSignOutUserObserver);
-        mViewModel.getDownloadPicSucceed().observe(this, mDownloadUserProfilePicSucceedObserver);
-        mViewModel.getDownloadPicFailed().observe(this, mDownloadUserProfilePicFailedObserver);
     }
 
     private void loadProfilePictureWithGlide(String uri, ImageView imageView) {
@@ -185,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements
     private List<Fragment> getFragments() {
         List<Fragment> fragmentList = new ArrayList<Fragment>();
         fragmentList.add(FeedFragment.newInstance());
+        fragmentList.add(UserProfileFragment.newInstance());
 
         return fragmentList;
     }
