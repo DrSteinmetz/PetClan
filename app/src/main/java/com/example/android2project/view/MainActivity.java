@@ -40,6 +40,7 @@ import com.example.android2project.model.Post;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.view.fragments.CommentsFragment;
 import com.example.android2project.view.fragments.FeedFragment;
+import com.example.android2project.view.fragments.SocialFragment;
 import com.example.android2project.viewmodel.MainViewModel;
 import com.example.android2project.viewmodel.UserPictureViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
@@ -56,6 +57,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import me.ibrahimsn.lib.OnItemSelectedListener;
 import me.ibrahimsn.lib.SmoothBottomBar;
 import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
 import nl.psdcompany.duonavigationdrawer.views.DuoMenuView;
@@ -140,11 +142,17 @@ public class MainActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void onPageSelected(int position) {
-            }
+            public void onPageSelected(int position) {}
 
             @Override
-            public void onPageScrollStateChanged(int state) {
+            public void onPageScrollStateChanged(int state) {}
+        });
+
+        mBottomBar.setOnItemSelectedListener(new OnItemSelectedListener() {
+            @Override
+            public boolean onItemSelect(int i) {
+                mViewPager.setCurrentItem(i);
+                return false;
             }
         });
 
@@ -242,6 +250,7 @@ public class MainActivity extends AppCompatActivity implements
     private List<Fragment> getFragments() {
         List<Fragment> fragmentList = new ArrayList<Fragment>();
         fragmentList.add(FeedFragment.newInstance());
+        fragmentList.add(SocialFragment.newInstance());
 
         return fragmentList;
     }
@@ -361,6 +370,3 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 }
-
-
-

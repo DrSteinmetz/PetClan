@@ -20,6 +20,8 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         return this.fragments.get(position);
     }
 
+
+
     @Override
     public int getCount() {
         return this.fragments.size();
