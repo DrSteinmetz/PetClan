@@ -10,12 +10,13 @@ import com.example.android2project.repository.AuthRepository;
 
 import java.util.ArrayList;
 
-public class ChatFriendsViewModel extends ViewModel {
+public class ChatClanViewModel extends ViewModel {
     private AuthRepository mAuth;
-    private MutableLiveData<ArrayList<User>> mFriendsMutableLiveData;
     private ArrayList<User> mFriends = new ArrayList<>();
 
-    public ChatFriendsViewModel(Context context) {
+    private MutableLiveData<ArrayList<User>> mFriendsMutableLiveData;
+
+    public ChatClanViewModel(Context context) {
         mAuth = AuthRepository.getInstance(context);
     }
 
@@ -29,12 +30,15 @@ public class ChatFriendsViewModel extends ViewModel {
     }
 
     private void attachGetAllUsersListener() {
-        mAuth.setmGetAllUsersListener(new AuthRepository.RepositoryGetAllUsersInterface() {
+        mAuth.setGetAllUsersListener(new AuthRepository.RepositoryGetAllUsersInterface() {
             @Override
             public void onGetAllUsersSucceed(ArrayList<User> value) {
                 mFriendsMutableLiveData.setValue(value);
-                if (!mFriends.isEmpty())
+
+                if (!mFriends.isEmpty()) {
                     mFriends.clear();
+                }
+
                 mFriends.addAll(value);
             }
         });
@@ -47,6 +51,4 @@ public class ChatFriendsViewModel extends ViewModel {
     public ArrayList<User> getFriends(){
         return mFriends;
     }
-
-    // TODO: Implement the ViewModel
 }

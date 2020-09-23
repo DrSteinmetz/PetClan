@@ -153,7 +153,7 @@ public class AuthRepository {
 
     private RepositoryGetAllUsersInterface mGetAllUsersListener;
 
-    public void setmGetAllUsersListener(RepositoryGetAllUsersInterface repositoryGetAllUsersInterface) {
+    public void setGetAllUsersListener(RepositoryGetAllUsersInterface repositoryGetAllUsersInterface) {
         this.mGetAllUsersListener = repositoryGetAllUsersInterface;
     }
 
@@ -389,7 +389,6 @@ public class AuthRepository {
             }
 
             createNewCloudUser(user, false);
-
             Log.d(TAG, "onComplete: registration " + user.getUid());
         }
     }

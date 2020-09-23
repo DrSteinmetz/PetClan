@@ -86,7 +86,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
         }
 
         private void setContentTvProperties() {
-            contentTv.setShowingLine(5);
+            contentTv.setShowingLine(3);
             contentTv.setShowMoreColor(mContext.getColor(R.color.colorPrimary));
             contentTv.setShowLessTextColor(mContext.getColor(R.color.colorPrimary));
             contentTv.addShowMoreText(mContext.getString(R.string.show_more));

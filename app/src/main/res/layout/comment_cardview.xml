@@ -59,22 +59,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/author_name_tv"
+                    android:layout_toStartOf="@id/comment_options_menu"
                     android:textSize="15sp"
                     android:textColor="@color/colorBlack"
                     android:textAllCaps="false" />
 
-            </RelativeLayout>
+                <ImageButton
+                    android:id="@+id/comment_options_menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="5dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_round_more_vert_24"
+                    android:background="@null"
+                    android:scaleType="centerInside" />
 
-            <ImageButton
-                android:id="@+id/comment_options_menu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="5dp"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_round_more_vert_24"
-                android:background="@null"
-                android:scaleType="centerInside" />
+            </RelativeLayout>
 
         </RelativeLayout>
 

@@ -1,21 +1,19 @@
 package com.example.android2project.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Chat {
+public class Conversation {
     private String chatId;
     private String senderEmail;
     private String receiverEmail;
-    private List<ChatMessage> messageList;
 
-    public Chat() {
-    }
+    public Conversation() {}
 
-    public Chat(String senderEmail, String reciverEmail) {
+    public Conversation(String senderEmail, String receiverEmail) {
+        this.chatId = senderEmail + "&" + receiverEmail;
+        if (receiverEmail.compareTo(senderEmail) < 0) {
+            this.chatId = receiverEmail + "&" + senderEmail;
+        }
         this.senderEmail = senderEmail;
-        this.receiverEmail = reciverEmail;
-        messageList = new ArrayList<>();
+        this.receiverEmail = receiverEmail;
     }
 
     public String getChatId() {
@@ -42,11 +40,12 @@ public class Chat {
         this.receiverEmail = receiverEmail;
     }
 
-    public List<ChatMessage> getMessageList() {
-        return messageList;
-    }
-
-    public void setMessageList(List<ChatMessage> messageList) {
-        this.messageList = messageList;
+    @Override
+    public String toString() {
+        return "Conversation{" +
+                "chatId='" + chatId + '\'' +
+                ", senderEmail='" + senderEmail + '\'' +
+                ", receiverEmail='" + receiverEmail + '\'' +
+                '}';
     }
 }

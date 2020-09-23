@@ -1,7 +1,6 @@
 package com.example.android2project.view.fragments;
 
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
 
@@ -16,9 +15,7 @@ import android.view.ViewGroup;
 
 import com.example.android2project.R;
 import com.example.android2project.model.SocialTabAdapter;
-import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
-import com.example.android2project.viewmodel.MainViewModel;
 import com.example.android2project.viewmodel.SocialViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
 import com.google.android.material.tabs.TabLayout;
@@ -31,7 +28,7 @@ public class SocialFragment extends Fragment {
 
     private SocialViewModel mViewModel;
 
-    public static final String CHAT_FRAG="chat_fragment";
+    public static final String CHAT_FRAG="conversation_fragment";
 
     public static SocialFragment newInstance() {
         return new SocialFragment();
@@ -48,7 +45,7 @@ public class SocialFragment extends Fragment {
         adapter = new SocialTabAdapter(getChildFragmentManager());
 
         adapter.addFragment(new ChatsFragment(), "Chats");
-        adapter.addFragment(new ChatFriendsFragment(), "Friends");
+        adapter.addFragment(new ChatClanFragment(), "ChatClan");
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);

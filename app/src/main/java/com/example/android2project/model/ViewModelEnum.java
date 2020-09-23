@@ -11,6 +11,6 @@ public enum ViewModelEnum {
     UserProfile,
     Social,
     Chats,
-    ChatFriends,
-    Chat
+    ChatClan,
+    Conversation
 }

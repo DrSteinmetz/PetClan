@@ -12,15 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.android2project.R;
-import com.example.android2project.view.fragments.ChatFriendsFragment;
 
 import java.util.List;
 
-public class ChatFriendsAdapter extends RecyclerView.Adapter<ChatFriendsAdapter.ChatFriendViewHolder> {
+public class ChatClanAdapter extends RecyclerView.Adapter<ChatClanAdapter.ChatClanViewHolder> {
     private List<User> mFriends;
     private Context mContext;
 
-    public ChatFriendsAdapter(Context context, List<User> friends) {
+    public ChatClanAdapter(Context context, List<User> friends) {
         this.mContext = context;
         this.mFriends = friends;
     }
@@ -37,17 +36,16 @@ public class ChatFriendsAdapter extends RecyclerView.Adapter<ChatFriendsAdapter.
 
     @NonNull
     @Override
-    public ChatFriendViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View rootView = LayoutInflater.from(mContext).inflate(R.layout.chat_friend_cardview,parent,false);
-        return new ChatFriendViewHolder(rootView);
+    public ChatClanViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View rootView = LayoutInflater.from(mContext).inflate(R.layout.chat_clan_cardview,parent,false);
+        return new ChatClanViewHolder(rootView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ChatFriendViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ChatClanViewHolder holder, int position) {
         User user = mFriends.get(position);
-        holder.userName.setText(user.getFirstName()+" "+user.getLastName());
+        holder.userName.setText(user.getFirstName() + " " + user.getLastName());
         Glide.with(mContext).load(user.getPhotoUri()).into(holder.userProfilePic);
-
     }
 
     @Override
@@ -55,11 +53,11 @@ public class ChatFriendsAdapter extends RecyclerView.Adapter<ChatFriendsAdapter.
         return mFriends.size();
     }
 
-    public class ChatFriendViewHolder extends RecyclerView.ViewHolder {
+    public class ChatClanViewHolder extends RecyclerView.ViewHolder {
         private ImageView userProfilePic;
         private TextView userName;
 
-        public ChatFriendViewHolder(@NonNull View itemView) {
+        public ChatClanViewHolder(@NonNull View itemView) {
             super(itemView);
             userProfilePic = itemView.findViewById(R.id.friend_pic_iv);
             userName = itemView.findViewById(R.id.friend_name_tv);

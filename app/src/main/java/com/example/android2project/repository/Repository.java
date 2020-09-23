@@ -6,9 +6,11 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.android2project.model.Chat;
+import com.example.android2project.model.ChatMessage;
+import com.example.android2project.model.Conversation;
 import com.example.android2project.model.Comment;
 import com.example.android2project.model.Post;
+import com.example.android2project.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,6 +40,7 @@ public class Repository {
 
     private FirebaseFirestore mCloudDB = FirebaseFirestore.getInstance();
     private CollectionReference mCloudUsers = mCloudDB.collection("users");
+    private CollectionReference mCloudChats = mCloudDB.collection("chats");
 
     private final String TAG = "Repository";
 
@@ -213,17 +216,31 @@ public class Repository {
         this.mUserDeletionListener = repositoryUserDeletionInterface;
     }
 
-    /**<-------New Chat interface------->**/
-    public interface RepositoryNewChatInterface {
-        void onNewChatSucceed(Chat chat);
+    /**<-------Chats Interfaces------->**/
+    /**<-------Download Conversation interface------->**/
+    public interface RepositoryDownloadConversationInterface {
+        void onDownloadConversationSucceed(List<ChatMessage> conversation);
 
-        void onNewChatFailed(String error);
+        void onDownloadConversationFailed(String error);
     }
 
-    private RepositoryNewChatInterface mNewChatListener;
+    private RepositoryDownloadConversationInterface mDownloadConversationListener;
 
-    public void setNewChatListener(RepositoryNewChatInterface repositoryNewChatInterface) {
-        this.mNewChatListener = repositoryNewChatInterface;
+    public void setDownloadConversationListener(RepositoryDownloadConversationInterface repositoryDownloadConversationInterface) {
+        this.mDownloadConversationListener = repositoryDownloadConversationInterface;
+    }
+
+    /**<-------Upload Message interface------->**/
+    public interface RepositoryUploadMessageInterface {
+        void onUploadMessageSucceed(ChatMessage message);
+
+        void onUploadMessageFailed(String error);
+    }
+
+    private RepositoryUploadMessageInterface mUploadMessageListener;
+
+    public void setUploadMessageListener(RepositoryUploadMessageInterface repositoryUploadMessageInterface) {
+        this.mUploadMessageListener = repositoryUploadMessageInterface;
     }
 
     public static Repository getInstance(final Context context) {
@@ -679,24 +696,111 @@ public class Repository {
         }
     }
 
-    public void DownloadChatMessages(String authorId) {
+    public void downloadConversation(final String chatId) {
+        final FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user != null) {
+            final List<ChatMessage> conversation = new ArrayList<>();
+
+            mCloudChats.document(chatId)
+                    .collection("messages")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+                                    conversation.add(document.toObject(ChatMessage.class));
+                                }
+
+                                if (mDownloadConversationListener != null) {
+                                    mDownloadConversationListener.onDownloadConversationSucceed(conversation);
+                                }
+                            } else {
+                                if (mDownloadConversationListener != null) {
+                                    mDownloadConversationListener
+                                            .onDownloadConversationFailed(Objects.requireNonNull(task
+                                            .getException()).getMessage());
+                                }
+                            }
+                        }
+                    });
+        }
     }
 
-    public void uploadChatMessage(String chatId, final String messageContent) {
-        mCloudDB.collection("chats").document(chatId)
-                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
+    public void uploadChatMessage(final User userRecipient, final String messageContent) {
+        final FirebaseUser user = mAuth.getCurrentUser();
 
+        if (user != null) {
+            String tempChatId = userRecipient.getEmail() + "&" + user.getEmail();
+            if (Objects.requireNonNull(user.getEmail()).compareTo(userRecipient.getEmail()) < 0) {
+                tempChatId = user.getEmail() + "&" + userRecipient.getEmail();
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+            final String chatId = tempChatId;
 
-            }
-        });
+            mCloudChats.document(chatId)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if (documentSnapshot.exists()) {
+                                uploadMessageToCloud(chatId, messageContent, userRecipient);
+                            } else {
+                                final Conversation conversation = new Conversation(user.getEmail(),
+                                        userRecipient.getEmail());
 
+                                mCloudChats.document(chatId)
+                                        .set(conversation)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                uploadMessageToCloud(chatId, messageContent, userRecipient);
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                if (mUploadMessageListener != null) {
+                                                    mUploadMessageListener.onUploadMessageFailed(e.getMessage());
+                                                }
+                                            }
+                                        });
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                }
+            });
+        }
+    }
 
+    private void uploadMessageToCloud(final String chatId,
+                                      final String messageContent,
+                                      final User userRecipient) {
+        final ChatMessage message = new ChatMessage(messageContent,
+                userRecipient);
+
+        mCloudChats.document(chatId)
+                .collection("messages")
+                .document(message.getTime().toString())
+                .set(message)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        if (mUploadMessageListener != null) {
+                            mUploadMessageListener.onUploadMessageSucceed(message);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        if (mUploadMessageListener != null) {
+                            mUploadMessageListener.onUploadMessageFailed(e.getMessage());
+                        }
+                    }
+                });
     }
 
 //    public void startNewChat(String senderEmail, String receiverEmail){

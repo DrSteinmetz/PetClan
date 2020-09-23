@@ -11,10 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,14 +76,7 @@ public class CommentsFragment extends DialogFragment {
         return fragment;
     }
 
-    @NonNull
     @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        return super.onCreateDialog(savedInstanceState);
-    }
-
-    @Override
-
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -169,6 +164,7 @@ public class CommentsFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_comments, container, false);
+
         Window window = Objects.requireNonNull(getDialog()).getWindow();
         if (window != null) {
             window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -179,10 +175,9 @@ public class CommentsFragment extends DialogFragment {
         final ImageButton sendCommentBtn = rootView.findViewById(R.id.send_comment_ib);
         mNoCommentsTv = rootView.findViewById(R.id.no_comments_tv);
 
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        setCancelable(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
 
         mCommentsAdapter = new CommentsAdapter(mComments, getContext());
 
@@ -202,6 +197,20 @@ public class CommentsFragment extends DialogFragment {
             public void onDeleteOptionClicked(int position, View view) {
                 mPosition = position;
                 showDeleteCommentDialog(mComments.get(position));
+            }
+        });
+
+        recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if (oldBottom > bottom) {
+                    linearLayoutManager.setStackFromEnd(true);
+                    recyclerView.setLayoutManager(linearLayoutManager);
+                    recyclerView.smoothScrollToPosition(mCommentsAdapter.getItemCount());
+                }
+
+                linearLayoutManager.setStackFromEnd(false);
+                recyclerView.setLayoutManager(linearLayoutManager);
             }
         });
 
@@ -246,7 +255,7 @@ public class CommentsFragment extends DialogFragment {
             params.y = 300;
             window.setAttributes(params);*/
             window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
+                    ViewGroup.LayoutParams.MATCH_PARENT);
         }
     }
 

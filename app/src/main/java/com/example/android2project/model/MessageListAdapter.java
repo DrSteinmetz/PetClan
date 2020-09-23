@@ -1,5 +1,6 @@
 package com.example.android2project.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,10 +12,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.android2project.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.ocpsoft.prettytime.PrettyTime;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -25,12 +30,12 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
     private Context mContext;
     private List<ChatMessage> mMessageList;
-    private User mCurrentUser;
+    private FirebaseUser mCurrentUser;
 
-    public MessageListAdapter(Context context, List<ChatMessage> messageList,User currentUser) {
+    public MessageListAdapter(Context context, List<ChatMessage> messageList) {
         mContext = context;
         mMessageList = messageList;
-        mCurrentUser = currentUser;
+        this.mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
     @NonNull
@@ -40,10 +45,12 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         if (viewType == TYPE_MESSAGE_SENT) {
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_message_sent, parent, false);
+
             return new SentMessageHolder(view);
         } else if (viewType == TYPE_MESSAGE_RECEIVED) {
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_message_received, parent, false);
+
             return new ReceivedMessageHolder(view);
         }
 
@@ -72,7 +79,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     public int getItemViewType(int position) {
         ChatMessage message = (ChatMessage) mMessageList.get(position);
 
-        if (message.getSender().getEmail().equals(mCurrentUser.getEmail())) {
+        if (message.getRecipient().getEmail().equals(mCurrentUser.getEmail())) {
             // If the current user is the sender of the message
             return TYPE_MESSAGE_SENT;
         } else {
@@ -95,9 +102,19 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
         void bind(ChatMessage message) {
             messageText.setText(message.getContent());
-            timeText.setText(timestampToTimeAgo(message.getTime()));
-            nameText.setText(String.format("%s %s", message.getSender().getFirstName(), message.getSender().getLastName()));
-            Glide.with(mContext).load(message.getSender().getPhotoUri()).into(profileImage);
+            timeText.setText(DateToFormatDate(message.getTime()));
+            nameText.setText(String.format("%s %s", message.getRecipient().getFirstName(),
+                    message.getRecipient().getLastName()));
+
+            RequestOptions options = new RequestOptions()
+                    .circleCrop()
+                    .placeholder(R.drawable.ic_default_user_pic)
+                    .error(R.drawable.ic_default_user_pic);
+
+            Glide.with(mContext)
+                    .load(message.getRecipient().getPhotoUri())
+                    .apply(options)
+                    .into(profileImage);
         }
     }
 
@@ -113,13 +130,13 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
         void bind(ChatMessage message) {
             messageText.setText(message.getContent());
-            timeText.setText(timestampToTimeAgo(message.getTime()));
+            timeText.setText(DateToFormatDate(message.getTime()));
         }
     }
 
-    private String timestampToTimeAgo(Date date) {
-        String language = Locale.getDefault().getLanguage();
-        PrettyTime prettyTime = new PrettyTime(new Locale(language));
-        return prettyTime.format(date);
+    @SuppressLint("SimpleDateFormat")
+    private String DateToFormatDate(Date date) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm | dd/MM");
+        return simpleDateFormat.format(date).toString();
     }
 }
