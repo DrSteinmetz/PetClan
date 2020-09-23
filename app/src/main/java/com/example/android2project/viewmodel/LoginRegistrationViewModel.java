@@ -39,6 +39,20 @@ public class LoginRegistrationViewModel extends ViewModel {
         return mLoginFailed;
     }
 
+    private void attachLoginListeners() {
+        mAuthRepository.setLoginListener(new AuthRepository.RepositoryLoginInterface() {
+            @Override
+            public void onLoginSucceed(String uId) {
+                mLoginSucceed.setValue(uId);
+            }
+
+            @Override
+            public void onLoginFailed(String error) {
+                mLoginFailed.setValue(error);
+            }
+        });
+    }
+
     public MutableLiveData<String> getRegisterSucceed() {
         if (mRegisterSucceed == null) {
             mRegisterSucceed = new MutableLiveData<>();
@@ -55,20 +69,6 @@ public class LoginRegistrationViewModel extends ViewModel {
         return mRegisterFailed;
     }
 
-    private void attachLoginListeners() {
-        mAuthRepository.setLoginListener(new AuthRepository.RepositoryLoginInterface() {
-            @Override
-            public void onLoginSucceed(String uId) {
-                mLoginSucceed.setValue(uId);
-            }
-
-            @Override
-            public void onLoginFailed(String error) {
-                mLoginFailed.setValue(error);
-            }
-        });
-    }
-
     private void attachRegistrationListener() {
         mAuthRepository.setRegistrationListener(new AuthRepository.RepositoryRegistrationInterface() {
             @Override
@@ -82,6 +82,7 @@ public class LoginRegistrationViewModel extends ViewModel {
             }
         });
     }
+
 
     public void loginWithDetails(String email, String password) {
         mAuthRepository.signInExistingUser(email, password);

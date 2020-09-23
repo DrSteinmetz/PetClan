@@ -387,12 +387,9 @@ public class AuthRepository {
             } else {
                 mSelectedImage = Uri.parse(Objects.requireNonNull(user.getPhotoUrl()).toString());
             }
-            Log.d(TAG, "loginOrCreateNewUser before");
+
             createNewCloudUser(user, false);
-            Log.d(TAG, "loginOrCreateNewUser after");
-            if (mRegistrationListener != null) {
-                mRegistrationListener.onRegistrationSucceed(user.getUid());
-            }
+
             Log.d(TAG, "onComplete: registration " + user.getUid());
         }
     }
@@ -407,41 +404,59 @@ public class AuthRepository {
 
         if (firebaseUser != null) {
             firebaseUser.updateProfile(profileUpdates)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                isImageUploaded[0] = true;
-                                Log.d(TAG, "Photo URL: " + firebaseUser.getPhotoUrl());
-                                if (mCreateUserListener != null && isUserCreatedInCloud[0]) {
-                                    mCreateUserListener.onCreateUserSucceed(isDefaultPic);
-                                }
+                        public void onSuccess(Void aVoid) {
+                            isImageUploaded[0] = true;
+                            if (mCreateUserListener != null && isUserCreatedInCloud[0]) {
+                                mCreateUserListener.onCreateUserSucceed(isDefaultPic);
+                            }
+
+                            if (mRegistrationListener != null && isUserCreatedInCloud[0]) {
+                                mRegistrationListener.onRegistrationSucceed(firebaseUser.getUid());
                             }
                         }
-                    });
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d(TAG, "onFailure: Failed to update user picture in Auth");
+                    Log.d(TAG, "onFailure: " + e.getMessage());
+                }
+            });
 
             String[] fullName = Objects.requireNonNull(firebaseUser.getDisplayName()).split(" ");
             String firstName = fullName[0];
             String lastName = fullName[1];
-            Log.d(TAG, "createNewCloudUser: " + mSelectedImage.toString());
+
             final User user = new User(firebaseUser.getEmail(), firstName, lastName,
                     mSelectedImage.toString());
 
             mCloudUsers.document(user.getEmail()).set(user)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                isUserCreatedInCloud[0] = true;
-                                if (mCreateUserListener != null && isImageUploaded[0]) {
-                                    mCreateUserListener.onCreateUserSucceed(isDefaultPic);
-                                }
-                            } else {
-                                if (mCreateUserListener != null) {
-                                    mCreateUserListener.onCreateUserFailed(Objects.requireNonNull(task
-                                            .getException()).getMessage());
-                                }
+                        public void onSuccess(Void aVoid) {
+                            isUserCreatedInCloud[0] = true;
+                            Log.d(TAG, "Photo URL: " + firebaseUser.getPhotoUrl());
+                            if (mCreateUserListener != null && isImageUploaded[0]) {
+                                mCreateUserListener.onCreateUserSucceed(isDefaultPic);
                             }
+
+                            if (mRegistrationListener != null && isImageUploaded[0]) {
+                                mRegistrationListener.onRegistrationSucceed(firebaseUser.getUid());
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            if (mCreateUserListener != null) {
+                                mCreateUserListener.onCreateUserFailed(e.getMessage());
+                            }
+
+                            if (mRegistrationListener != null) {
+                                mRegistrationListener.onRegistrationFailed(e.getMessage());
+                            }
+                            Log.d(TAG, "onFailure: " + e.getMessage());
                         }
                     });
         }

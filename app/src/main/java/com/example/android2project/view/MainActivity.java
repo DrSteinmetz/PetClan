@@ -105,7 +105,6 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         mGeoCoder = new Geocoder(this, Locale.getDefault());
         userLocationTv = findViewById(R.id.location_tv);
 

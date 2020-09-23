@@ -141,8 +141,6 @@ public class WelcomeActivity extends AppCompatActivity implements
 
     @Override
     public void onFinish() {
-        Toast.makeText(this, "Finish!", Toast.LENGTH_SHORT).show();
-
         startMainActivity();
     }
 
