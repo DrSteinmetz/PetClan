@@ -1,14 +1,30 @@
 package com.example.android2project.view;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -28,9 +44,18 @@ import com.example.android2project.view.fragments.SocialFragment;
 import com.example.android2project.viewmodel.MainViewModel;
 import com.example.android2project.viewmodel.UserPictureViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import me.ibrahimsn.lib.OnItemSelectedListener;
 import me.ibrahimsn.lib.SmoothBottomBar;
@@ -40,7 +65,9 @@ import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
 public class MainActivity extends AppCompatActivity implements
         FeedFragment.FeedListener {
+    private final int REQUEST_CHECK_SETTINGS =2 ;
     private DuoDrawerLayout mDrawerLayout;
+
 
     private MainViewModel mViewModel;
     private UserPictureViewModel mUserPictureViewModel;
@@ -50,21 +77,51 @@ public class MainActivity extends AppCompatActivity implements
     private Observer<Uri> mDownloadUserProfilePicSucceedObserver;
     private Observer<String> mDownloadUserProfilePicFailedObserver;
 
-    ArrayList<String> mMenuOptions = new ArrayList<>();
+    private ArrayList<String> mMenuOptions = new ArrayList<>();
+
+    private String bestProvider;
 
     private ViewPager mViewPager;
     private ViewPagerAdapter mPageAdapter;
     private SmoothBottomBar mBottomBar;
+
+    private final int LOCATION_REQUEST_CODE = 1;
+
+    private Handler mHandler;
+    private Geocoder mGeoCoder;
+    private String mCityName=null;
+    private LocationCallback mLocationCallback;
+
+    private FusedLocationProviderClient mfusedLocationProviderClient;
+
+    private TextView userLocationTv;
 
     private final String FEED_FRAG = "feed_fragment";
     private final String COMMENTS_FRAG = "comments_fragment";
 
     private final String TAG = "MainActivity";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
+        mGeoCoder =new Geocoder(this, Locale.getDefault());
+        userLocationTv=findViewById(R.id.location_tv);
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            int hasLocationPremission = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+            if (hasLocationPremission != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
+            } else {
+                startLocation();
+            }
+        } else {
+            startLocation();
+        }
 
         final ImageView userProfilePictureIv = findViewById(R.id.user_pic_iv);
         final TextView userNameTv = findViewById(R.id.user_name_tv);
@@ -203,5 +260,113 @@ public class MainActivity extends AppCompatActivity implements
         CommentsFragment.newInstance(post)
                 .show(getSupportFragmentManager().beginTransaction(), COMMENTS_FRAG);
     }
-    
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_REQUEST_CODE) {
+            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                //TODO alert dialog that explains that we need permissions.
+                Toast.makeText(this, "In order to have functionallity you must provide loation", Toast.LENGTH_SHORT).show();
+            } else {
+                startLocation();
+            }
+        }
+    }
+
+    public interface LocationInterface{
+        void onLocationChanged(String cityLocation);
+    }
+
+    private  LocationInterface mLocationListener;
+
+    public  void setLocationListener(LocationInterface locationListener){
+      this.mLocationListener=locationListener;
+    }
+
+
+    public void startLocation() {
+        mfusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mLocationCallback = new LocationCallback() {
+                @Override
+                public void onLocationResult(final LocationResult locationResult) {
+                    super.onLocationResult(locationResult);
+                    mHandler = new Handler();
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                List<Address> addressList = mGeoCoder.getFromLocation(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude(), 1);
+                                mCityName = addressList.get(0).getLocality();
+                                if (mCityName != null) {
+                                    if(mLocationListener!=null){
+                                        mLocationListener.onLocationChanged(mCityName);
+                                        mHandler.removeCallbacks(this);
+                                        mfusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
+                                        userLocationTv.setText(mCityName);
+                                    }
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            };
+            final LocationRequest locationRequest = LocationRequest.create();
+            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            locationRequest.setInterval(500);
+
+            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                    .addLocationRequest(locationRequest);
+
+            builder.setAlwaysShow(true);
+
+
+            SettingsClient client = LocationServices.getSettingsClient(this);
+            Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
+
+
+            task.addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
+                @Override
+                public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+
+                    if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        mfusedLocationProviderClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
+                    }
+                }
+            });
+
+            task.addOnFailureListener(this, new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    if (e instanceof ResolvableApiException) {
+                        // Location settings are not satisfied, but this can be fixed
+                        // by showing the user a dialog.
+                        try {
+                            //TODO:make a custom window.
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            ResolvableApiException resolvable = (ResolvableApiException) e;
+                            resolvable.startResolutionForResult(MainActivity.this,
+                                    REQUEST_CHECK_SETTINGS);
+                        } catch (IntentSender.SendIntentException sendEx) {
+                            // Ignore the error.
+                        }
+                    }
+                }
+            });
+
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==REQUEST_CHECK_SETTINGS&&resultCode==RESULT_OK){
+            startLocation();
+        }
+    }
+
 }

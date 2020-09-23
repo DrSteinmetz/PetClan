@@ -12,6 +12,7 @@ public class User implements Comparable<Object>, Serializable{
     private boolean mIsBusiness = false;
     private String mBusinessName = null;
     private Map<String, User> mFriendsMap = new HashMap<>();
+    private String mLocation;
 
     public User() {
     }
@@ -21,6 +22,7 @@ public class User implements Comparable<Object>, Serializable{
         this.mFirstName = firstName;
         this.mLastName = lastName;
         this.mPhotoUri = photoUri;
+        this.mLocation="Unknown";
     }
 
     public String getEmail() {
@@ -77,6 +79,14 @@ public class User implements Comparable<Object>, Serializable{
 
     public void setFriendsMap(Map<String, User> friendsMap) {
         this.mFriendsMap = friendsMap;
+    }
+
+    public String getLocation() {
+        return mLocation;
+    }
+
+    public void setLocation(String location) {
+        this.mLocation = location;
     }
 
     @Override
