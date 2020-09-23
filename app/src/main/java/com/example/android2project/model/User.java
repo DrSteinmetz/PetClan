@@ -1,24 +1,28 @@
 package com.example.android2project.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class User implements Comparable<Object> {
+public class User implements Comparable<Object>, Serializable{
     private String mEmail;
     private String mFirstName;
     private String mLastName;
     private String mPhotoUri;
     private boolean mIsBusiness = false;
     private String mBusinessName = null;
-    private Map<User, Boolean> mFriendsMap = new HashMap<>();
+    private Map<String, User> mFriendsMap = new HashMap<>();
+    private String mLocation;
 
-    public User() {}
+    public User() {
+    }
 
     public User(String email, String firstName, String lastName, String photoUri) {
         this.mEmail = email;
         this.mFirstName = firstName;
         this.mLastName = lastName;
         this.mPhotoUri = photoUri;
+        this.mLocation="Unknown";
     }
 
     public String getEmail() {
@@ -69,12 +73,20 @@ public class User implements Comparable<Object> {
         this.mBusinessName = businessName;
     }
 
-    public Map<User, Boolean> getFriendsMap() {
+    public Map<String, User> getFriendsMap() {
         return mFriendsMap;
     }
 
-    public void setFriendsMap(Map<User, Boolean> friendsMap) {
+    public void setFriendsMap(Map<String, User> friendsMap) {
         this.mFriendsMap = friendsMap;
+    }
+
+    public String getLocation() {
+        return mLocation;
+    }
+
+    public void setLocation(String location) {
+        this.mLocation = location;
     }
 
     @Override

@@ -70,6 +70,26 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     objToReturn = (T) new UserProfileViewModel(mContext);
                 }
                 break;
+            case ChatFriends:
+                if (modelClass.isAssignableFrom(ChatFriendsViewModel.class)) {
+                    objToReturn = (T) new ChatFriendsViewModel(mContext);
+                }
+                break;
+            case Chat:
+                if (modelClass.isAssignableFrom(ChatViewModel.class)) {
+                    objToReturn = (T) new ChatViewModel(mContext);
+                }
+                break;
+            case Social:
+                if (modelClass.isAssignableFrom(SocialViewModel.class)) {
+                    objToReturn = (T) new SocialViewModel(mContext);
+                }
+                break;
+            case Chats:
+                if (modelClass.isAssignableFrom(ChatsViewModel.class)) {
+                    objToReturn = (T) new ChatsViewModel(mContext);
+                }
+                break;
         }
 
         return objToReturn;

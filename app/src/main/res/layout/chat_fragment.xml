@@ -1,0 +1,94 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorWhite">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/tool_bar_picture"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_petclan_app_icon"
+                android:background="@null"
+                android:layout_marginHorizontal="30dp"
+                android:scaleType="fitXY"/>
+
+            <TextView
+                android:id="@+id/tool_bar_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="username"/>
+        </com.google.android.material.appbar.MaterialToolbar>
+
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/reyclerview_message_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/app_bar_layout"
+            android:layout_above="@id/layout_chatbox"
+            android:padding="5dp"
+            />
+
+        <!-- A horizontal line between the chatbox and RecyclerView -->
+
+    <View
+        android:id="@+id/line_divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorAccent"
+        android:layout_below="@id/reyclerview_message_list"
+        android:layout_above="@id/layout_chatbox"
+        android:layout_marginBottom="2dp"/>
+
+        <LinearLayout
+            android:id="@+id/layout_chatbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/browser_actions_bg_grey"
+            android:minHeight="48dp"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true">
+
+            <EditText
+                android:id="@+id/chatbox_et"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:hint="Enter message"
+                android:maxLines="6" />
+
+            <ImageButton
+                android:id="@+id/send_btn"
+                android:layout_width="64dp"
+                android:layout_height="48dp"
+                android:layout_gravity="bottom"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:gravity="center"
+                android:padding="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_send_comment_btn"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+</RelativeLayout>
+

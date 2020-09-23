@@ -45,6 +45,7 @@ dependencies {
     implementation 'com.github.mahimrocky:ShowMoreText:1.0.2'
     implementation 'org.ocpsoft.prettytime:prettytime:4.0.4.Final'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
