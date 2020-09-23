@@ -9,10 +9,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 
 import com.example.android2project.R;
-import com.example.android2project.model.Post;
 import com.example.android2project.model.User;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -40,14 +38,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.Source;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class AuthRepository {
@@ -64,13 +57,11 @@ public class AuthRepository {
     private GoogleSignInClient mGoogleSignInClient;
     public static final int RC_SIGN_IN = 9001;
 
-    private Uri mSelectedImage;
+    private Uri mSelectedImage = Uri.parse("");
 
     private final String TAG = "AuthRepository";
 
-    /**
-     * <-------Login interface------->
-     **/
+    /**<-------Login interface------->**/
     public interface RepositoryLoginInterface {
         void onLoginSucceed(String uId);
 
@@ -83,9 +74,7 @@ public class AuthRepository {
         this.mLoginListener = repositoryLoginInterface;
     }
 
-    /**
-     * <-------Registration interface------->
-     **/
+    /**<-------Registration interface------->**/
     public interface RepositoryRegistrationInterface {
         void onRegistrationSucceed(String uId);
 
@@ -98,9 +87,7 @@ public class AuthRepository {
         this.mRegistrationListener = repositoryRegistrationInterface;
     }
 
-    /**
-     * <-------Details Setting interface------->
-     **/
+    /**<-------Details Setting interface------->**/
     public interface RepositoryDetailsSetInterface {
         void onDetailsSetSucceed(String uId);
 
@@ -113,9 +100,7 @@ public class AuthRepository {
         this.mDetailsSetListener = repositoryDetailsSetInterface;
     }
 
-    /**
-     * <-------User Creation interface------->
-     **/
+    /**<-------User Creation interface------->**/
     public interface RepositoryCreateUserInterface {
         void onCreateUserSucceed(boolean isDefaultPic);
 
@@ -128,9 +113,7 @@ public class AuthRepository {
         this.mCreateUserListener = repositoryCreateUserInterface;
     }
 
-    /**
-     * <-------User Deletion interface------->
-     **/
+    /**<-------User Deletion interface------->**/
     public interface RepositoryDeleteUserInterface {
         void onDeleteUserSucceed(boolean value);
     }
@@ -141,9 +124,7 @@ public class AuthRepository {
         this.mDeleteUserListener = repositoryDeleteUserInterface;
     }
 
-    /**
-     * <-------User Get User Name interface------->
-     **/
+    /**<-------User Get User Name interface------->**/
     public interface RepositoryGetUserNameInterface {
         void onGetUserNameSucceed(String value);
     }
@@ -154,9 +135,7 @@ public class AuthRepository {
         this.mGetUserNameListener = repositoryGetUserNameInterface;
     }
 
-    /**
-     * <-------Sign Out User interface------->
-     **/
+    /**<-------Sign Out User interface------->**/
     public interface RepositorySignOutUserInterface {
         void onSignOutUserSucceed(boolean value);
     }
@@ -167,9 +146,7 @@ public class AuthRepository {
         this.mSignOutUserListener = repositorySignOutUserInterface;
     }
 
-    /**
-     * <-------Get All Users interface------->
-     **/
+    /**<-------Get All Users interface------->**/
     public interface RepositoryGetAllUsersInterface {
         void onGetAllUsersSucceed(ArrayList<User> value);
     }
@@ -180,9 +157,7 @@ public class AuthRepository {
         this.mGetAllUsersListener = repositoryGetAllUsersInterface;
     }
 
-    /**
-     * <-------Singleton------->
-     **/
+    /**<-------Singleton------->**/
     public static AuthRepository getInstance(Context context) {
         if (authRepository == null) {
             authRepository = new AuthRepository(context);
@@ -220,9 +195,7 @@ public class AuthRepository {
         );
     }
 
-    /**
-     * <-------Fire Base Authentication Methods------->
-     **/
+    /**<-------Fire Base Authentication Methods------->**/
     public void registerNewUser(String email, String password) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener((Activity) mContext, new OnCompleteListener<AuthResult>() {
@@ -276,9 +249,7 @@ public class AuthRepository {
     }
 
 
-    /**
-     * <-------Google Methods------->
-     **/
+    /**<-------Google Methods------->**/
     public void onGoogle(Fragment fragment) {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(mContext.getString(R.string.default_web_client_id))
@@ -330,9 +301,7 @@ public class AuthRepository {
                 });
     }
 
-    /**
-     * <-------Facebook Methods------->
-     **/
+    /**<-------Facebook Methods------->**/
     public void onFacebook(Fragment fragment) {
         LoginManager.getInstance().logInWithReadPermissions(fragment,
                 Arrays.asList("email", "public_profile"));
@@ -376,9 +345,7 @@ public class AuthRepository {
                 });
     }
 
-    /**
-     * <-------Update user details------->
-     **/
+    /**<-------Update user details------->**/
     public void onUserDetailsInsertion(String firstName, String lastName) {
         final FirebaseUser user = mAuth.getCurrentUser();
 
@@ -453,28 +420,27 @@ public class AuthRepository {
                         }
                     });
 
-        String[] fullName = Objects.requireNonNull(firebaseUser.getDisplayName()).split(" ");
-        String firstName = fullName[0];
-        String lastName = fullName[1];
-        Log.d(TAG, "createNewCloudUser: " + mSelectedImage.toString());
-        final User user = new User(firebaseUser.getEmail(), firstName, lastName,
-                mSelectedImage.toString());
+            String[] fullName = Objects.requireNonNull(firebaseUser.getDisplayName()).split(" ");
+            String firstName = fullName[0];
+            String lastName = fullName[1];
+            Log.d(TAG, "createNewCloudUser: " + mSelectedImage.toString());
+            final User user = new User(firebaseUser.getEmail(), firstName, lastName,
+                    mSelectedImage.toString());
 
-        Map<String, Object> userMap = new HashMap<>();
-        userMap.put("email", user);
-        mCloudUsers.document(user.getEmail()).set(user)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            isUserCreatedInCloud[0] = true;
-                            if (mCreateUserListener != null && isImageUploaded[0]) {
-                                mCreateUserListener.onCreateUserSucceed(isDefaultPic);
-                            }
-                        } else {
-                            if (mCreateUserListener != null) {
-                                mCreateUserListener.onCreateUserFailed(Objects.requireNonNull(task
-                                        .getException()).getMessage());
+            mCloudUsers.document(user.getEmail()).set(user)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                isUserCreatedInCloud[0] = true;
+                                if (mCreateUserListener != null && isImageUploaded[0]) {
+                                    mCreateUserListener.onCreateUserSucceed(isDefaultPic);
+                                }
+                            } else {
+                                if (mCreateUserListener != null) {
+                                    mCreateUserListener.onCreateUserFailed(Objects.requireNonNull(task
+                                            .getException()).getMessage());
+                                }
                             }
                         }
                     });
@@ -606,8 +572,9 @@ public class AuthRepository {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                if (!document.getData().get("email").equals(mAuth.getCurrentUser().getEmail()))
+                            for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+                                if (!Objects.equals(document.getData().get("email"),
+                                        Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()))
                                     users.add(document.toObject(User.class));
                             }
                             if (mGetAllUsersListener != null) {

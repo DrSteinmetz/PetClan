@@ -1,16 +1,10 @@
 package com.example.android2project.view;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -24,13 +18,8 @@ import com.example.android2project.view.fragments.LoginRegistrationFragment;
 import com.example.android2project.view.fragments.SignUpDetailsFragment;
 import com.example.android2project.view.fragments.UserDetailsFragment;
 import com.example.android2project.view.fragments.UserPictureFragment;
-import com.example.android2project.viewmodel.WelcomeViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
+import com.example.android2project.viewmodel.WelcomeViewModel;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -45,7 +34,6 @@ public class WelcomeActivity extends AppCompatActivity implements
         UserPictureFragment.UserPictureListener,
         LoginDetailsFragment.LoginDetailsListener {
 
-
     private WelcomeViewModel mViewModel;
     Observer<Boolean> mUserDeletedObserver;
 
@@ -57,16 +45,12 @@ public class WelcomeActivity extends AppCompatActivity implements
 
     private final String TAG = "WelcomeActivity";
 
-
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-
-
-
 
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(this,
                 ViewModelEnum.Welcome)).get(WelcomeViewModel.class);
@@ -190,8 +174,6 @@ public class WelcomeActivity extends AppCompatActivity implements
             Toast.makeText(this, currentUser.getEmail(), Toast.LENGTH_SHORT).show();
         }
     }
-
-
 
     @Override
     protected void onDestroy() {

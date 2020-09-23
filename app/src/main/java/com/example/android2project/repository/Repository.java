@@ -7,10 +7,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.android2project.model.Chat;
-import com.example.android2project.model.ChatMessage;
 import com.example.android2project.model.Comment;
 import com.example.android2project.model.Post;
-import com.example.android2project.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -26,7 +24,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,9 +55,7 @@ public class Repository {
         this.mPostDownloadListener = repositoryPostDownloadInterface;
     }
 
-    /**
-     * <-------Post Uploading interface------->
-     **/
+    /**<-------Post Uploading interface------->**/
     public interface RepositoryPostUploadInterface {
         void onPostUploadSucceed(Post post);
 
@@ -73,9 +68,7 @@ public class Repository {
         this.mPostUploadListener = repositoryPostUploadInterface;
     }
 
-    /**
-     * <-------Post Updating interface------->
-     **/
+    /**<-------Post Updating interface------->**/
     public interface RepositoryPostUpdatingInterface {
         void onPostUpdatingSucceed(Post updatedPost);
 
@@ -88,9 +81,7 @@ public class Repository {
         this.mPostUpdatingListener = repositoryPostUpdatingInterface;
     }
 
-    /**
-     * <-------Post Likes Updating interface------->
-     **/
+    /**<-------Post Likes Updating interface------->**/
     public interface RepositoryPostLikesUpdatingInterface {
         void onPostLikesUpdateSucceed(Post post);
 
@@ -103,9 +94,7 @@ public class Repository {
         this.mPostLikesUpdatingListener = repositoryPostLikesUpdatingInterface;
     }
 
-    /**
-     * <-------Post Deleting interface------->
-     **/
+    /**<-------Post Deleting interface------->**/
     public interface RepositoryPostDeletingInterface {
         void onPostDeletingSucceed(String postId);
 
@@ -132,9 +121,7 @@ public class Repository {
         this.mCommentDownloadListener = repositoryCommentDownloadInterface;
     }
 
-    /**
-     * <-------Comment Uploading interface------->
-     **/
+    /**<-------Comment Uploading interface------->**/
     public interface RepositoryCommentUploadInterface {
         void onCommentUploadSucceed(Comment comment);
 
@@ -147,9 +134,7 @@ public class Repository {
         this.mCommentUploadListener = repositoryCommentUploadInterface;
     }
 
-    /**
-     * <-------Comment Updating interface------->
-     **/
+    /**<-------Comment Updating interface------->**/
     public interface RepositoryCommentUpdatingInterface {
         void onCommentUpdatingSucceed(String updatedCommentContent);
 
@@ -179,6 +164,7 @@ public class Repository {
     /**<-------Update User Name interface------->**/
     public interface RepositoryUpdateUserNameInterface {
         void onUpdateUserNameSucceed(String newUserName);
+
         void onUpdateUserNameFailed(String error);
     }
 
@@ -191,6 +177,7 @@ public class Repository {
     /**<-------Update User Image interface------->**/
     public interface RepositoryUpdateUserImageInterface {
         void onUpdateUserImageSucceed(String newUserProfilePic);
+
         void onUpdateUserImageFailed(String error);
     }
 
@@ -203,6 +190,7 @@ public class Repository {
     /**<-------Update User Cover Image interface------->**/
     public interface RepositoryUpdateUserCoverImageInterface {
         void onUpdateUserCoverImageSucceed(String newUserProfileCoverPic);
+
         void onUpdateUserCoverImageFailed(String error);
     }
 
@@ -215,6 +203,7 @@ public class Repository {
     /**<-------User Deletion interface------->**/
     public interface RepositoryUserDeletionInterface {
         void onUserDeletionSucceed(String userId);
+
         void onUserDeletionFailed(String error);
     }
 
@@ -222,10 +211,12 @@ public class Repository {
 
     public void setUserDeletionListener(RepositoryUserDeletionInterface repositoryUserDeletionInterface) {
         this.mUserDeletionListener = repositoryUserDeletionInterface;
+    }
 
-     /** <-------New Chat interface-------> **/
+    /**<-------New Chat interface------->**/
     public interface RepositoryNewChatInterface {
         void onNewChatSucceed(Chat chat);
+
         void onNewChatFailed(String error);
     }
 
