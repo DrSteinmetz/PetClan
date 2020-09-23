@@ -17,8 +17,8 @@ public class UserProfileViewModel extends ViewModel {
 
     private StorageRepository mStorageRepository;
 
-    private MutableLiveData<String> mUploadPicSucceed;
-    private MutableLiveData<String> mUploadPicFailed;
+    //private MutableLiveData<String> mUploadPicSucceed;
+    //private MutableLiveData<String> mUploadPicFailed;
 
     private MutableLiveData<String> mUpdateUserNameSucceed;
     private MutableLiveData<String> mUpdateUserNameFailed;
@@ -41,7 +41,7 @@ public class UserProfileViewModel extends ViewModel {
     }
 
     /**<-------Upload Image to Storage------->**/
-    public MutableLiveData<String> getUploadPicSucceed() {
+    /*public MutableLiveData<String> getUploadPicSucceed() {
         if (mUploadPicSucceed == null) {
             mUploadPicSucceed = new MutableLiveData<>();
             attachUploadPicListener();
@@ -55,19 +55,19 @@ public class UserProfileViewModel extends ViewModel {
             attachUploadPicListener();
         }
         return mUploadPicFailed;
-    }
+    }*/
 
     private void attachUploadPicListener () {
         mStorageRepository.setUploadPicListener(new StorageRepository.StorageUploadPicInterface() {
             @Override
             public void onUploadPicSuccess(String selectedImage) {
                 mRepository.updateUserProfileImage(selectedImage);
-                mUploadPicSucceed.setValue(selectedImage);
+                //mUploadPicSucceed.setValue(selectedImage);
             }
 
             @Override
             public void onUploadPicFailed(String error) {
-                mUploadPicFailed.setValue(error);
+                //mUploadPicFailed.setValue(error);
             }
         });
     }
@@ -123,8 +123,8 @@ public class UserProfileViewModel extends ViewModel {
     private void attachSetUpdateUserImageListener() {
         mRepository.setUpdateUserImageListener(new Repository.RepositoryUpdateUserImageInterface() {
             @Override
-            public void onUpdateUserImageSucceed(String newUserProfilePic) {
-                mUpdateUserImageSucceed.setValue(newUserProfilePic);
+            public void onUpdateUserImageSucceed(String newUserProfilePicUri) {
+                mUpdateUserImageSucceed.setValue(newUserProfilePicUri);
             }
 
             @Override
@@ -154,8 +154,8 @@ public class UserProfileViewModel extends ViewModel {
     private void attachSetUpdateUserCoverImageListener() {
         mRepository.setUpdateUserCoverImageListener(new Repository.RepositoryUpdateUserCoverImageInterface() {
             @Override
-            public void onUpdateUserCoverImageSucceed(String newUserProfileCoverPic) {
-                mUpdateUserCoverImageSucceed.setValue(newUserProfileCoverPic);
+            public void onUpdateUserCoverImageSucceed(String newUserProfileCoverPicUri) {
+                mUpdateUserCoverImageSucceed.setValue(newUserProfileCoverPicUri);
             }
 
             @Override
@@ -204,6 +204,7 @@ public class UserProfileViewModel extends ViewModel {
 
     public void updateUserProfileImage(final Uri imageUri) {
         final String userId = mAuthRepository.getUserId();
+        attachUploadPicListener();
         mStorageRepository.uploadFile(imageUri, userId);
         mAuthRepository.deleteUserFromAuth();
     }
