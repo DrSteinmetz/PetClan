@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,12 +26,14 @@ import com.example.android2project.R;
 import com.example.android2project.model.Post;
 import com.example.android2project.model.PostsAdapter;
 import com.example.android2project.model.ViewModelEnum;
+import com.example.android2project.view.MainActivity;
 import com.example.android2project.viewmodel.FeedViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class FeedFragment extends Fragment {
     private FeedViewModel mViewModel;
@@ -55,7 +58,11 @@ public class FeedFragment extends Fragment {
 
     private int mPosition;
 
+    private String mUserLocation="Unknown";
+
     private final String TAG = "FeedFragment";
+
+
 
     public interface FeedListener {
         void onComment(Post post);
@@ -172,8 +179,20 @@ public class FeedFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
 
+
+
+
+
         final RecyclerView recyclerView = rootView.findViewById(R.id.feed_recycler_view);
         final FloatingActionButton addPostBtn = rootView.findViewById(R.id.add_post_btn);
+
+        ((MainActivity) requireActivity()).setLocationListener(new MainActivity.LocationInterface() {
+            @Override
+            public void onLocationChanged(String cityLocation) {
+                mUserLocation=cityLocation;
+            }
+        });
+
 
         addPostBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -289,9 +308,9 @@ public class FeedFragment extends Fragment {
         alertDialog.show();
     }
 
+
     private void showPostEditingDialog(final Post postToEdit) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
-        ViewGroup root;
         View view = LayoutInflater.from(getContext())
                 .inflate(R.layout.add_post_dialog,
                         (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));

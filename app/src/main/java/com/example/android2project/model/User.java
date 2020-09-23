@@ -13,6 +13,7 @@ public class User implements Comparable<Object> {
     private Map<User, Boolean> mFriendsMap = new HashMap<>();
     private String mLocation;
 
+
     public User() {}
 
     public User(String email, String firstName, String lastName, String photoUri) {
@@ -20,6 +21,7 @@ public class User implements Comparable<Object> {
         this.mFirstName = firstName;
         this.mLastName = lastName;
         this.mPhotoUri = photoUri;
+        this.mLocation="Unknown";
     }
 
     public String getEmail() {
@@ -76,6 +78,14 @@ public class User implements Comparable<Object> {
 
     public void setFriendsMap(Map<User, Boolean> friendsMap) {
         this.mFriendsMap = friendsMap;
+    }
+
+    public String getLocation() {
+        return mLocation;
+    }
+
+    public void setLocation(String location) {
+        this.mLocation = location;
     }
 
     @Override

@@ -1,22 +1,18 @@
 package com.example.android2project.view;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import android.net.Uri;
-import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,9 +24,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -48,6 +44,9 @@ import com.example.android2project.viewmodel.MainViewModel;
 import com.example.android2project.viewmodel.UserPictureViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -64,6 +63,7 @@ import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
 public class MainActivity extends AppCompatActivity implements
         FeedFragment.FeedListener {
+    private final int REQUEST_CHECK_SETTINGS =2 ;
     private DuoDrawerLayout mDrawerLayout;
 
 
@@ -86,11 +86,14 @@ public class MainActivity extends AppCompatActivity implements
     private final int LOCATION_REQUEST_CODE = 1;
 
     private Handler mHandler;
-    private Geocoder mGetoCoder;
-    private String cityName=null;
+    private Geocoder mGeoCoder;
+    private String mCityName=null;
     private LocationCallback mLocationCallback;
 
     private FusedLocationProviderClient mfusedLocationProviderClient;
+
+    private TextView userLocationTv;
+
     private final String FEED_FRAG = "feed_fragment";
     private final String COMMENTS_FRAG = "comments_fragment";
 
@@ -103,7 +106,9 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
 
-        mGetoCoder=new Geocoder(this, Locale.getDefault());
+
+        mGeoCoder =new Geocoder(this, Locale.getDefault());
+        userLocationTv=findViewById(R.id.location_tv);
 
         if (Build.VERSION.SDK_INT >= 23) {
             int hasLocationPremission = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
@@ -252,6 +257,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_REQUEST_CODE) {
             if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                //TODO alert dialog that explains that we need permissions.
                 Toast.makeText(this, "In order to have functionallity you must provide loation", Toast.LENGTH_SHORT).show();
             } else {
                 startLocation();
@@ -259,22 +265,20 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    public interface LocationInterface{
+        void onLocationChanged(String cityLocation);
+    }
 
-    private void startLocation() {
+    private  LocationInterface mLocationListener;
+
+    public  void setLocationListener(LocationInterface locationListener){
+      this.mLocationListener=locationListener;
+    }
+
+
+    public void startLocation() {
         mfusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        if (Build.VERSION.SDK_INT >= 23 && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-//        mfusedLocationProviderClient.getLastLocation()
-//                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-//                    @Override
-//                    public void onSuccess(Location location) {
-//                        // Got last known location. In some rare situations this can be null.
-//                        if (location != null) {
-//
-//                        }
-//                    }
-//                });
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mLocationCallback = new LocationCallback() {
                 @Override
                 public void onLocationResult(final LocationResult locationResult) {
@@ -284,33 +288,78 @@ public class MainActivity extends AppCompatActivity implements
                         @Override
                         public void run() {
                             try {
-                                List<Address> addressList = mGetoCoder.getFromLocation(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude(), 1);
-                                cityName = addressList.get(0).getLocality();
-                                Log.d(TAG, cityName + "");
-                                if (cityName != null) {
-                                    Toast.makeText(MainActivity.this, cityName, Toast.LENGTH_SHORT).show();
-                                    mHandler.removeCallbacks(this);
-                                    mfusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
+                                List<Address> addressList = mGeoCoder.getFromLocation(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude(), 1);
+                                mCityName = addressList.get(0).getLocality();
+                                if (mCityName != null) {
+                                    if(mLocationListener!=null){
+                                        mLocationListener.onLocationChanged(mCityName);
+                                        mHandler.removeCallbacks(this);
+                                        mfusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
+                                        userLocationTv.setText(mCityName);
+                                    }
                                 }
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
                         }
                     });
-
                 }
             };
-            LocationRequest locationRequest = LocationRequest.create();
+            final LocationRequest locationRequest = LocationRequest.create();
             locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
             locationRequest.setInterval(500);
-            locationRequest.setFastestInterval(250);
 
-            if (Build.VERSION.SDK_INT >= 23 && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                mfusedLocationProviderClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
-            }
+            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                    .addLocationRequest(locationRequest);
+
+            builder.setAlwaysShow(true);
+
+
+            SettingsClient client = LocationServices.getSettingsClient(this);
+            Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
+
+
+            task.addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
+                @Override
+                public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+
+                    if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        mfusedLocationProviderClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
+                    }
+                }
+            });
+
+            task.addOnFailureListener(this, new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    if (e instanceof ResolvableApiException) {
+                        // Location settings are not satisfied, but this can be fixed
+                        // by showing the user a dialog.
+                        try {
+                            //TODO:make a custom window.
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            ResolvableApiException resolvable = (ResolvableApiException) e;
+                            resolvable.startResolutionForResult(MainActivity.this,
+                                    REQUEST_CHECK_SETTINGS);
+                        } catch (IntentSender.SendIntentException sendEx) {
+                            // Ignore the error.
+                        }
+                    }
+                }
+            });
 
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==REQUEST_CHECK_SETTINGS&&resultCode==RESULT_OK){
+            startLocation();
+        }
+    }
+
 }
 
 
