@@ -65,6 +65,11 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     objToReturn = (T) new CommentsViewModel(mContext);
                 }
                 break;
+            case UserProfile:
+                if (modelClass.isAssignableFrom(UserProfileViewModel.class)) {
+                    objToReturn = (T) new UserProfileViewModel(mContext);
+                }
+                break;
             case ChatFriends:
                 if (modelClass.isAssignableFrom(ChatFriendsViewModel.class)) {
                     objToReturn = (T) new ChatFriendsViewModel(mContext);
@@ -85,7 +90,6 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     objToReturn = (T) new ChatsViewModel(mContext);
                 }
                 break;
-
         }
 
         return objToReturn;

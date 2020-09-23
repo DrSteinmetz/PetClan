@@ -8,6 +8,7 @@ public enum ViewModelEnum {
     Main,
     Feed,
     Comments,
+    UserProfile
     Social,
     Chats,
     ChatFriends,
