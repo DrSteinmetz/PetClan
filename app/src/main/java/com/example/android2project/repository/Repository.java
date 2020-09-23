@@ -5,8 +5,11 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.android2project.model.Chat;
+import com.example.android2project.model.ChatMessage;
 import com.example.android2project.model.Comment;
 import com.example.android2project.model.Post;
+import com.example.android2project.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -14,12 +17,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,9 +42,13 @@ public class Repository {
 
     private final String TAG = "Repository";
 
-    /**<-------Post Downloading interface------->**/
+
+    /**
+     * <-------Post Downloading interface------->
+     **/
     public interface RepositoryPostDownloadInterface {
         void onPostDownloadSucceed(List<Post> posts);
+
         void onPostDownloadFailed(String error);
     }
 
@@ -49,9 +58,12 @@ public class Repository {
         this.mPostDownloadListener = repositoryPostDownloadInterface;
     }
 
-    /**<-------Post Uploading interface------->**/
+    /**
+     * <-------Post Uploading interface------->
+     **/
     public interface RepositoryPostUploadInterface {
         void onPostUploadSucceed(Post post);
+
         void onPostUploadFailed(String error);
     }
 
@@ -61,9 +73,12 @@ public class Repository {
         this.mPostUploadListener = repositoryPostUploadInterface;
     }
 
-    /**<-------Post Updating interface------->**/
+    /**
+     * <-------Post Updating interface------->
+     **/
     public interface RepositoryPostUpdatingInterface {
         void onPostUpdatingSucceed(Post updatedPost);
+
         void onPostUpdatingFailed(String error);
     }
 
@@ -73,9 +88,12 @@ public class Repository {
         this.mPostUpdatingListener = repositoryPostUpdatingInterface;
     }
 
-    /**<-------Post Likes Updating interface------->**/
+    /**
+     * <-------Post Likes Updating interface------->
+     **/
     public interface RepositoryPostLikesUpdatingInterface {
         void onPostLikesUpdateSucceed(Post post);
+
         void onPostLikesUpdateFailed(String error);
     }
 
@@ -85,9 +103,12 @@ public class Repository {
         this.mPostLikesUpdatingListener = repositoryPostLikesUpdatingInterface;
     }
 
-    /**<-------Post Deleting interface------->**/
+    /**
+     * <-------Post Deleting interface------->
+     **/
     public interface RepositoryPostDeletingInterface {
         void onPostDeletingSucceed(String postId);
+
         void onPostDeletingFailed(String error);
     }
 
@@ -97,9 +118,12 @@ public class Repository {
         this.mPostDeletingListener = repositoryPostDeletingInterface;
     }
 
-    /**<-------Comment Downloading interface------->**/
+    /**
+     * <-------Comment Downloading interface------->
+     **/
     public interface RepositoryCommentDownloadInterface {
         void onCommentDownloadSucceed(List<Comment> comments);
+
         void onCommentDownloadFailed(String error);
     }
 
@@ -109,9 +133,12 @@ public class Repository {
         this.mCommentDownloadListener = repositoryCommentDownloadInterface;
     }
 
-    /**<-------Comment Uploading interface------->**/
+    /**
+     * <-------Comment Uploading interface------->
+     **/
     public interface RepositoryCommentUploadInterface {
         void onCommentUploadSucceed(Comment comment);
+
         void onCommentUploadFailed(String error);
     }
 
@@ -121,9 +148,12 @@ public class Repository {
         this.mCommentUploadListener = repositoryCommentUploadInterface;
     }
 
-    /**<-------Comment Updating interface------->**/
+    /**
+     * <-------Comment Updating interface------->
+     **/
     public interface RepositoryCommentUpdatingInterface {
         void onCommentUpdatingSucceed(String updatedCommentContent);
+
         void onCommentUpdatingFailed(String error);
     }
 
@@ -133,9 +163,12 @@ public class Repository {
         this.mCommentUpdatingListener = repositoryCommentUpdatingInterface;
     }
 
-    /**<-------Post Deleting interface------->**/
+    /**
+     * <-------Post Deleting interface------->
+     **/
     public interface RepositoryCommentDeletingInterface {
         void onCommentDeletingSucceed(String commentId);
+
         void onCommentDeletingFailed(String error);
     }
 
@@ -143,6 +176,19 @@ public class Repository {
 
     public void setCommentDeletingListener(RepositoryCommentDeletingInterface repositoryCommentDeletingInterface) {
         this.mCommentDeletingListener = repositoryCommentDeletingInterface;
+    }
+
+     /** <-------New Chat interface-------> **/
+    public interface RepositoryNewChatInterface {
+        void onNewChatSucceed(Chat chat);
+
+        void onNewChatFailed(String error);
+    }
+
+    private RepositoryNewChatInterface mNewChatListener;
+
+    public void setNewChatListener(RepositoryNewChatInterface repositoryNewChatInterface) {
+        this.mNewChatListener = repositoryNewChatInterface;
     }
 
     public static Repository getInstance(final Context context) {
@@ -492,4 +538,48 @@ public class Repository {
                     });
         }
     }
+
+    public void DownloadChatMessages(String authorId) {
+    }
+
+    public void uploadChatMessage(String chatId, final String messageContent) {
+        mCloudDB.collection("chats").document(chatId)
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
+
+    }
+
+//    public void startNewChat(String senderEmail, String receiverEmail){
+//        final Chat chat = new Chat(senderEmail,receiverEmail);
+//        chat.setChatId(senderEmail+"_"+receiverEmail);
+//        mCloudDB.collection("chats").document(chat.getChatId()).set(chat)
+//                .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        if(task.isSuccessful()){
+//                            if(mNewChatListener !=null){
+//                                mNewChatListener.onNewChatSucceed(chat);
+//                            }
+//                        }else{
+//                            if(mNewChatListener !=null){
+//                                mNewChatListener.onNewChatFailed("Failed To Start New Chat!");
+//                            }
+//                        }
+//
+//                    }
+//                });
+//    }
+
+
 }
+
