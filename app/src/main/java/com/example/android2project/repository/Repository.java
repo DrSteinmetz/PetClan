@@ -818,7 +818,7 @@ public class Repository {
                                       final String messageContent,
                                       final User userRecipient) {
         final ChatMessage message = new ChatMessage(messageContent,
-                userRecipient);
+                userRecipient.getEmail());//lo koers kloom
 
         mCloudChats.document(chatId)
                 .collection("messages")
@@ -842,23 +842,26 @@ public class Repository {
                 });
     }
 
-    public void downloadMessage() {
-    }
 
-    public void uploadMessage(final String messageContent,
+
+    public void uploadMessageToDB(final String messageContent,
                                  final String sender,
                                  final String recipient) {
-        final Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put("messageContent", messageContent);
-        dataMap.put("sender", sender);
-        dataMap.put("recipient", recipient);
+        final ChatMessage chatMessage=new ChatMessage(messageContent,recipient);
+        
 
         final String id1 = sender.replace(".", "");
         final String id2 = recipient.replace(".", "");
 
-        mDBChats.child(id1 + "&" + id2)
+        String tempChatId = id2 + "&" + id1;
+        if (Objects.requireNonNull(id1).compareTo(id2) < 0) {
+            tempChatId = id1+ "&" + id2;
+        }
+        final String chatId = tempChatId;
+
+        mDBChats.child(chatId)
                 .child(String.valueOf(System.currentTimeMillis()))
-                .setValue(dataMap)
+                .setValue(chatMessage)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -870,15 +873,35 @@ public class Repository {
                         Log.d(TAG, "onFailure: " + e.getMessage());
                     }
                 });
+    }
 
-        mDBChats.addListenerForSingleValueEvent(new ValueEventListener() {
+    public void downloadMessagesFromDB(String recipient,String sender){
+        final List<ChatMessage> chatList = new ArrayList<>();
+        final String id1 = sender.replace(".", "");
+        final String id2 = recipient.replace(".", "");
+
+        String tempChatId = id2 + "&" + id1;
+        if (Objects.requireNonNull(id1).compareTo(id2) < 0) {
+            tempChatId = id1+ "&" + id2;
+        }
+        final String chatId = tempChatId;
+
+
+        mDBChats.child(chatId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dc:snapshot.getChildren()){
+                    ChatMessage message = dc.getValue(ChatMessage.class);
+                    chatList.add(message);
+                }
+              mDownloadConversationListener.onDownloadConversationSucceed(chatList);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }
+    
 }

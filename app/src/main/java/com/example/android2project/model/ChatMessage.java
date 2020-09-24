@@ -4,12 +4,12 @@ import java.util.Date;
 
 public class ChatMessage implements Comparable<Object> {
     private String mContent;
-    private User mRecipient;
+    private String mRecipient;
     private Date mTime;
 
     public ChatMessage() {}
 
-    public ChatMessage(String content, User recipient) {
+    public ChatMessage(String content, String recipient) {
         this.mContent = content;
         this.mRecipient = recipient;
         this.mTime = new Date();
@@ -23,11 +23,11 @@ public class ChatMessage implements Comparable<Object> {
         this.mContent = content;
     }
 
-    public User getRecipient() {
+    public String getRecipient() {
         return mRecipient;
     }
 
-    public void setRecipient(User recipient) {
+    public void setRecipient(String recipient) {
         this.mRecipient = recipient;
     }
 

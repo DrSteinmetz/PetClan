@@ -31,7 +31,7 @@ import java.util.Objects;
 
 public class ConversationViewModel extends ViewModel {
     private Repository mRepository;
-    private FirebaseMessaging mFirebaseMessaging;
+//    private FirebaseMessaging mFirebaseMessaging;
     private FirebaseUser mUser;
     private Context mContext;
     private String mRecipientEmail;
@@ -48,7 +48,7 @@ public class ConversationViewModel extends ViewModel {
 
     public ConversationViewModel(Context context) {
         mRepository = Repository.getInstance(context);
-        mFirebaseMessaging = FirebaseMessaging.getInstance();
+//        mFirebaseMessaging = FirebaseMessaging.getInstance();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         mContext = context;
     }
@@ -178,11 +178,12 @@ public class ConversationViewModel extends ViewModel {
         }
         final String chatId = tempChatId;
 
-        mRepository.downloadConversation(chatId);
+        mRepository.downloadMessagesFromDB(mRecipientEmail,mUser.getEmail());
+//        mRepository.downloadConversation(chatId);
     }
 
     public void uploadChatMessage(final User userRecipient, final String messageContent) {
-        mRepository.uploadChatMessage(userRecipient, messageContent);
-        mRepository.uploadMessage(messageContent, mUser.getEmail(), userRecipient.getEmail());
+//        mRepository.uploadChatMessage(userRecipient, messageContent);
+         mRepository.uploadMessageToDB(messageContent, mUser.getEmail(), userRecipient.getEmail());
     }
 }
