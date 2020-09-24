@@ -103,8 +103,8 @@ public class ConversationFragment extends DialogFragment {
         mOnUploadMessageSucceed = new Observer<ChatMessage>() {
             @Override
             public void onChanged(ChatMessage message) {
-                mMessageAdapter.notifyDataSetChanged();
-                //mMessageAdapter.notifyItemInserted(mViewModel.getConversation().size() - 1);
+                //mMessageAdapter.notifyDataSetChanged();
+                mMessageAdapter.notifyItemInserted(mViewModel.getConversation().size() - 1);
                 if (mViewModel.getConversation().size() > 0) {
                     mMessageRecycler.smoothScrollToPosition(mViewModel.getConversation().size() - 1);
                 }

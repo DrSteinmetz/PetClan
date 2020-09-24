@@ -48,7 +48,7 @@ public class Repository {
     private static Repository repository;
 
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-    private DatabaseReference mDBChats = mDatabase.getReference("chats");
+    private DatabaseReference mDBChats = mDatabase.getReference().child("chats");
 
     private FirebaseFirestore mCloudDB = FirebaseFirestore.getInstance();
     private CollectionReference mCloudUsers = mCloudDB.collection("users");
@@ -57,7 +57,9 @@ public class Repository {
     private final String TAG = "Repository";
 
     /**<-------Posts Interfaces------->**/
-    /**<-------Post Downloading interface------->**/
+    /**
+     * <-------Post Downloading interface------->
+     **/
     public interface RepositoryPostDownloadInterface {
         void onPostDownloadSucceed(List<Post> posts);
 
@@ -70,7 +72,9 @@ public class Repository {
         this.mPostDownloadListener = repositoryPostDownloadInterface;
     }
 
-    /**<-------Post Uploading interface------->**/
+    /**
+     * <-------Post Uploading interface------->
+     **/
     public interface RepositoryPostUploadInterface {
         void onPostUploadSucceed(Post post);
 
@@ -83,7 +87,9 @@ public class Repository {
         this.mPostUploadListener = repositoryPostUploadInterface;
     }
 
-    /**<-------Post Updating interface------->**/
+    /**
+     * <-------Post Updating interface------->
+     **/
     public interface RepositoryPostUpdatingInterface {
         void onPostUpdatingSucceed(Post updatedPost);
 
@@ -96,7 +102,9 @@ public class Repository {
         this.mPostUpdatingListener = repositoryPostUpdatingInterface;
     }
 
-    /**<-------Post Likes Updating interface------->**/
+    /**
+     * <-------Post Likes Updating interface------->
+     **/
     public interface RepositoryPostLikesUpdatingInterface {
         void onPostLikesUpdateSucceed(Post post);
 
@@ -109,7 +117,9 @@ public class Repository {
         this.mPostLikesUpdatingListener = repositoryPostLikesUpdatingInterface;
     }
 
-    /**<-------Post Deleting interface------->**/
+    /**
+     * <-------Post Deleting interface------->
+     **/
     public interface RepositoryPostDeletingInterface {
         void onPostDeletingSucceed(String postId);
 
@@ -123,7 +133,9 @@ public class Repository {
     }
 
     /**<-------Comments Interfaces------->**/
-    /**<-------Comment Downloading interface------->**/
+    /**
+     * <-------Comment Downloading interface------->
+     **/
     public interface RepositoryCommentDownloadInterface {
         void onCommentDownloadSucceed(List<Comment> comments);
 
@@ -136,7 +148,9 @@ public class Repository {
         this.mCommentDownloadListener = repositoryCommentDownloadInterface;
     }
 
-    /**<-------Comment Uploading interface------->**/
+    /**
+     * <-------Comment Uploading interface------->
+     **/
     public interface RepositoryCommentUploadInterface {
         void onCommentUploadSucceed(Comment comment);
 
@@ -149,7 +163,9 @@ public class Repository {
         this.mCommentUploadListener = repositoryCommentUploadInterface;
     }
 
-    /**<-------Comment Updating interface------->**/
+    /**
+     * <-------Comment Updating interface------->
+     **/
     public interface RepositoryCommentUpdatingInterface {
         void onCommentUpdatingSucceed(String updatedCommentContent);
 
@@ -162,7 +178,9 @@ public class Repository {
         this.mCommentUpdatingListener = repositoryCommentUpdatingInterface;
     }
 
-    /**<-------Comment Deleting interface------->**/
+    /**
+     * <-------Comment Deleting interface------->
+     **/
     public interface RepositoryCommentDeletingInterface {
         void onCommentDeletingSucceed(String commentId);
 
@@ -176,7 +194,9 @@ public class Repository {
     }
 
     /**<-------Settings Interfaces------->**/
-    /**<-------Update User Name interface------->**/
+    /**
+     * <-------Update User Name interface------->
+     **/
     public interface RepositoryUpdateUserNameInterface {
         void onUpdateUserNameSucceed(String newUserName);
 
@@ -189,7 +209,9 @@ public class Repository {
         this.mUpdateUserNameListener = repositoryUpdateUserNameInterface;
     }
 
-    /**<-------Update User Image interface------->**/
+    /**
+     * <-------Update User Image interface------->
+     **/
     public interface RepositoryUpdateUserImageInterface {
         void onUpdateUserImageSucceed(String newUserProfilePic);
 
@@ -202,7 +224,9 @@ public class Repository {
         this.mUpdateUserImageListener = repositoryUpdateUserImageInterface;
     }
 
-    /**<-------Update User Cover Image interface------->**/
+    /**
+     * <-------Update User Cover Image interface------->
+     **/
     public interface RepositoryUpdateUserCoverImageInterface {
         void onUpdateUserCoverImageSucceed(String newUserProfileCoverPic);
 
@@ -215,7 +239,9 @@ public class Repository {
         this.mUpdateUserCoverImageListener = repositoryUpdateUserCoverImageInterface;
     }
 
-    /**<-------User Deletion interface------->**/
+    /**
+     * <-------User Deletion interface------->
+     **/
     public interface RepositoryUserDeletionInterface {
         void onUserDeletionSucceed(String userId);
 
@@ -229,7 +255,9 @@ public class Repository {
     }
 
     /**<-------Chats Interfaces------->**/
-    /**<-------Download Conversation interface------->**/
+    /**
+     * <-------Download Conversation interface------->
+     **/
     public interface RepositoryDownloadConversationInterface {
         void onDownloadConversationSucceed(List<ChatMessage> conversation);
 
@@ -242,7 +270,9 @@ public class Repository {
         this.mDownloadConversationListener = repositoryDownloadConversationInterface;
     }
 
-    /**<-------Upload Message interface------->**/
+    /**
+     * <-------Upload Message interface------->
+     **/
     public interface RepositoryUploadMessageInterface {
         void onUploadMessageSucceed(ChatMessage message, boolean isMine);
 
@@ -267,7 +297,9 @@ public class Repository {
         mAuth = FirebaseAuth.getInstance();
     }
 
-    /**<-------Posts methods------->**/
+    /**
+     * <-------Posts methods------->
+     **/
     public void downloadPosts() {
         final List<Post> posts = new ArrayList<>();
         final FirebaseUser user = mAuth.getCurrentUser();
@@ -465,7 +497,9 @@ public class Repository {
         }
     }
 
-    /**<-------Comments methods------->**/
+    /**
+     * <-------Comments methods------->
+     **/
     public void uploadComment(final Post post, final String commentContent) {
         final FirebaseUser user = mAuth.getCurrentUser();
 
@@ -708,7 +742,7 @@ public class Repository {
         }
     }
 
-    public void downloadConversation(final String chatId) {
+    /*public void downloadConversation(final String chatId) {
         final FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {
@@ -734,7 +768,7 @@ public class Repository {
                                 if (mDownloadConversationListener != null) {
                                     mDownloadConversationListener
                                             .onDownloadConversationFailed(Objects.requireNonNull(task
-                                            .getException()).getMessage());
+                                                    .getException()).getMessage());
                                 }
                             }
                         }
@@ -765,9 +799,9 @@ public class Repository {
                         }
                     });
         }
-    }
+    }*/
 
-    public void uploadChatMessage(final User userRecipient, final String messageContent) {
+    /*public void uploadChatMessage(final User userRecipient, final String messageContent) {
         final FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {
@@ -812,13 +846,13 @@ public class Repository {
                 }
             });
         }
-    }
+    }*/
 
-    private void uploadMessageToCloud(final String chatId,
+    /*private void uploadMessageToCloud(final String chatId,
                                       final String messageContent,
                                       final User userRecipient) {
         final ChatMessage message = new ChatMessage(messageContent,
-                userRecipient.getEmail());//lo koers kloom
+                userRecipient.getEmail());
 
         mCloudChats.document(chatId)
                 .collection("messages")
@@ -840,22 +874,21 @@ public class Repository {
                         }
                     }
                 });
-    }
-
+    }*/
 
 
     public void uploadMessageToDB(final String messageContent,
-                                 final String sender,
-                                 final String recipient) {
-        final ChatMessage chatMessage=new ChatMessage(messageContent,recipient);
-        
+                                  final String sender,
+                                  final String recipient) {
+        final ChatMessage chatMessage = new ChatMessage(messageContent, recipient);
+
 
         final String id1 = sender.replace(".", "");
         final String id2 = recipient.replace(".", "");
 
         String tempChatId = id2 + "&" + id1;
         if (Objects.requireNonNull(id1).compareTo(id2) < 0) {
-            tempChatId = id1+ "&" + id2;
+            tempChatId = id1 + "&" + id2;
         }
         final String chatId = tempChatId;
 
@@ -875,33 +908,26 @@ public class Repository {
                 });
     }
 
-    public void downloadMessagesFromDB(String recipient,String sender){
+    public void downloadConversationFromDB(final String chatId) {
         final List<ChatMessage> chatList = new ArrayList<>();
-        final String id1 = sender.replace(".", "");
-        final String id2 = recipient.replace(".", "");
-
-        String tempChatId = id2 + "&" + id1;
-        if (Objects.requireNonNull(id1).compareTo(id2) < 0) {
-            tempChatId = id1+ "&" + id2;
-        }
-        final String chatId = tempChatId;
-
 
         mDBChats.child(chatId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dc:snapshot.getChildren()){
-                    ChatMessage message = dc.getValue(ChatMessage.class);
-                    chatList.add(message);
+                for (DataSnapshot dc : snapshot.getChildren()) {
+                    if (dc.exists()) {
+                        ChatMessage message = dc.getValue(ChatMessage.class);
+                        Log.d(TAG, "onDataChange: " + message.toString());
+                        chatList.add(message);
+                    }
                 }
-              mDownloadConversationListener.onDownloadConversationSucceed(chatList);
+                mDownloadConversationListener.onDownloadConversationSucceed(chatList);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
     }
-    
+
 }

@@ -6,27 +6,14 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.android2project.model.ChatMessage;
 import com.example.android2project.model.User;
 import com.example.android2project.repository.Repository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.messaging.FirebaseMessaging;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class ConversationViewModel extends ViewModel {
@@ -172,18 +159,21 @@ public class ConversationViewModel extends ViewModel {
     }
 
     public void downloadConversation() {
-        String tempChatId = mRecipientEmail + "&" + mUser.getEmail();
-        if (Objects.requireNonNull(mUser.getEmail()).compareTo(mRecipientEmail) < 0) {
-            tempChatId = mUser.getEmail() + "&" + mRecipientEmail;
+        final String id1 = mRecipientEmail.replace(".", "");
+        final String id2 = Objects.requireNonNull(mUser.getEmail()).replace(".", "");
+
+        String tempChatId = id2 + "&" + id1;
+        if (Objects.requireNonNull(id1).compareTo(id2) < 0) {
+            tempChatId = id1 + "&" + id2;
         }
         final String chatId = tempChatId;
 
-        mRepository.downloadMessagesFromDB(mRecipientEmail,mUser.getEmail());
-//        mRepository.downloadConversation(chatId);
+        mRepository.downloadConversationFromDB(chatId);
     }
 
     public void uploadChatMessage(final User userRecipient, final String messageContent) {
-//        mRepository.uploadChatMessage(userRecipient, messageContent);
-         mRepository.uploadMessageToDB(messageContent, mUser.getEmail(), userRecipient.getEmail());
+         mRepository.uploadMessageToDB(messageContent,
+                 Objects.requireNonNull(mUser.getEmail()),
+                 userRecipient.getEmail());
     }
 }
