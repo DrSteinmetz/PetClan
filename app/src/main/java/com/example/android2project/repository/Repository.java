@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -876,22 +877,25 @@ public class Repository {
                 });
     }*/
 
+    private final List<ChatMessage> chatList = new ArrayList<>();
     public void downloadConversationFromDB(final String chatId) {
-        final List<ChatMessage> chatList = new ArrayList<>();
         final boolean[] isFirstChange = {true};
 
         mDBChats.child(chatId)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot dc : snapshot.getChildren()) {
-                            if (dc.exists()) {
-                                ChatMessage message = dc.getValue(ChatMessage.class);
-                                Log.d(TAG, "onDataChange: " + message.toString());
-                                chatList.add(message);
-                            }
-                        }
+                        chatList.clear();
+
+
                         if (isFirstChange[0] && mDownloadConversationListener != null) {
+                            for (DataSnapshot dc : snapshot.getChildren()) {
+                                if (dc.exists()) {
+                                    ChatMessage message = dc.getValue(ChatMessage.class);
+                                    chatList.add(message);
+                                }
+                            }
+
                             mDownloadConversationListener.onDownloadConversationSucceed(chatList);
                             isFirstChange[0] = false;
                         }
@@ -909,6 +913,7 @@ public class Repository {
     public void uploadMessageToDB(final String messageContent,
                                   final String sender,
                                   final String recipient) {
+        chatList.clear();
         final ChatMessage chatMessage = new ChatMessage(messageContent, recipient);
 
         final String id1 = sender.replace(".", "");
@@ -932,7 +937,33 @@ public class Repository {
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
                     }
-                });
+                })
+                /*.addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot snapshot,
+                                             @Nullable String previousChildName) {
+                        ChatMessage message = snapshot.getValue(ChatMessage.class);
+                        Log.d(TAG, "onChildAdded: " + previousChildName);
+                        Log.d(TAG, "onChildAdded: " + message.toString());
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot snapshot,
+                                               @Nullable String previousChildName) {
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                })*/;
 
         mDBChats.child(chatId)
                 .child(chatMessage.getTime().toString())
@@ -940,6 +971,9 @@ public class Repository {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+                        /*if (mUploadMessageListener != null) {
+                            mUploadMessageListener.onUploadMessageSucceed(chatMessage, true);
+                        }*/
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

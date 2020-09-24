@@ -88,7 +88,7 @@ public class ConversationFragment extends DialogFragment {
                 mMessageAdapter.notifyDataSetChanged();
                 if (chatMessages.size() > 0) {
                     Log.d(TAG, "asdf onChanged: " + chatMessages);
-                    mMessageRecycler.smoothScrollToPosition(chatMessages.size() - 1);
+                    mMessageRecycler.scrollToPosition(chatMessages.size() - 1);
                 }
             }
         };
