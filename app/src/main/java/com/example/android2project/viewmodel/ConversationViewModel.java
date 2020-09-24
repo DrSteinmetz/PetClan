@@ -92,7 +92,7 @@ public class ConversationViewModel extends ViewModel {
         mRepository.setUploadMessageListener(new Repository.RepositoryUploadMessageInterface() {
             @Override
             public void onUploadMessageSucceed(ChatMessage message, boolean isMine) {
-                Log.d(TAG, "onUploadMessageSucceed: message " + isMine);
+                Log.d(TAG, "asdf onUploadMessageSucceed: message " + isMine);
                 if (isMine) {
                     mConversation.add(message);
                     /*final JSONObject rootObject = new JSONObject();

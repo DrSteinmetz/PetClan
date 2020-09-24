@@ -86,8 +86,8 @@ public class ConversationFragment extends DialogFragment {
             @Override
             public void onChanged(List<ChatMessage> chatMessages) {
                 mMessageAdapter.notifyDataSetChanged();
-                Log.d(TAG, "onChanged: mOnDownloadConversationSucceed");
                 if (chatMessages.size() > 0) {
+                    Log.d(TAG, "asdf onChanged: " + chatMessages);
                     mMessageRecycler.smoothScrollToPosition(chatMessages.size() - 1);
                 }
             }
@@ -104,6 +104,7 @@ public class ConversationFragment extends DialogFragment {
             @Override
             public void onChanged(ChatMessage message) {
                 //mMessageAdapter.notifyDataSetChanged();
+                Log.d(TAG, "asdf onChanged: " + message.toString());
                 mMessageAdapter.notifyItemInserted(mViewModel.getConversation().size() - 1);
                 if (mViewModel.getConversation().size() > 0) {
                     mMessageRecycler.smoothScrollToPosition(mViewModel.getConversation().size() - 1);
