@@ -2,7 +2,7 @@ package com.example.android2project.model;
 
 import java.util.Date;
 
-public class ChatMessage {
+public class ChatMessage implements Comparable<Object> {
     private String mContent;
     private User mRecipient;
     private Date mTime;
@@ -37,6 +37,15 @@ public class ChatMessage {
 
     public void setTime(Date mTime) {
         this.mTime = mTime;
+    }
+
+    @Override
+    public int compareTo(Object object) {
+        if (object instanceof ChatMessage) {
+            ChatMessage otherMessage = (ChatMessage) object;
+            return this.mTime.compareTo(otherMessage.getTime());
+        }
+        return 0;
     }
 
     @Override

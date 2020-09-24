@@ -5,24 +5,18 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.android2project.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import org.ocpsoft.prettytime.PrettyTime;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class MessageListAdapter extends RecyclerView.Adapter {
     private static final int TYPE_MESSAGE_SENT = 1;
@@ -81,40 +75,25 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
         if (message.getRecipient().getEmail().equals(mCurrentUser.getEmail())) {
             // If the current user is the sender of the message
-            return TYPE_MESSAGE_SENT;
+            return TYPE_MESSAGE_RECEIVED;
         } else {
             // If some other user sent the message
-            return TYPE_MESSAGE_RECEIVED;
+            return TYPE_MESSAGE_SENT;
         }
     }
 
     private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
-        TextView messageText, timeText, nameText;
-        ImageView profileImage;
+        TextView messageText, timeText;
 
         public ReceivedMessageHolder(View itemView) {
             super(itemView);
             messageText = itemView.findViewById(R.id.message_body_tv);
             timeText = itemView.findViewById(R.id.message_time_tv);
-            nameText = itemView.findViewById(R.id.message_name_tv);
-            profileImage = itemView.findViewById(R.id.message_profile_pic_iv);
         }
 
         void bind(ChatMessage message) {
             messageText.setText(message.getContent());
             timeText.setText(DateToFormatDate(message.getTime()));
-            nameText.setText(String.format("%s %s", message.getRecipient().getFirstName(),
-                    message.getRecipient().getLastName()));
-
-            RequestOptions options = new RequestOptions()
-                    .circleCrop()
-                    .placeholder(R.drawable.ic_default_user_pic)
-                    .error(R.drawable.ic_default_user_pic);
-
-            Glide.with(mContext)
-                    .load(message.getRecipient().getPhotoUri())
-                    .apply(options)
-                    .into(profileImage);
         }
     }
 

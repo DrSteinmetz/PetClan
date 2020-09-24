@@ -52,6 +52,8 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -118,6 +120,25 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             startLocation();
         }
+
+        FirebaseInstanceId.getInstance()
+                .getInstanceId()
+                .addOnSuccessListener(MainActivity.this,
+                        new OnSuccessListener<InstanceIdResult>() {
+                            @Override
+                            public void onSuccess(InstanceIdResult instanceIdResult) {
+                                String newToken = instanceIdResult.getToken();
+                                Log.d("newToken: ", newToken);
+
+                                //TODO: Send the token to server
+                            }
+                        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "onFailure: " + e.getMessage());
+                    }
+                });
 
         final ImageView userProfilePictureIv = findViewById(R.id.user_pic_iv);
         final TextView userNameTv = findViewById(R.id.user_name_tv);

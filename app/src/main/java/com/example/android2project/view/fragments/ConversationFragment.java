@@ -4,6 +4,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.viewmodel.ConversationViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 
 import java.util.List;
 import java.util.Objects;
@@ -38,6 +40,7 @@ import java.util.Objects;
 public class ConversationFragment extends DialogFragment {
     private ConversationViewModel mViewModel;
 
+    private FirebaseRecyclerAdapter<ChatMessage, RecyclerView.ViewHolder> mFirebaseAdapter;
     private RecyclerView mMessageRecycler;
     private MessageListAdapter mMessageAdapter;
 
@@ -83,6 +86,10 @@ public class ConversationFragment extends DialogFragment {
             @Override
             public void onChanged(List<ChatMessage> chatMessages) {
                 mMessageAdapter.notifyDataSetChanged();
+                Log.d(TAG, "onChanged: mOnDownloadConversationSucceed");
+                if (chatMessages.size() > 0) {
+                    mMessageRecycler.smoothScrollToPosition(chatMessages.size() - 1);
+                }
             }
         };
 
@@ -96,7 +103,11 @@ public class ConversationFragment extends DialogFragment {
         mOnUploadMessageSucceed = new Observer<ChatMessage>() {
             @Override
             public void onChanged(ChatMessage message) {
-                mMessageAdapter.notifyItemInserted(mViewModel.getConversation().size() - 1);
+                mMessageAdapter.notifyDataSetChanged();
+                //mMessageAdapter.notifyItemInserted(mViewModel.getConversation().size() - 1);
+                if (mViewModel.getConversation().size() > 0) {
+                    mMessageRecycler.smoothScrollToPosition(mViewModel.getConversation().size() - 1);
+                }
             }
         };
 
@@ -148,7 +159,6 @@ public class ConversationFragment extends DialogFragment {
                     .apply(options)
                     .into(mRecipientPicture);
         }
-
 
         mSendBtn.setOnClickListener(new View.OnClickListener() {
             @Override

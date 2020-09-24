@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.example.android2project.model.ChatMessage;
 import com.example.android2project.model.Conversation;
@@ -18,9 +19,17 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -37,6 +46,9 @@ public class Repository {
     private Context mContext;
 
     private static Repository repository;
+
+    private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference mDBChats = mDatabase.getReference("chats");
 
     private FirebaseFirestore mCloudDB = FirebaseFirestore.getInstance();
     private CollectionReference mCloudUsers = mCloudDB.collection("users");
@@ -232,7 +244,7 @@ public class Repository {
 
     /**<-------Upload Message interface------->**/
     public interface RepositoryUploadMessageInterface {
-        void onUploadMessageSucceed(ChatMessage message);
+        void onUploadMessageSucceed(ChatMessage message, boolean isMine);
 
         void onUploadMessageFailed(String error);
     }
@@ -713,6 +725,8 @@ public class Repository {
                                     conversation.add(document.toObject(ChatMessage.class));
                                 }
 
+                                Collections.sort(conversation);
+
                                 if (mDownloadConversationListener != null) {
                                     mDownloadConversationListener.onDownloadConversationSucceed(conversation);
                                 }
@@ -721,6 +735,31 @@ public class Repository {
                                     mDownloadConversationListener
                                             .onDownloadConversationFailed(Objects.requireNonNull(task
                                             .getException()).getMessage());
+                                }
+                            }
+                        }
+                    });
+
+            mCloudChats.document(chatId)
+                    .collection("messages")
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot value,
+                                            @Nullable FirebaseFirestoreException error) {
+                            if (error != null) {
+                                Log.w(TAG, "onEvent: ", error);
+                            }
+
+                            if (value != null && !value.isEmpty()) {
+                                for (DocumentChange dc : value.getDocumentChanges()) {
+                                    if (dc.getType() == DocumentChange.Type.ADDED) {
+                                        ChatMessage message = dc.getDocument()
+                                                .toObject(ChatMessage.class);
+
+                                        if (mUploadMessageListener != null) {
+                                            mUploadMessageListener.onUploadMessageSucceed(message, false);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -789,7 +828,7 @@ public class Repository {
                     @Override
                     public void onSuccess(Void aVoid) {
                         if (mUploadMessageListener != null) {
-                            mUploadMessageListener.onUploadMessageSucceed(message);
+                            mUploadMessageListener.onUploadMessageSucceed(message, true);
                         }
                     }
                 })
@@ -803,24 +842,43 @@ public class Repository {
                 });
     }
 
-//    public void startNewChat(String senderEmail, String receiverEmail){
-//        final Chat chat = new Chat(senderEmail,receiverEmail);
-//        chat.setChatId(senderEmail+"_"+receiverEmail);
-//        mCloudDB.collection("chats").document(chat.getChatId()).set(chat)
-//                .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        if(task.isSuccessful()){
-//                            if(mNewChatListener !=null){
-//                                mNewChatListener.onNewChatSucceed(chat);
-//                            }
-//                        }else{
-//                            if(mNewChatListener !=null){
-//                                mNewChatListener.onNewChatFailed("Failed To Start New Chat!");
-//                            }
-//                        }
-//
-//                    }
-//                });
-//    }
+    public void downloadMessage() {
+    }
+
+    public void uploadMessage(final String messageContent,
+                                 final String sender,
+                                 final String recipient) {
+        final Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put("messageContent", messageContent);
+        dataMap.put("sender", sender);
+        dataMap.put("recipient", recipient);
+
+        final String id1 = sender.replace(".", "");
+        final String id2 = recipient.replace(".", "");
+
+        mDBChats.child(id1 + "&" + id2)
+                .child(String.valueOf(System.currentTimeMillis()))
+                .setValue(dataMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "onFailure: " + e.getMessage());
+                    }
+                });
+
+        mDBChats.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
 }
