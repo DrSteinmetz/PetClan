@@ -876,6 +876,35 @@ public class Repository {
                 });
     }*/
 
+    public void downloadConversationFromDB(final String chatId) {
+        final List<ChatMessage> chatList = new ArrayList<>();
+        final boolean[] isFirstChange = {true};
+
+        mDBChats.child(chatId)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dc : snapshot.getChildren()) {
+                            if (dc.exists()) {
+                                ChatMessage message = dc.getValue(ChatMessage.class);
+                                Log.d(TAG, "onDataChange: " + message.toString());
+                                chatList.add(message);
+                            }
+                        }
+                        if (isFirstChange[0] && mDownloadConversationListener != null) {
+                            mDownloadConversationListener.onDownloadConversationSucceed(chatList);
+                            isFirstChange[0] = false;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        if (mDownloadConversationListener != null) {
+                            mDownloadConversationListener.onDownloadConversationFailed(error.getMessage());
+                        }
+                    }
+                });
+    }
 
     public void uploadMessageToDB(final String messageContent,
                                   final String sender,
@@ -892,14 +921,25 @@ public class Repository {
         final String chatId = tempChatId;
 
         mDBChats.child(chatId)
-                .child(String.valueOf(System.currentTimeMillis()))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (mUploadMessageListener != null) {
+                            mUploadMessageListener.onUploadMessageSucceed(chatMessage, true);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
+
+        mDBChats.child(chatId)
+                .child(chatMessage.getTime().toString())
                 .setValue(chatMessage)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        if (mUploadMessageListener != null) {
-                            mUploadMessageListener.onUploadMessageSucceed(chatMessage, true);
-                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -912,35 +952,4 @@ public class Repository {
                     }
                 });
     }
-
-    public void downloadConversationFromDB(final String chatId) {
-        final List<ChatMessage> chatList = new ArrayList<>();
-        final boolean[] isFirstChange = {true};
-
-        mDBChats.child(chatId)
-                .addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dc : snapshot.getChildren()) {
-                    if (dc.exists()) {
-                        ChatMessage message = dc.getValue(ChatMessage.class);
-                        Log.d(TAG, "onDataChange: " + message.toString());
-                        chatList.add(message);
-                    }
-                }
-                if (isFirstChange[0] && mDownloadConversationListener != null) {
-                    mDownloadConversationListener.onDownloadConversationSucceed(chatList);
-                    isFirstChange[0] = false;
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                if (mDownloadConversationListener != null) {
-                    mDownloadConversationListener.onDownloadConversationFailed(error.getMessage());
-                }
-            }
-        });
-    }
-
 }
