@@ -83,7 +83,7 @@ public class ChatClanFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.chat_clan_fragment, container, false);
-        mRecyclerview = rootView.findViewById(R.id.friends_recycler_view);
+        mRecyclerview = rootView.findViewById(R.id.chatclan_recyclerview);
         mRecyclerview.setHasFixedSize(true);
         mRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
 

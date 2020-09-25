@@ -597,6 +597,5 @@ public class AuthRepository {
                         }
                     }
                 });
-
     }
 }

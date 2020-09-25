@@ -8,10 +8,14 @@ public class Conversation {
     public Conversation() {}
 
     public Conversation(String senderEmail, String receiverEmail) {
-        this.chatId = senderEmail + "&" + receiverEmail;
-        if (receiverEmail.compareTo(senderEmail) < 0) {
-            this.chatId = receiverEmail + "&" + senderEmail;
+        final String id1 = senderEmail.replace(".", "");
+        final String id2 = receiverEmail.replace(".", "");
+
+        this.chatId = id1 + "&" + id2;
+        if (id2.compareTo(id1) < 0) {
+            this.chatId = id2 + "&" + id1;
         }
+
         this.senderEmail = senderEmail;
         this.receiverEmail = receiverEmail;
     }

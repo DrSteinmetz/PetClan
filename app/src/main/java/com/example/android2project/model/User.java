@@ -102,4 +102,18 @@ public class User implements Comparable<Object>, Serializable{
 
         return 0;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "mEmail='" + mEmail + '\'' +
+                ", mFirstName='" + mFirstName + '\'' +
+                ", mLastName='" + mLastName + '\'' +
+                ", mPhotoUri='" + mPhotoUri + '\'' +
+                ", mIsBusiness=" + mIsBusiness +
+                ", mBusinessName='" + mBusinessName + '\'' +
+                ", mFriendsMap=" + mFriendsMap +
+                ", mLocation='" + mLocation + '\'' +
+                '}';
+    }
 }

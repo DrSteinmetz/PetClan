@@ -17,18 +17,22 @@
 
             <ImageButton
                 android:id="@+id/tool_bar_picture"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/ic_petclan_app_icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_default_user_pic"
                 android:background="@null"
-                android:layout_marginHorizontal="30dp"
+                android:layout_marginStart="30dp"
                 android:scaleType="fitXY"/>
 
             <TextView
                 android:id="@+id/tool_bar_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="username"/>
+                android:layout_marginStart="10dp"
+                android:text="username"
+                android:textSize="15sp"
+                android:textColor="@color/colorBlack"
+                android:textAllCaps="false" />
         </com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.AppBarLayout>

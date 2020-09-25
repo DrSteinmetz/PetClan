@@ -41,7 +41,6 @@ public class ConversationFragment extends DialogFragment {
 
     private MessageListAdapter mMessageAdapter;
     private RecyclerView mMessageRecycler;
-//    private MessageListAdapter mMessageAdapter;
 
     private Observer<List<ChatMessage>> mOnDownloadConversationSucceed;
     private Observer<String> mOnDownloadConversationFailed;
@@ -131,7 +130,6 @@ public class ConversationFragment extends DialogFragment {
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.conversation_fragment, container, false);
 
-
         mMessageRecycler = rootView.findViewById(R.id.recycler_view_message_list);
         mChatBox = rootView.findViewById(R.id.chatbox_et);
         mSendBtn = rootView.findViewById(R.id.send_btn);
@@ -161,7 +159,8 @@ public class ConversationFragment extends DialogFragment {
                 // user is at the bottom of the list, scroll to the bottom
                 // of the list to show the newly added message.
                 if (lastVisiblePosition == -1 ||
-                        (positionStart >= (messagesCount - 1)) && lastVisiblePosition == (positionStart - 1)) {
+                        (positionStart >= (messagesCount - 1)) &&
+                                lastVisiblePosition == (positionStart - 1)) {
                     mMessageRecycler.scrollToPosition(positionStart);
                 } else if (lastVisiblePosition < (messagesCount)) {
                     newMessagesCount[0]++;
@@ -175,7 +174,6 @@ public class ConversationFragment extends DialogFragment {
                             newMessagesCount[0] = 0;
                         }
                     });
-
                 }
             }
         });
@@ -227,7 +225,8 @@ public class ConversationFragment extends DialogFragment {
 
         mMessageRecycler.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 if (oldBottom > bottom) {
                     mMessageRecycler.smoothScrollToPosition(mMessageAdapter.getItemCount());
                     mLinearLayoutManager.setStackFromEnd(true);
@@ -271,6 +270,7 @@ public class ConversationFragment extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
+
         mMessageAdapter.startListening();
         Window window = Objects.requireNonNull(getDialog()).getWindow();
         if (window != null) {
@@ -282,7 +282,7 @@ public class ConversationFragment extends DialogFragment {
     @Override
     public void onStop() {
         super.onStop();
+
         mMessageAdapter.stopListening();
     }
-
 }

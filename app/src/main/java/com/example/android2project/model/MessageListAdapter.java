@@ -17,8 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
-public class MessageListAdapter extends FirebaseRecyclerAdapter<ChatMessage, MessageListAdapter.ChatViewHolder> {
-
+public class MessageListAdapter extends FirebaseRecyclerAdapter<ChatMessage, MessageListAdapter.MessageViewHolder> {
     private String mUserEmail;
 
     private final int TYPE_MESSAGE_SENT = 1;
@@ -29,30 +28,53 @@ public class MessageListAdapter extends FirebaseRecyclerAdapter<ChatMessage, Mes
         this.mUserEmail = userEmail;
     }
 
+    class MessageViewHolder extends RecyclerView.ViewHolder {
+        private TextView content;
+        private TextView time;
+
+        public MessageViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            this.content = itemView.findViewById(R.id.message_body_tv);
+            this.time = itemView.findViewById(R.id.message_time_tv);
+        }
+
+        public void bind(ChatMessage message) {
+            this.content.setText(message.getContent());
+            this.time.setText(DateToFormatDate(message.getTime()));
+        }
+    }
+
     @Override
-    protected void onBindViewHolder(@NonNull ChatViewHolder holder, int position, @NonNull ChatMessage model) {
-        holder.bind(model);
+    protected void onBindViewHolder(@NonNull MessageViewHolder holder, int position,
+                                    @NonNull ChatMessage message) {
+        holder.bind(message);
     }
 
     @NonNull
     @Override
-    public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
 
-        if (viewType == TYPE_MESSAGE_SENT)
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_message_sent, parent, false);
-        else
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_message_received, parent, false);
-        return new ChatViewHolder(view);
+        if (viewType == TYPE_MESSAGE_SENT) {
+            view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_message_sent, parent, false);
+        } else {
+            view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_message_received, parent, false);
+        }
+
+        return new MessageViewHolder(view);
     }
 
     @Override
     public int getItemViewType(int position) {
         ChatMessage message = getItem(position);
-        if (Objects.equals(mUserEmail, message.getRecipientEmail()))
+        if (Objects.equals(mUserEmail, message.getRecipientEmail())) {
             return TYPE_MESSAGE_RECEIVED;
-        else
+        } else {
             return TYPE_MESSAGE_SENT;
+        }
     }
 
     @Override
@@ -60,25 +82,9 @@ public class MessageListAdapter extends FirebaseRecyclerAdapter<ChatMessage, Mes
         return super.getItemCount();
     }
 
-    class ChatViewHolder extends RecyclerView.ViewHolder {
-        private TextView mContent, mTime;
-
-        public ChatViewHolder(@NonNull View itemView) {
-            super(itemView);
-            this.mContent = itemView.findViewById(R.id.message_body_tv);
-            this.mTime = itemView.findViewById(R.id.message_time_tv);
-        }
-
-        public void bind(ChatMessage message) {
-            this.mContent.setText(message.getContent());
-            this.mTime.setText(DateToFormatDate(message.getTime()));
-        }
-    }
-
     @SuppressLint("SimpleDateFormat")
     private String DateToFormatDate(Date date) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm | dd/MM");
         return simpleDateFormat.format(date);
     }
-
 }

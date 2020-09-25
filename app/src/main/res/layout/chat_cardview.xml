@@ -39,12 +39,11 @@
                     android:id="@+id/friend_name_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@null"
                     android:text="Friend Name"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorBlack"
                     android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:textColor="@color/colorBlack"
+                    android:textStyle="bold"
+                    android:textAllCaps="false" />
 
                 <TextView
                     android:id="@+id/time_ago_tv"
@@ -54,21 +53,23 @@
                     android:layout_alignParentEnd="true"
                     android:gravity="end"
                     android:text="moments ago"
-                    android:textAllCaps="false"
-                    android:textSize="13sp" />
+                    android:textSize="13sp"
+                    android:textAllCaps="false" />
 
             </RelativeLayout>
-
 
             <TextView
                 android:id="@+id/last_message_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="last meesage"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:text="last message"
                 android:textAllCaps="false"
                 android:textSize="13sp" />
 
         </LinearLayout>
+
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

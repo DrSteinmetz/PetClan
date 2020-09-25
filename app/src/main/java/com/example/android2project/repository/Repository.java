@@ -5,11 +5,10 @@ import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.example.android2project.model.ChatMessage;
-import com.example.android2project.model.Conversation;
 import com.example.android2project.model.Comment;
+import com.example.android2project.model.Conversation;
 import com.example.android2project.model.Post;
 import com.example.android2project.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -19,7 +18,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,11 +25,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -50,18 +45,16 @@ public class Repository {
     private static Repository repository;
 
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-    private DatabaseReference mDBChats = mDatabase.getReference().child("chats");
+    private DatabaseReference mDBChats;
+
 
     private FirebaseFirestore mCloudDB = FirebaseFirestore.getInstance();
     private CollectionReference mCloudUsers = mCloudDB.collection("users");
-    private CollectionReference mCloudChats = mCloudDB.collection("chats");
 
     private final String TAG = "Repository";
 
     /**<-------Posts Interfaces------->**/
-    /**
-     * <-------Post Downloading interface------->
-     **/
+    /**<-------Post Downloading interface------->**/
     public interface RepositoryPostDownloadInterface {
         void onPostDownloadSucceed(List<Post> posts);
 
@@ -74,9 +67,7 @@ public class Repository {
         this.mPostDownloadListener = repositoryPostDownloadInterface;
     }
 
-    /**
-     * <-------Post Uploading interface------->
-     **/
+    /**<-------Post Uploading interface------->**/
     public interface RepositoryPostUploadInterface {
         void onPostUploadSucceed(Post post);
 
@@ -89,9 +80,7 @@ public class Repository {
         this.mPostUploadListener = repositoryPostUploadInterface;
     }
 
-    /**
-     * <-------Post Updating interface------->
-     **/
+    /**<-------Post Updating interface------->**/
     public interface RepositoryPostUpdatingInterface {
         void onPostUpdatingSucceed(Post updatedPost);
 
@@ -104,9 +93,7 @@ public class Repository {
         this.mPostUpdatingListener = repositoryPostUpdatingInterface;
     }
 
-    /**
-     * <-------Post Likes Updating interface------->
-     **/
+    /**<-------Post Likes Updating interface------->**/
     public interface RepositoryPostLikesUpdatingInterface {
         void onPostLikesUpdateSucceed(Post post);
 
@@ -119,9 +106,7 @@ public class Repository {
         this.mPostLikesUpdatingListener = repositoryPostLikesUpdatingInterface;
     }
 
-    /**
-     * <-------Post Deleting interface------->
-     **/
+    /**<-------Post Deleting interface------->**/
     public interface RepositoryPostDeletingInterface {
         void onPostDeletingSucceed(String postId);
 
@@ -135,9 +120,7 @@ public class Repository {
     }
 
     /**<-------Comments Interfaces------->**/
-    /**
-     * <-------Comment Downloading interface------->
-     **/
+    /**<-------Comment Downloading interface------->**/
     public interface RepositoryCommentDownloadInterface {
         void onCommentDownloadSucceed(List<Comment> comments);
 
@@ -150,9 +133,7 @@ public class Repository {
         this.mCommentDownloadListener = repositoryCommentDownloadInterface;
     }
 
-    /**
-     * <-------Comment Uploading interface------->
-     **/
+    /**<-------Comment Uploading interface------->**/
     public interface RepositoryCommentUploadInterface {
         void onCommentUploadSucceed(Comment comment);
 
@@ -165,9 +146,7 @@ public class Repository {
         this.mCommentUploadListener = repositoryCommentUploadInterface;
     }
 
-    /**
-     * <-------Comment Updating interface------->
-     **/
+    /**<-------Comment Updating interface------->**/
     public interface RepositoryCommentUpdatingInterface {
         void onCommentUpdatingSucceed(String updatedCommentContent);
 
@@ -180,9 +159,7 @@ public class Repository {
         this.mCommentUpdatingListener = repositoryCommentUpdatingInterface;
     }
 
-    /**
-     * <-------Comment Deleting interface------->
-     **/
+    /**<-------Comment Deleting interface------->**/
     public interface RepositoryCommentDeletingInterface {
         void onCommentDeletingSucceed(String commentId);
 
@@ -196,9 +173,7 @@ public class Repository {
     }
 
     /**<-------Settings Interfaces------->**/
-    /**
-     * <-------Update User Name interface------->
-     **/
+    /**<-------Update User Name interface------->**/
     public interface RepositoryUpdateUserNameInterface {
         void onUpdateUserNameSucceed(String newUserName);
 
@@ -211,9 +186,7 @@ public class Repository {
         this.mUpdateUserNameListener = repositoryUpdateUserNameInterface;
     }
 
-    /**
-     * <-------Update User Image interface------->
-     **/
+    /**<-------Update User Image interface------->**/
     public interface RepositoryUpdateUserImageInterface {
         void onUpdateUserImageSucceed(String newUserProfilePic);
 
@@ -226,9 +199,7 @@ public class Repository {
         this.mUpdateUserImageListener = repositoryUpdateUserImageInterface;
     }
 
-    /**
-     * <-------Update User Cover Image interface------->
-     **/
+    /**<-------Update User Cover Image interface------->**/
     public interface RepositoryUpdateUserCoverImageInterface {
         void onUpdateUserCoverImageSucceed(String newUserProfileCoverPic);
 
@@ -241,9 +212,7 @@ public class Repository {
         this.mUpdateUserCoverImageListener = repositoryUpdateUserCoverImageInterface;
     }
 
-    /**
-     * <-------User Deletion interface------->
-     **/
+    /**<-------User Deletion interface------->**/
     public interface RepositoryUserDeletionInterface {
         void onUserDeletionSucceed(String userId);
 
@@ -257,9 +226,7 @@ public class Repository {
     }
 
     /**<-------Chats Interfaces------->**/
-    /**
-     * <-------Download Conversation interface------->
-     **/
+    /**<-------Download Conversation interface------->**/
     public interface RepositoryDownloadConversationInterface {
         void onDownloadConversationSucceed(List<ChatMessage> conversation);
 
@@ -272,9 +239,7 @@ public class Repository {
         this.mDownloadConversationListener = repositoryDownloadConversationInterface;
     }
 
-    /**
-     * <-------Upload Message interface------->
-//            **/
+    /**<-------Upload Message interface------->**/
     public interface RepositoryUploadMessageInterface {
         void onUploadMessageSucceed(ChatMessage message, boolean isMine);
 
@@ -297,11 +262,12 @@ public class Repository {
     private Repository(final Context context) {
         this.mContext = context;
         mAuth = FirebaseAuth.getInstance();
+        mDatabase.setPersistenceEnabled(true);
+        mDBChats = mDatabase.getReference().child("chats");
+        mDBChats.keepSynced(true);
     }
 
-    /**
-     * <-------Posts methods------->
-     **/
+    /**<-------Posts methods------->**/
     public void downloadPosts() {
         final List<Post> posts = new ArrayList<>();
         final FirebaseUser user = mAuth.getCurrentUser();
@@ -499,9 +465,7 @@ public class Repository {
         }
     }
 
-    /**
-     * <-------Comments methods------->
-     **/
+    /**<-------Comments methods------->**/
     public void uploadComment(final Post post, final String commentContent) {
         final FirebaseUser user = mAuth.getCurrentUser();
 
@@ -641,6 +605,7 @@ public class Repository {
         }
     }
 
+    /**<-------Settings methods------->**/
     public void updateUserName(String newUserName) {
         final FirebaseUser user = mAuth.getCurrentUser();
 
@@ -744,178 +709,10 @@ public class Repository {
         }
     }
 
-    /*public void downloadConversation(final String chatId) {
-        final FirebaseUser user = mAuth.getCurrentUser();
-
-        if (user != null) {
-            final List<ChatMessage> conversation = new ArrayList<>();
-
-            mCloudChats.document(chatId)
-                    .collection("messages")
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                                    conversation.add(document.toObject(ChatMessage.class));
-                                }
-
-                                Collections.sort(conversation);
-
-                                if (mDownloadConversationListener != null) {
-                                    mDownloadConversationListener.onDownloadConversationSucceed(conversation);
-                                }
-                            } else {
-                                if (mDownloadConversationListener != null) {
-                                    mDownloadConversationListener
-                                            .onDownloadConversationFailed(Objects.requireNonNull(task
-                                                    .getException()).getMessage());
-                                }
-                            }
-                        }
-                    });
-
-            mCloudChats.document(chatId)
-                    .collection("messages")
-                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable QuerySnapshot value,
-                                            @Nullable FirebaseFirestoreException error) {
-                            if (error != null) {
-                                Log.w(TAG, "onEvent: ", error);
-                            }
-
-                            if (value != null && !value.isEmpty()) {
-                                for (DocumentChange dc : value.getDocumentChanges()) {
-                                    if (dc.getType() == DocumentChange.Type.ADDED) {
-                                        ChatMessage message = dc.getDocument()
-                                                .toObject(ChatMessage.class);
-
-                                        if (mUploadMessageListener != null) {
-                                            mUploadMessageListener.onUploadMessageSucceed(message, false);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    });
-        }
-    }*/
-
-    /*public void uploadChatMessage(final User userRecipient, final String messageContent) {
-        final FirebaseUser user = mAuth.getCurrentUser();
-
-        if (user != null) {
-            String tempChatId = userRecipient.getEmail() + "&" + user.getEmail();
-            if (Objects.requireNonNull(user.getEmail()).compareTo(userRecipient.getEmail()) < 0) {
-                tempChatId = user.getEmail() + "&" + userRecipient.getEmail();
-            }
-            final String chatId = tempChatId;
-
-            mCloudChats.document(chatId)
-                    .get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            if (documentSnapshot.exists()) {
-                                uploadMessageToCloud(chatId, messageContent, userRecipient);
-                            } else {
-                                final Conversation conversation = new Conversation(user.getEmail(),
-                                        userRecipient.getEmail());
-
-                                mCloudChats.document(chatId)
-                                        .set(conversation)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                uploadMessageToCloud(chatId, messageContent, userRecipient);
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                if (mUploadMessageListener != null) {
-                                                    mUploadMessageListener.onUploadMessageFailed(e.getMessage());
-                                                }
-                                            }
-                                        });
-                            }
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                }
-            });
-        }
-    }*/
-
-    /*private void uploadMessageToCloud(final String chatId,
-                                      final String messageContent,
-                                      final User userRecipient) {
-        final ChatMessage message = new ChatMessage(messageContent,
-                userRecipient.getEmail());
-
-        mCloudChats.document(chatId)
-                .collection("messages")
-                .document(message.getTime().toString())
-                .set(message)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        if (mUploadMessageListener != null) {
-                            mUploadMessageListener.onUploadMessageSucceed(message, true);
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        if (mUploadMessageListener != null) {
-                            mUploadMessageListener.onUploadMessageFailed(e.getMessage());
-                        }
-                    }
-                });
-    }*/
-
-//    private final List<ChatMessage> chatList = new ArrayList<>();
-
-//    public void downloadConversationFromDB(final String chatId) {
-//        final boolean[] isFirstChange = {true};
-//
-//        mDBChats.child(chatId)
-//                .addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                        chatList.clear();
-//
-//
-//                        if (isFirstChange[0] && mDownloadConversationListener != null) {
-//                            for (DataSnapshot dc : snapshot.getChildren()) {
-//                                if (dc.exists()) {
-//                                    ChatMessage message = dc.getValue(ChatMessage.class);
-//                                    chatList.add(message);
-//                                }
-//                            }
-//
-//                            mDownloadConversationListener.onDownloadConversationSucceed(chatList);
-//                            isFirstChange[0] = false;
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError error) {
-//                        if (mDownloadConversationListener != null) {
-//                            mDownloadConversationListener.onDownloadConversationFailed(error.getMessage());
-//                        }
-//                    }
-//                });
-//    }
-
+    /**<-------Chat methods------->**/
     public void uploadMessageToDB(final String messageContent,
                                   final String sender,
                                   final String recipient) {
-//        chatList.clear();
         final ChatMessage chatMessage = new ChatMessage(messageContent, recipient);
 
         final String id1 = sender.replace(".", "");
@@ -927,47 +724,11 @@ public class Repository {
         }
         final String chatId = tempChatId;
 
-//        mDBChats.child(chatId)
-//                .addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                        if (mUploadMessageListener != null) {
-//                            mUploadMessageListener.onUploadMessageSucceed(chatMessage, true);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError error) {
-//                    }
-//                })
-                /*.addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot snapshot,
-                                             @Nullable String previousChildName) {
-                        ChatMessage message = snapshot.getValue(ChatMessage.class);
-                        Log.d(TAG, "onChildAdded: " + previousChildName);
-                        Log.d(TAG, "onChildAdded: " + message.toString());
-                    }
-
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot snapshot,
-                                               @Nullable String previousChildName) {
-                    }
-
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                    }
-
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                    }
-                })*/;
-
         mDBChats.child(chatId)
+                .child("Conversation")
+                .setValue(new Conversation(sender, recipient));
+        mDBChats.child(chatId)
+                .child("Messages")
                 .child(chatMessage.getTime().toString())
                 .setValue(chatMessage);
 //                .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -989,8 +750,50 @@ public class Repository {
 //                });
     }
 
-    public Query ConversationQuery(String chatId) {
-        Log.d(TAG, "ConversationQuery: "+ mDBChats.child(chatId));
-        return mDBChats.child(chatId);
+    public Query ConversationQuery(final String chatId) {
+        mDBChats.orderByChild("Conversation/senderEmail")
+                .equalTo(mAuth.getCurrentUser().getEmail())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            for (DataSnapshot ds : snapshot.getChildren()) {
+                                Log.d(TAG, "onDataChange: " + ds.getKey());
+                            }
+                        } else {
+                            Log.d(TAG, "onDataChange: " + snapshot.getKey() + " not exists");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
+
+        // This SHIT returns exactly what we fucking need!!!
+        /*List<String> values = new ArrayList<>();
+        values.add("a@gmail.com");
+        values.add("b@gmail.com");
+        mCloudUsers.whereIn("email", values)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (DocumentSnapshot ds : queryDocumentSnapshots.getDocuments()) {
+                            Log.d(TAG, "wtf onSuccess: " + ds.toObject(User.class).toString());
+                        }
+                    }
+                });*/
+
+        return mDBChats.child(chatId).child("Messages");
+    }
+
+    public Query ChatsQuery() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            return mDBChats.orderByChild("Conversation/senderEmail").equalTo(user.getEmail());
+        }
+
+        return null;
     }
 }
