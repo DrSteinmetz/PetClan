@@ -4,7 +4,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,7 +30,8 @@ import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.viewmodel.ConversationViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import java.util.List;
 import java.util.Objects;
@@ -40,9 +39,9 @@ import java.util.Objects;
 public class ConversationFragment extends DialogFragment {
     private ConversationViewModel mViewModel;
 
-    private FirebaseRecyclerAdapter<ChatMessage, RecyclerView.ViewHolder> mFirebaseAdapter;
-    private RecyclerView mMessageRecycler;
     private MessageListAdapter mMessageAdapter;
+    private RecyclerView mMessageRecycler;
+//    private MessageListAdapter mMessageAdapter;
 
     private Observer<List<ChatMessage>> mOnDownloadConversationSucceed;
     private Observer<String> mOnDownloadConversationFailed;
@@ -52,8 +51,11 @@ public class ConversationFragment extends DialogFragment {
 
     private EditText mChatBox;
     private ImageButton mSendBtn;
+    private ExtendedFloatingActionButton mScrollDownBtn;
     private TextView mRecipientName;
     private ImageView mRecipientPicture;
+
+    private LinearLayoutManager mLinearLayoutManager;
 
     private User mUserRecipient;
 
@@ -82,46 +84,46 @@ public class ConversationFragment extends DialogFragment {
 
         mViewModel.setRecipientEmail(mUserRecipient.getEmail());
 
-        mOnDownloadConversationSucceed = new Observer<List<ChatMessage>>() {
-            @Override
-            public void onChanged(List<ChatMessage> chatMessages) {
-                mMessageAdapter.notifyDataSetChanged();
-                if (chatMessages.size() > 0) {
-                    Log.d(TAG, "asdf onChanged: " + chatMessages);
-                    mMessageRecycler.scrollToPosition(chatMessages.size() - 1);
-                }
-            }
-        };
+//        mOnDownloadConversationSucceed = new Observer<List<ChatMessage>>() {
+//            @Override
+//            public void onChanged(List<ChatMessage> chatMessages) {
+//                mMessageAdapter.notifyDataSetChanged();
+//                if (chatMessages.size() > 0) {
+//                    Log.d(TAG, "asdf onChanged: " + chatMessages);
+//                    mMessageRecycler.scrollToPosition(chatMessages.size() - 1);
+//                }
+//            }
+//        };
 
-        mOnDownloadConversationFailed = new Observer<String>() {
-            @Override
-            public void onChanged(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
-            }
-        };
+//        mOnDownloadConversationFailed = new Observer<String>() {
+//            @Override
+//            public void onChanged(String error) {
+//                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+//            }
+//        };
 
-        mOnUploadMessageSucceed = new Observer<ChatMessage>() {
-            @Override
-            public void onChanged(ChatMessage message) {
-                //mMessageAdapter.notifyDataSetChanged();
-                Log.d(TAG, "asdf onChanged: " + message.toString());
-                mMessageAdapter.notifyItemInserted(mViewModel.getConversation().size() - 1);
-                if (mViewModel.getConversation().size() > 0) {
-                    mMessageRecycler.smoothScrollToPosition(mViewModel.getConversation().size() - 1);
-                }
-            }
-        };
+//        mOnUploadMessageSucceed = new Observer<ChatMessage>() {
+//            @Override
+//            public void onChanged(ChatMessage message) {
+//                //mMessageAdapter.notifyDataSetChanged();
+//                Log.d(TAG, "asdf onChanged: " + message.toString());
+//                mMessageAdapter.notifyItemInserted(mViewModel.getConversation().size() - 1);
+//                if (mViewModel.getConversation().size() > 0) {
+//                    mMessageRecycler.smoothScrollToPosition(mViewModel.getConversation().size() - 1);
+//                }
+//            }
+//        };
 
-        mOnUploadMessageFailed = new Observer<String>() {
-            @Override
-            public void onChanged(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
-            }
-        };
+//        mOnUploadMessageFailed = new Observer<String>() {
+//            @Override
+//            public void onChanged(String error) {
+//                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+//            }
+//        };
 
-        mViewModel.downloadConversation();
+//        mViewModel.downloadConversation();
 
-        startObservation();
+//        startObservation();
     }
 
     @Override
@@ -129,16 +131,66 @@ public class ConversationFragment extends DialogFragment {
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.conversation_fragment, container, false);
 
+
         mMessageRecycler = rootView.findViewById(R.id.recycler_view_message_list);
         mChatBox = rootView.findViewById(R.id.chatbox_et);
         mSendBtn = rootView.findViewById(R.id.send_btn);
         mRecipientName = rootView.findViewById(R.id.tool_bar_username);
         mRecipientPicture = rootView.findViewById(R.id.tool_bar_picture);
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        mScrollDownBtn = rootView.findViewById(R.id.scroll_down_btn);
+        mLinearLayoutManager = new LinearLayoutManager(getContext());
         mMessageRecycler.setHasFixedSize(true);
-        mMessageRecycler.setLayoutManager(linearLayoutManager);
+        mMessageRecycler.setLayoutManager(mLinearLayoutManager);
 
-        mMessageAdapter = new MessageListAdapter(getContext(), mViewModel.getConversation());
+        final String chatId = mViewModel.generateChatId();
+
+        FirebaseRecyclerOptions<ChatMessage> recyclerOptions = new FirebaseRecyclerOptions.Builder<ChatMessage>()
+                .setQuery(mViewModel.ConversationQuery(chatId), ChatMessage.class).build();
+
+        mMessageAdapter = new MessageListAdapter(recyclerOptions, mViewModel.getUserEmail());
+
+        final int[] newMessagesCount = {0};
+
+        mMessageAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(final int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+                int messagesCount = mMessageAdapter.getItemCount();
+                int lastVisiblePosition = mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
+                // If the recycler view is initially being loaded or the
+                // user is at the bottom of the list, scroll to the bottom
+                // of the list to show the newly added message.
+                if (lastVisiblePosition == -1 ||
+                        (positionStart >= (messagesCount - 1)) && lastVisiblePosition == (positionStart - 1)) {
+                    mMessageRecycler.scrollToPosition(positionStart);
+                } else if (lastVisiblePosition < (messagesCount)) {
+                    newMessagesCount[0]++;
+                    mScrollDownBtn.show();
+                    mScrollDownBtn.setText(newMessagesCount[0] + " Unread Messages");
+                    mScrollDownBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mMessageRecycler.smoothScrollToPosition(positionStart);
+                            mScrollDownBtn.hide();
+                            newMessagesCount[0] = 0;
+                        }
+                    });
+
+                }
+            }
+        });
+
+        mMessageRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (!recyclerView.canScrollVertically(1) && mScrollDownBtn.isShown()) {
+                    mScrollDownBtn.hide();
+                    newMessagesCount[0] = 0;
+                }
+            }
+        });
+
 
         Window window = Objects.requireNonNull(getDialog()).getWindow();
         if (window != null) {
@@ -178,18 +230,19 @@ public class ConversationFragment extends DialogFragment {
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 if (oldBottom > bottom) {
                     mMessageRecycler.smoothScrollToPosition(mMessageAdapter.getItemCount());
-                    linearLayoutManager.setStackFromEnd(true);
-                    mMessageRecycler.setLayoutManager(linearLayoutManager);
+                    mLinearLayoutManager.setStackFromEnd(true);
+                    mMessageRecycler.setLayoutManager(mLinearLayoutManager);
                 }
 
-                linearLayoutManager.setStackFromEnd(false);
-                mMessageRecycler.setLayoutManager(linearLayoutManager);
+                mLinearLayoutManager.setStackFromEnd(false);
+                mMessageRecycler.setLayoutManager(mLinearLayoutManager);
             }
         });
 
         mChatBox.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -197,7 +250,8 @@ public class ConversationFragment extends DialogFragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         mMessageRecycler.setAdapter(mMessageAdapter);
@@ -217,13 +271,18 @@ public class ConversationFragment extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
+        mMessageAdapter.startListening();
         Window window = Objects.requireNonNull(getDialog()).getWindow();
         if (window != null) {
-            /*WindowManager.LayoutParams params = window.getAttributes();
-            params.y = 300;
-            window.setAttributes(params);*/
             window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);
         }
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mMessageAdapter.stopListening();
+    }
+
 }

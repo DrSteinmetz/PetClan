@@ -24,6 +24,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
@@ -273,7 +274,7 @@ public class Repository {
 
     /**
      * <-------Upload Message interface------->
-     **/
+//            **/
     public interface RepositoryUploadMessageInterface {
         void onUploadMessageSucceed(ChatMessage message, boolean isMine);
 
@@ -877,43 +878,44 @@ public class Repository {
                 });
     }*/
 
-    private final List<ChatMessage> chatList = new ArrayList<>();
-    public void downloadConversationFromDB(final String chatId) {
-        final boolean[] isFirstChange = {true};
+//    private final List<ChatMessage> chatList = new ArrayList<>();
 
-        mDBChats.child(chatId)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        chatList.clear();
-
-
-                        if (isFirstChange[0] && mDownloadConversationListener != null) {
-                            for (DataSnapshot dc : snapshot.getChildren()) {
-                                if (dc.exists()) {
-                                    ChatMessage message = dc.getValue(ChatMessage.class);
-                                    chatList.add(message);
-                                }
-                            }
-
-                            mDownloadConversationListener.onDownloadConversationSucceed(chatList);
-                            isFirstChange[0] = false;
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        if (mDownloadConversationListener != null) {
-                            mDownloadConversationListener.onDownloadConversationFailed(error.getMessage());
-                        }
-                    }
-                });
-    }
+//    public void downloadConversationFromDB(final String chatId) {
+//        final boolean[] isFirstChange = {true};
+//
+//        mDBChats.child(chatId)
+//                .addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                        chatList.clear();
+//
+//
+//                        if (isFirstChange[0] && mDownloadConversationListener != null) {
+//                            for (DataSnapshot dc : snapshot.getChildren()) {
+//                                if (dc.exists()) {
+//                                    ChatMessage message = dc.getValue(ChatMessage.class);
+//                                    chatList.add(message);
+//                                }
+//                            }
+//
+//                            mDownloadConversationListener.onDownloadConversationSucceed(chatList);
+//                            isFirstChange[0] = false;
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError error) {
+//                        if (mDownloadConversationListener != null) {
+//                            mDownloadConversationListener.onDownloadConversationFailed(error.getMessage());
+//                        }
+//                    }
+//                });
+//    }
 
     public void uploadMessageToDB(final String messageContent,
                                   final String sender,
                                   final String recipient) {
-        chatList.clear();
+//        chatList.clear();
         final ChatMessage chatMessage = new ChatMessage(messageContent, recipient);
 
         final String id1 = sender.replace(".", "");
@@ -925,19 +927,19 @@ public class Repository {
         }
         final String chatId = tempChatId;
 
-        mDBChats.child(chatId)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (mUploadMessageListener != null) {
-                            mUploadMessageListener.onUploadMessageSucceed(chatMessage, true);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                    }
-                })
+//        mDBChats.child(chatId)
+//                .addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                        if (mUploadMessageListener != null) {
+//                            mUploadMessageListener.onUploadMessageSucceed(chatMessage, true);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError error) {
+//                    }
+//                })
                 /*.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot snapshot,
@@ -967,23 +969,28 @@ public class Repository {
 
         mDBChats.child(chatId)
                 .child(chatMessage.getTime().toString())
-                .setValue(chatMessage)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        /*if (mUploadMessageListener != null) {
-                            mUploadMessageListener.onUploadMessageSucceed(chatMessage, true);
-                        }*/
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "onFailure: " + e.getMessage());
-                        if (mUploadMessageListener != null) {
-                            mUploadMessageListener.onUploadMessageFailed(e.getMessage());
-                        }
-                    }
-                });
+                .setValue(chatMessage);
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        /*if (mUploadMessageListener != null) {
+//                            mUploadMessageListener.onUploadMessageSucceed(chatMessage, true);
+//                        }*/
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d(TAG, "onFailure: " + e.getMessage());
+//                        if (mUploadMessageListener != null) {
+//                            mUploadMessageListener.onUploadMessageFailed(e.getMessage());
+//                        }
+//                    }
+//                });
+    }
+
+    public Query ConversationQuery(String chatId) {
+        Log.d(TAG, "ConversationQuery: "+ mDBChats.child(chatId));
+        return mDBChats.child(chatId);
     }
 }

@@ -1,8 +1,6 @@
 package com.example.android2project.model;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,111 +10,75 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android2project.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
+import java.util.Objects;
 
-public class MessageListAdapter extends RecyclerView.Adapter {
-    private static final int TYPE_MESSAGE_SENT = 1;
-    private static final int TYPE_MESSAGE_RECEIVED = 2;
+public class MessageListAdapter extends FirebaseRecyclerAdapter<ChatMessage, MessageListAdapter.ChatViewHolder> {
 
-    private Context mContext;
-    private List<ChatMessage> mMessageList;
-    private FirebaseUser mCurrentUser;
+    private String mUserEmail;
 
-    public MessageListAdapter(Context context, List<ChatMessage> messageList) {
-        mContext = context;
-        mMessageList = messageList;
-        this.mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+    private final int TYPE_MESSAGE_SENT = 1;
+    private final int TYPE_MESSAGE_RECEIVED = 2;
+
+    public MessageListAdapter(@NonNull FirebaseRecyclerOptions<ChatMessage> options, String userEmail) {
+        super(options);
+        this.mUserEmail = userEmail;
+    }
+
+    @Override
+    protected void onBindViewHolder(@NonNull ChatViewHolder holder, int position, @NonNull ChatMessage model) {
+        holder.bind(model);
     }
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
-        if (viewType == TYPE_MESSAGE_SENT) {
-            view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_message_sent, parent, false);
 
-            return new SentMessageHolder(view);
-        } else if (viewType == TYPE_MESSAGE_RECEIVED) {
-            view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_message_received, parent, false);
-
-            return new ReceivedMessageHolder(view);
-        }
-
-        return null;
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        ChatMessage message = (ChatMessage) mMessageList.get(position);
-
-        switch (holder.getItemViewType()) {
-            case TYPE_MESSAGE_SENT:
-                ((SentMessageHolder) holder).bind(message);
-                break;
-            case TYPE_MESSAGE_RECEIVED:
-                ((ReceivedMessageHolder) holder).bind(message);
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        return mMessageList.size();
+        if (viewType == TYPE_MESSAGE_SENT)
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_message_sent, parent, false);
+        else
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_message_received, parent, false);
+        return new ChatViewHolder(view);
     }
 
     @Override
     public int getItemViewType(int position) {
-        ChatMessage message = (ChatMessage) mMessageList.get(position);
-
-        if (message.getRecipientEmail().equals(mCurrentUser.getEmail())) {
-            // If the current user is the sender of the message
+        ChatMessage message = getItem(position);
+        if (Objects.equals(mUserEmail, message.getRecipientEmail()))
             return TYPE_MESSAGE_RECEIVED;
-        } else {
-            // If some other user sent the message
+        else
             return TYPE_MESSAGE_SENT;
-        }
     }
 
-    private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
-        TextView messageText, timeText;
-
-        public ReceivedMessageHolder(View itemView) {
-            super(itemView);
-            messageText = itemView.findViewById(R.id.message_body_tv);
-            timeText = itemView.findViewById(R.id.message_time_tv);
-        }
-
-        void bind(ChatMessage message) {
-            messageText.setText(message.getContent());
-            timeText.setText(DateToFormatDate(message.getTime()));
-        }
+    @Override
+    public int getItemCount() {
+        return super.getItemCount();
     }
 
+    class ChatViewHolder extends RecyclerView.ViewHolder {
+        private TextView mContent, mTime;
 
-    private class SentMessageHolder extends RecyclerView.ViewHolder {
-        TextView messageText, timeText;
-
-        public SentMessageHolder(View itemView) {
+        public ChatViewHolder(@NonNull View itemView) {
             super(itemView);
-            messageText = itemView.findViewById(R.id.message_body_tv);
-            timeText = itemView.findViewById(R.id.message_time_tv);
+            this.mContent = itemView.findViewById(R.id.message_body_tv);
+            this.mTime = itemView.findViewById(R.id.message_time_tv);
         }
 
-        void bind(ChatMessage message) {
-            messageText.setText(message.getContent());
-            timeText.setText(DateToFormatDate(message.getTime()));
+        public void bind(ChatMessage message) {
+            this.mContent.setText(message.getContent());
+            this.mTime.setText(DateToFormatDate(message.getTime()));
         }
     }
 
     @SuppressLint("SimpleDateFormat")
     private String DateToFormatDate(Date date) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm | dd/MM");
-        return simpleDateFormat.format(date).toString();
+        return simpleDateFormat.format(date);
     }
+
 }
