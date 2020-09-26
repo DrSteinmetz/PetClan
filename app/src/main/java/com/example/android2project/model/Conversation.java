@@ -1,55 +1,55 @@
 package com.example.android2project.model;
 
 public class Conversation {
-    private String chatId;
-    private String senderEmail;
-    private String receiverEmail;
+    private String mChatId;
+    private String mSenderEmail;
+    private String mRecipientEmail;
 
     public Conversation() {}
 
-    public Conversation(String senderEmail, String receiverEmail) {
+    public Conversation(String senderEmail, String recipientEmail) {
         final String id1 = senderEmail.replace(".", "");
-        final String id2 = receiverEmail.replace(".", "");
+        final String id2 = recipientEmail.replace(".", "");
 
-        this.chatId = id1 + "&" + id2;
+        this.mChatId = id1 + "&" + id2;
         if (id2.compareTo(id1) < 0) {
-            this.chatId = id2 + "&" + id1;
+            this.mChatId = id2 + "&" + id1;
         }
 
-        this.senderEmail = senderEmail;
-        this.receiverEmail = receiverEmail;
+        this.mSenderEmail = senderEmail;
+        this.mRecipientEmail = recipientEmail;
     }
 
     public String getChatId() {
-        return chatId;
+        return mChatId;
     }
 
     public void setChatId(String chatId) {
-        this.chatId = chatId;
+        this.mChatId = chatId;
     }
 
     public String getSenderEmail() {
-        return senderEmail;
+        return mSenderEmail;
     }
 
     public void setSenderEmail(String senderEmail) {
-        this.senderEmail = senderEmail;
+        this.mSenderEmail = senderEmail;
     }
 
-    public String getReceiverEmail() {
-        return receiverEmail;
+    public String getRecipientEmail() {
+        return mRecipientEmail;
     }
 
-    public void setReceiverEmail(String receiverEmail) {
-        this.receiverEmail = receiverEmail;
+    public void setRecipientEmail(String recipientEmail) {
+        this.mRecipientEmail = recipientEmail;
     }
 
     @Override
     public String toString() {
         return "Conversation{" +
-                "chatId='" + chatId + '\'' +
-                ", senderEmail='" + senderEmail + '\'' +
-                ", receiverEmail='" + receiverEmail + '\'' +
+                "chatId='" + mChatId + '\'' +
+                ", senderEmail='" + mSenderEmail + '\'' +
+                ", receiverEmail='" + mRecipientEmail + '\'' +
                 '}';
     }
 }

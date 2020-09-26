@@ -1,13 +1,16 @@
 package com.example.android2project.view.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,7 +21,8 @@ import com.example.android2project.model.Conversation;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.viewmodel.ChatsViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
+
+import java.util.List;
 
 public class ChatsFragment extends Fragment {
 
@@ -26,6 +30,9 @@ public class ChatsFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private ChatsAdapter mChatsAdapter;
+
+    private Observer<List<Conversation>> mOnDownloadGetActiveConversationsSucceed;
+    private Observer<String> mOnDownloadGetActiveConversationsFailed;
 
     private final String TAG = "ChatsFragment";
 
@@ -39,6 +46,25 @@ public class ChatsFragment extends Fragment {
 
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Chats)).get(ChatsViewModel.class);
+
+        mViewModel.getActiveChats();
+
+        mOnDownloadGetActiveConversationsSucceed = new Observer<List<Conversation>>() {
+            @Override
+            public void onChanged(List<Conversation> conversations) {
+                Log.d(TAG, "onChanged: " + conversations);
+                mChatsAdapter.notifyDataSetChanged();
+            }
+        };
+
+        mOnDownloadGetActiveConversationsFailed = new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        startObservation();
     }
 
     @Override
@@ -50,27 +76,17 @@ public class ChatsFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        FirebaseRecyclerOptions<Conversation> recyclerOptions = new FirebaseRecyclerOptions.Builder<Conversation>()
-                .setQuery(mViewModel.ChatsQuery(), Conversation.class).build();
-
-        mChatsAdapter = new ChatsAdapter(recyclerOptions);
+        mChatsAdapter = new ChatsAdapter(mViewModel.getConversations());
 
         mRecyclerView.setAdapter(mChatsAdapter);
 
         return rootView;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        mChatsAdapter.startListening();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        mChatsAdapter.stopListening();
+    public void startObservation() {
+        if (mViewModel != null) {
+            mViewModel.getGetActiveConversationsSucceed().observe(this, mOnDownloadGetActiveConversationsSucceed);
+            mViewModel.getGetActiveConversationsFailed().observe(this, mOnDownloadGetActiveConversationsFailed);
+        }
     }
 }

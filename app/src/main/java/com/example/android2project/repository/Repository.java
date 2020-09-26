@@ -10,7 +10,6 @@ import com.example.android2project.model.ChatMessage;
 import com.example.android2project.model.Comment;
 import com.example.android2project.model.Conversation;
 import com.example.android2project.model.Post;
-import com.example.android2project.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,7 +24,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -250,6 +248,19 @@ public class Repository {
 
     public void setUploadMessageListener(RepositoryUploadMessageInterface repositoryUploadMessageInterface) {
         this.mUploadMessageListener = repositoryUploadMessageInterface;
+    }
+
+    /**<-------Download Active Chats interface------->**/
+    public interface RepositoryDownloadActiveChatsInterface {
+        void onDownloadActiveChatsSucceed(List<Conversation> conversations);
+
+        void onDownloadActiveChatsFailed(String error);
+    }
+
+    private RepositoryDownloadActiveChatsInterface mDownloadActiveChatsListener;
+
+    public void setDownloadActiveChatsListener(RepositoryDownloadActiveChatsInterface repositoryDownloadActiveChatsInterface) {
+        this.mDownloadActiveChatsListener = repositoryDownloadActiveChatsInterface;
     }
 
     public static Repository getInstance(final Context context) {
@@ -711,22 +722,21 @@ public class Repository {
 
     /**<-------Chat methods------->**/
     public void uploadMessageToDB(final String messageContent,
-                                  final String sender,
-                                  final String recipient) {
-        final ChatMessage chatMessage = new ChatMessage(messageContent, recipient);
+                                  final String senderEmail,
+                                  final String recipientEmail) {
+        final ChatMessage chatMessage = new ChatMessage(messageContent, recipientEmail);
 
-        final String id1 = sender.replace(".", "");
-        final String id2 = recipient.replace(".", "");
+        final String id1 = senderEmail.replace(".", "");
+        final String id2 = recipientEmail.replace(".", "");
 
-        String tempChatId = id2 + "&" + id1;
-        if (Objects.requireNonNull(id1).compareTo(id2) < 0) {
-            tempChatId = id1 + "&" + id2;
-        }
-        final String chatId = tempChatId;
+        Conversation conversation = new Conversation(senderEmail, recipientEmail);
+        final String chatId = conversation.getChatId();
 
+        mDBChats.child(chatId).child(id1).setValue(true);
+        mDBChats.child(chatId).child(id2).setValue(true);
         mDBChats.child(chatId)
                 .child("Conversation")
-                .setValue(new Conversation(sender, recipient));
+                .setValue(conversation);
         mDBChats.child(chatId)
                 .child("Messages")
                 .child(chatMessage.getTime().toString())
@@ -751,49 +761,44 @@ public class Repository {
     }
 
     public Query ConversationQuery(final String chatId) {
-        mDBChats.orderByChild("Conversation/senderEmail")
-                .equalTo(mAuth.getCurrentUser().getEmail())
+        return mDBChats.child(chatId).child("Messages");
+    }
+
+    public void downloadActiveChats() {
+        final ArrayList<Conversation> conversations = new ArrayList<>();
+        FirebaseUser user = mAuth.getCurrentUser();
+        String userEmail = "";
+
+        if (user != null) {
+            userEmail = Objects.requireNonNull(user.getEmail()).replace(".", "");
+        }
+
+        mDBChats.orderByChild(userEmail).equalTo(true)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
+                            Conversation conversation;
+                            conversations.clear();
                             for (DataSnapshot ds : snapshot.getChildren()) {
-                                Log.d(TAG, "onDataChange: " + ds.getKey());
+                                conversation = ds.child("Conversation").getValue(Conversation.class);
+                                if (conversation != null) {
+                                    conversations.add(conversation);
+                                }
                             }
-                        } else {
-                            Log.d(TAG, "onDataChange: " + snapshot.getKey() + " not exists");
+
+                            if (mDownloadActiveChatsListener != null) {
+                                mDownloadActiveChatsListener.onDownloadActiveChatsSucceed(conversations);
+                            }
                         }
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                    }
-                });
-
-        // This SHIT returns exactly what we fucking need!!!
-        /*List<String> values = new ArrayList<>();
-        values.add("a@gmail.com");
-        values.add("b@gmail.com");
-        mCloudUsers.whereIn("email", values)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for (DocumentSnapshot ds : queryDocumentSnapshots.getDocuments()) {
-                            Log.d(TAG, "wtf onSuccess: " + ds.toObject(User.class).toString());
+                        if (mDownloadActiveChatsListener != null) {
+                            mDownloadActiveChatsListener.onDownloadActiveChatsFailed(error.getMessage());
                         }
                     }
-                });*/
-
-        return mDBChats.child(chatId).child("Messages");
-    }
-
-    public Query ChatsQuery() {
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            return mDBChats.orderByChild("Conversation/senderEmail").equalTo(user.getEmail());
-        }
-
-        return null;
+                });
     }
 }

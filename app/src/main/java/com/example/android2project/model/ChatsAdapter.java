@@ -11,16 +11,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android2project.R;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
-public class ChatsAdapter extends FirebaseRecyclerAdapter<Conversation, ChatsAdapter.ChatsViewHolder> {
+public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatsViewHolder> {
 
-    public ChatsAdapter(@NonNull FirebaseRecyclerOptions options) {
-        super(options);
+    private List<Conversation> mConversations;
+
+    public ChatsAdapter(List<Conversation> conversations) {
+        this.mConversations = conversations;
     }
 
     class ChatsViewHolder extends RecyclerView.ViewHolder {
@@ -37,16 +38,6 @@ public class ChatsAdapter extends FirebaseRecyclerAdapter<Conversation, ChatsAda
             this.lastMessageTv = itemView.findViewById(R.id.message_body_tv);
             this.timeTv = itemView.findViewById(R.id.message_time_tv);
         }
-
-        public void bind(Conversation conversation) {
-            this.friendNameTv.setText(conversation.getReceiverEmail());
-        }
-    }
-
-    @Override
-    protected void onBindViewHolder(@NonNull ChatsViewHolder holder, int position,
-                                    @NonNull Conversation conversation) {
-        holder.bind(conversation);
     }
 
     @NonNull
@@ -56,6 +47,18 @@ public class ChatsAdapter extends FirebaseRecyclerAdapter<Conversation, ChatsAda
                 .inflate(R.layout.chat_cardview, parent, false);
 
         return new ChatsViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ChatsViewHolder holder, int position) {
+        final Conversation conversation = mConversations.get(position);
+
+        holder.friendNameTv.setText(conversation.getRecipientEmail());
+    }
+
+    @Override
+    public int getItemCount() {
+        return mConversations.size();
     }
 
     @SuppressLint("SimpleDateFormat")

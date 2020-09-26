@@ -1,20 +1,17 @@
 package com.example.android2project.view.fragments;
 
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
-import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.example.android2project.R;
 import com.example.android2project.model.ChatClanAdapter;
@@ -36,23 +33,6 @@ public class ChatClanFragment extends Fragment {
         return new ChatClanFragment();
     }
 
-//    public interface FriendItemListener{
-//        void onChatItemClickedListener(User user);
-//    }
-//
-//    private FriendItemListener listener;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-//
-//        try {
-//            listener = (FriendItemListener) context;
-//        } catch (ClassCastException ex) {
-//            throw new ClassCastException("The activity must implement FriendItem Listener!");
-//        }
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,8 +48,8 @@ public class ChatClanFragment extends Fragment {
                 mAdapter.setFriendItemListener(new ChatClanAdapter.FriendItemListener() {
                     @Override
                     public void onClicked(int position, View view) {
-//                listener.onChatItemClickedListener(mViewModel.getFriends().get(position));
-                        ConversationFragment.newInstance(mViewModel.getFriends().get(position))
+                        User recipient = mViewModel.getFriends().get(position);
+                        ConversationFragment.newInstance(recipient)
                                 .show(getParentFragmentManager().beginTransaction(),"conversation_fragment");
                     }
                 });
