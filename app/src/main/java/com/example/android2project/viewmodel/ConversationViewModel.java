@@ -37,6 +37,7 @@ public class ConversationViewModel extends ViewModel {
     private Context mContext;
     private User mRecipient;
     private String mRecipientEmail;
+    private final String matan = "key=AAAAgHuON0g:APA91bH5HRhIng-B5_Zugw3c8RMJTn8YrbZgYbXRNglQayt6fKp3L0e-2bzNRyXUvaBx4sR2MwLI8oVO2Mkz4b0h5K8IZ27FROzg6vH4R64AOoUTpK8MTkftWbpOm9sCNyIB2jI0xCBO";
 
     private List<ChatMessage> mConversation = new ArrayList<>();
 
@@ -110,36 +111,39 @@ public class ConversationViewModel extends ViewModel {
                 mConversation.add(message);
 
                 final JSONObject rootObject = new JSONObject();
+                final JSONObject dataObject = new JSONObject();
                 final JSONObject notificationObject = new JSONObject();
                 try {
                     rootObject.put("to", mRecipient.getToken());
                     //rootObject.put("data", new JSONObject());
+                    Log.d(TAG, "TOKEN " + mRecipient.getToken());
                     notificationObject.put("title", mUser.getDisplayName());
                     notificationObject.put("body", message.getContent());
                     notificationObject.put("tag", mUser.getEmail());
                     notificationObject.put("icon", R.drawable.ic_petclan_app_icon);
+                    notificationObject.put("click_action", "OPEN_MAIN_ACTIVITY");
+                    dataObject.put("whatever", mRecipient);
                     rootObject.put("notification", notificationObject);
 
-                    final String url = "https://fcm.googleapis.com/v1/projects/petclan-2fdce/messages:send";
+                    //https://fcm.googleapis.com/v1/projects/petclan-2fdce/messages:send
+                    final String url = "https://fcm.googleapis.com/fcm/send";
 
                     RequestQueue queue = Volley.newRequestQueue(mContext);
                     StringRequest request = new StringRequest(Request.Method.POST, url,
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
-
                                 }
                             }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-
                         }
                     }) {
                         @Override
                         public Map<String, String> getHeaders() throws AuthFailureError {
                             Map<String, String> headers = new HashMap<>();
                             headers.put("Content-Type", "application/json");
-                            headers.put("Authorization", "AAAAgHuON0g:APA91bH5HRhIng-B5_Zugw3c8RMJTn8YrbZgYbXRNglQayt6fKp3L0e-2bzNRyXUvaBx4sR2MwLI8oVO2Mkz4b0h5K8IZ27FROzg6vH4R64AOoUTpK8MTkftWbpOm9sCNyIB2jI0xCBO");
+                            headers.put("Authorization", matan);
                             return headers;
                         }
 

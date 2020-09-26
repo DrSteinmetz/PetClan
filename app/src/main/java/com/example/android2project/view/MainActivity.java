@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 
+import com.example.android2project.model.User;
+import com.example.android2project.view.fragments.ConversationFragment;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -209,6 +211,18 @@ public class MainActivity extends AppCompatActivity implements
         if (userProfileImageUri != null) {
             Log.d(TAG, "URL of downloaded picture: " + userProfileImageUri);
             loadProfilePictureWithGlide(userProfileImageUri, userProfilePictureIv);
+        }
+
+        Bundle bundle = getIntent().getExtras(); // add these lines of code to get data from notification
+        if (bundle != null) {
+            Log.d(TAG, "onCreate: matan? " + bundle.toString());
+            User recipient = (User) bundle.getSerializable("whatever");
+            if (recipient != null) {
+                Log.d(TAG, "onCreate: matan? " + recipient.toString());
+                ConversationFragment.newInstance(recipient)
+                        .show(getSupportFragmentManager()
+                                .beginTransaction(), "conversation_fragment");
+            }
         }
     }
 

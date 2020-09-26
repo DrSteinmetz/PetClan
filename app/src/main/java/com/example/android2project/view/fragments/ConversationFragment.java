@@ -62,10 +62,10 @@ public class ConversationFragment extends DialogFragment {
 
     private final String TAG = "ConversationFragment";
 
-    public static ConversationFragment newInstance(User user) {
+    public static ConversationFragment newInstance(User recipient) {
         ConversationFragment fragment = new ConversationFragment();
         Bundle args = new Bundle();
-        args.putSerializable(RECIPIENT, user);
+        args.putSerializable(RECIPIENT, recipient);
         fragment.setArguments(args);
         return fragment;
     }
@@ -122,7 +122,7 @@ public class ConversationFragment extends DialogFragment {
 
 //        mViewModel.downloadConversation();
 
-//        startObservation();
+        startObservation();
     }
 
     @Override
