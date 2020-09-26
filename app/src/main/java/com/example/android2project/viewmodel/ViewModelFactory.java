@@ -72,7 +72,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                 break;
             case ChatClan:
                 if (modelClass.isAssignableFrom(ChatClanViewModel.class)) {
-                    objToReturn = (T) new ChatClanViewModel(mContext);
+                    objToReturn = (T) ChatClanViewModel.getInstance(mContext);
                 }
                 break;
             case Conversation:
@@ -87,7 +87,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                 break;
             case Chats:
                 if (modelClass.isAssignableFrom(ChatsViewModel.class)) {
-                    objToReturn = (T) new ChatsViewModel(mContext);
+                    objToReturn = (T) ChatsViewModel.getInstance(mContext);
                 }
                 break;
         }

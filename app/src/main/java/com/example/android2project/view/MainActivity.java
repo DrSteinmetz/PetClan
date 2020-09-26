@@ -121,25 +121,6 @@ public class MainActivity extends AppCompatActivity implements
             startLocation();
         }
 
-        FirebaseInstanceId.getInstance()
-                .getInstanceId()
-                .addOnSuccessListener(MainActivity.this,
-                        new OnSuccessListener<InstanceIdResult>() {
-                            @Override
-                            public void onSuccess(InstanceIdResult instanceIdResult) {
-                                String newToken = instanceIdResult.getToken();
-                                Log.d("newToken: ", newToken);
-
-                                //TODO: Send the token to server
-                            }
-                        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "onFailure: " + e.getMessage());
-                    }
-                });
-
         final ImageView userProfilePictureIv = findViewById(R.id.user_pic_iv);
         final TextView userNameTv = findViewById(R.id.user_name_tv);
         final Button logOutBtn = findViewById(R.id.log_out_btn);

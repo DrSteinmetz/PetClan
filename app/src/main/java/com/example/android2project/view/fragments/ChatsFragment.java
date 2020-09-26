@@ -1,7 +1,6 @@
 package com.example.android2project.view.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.android2project.R;
 import com.example.android2project.model.ChatsAdapter;
 import com.example.android2project.model.Conversation;
+import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.viewmodel.ChatsViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
@@ -31,8 +31,10 @@ public class ChatsFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private ChatsAdapter mChatsAdapter;
 
-    private Observer<List<Conversation>> mOnDownloadGetActiveConversationsSucceed;
-    private Observer<String> mOnDownloadGetActiveConversationsFailed;
+    private Observer<List<User>> usersObserver;
+
+    private Observer<List<Conversation>> mOnDownloadActiveConversationsSucceed;
+    private Observer<String> mOnDownloadActiveConversationsFailed;
 
     private final String TAG = "ChatsFragment";
 
@@ -49,15 +51,36 @@ public class ChatsFragment extends Fragment {
 
         mViewModel.getActiveChats();
 
-        mOnDownloadGetActiveConversationsSucceed = new Observer<List<Conversation>>() {
+        usersObserver = new Observer<List<User>>() {
             @Override
-            public void onChanged(List<Conversation> conversations) {
-                Log.d(TAG, "onChanged: " + conversations);
-                mChatsAdapter.notifyDataSetChanged();
+            public void onChanged(List<User> users) {
+                mChatsAdapter = new ChatsAdapter(getContext(),
+                        mViewModel.getConversations(),
+                        mViewModel.getActiveUsers());
+                mChatsAdapter.setChatAdapterListener(new ChatsAdapter.ChatAdapterInterface() {
+                    @Override
+                    public void onClicked(int position, View view) {
+                        User recipient = mViewModel.getActiveUsers().get(position);
+                        ConversationFragment.newInstance(recipient)
+                                .show(getParentFragmentManager()
+                                        .beginTransaction(), "conversation_fragment");
+                    }
+                });
+                mRecyclerView.setAdapter(mChatsAdapter);
             }
         };
 
-        mOnDownloadGetActiveConversationsFailed = new Observer<String>() {
+        mOnDownloadActiveConversationsSucceed = new Observer<List<Conversation>>() {
+            @Override
+            public void onChanged(List<Conversation> conversations) {
+                if (mChatsAdapter != null) {
+                    mChatsAdapter.setUserMap(mViewModel.getActiveUsers());
+                    mChatsAdapter.notifyDataSetChanged();
+                }
+            }
+        };
+
+        mOnDownloadActiveConversationsFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
                 Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
@@ -76,17 +99,14 @@ public class ChatsFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        mChatsAdapter = new ChatsAdapter(mViewModel.getConversations());
-
-        mRecyclerView.setAdapter(mChatsAdapter);
-
         return rootView;
     }
 
     public void startObservation() {
         if (mViewModel != null) {
-            mViewModel.getGetActiveConversationsSucceed().observe(this, mOnDownloadGetActiveConversationsSucceed);
-            mViewModel.getGetActiveConversationsFailed().observe(this, mOnDownloadGetActiveConversationsFailed);
+            mViewModel.getUsersLiveData().observe(this, usersObserver);
+            mViewModel.getDownloadActiveConversationsSucceed().observe(this, mOnDownloadActiveConversationsSucceed);
+            mViewModel.getDownloadActiveConversationsFailed().observe(this, mOnDownloadActiveConversationsFailed);
         }
     }
 }

@@ -36,10 +36,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -48,6 +45,7 @@ public class AuthRepository {
 
     private Context mContext;
     private FirebaseAuth mAuth;
+    private String mUserToken;
 
     private FirebaseFirestore mCloudDB = FirebaseFirestore.getInstance();
     private CollectionReference mCloudUsers = mCloudDB.collection("users");
@@ -144,17 +142,6 @@ public class AuthRepository {
 
     public void setSignOutUserListener(RepositorySignOutUserInterface repositorySignOutUserInterface) {
         this.mSignOutUserListener = repositorySignOutUserInterface;
-    }
-
-    /**<-------Get All Users interface------->**/
-    public interface RepositoryGetAllUsersInterface {
-        void onGetAllUsersSucceed(ArrayList<User> value);
-    }
-
-    private RepositoryGetAllUsersInterface mGetAllUsersListener;
-
-    public void setGetAllUsersListener(RepositoryGetAllUsersInterface repositoryGetAllUsersInterface) {
-        this.mGetAllUsersListener = repositoryGetAllUsersInterface;
     }
 
     /**<-------Singleton------->**/
@@ -428,7 +415,7 @@ public class AuthRepository {
             String lastName = fullName[1];
 
             final User user = new User(firebaseUser.getEmail(), firstName, lastName,
-                    mSelectedImage.toString());
+                    mSelectedImage.toString(), mUserToken);
 
             mCloudUsers.document(user.getEmail()).set(user)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -472,6 +459,10 @@ public class AuthRepository {
             }
             createNewCloudUser(user, isDefaultPic);
         }
+    }
+
+    public void setUserToken(final String userToken) {
+        this.mUserToken = userToken;
     }
 
     public String getUserId() {
@@ -576,26 +567,5 @@ public class AuthRepository {
         }
 
         return imageUri;
-    }
-
-
-    public void getAllUsers() {
-        final ArrayList<User> users = new ArrayList<>();
-        mCloudUsers.get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                                if (!Objects.equals(document.getData().get("email"),
-                                        Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()))
-                                    users.add(document.toObject(User.class));
-                            }
-                            if (mGetAllUsersListener != null) {
-                                mGetAllUsersListener.onGetAllUsersSucceed(users);
-                            }
-                        }
-                    }
-                });
     }
 }
