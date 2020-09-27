@@ -827,7 +827,9 @@ public class Repository {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
                             Conversation conversation;
-                            conversations.clear();
+                            if (!conversations.isEmpty()) {
+                                conversations.clear();
+                            }
                             for (DataSnapshot ds : snapshot.getChildren()) {
                                 conversation = ds.child("Conversation").getValue(Conversation.class);
                                 if (conversation != null) {

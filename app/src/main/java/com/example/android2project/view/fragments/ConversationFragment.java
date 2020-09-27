@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,8 +43,8 @@ public class ConversationFragment extends DialogFragment {
     private MessageListAdapter mMessageAdapter;
     private RecyclerView mMessageRecycler;
 
-    private Observer<List<ChatMessage>> mOnDownloadConversationSucceed;
-    private Observer<String> mOnDownloadConversationFailed;
+    //private Observer<List<ChatMessage>> mOnDownloadConversationSucceed;
+    //private Observer<String> mOnDownloadConversationFailed;
 
     private Observer<ChatMessage> mOnUploadMessageSucceed;
     private Observer<String> mOnUploadMessageFailed;
@@ -83,42 +84,39 @@ public class ConversationFragment extends DialogFragment {
 
         mViewModel.setRecipientEmail(mUserRecipient.getEmail());
 
-//        mOnDownloadConversationSucceed = new Observer<List<ChatMessage>>() {
-//            @Override
-//            public void onChanged(List<ChatMessage> chatMessages) {
-//                mMessageAdapter.notifyDataSetChanged();
-//                if (chatMessages.size() > 0) {
-//                    Log.d(TAG, "asdf onChanged: " + chatMessages);
-//                    mMessageRecycler.scrollToPosition(chatMessages.size() - 1);
-//                }
-//            }
-//        };
+        /*mOnDownloadConversationSucceed = new Observer<List<ChatMessage>>() {
+            @Override
+            public void onChanged(List<ChatMessage> chatMessages) {
+                mMessageAdapter.notifyDataSetChanged();
+                if (chatMessages.size() > 0) {
+                    mMessageRecycler.scrollToPosition(chatMessages.size() - 1);
+                }
+            }
+        };
 
-//        mOnDownloadConversationFailed = new Observer<String>() {
-//            @Override
-//            public void onChanged(String error) {
-//                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
-//            }
-//        };
+        mOnDownloadConversationFailed = new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+            }
+        };*/
 
-//        mOnUploadMessageSucceed = new Observer<ChatMessage>() {
-//            @Override
-//            public void onChanged(ChatMessage message) {
-//                //mMessageAdapter.notifyDataSetChanged();
-//                Log.d(TAG, "asdf onChanged: " + message.toString());
-//                mMessageAdapter.notifyItemInserted(mViewModel.getConversation().size() - 1);
-//                if (mViewModel.getConversation().size() > 0) {
-//                    mMessageRecycler.smoothScrollToPosition(mViewModel.getConversation().size() - 1);
-//                }
-//            }
-//        };
+        mOnUploadMessageSucceed = new Observer<ChatMessage>() {
+            @Override
+            public void onChanged(ChatMessage message) {
+                /*mMessageAdapter.notifyItemInserted(mViewModel.getConversation().size() - 1);
+                if (mViewModel.getConversation().size() > 0) {
+                    mMessageRecycler.smoothScrollToPosition(mViewModel.getConversation().size() - 1);
+                }*/
+            }
+        };
 
-//        mOnUploadMessageFailed = new Observer<String>() {
-//            @Override
-//            public void onChanged(String error) {
-//                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
-//            }
-//        };
+        mOnUploadMessageFailed = new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+            }
+        };
 
 //        mViewModel.downloadConversation();
 
@@ -165,7 +163,8 @@ public class ConversationFragment extends DialogFragment {
                 } else if (lastVisiblePosition < (messagesCount)) {
                     newMessagesCount[0]++;
                     mScrollDownBtn.show();
-                    mScrollDownBtn.setText(newMessagesCount[0] + " Unread Messages");
+                    final String unreadMessagesCount = newMessagesCount[0] + " Unread Messages";
+                    mScrollDownBtn.setText(unreadMessagesCount);
                     mScrollDownBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -260,8 +259,8 @@ public class ConversationFragment extends DialogFragment {
 
     private void startObservation() {
         if (mViewModel != null) {
-//            mViewModel.getDownloadConversationSucceed().observe(this, mOnDownloadConversationSucceed);
-//            mViewModel.getDownloadConversationFailed().observe(this, mOnDownloadConversationFailed);
+            //mViewModel.getDownloadConversationSucceed().observe(this, mOnDownloadConversationSucceed);
+            //mViewModel.getDownloadConversationFailed().observe(this, mOnDownloadConversationFailed);
             mViewModel.getUploadMessageSucceed().observe(this, mOnUploadMessageSucceed);
             mViewModel.getUploadMessageFailed().observe(this, mOnUploadMessageFailed);
         }

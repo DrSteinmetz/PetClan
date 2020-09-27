@@ -36,6 +36,8 @@ public class ChatsFragment extends Fragment {
     private Observer<List<Conversation>> mOnDownloadActiveConversationsSucceed;
     private Observer<String> mOnDownloadActiveConversationsFailed;
 
+    private final String CONVERSATION_FRAG = "conversation_fragment";
+
     private final String TAG = "ChatsFragment";
 
     public static ChatsFragment newInstance() {
@@ -63,7 +65,7 @@ public class ChatsFragment extends Fragment {
                         User recipient = mViewModel.getActiveUsers().get(position);
                         ConversationFragment.newInstance(recipient)
                                 .show(getParentFragmentManager()
-                                        .beginTransaction(), "conversation_fragment");
+                                        .beginTransaction(), CONVERSATION_FRAG);
                     }
                 });
                 mRecyclerView.setAdapter(mChatsAdapter);

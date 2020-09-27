@@ -25,7 +25,7 @@ import java.util.Map;
 public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatsViewHolder> {
     private Context mContext;
     private Map<String, User> mUserMap = new HashMap<>();
-    private List<Conversation> mConversations;
+    private static List<Conversation> mConversations;
 
     public interface ChatAdapterInterface {
         void onClicked(int position, View view);
@@ -112,9 +112,17 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatsViewHol
     }
 
     public void setUserMap(List<User> userList) {
-        this.mUserMap.clear();
+        if (!this.mUserMap.isEmpty()) {
+            this.mUserMap.clear();
+        }
         for (User user : userList) {
             this.mUserMap.put(user.getEmail(), user);
+        }
+    }
+
+    public static void clearConversations() {
+        if (mConversations != null && !mConversations.isEmpty()) {
+            mConversations.clear();
         }
     }
 
