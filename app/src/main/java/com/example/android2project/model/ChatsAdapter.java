@@ -112,7 +112,9 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatsViewHol
     }
 
     public void setUserMap(List<User> userList) {
-        this.mUserMap.clear();
+        if (!this.mUserMap.isEmpty()) {
+            this.mUserMap.clear();
+        }
         for (User user : userList) {
             this.mUserMap.put(user.getEmail(), user);
         }

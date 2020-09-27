@@ -41,7 +41,9 @@ public class ChatClanViewModel extends ViewModel {
     }
 
     public void setUsers(List<User> users) {
-        this.mUsers.clear();
+        if (!this.mUsers.isEmpty()) {
+            this.mUsers.clear();
+        }
         this.mUsers.addAll(users);
         mUsersLiveData.setValue(users);
     }

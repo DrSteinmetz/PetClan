@@ -69,7 +69,9 @@ public class ChatsViewModel extends ViewModel {
         mRepository.setDownloadActiveChatsListener(new Repository.RepositoryDownloadActiveChatsInterface() {
             @Override
             public void onDownloadActiveChatsSucceed(List<Conversation> conversations) {
-                mConversations.clear();
+                if (!mConversations.isEmpty()) {
+                    mConversations.clear();
+                }
                 mConversations.addAll(conversations);
                 Collections.sort(mConversations);
                 getRelevantUsers();
@@ -88,7 +90,9 @@ public class ChatsViewModel extends ViewModel {
     }
 
     public void setActiveUsers(List<User> allUsers) {
-        mAllUsers.clear();
+        if (!mAllUsers.isEmpty()) {
+            mAllUsers.clear();
+        }
         mAllUsers.addAll(allUsers);
         mUsersLiveData.setValue(getRelevantUsers());
     }
@@ -97,14 +101,16 @@ public class ChatsViewModel extends ViewModel {
         final String myEmail = mAuth.getUserEmail();
         final List<User> relevantUsers = new ArrayList<>();
         for (Conversation conversation : mConversations) {
-            for (User user: mAllUsers) {
+            for (User user : mAllUsers) {
                 if ((conversation.getRecipientEmail().equals(user.getEmail()) && !myEmail.equals(user.getEmail())) ||
                         (conversation.getSenderEmail().equals(user.getEmail()) && !myEmail.equals(user.getEmail()))) {
                     relevantUsers.add(user);
                 }
             }
         }
-        this.mActiveUsers.clear();
+        if (!this.mActiveUsers.isEmpty()) {
+            this.mActiveUsers.clear();
+        }
         this.mActiveUsers.addAll(relevantUsers);
 
         return relevantUsers;

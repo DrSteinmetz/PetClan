@@ -76,8 +76,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private ArrayList<String> mMenuOptions = new ArrayList<>();
 
-    private String bestProvider;
-
     private ViewPager mViewPager;
     private ViewPagerAdapter mPageAdapter;
     private SmoothBottomBar mBottomBar;
@@ -109,8 +107,8 @@ public class MainActivity extends AppCompatActivity implements
         userLocationTv = findViewById(R.id.location_tv);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int hasLocationPremission = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
-            if (hasLocationPremission != PackageManager.PERMISSION_GRANTED) {
+            int hasLocationPermission = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+            if (hasLocationPermission != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
             } else {
                 startLocation();

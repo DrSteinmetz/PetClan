@@ -91,7 +91,9 @@ public class FeedFragment extends Fragment {
         mOnPostDownloadSucceed = new Observer<List<Post>>() {
             @Override
             public void onChanged(List<Post> posts) {
-                mPosts.clear();
+                if (!mPosts.isEmpty()) {
+                    mPosts.clear();
+                }
                 mPosts.addAll(posts);
                 mPostsAdapter.notifyDataSetChanged();
             }

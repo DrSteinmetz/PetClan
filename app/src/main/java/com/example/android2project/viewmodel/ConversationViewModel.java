@@ -78,7 +78,9 @@ public class ConversationViewModel extends ViewModel {
             @Override
             public void onDownloadConversationSucceed(List<ChatMessage> conversation) {
                 mDownloadConversationSucceed.setValue(conversation);
-                mConversation.clear();
+                if (!mConversation.isEmpty()) {
+                    mConversation.clear();
+                }
                 mConversation.addAll(conversation);
             }
 
