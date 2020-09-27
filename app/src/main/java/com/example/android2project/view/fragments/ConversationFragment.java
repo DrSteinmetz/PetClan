@@ -122,7 +122,7 @@ public class ConversationFragment extends DialogFragment {
 
 //        mViewModel.downloadConversation();
 
-//        startObservation();
+        startObservation();
     }
 
     @Override
@@ -260,10 +260,10 @@ public class ConversationFragment extends DialogFragment {
 
     private void startObservation() {
         if (mViewModel != null) {
-            mViewModel.getDownloadConversationSucceed().observe(this, mOnDownloadConversationSucceed);
-            mViewModel.getDownloadConversationFailed().observe(this, mOnDownloadConversationFailed);
-            mViewModel.getUploadMessageSucceed().observe(this, mOnUploadMessageSucceed);
-            mViewModel.getUploadMessageFailed().observe(this, mOnUploadMessageFailed);
+            //mViewModel.getDownloadConversationSucceed().observe(this, mOnDownloadConversationSucceed);
+            //mViewModel.getDownloadConversationFailed().observe(this, mOnDownloadConversationFailed);
+            //mViewModel.getUploadMessageSucceed().observe(this, mOnUploadMessageSucceed);
+            //mViewModel.getUploadMessageFailed().observe(this, mOnUploadMessageFailed);
         }
     }
 

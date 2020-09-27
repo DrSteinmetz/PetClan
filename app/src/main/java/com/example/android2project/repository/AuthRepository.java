@@ -48,6 +48,7 @@ public class AuthRepository {
 
     private Context mContext;
     private FirebaseAuth mAuth;
+    private String mUserToken = "";
 
     private FirebaseFirestore mCloudDB = FirebaseFirestore.getInstance();
     private CollectionReference mCloudUsers = mCloudDB.collection("users");
@@ -428,7 +429,7 @@ public class AuthRepository {
             String lastName = fullName[1];
 
             final User user = new User(firebaseUser.getEmail(), firstName, lastName,
-                    mSelectedImage.toString());
+                    mSelectedImage.toString(), mUserToken);
 
             mCloudUsers.document(user.getEmail()).set(user)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -472,6 +473,10 @@ public class AuthRepository {
             }
             createNewCloudUser(user, isDefaultPic);
         }
+    }
+
+    public void setUserToken(final String userToken) {
+        this.mUserToken = userToken;
     }
 
     public String getUserId() {

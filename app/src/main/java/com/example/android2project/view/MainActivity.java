@@ -193,7 +193,6 @@ public class MainActivity extends AppCompatActivity implements
                         WelcomeActivity.class);
                 startActivity(welcomeIntent);
                 finish();
-
             }
         };
 
@@ -328,7 +327,6 @@ public class MainActivity extends AppCompatActivity implements
 
             builder.setAlwaysShow(true);
 
-
             SettingsClient client = LocationServices.getSettingsClient(this);
             Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
 
@@ -336,7 +334,6 @@ public class MainActivity extends AppCompatActivity implements
             task.addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
                 @Override
                 public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-
                     if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         mFusedLocationProviderClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
                     }
@@ -362,7 +359,6 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 }
             });
-
         }
     }
 
@@ -373,6 +369,4 @@ public class MainActivity extends AppCompatActivity implements
             startLocation();
         }
     }
-
-
 }

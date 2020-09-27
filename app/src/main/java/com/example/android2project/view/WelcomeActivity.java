@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -20,10 +21,14 @@ import com.example.android2project.view.fragments.UserDetailsFragment;
 import com.example.android2project.view.fragments.UserPictureFragment;
 import com.example.android2project.viewmodel.ViewModelFactory;
 import com.example.android2project.viewmodel.WelcomeViewModel;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.Objects;
 
@@ -58,6 +63,24 @@ public class WelcomeActivity extends AppCompatActivity implements
         if (mViewModel.isUserLoggedIn()) {
             startMainActivity();
         }
+
+        FirebaseInstanceId.getInstance()
+                .getInstanceId()
+                .addOnSuccessListener(WelcomeActivity.this,
+                        new OnSuccessListener<InstanceIdResult>() {
+                            @Override
+                            public void onSuccess(InstanceIdResult instanceIdResult) {
+                                final String newToken = instanceIdResult.getToken();
+                                Log.d("newToken: ", newToken);
+                                mViewModel.setUserToken(newToken);
+                            }
+                        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "onFailure: " + e.getMessage());
+                    }
+                });
 
         mUserDeletedObserver = new Observer<Boolean>() {
             @Override

@@ -240,7 +240,7 @@ public class Repository {
 
     /**<-------Upload Message interface------->**/
     public interface RepositoryUploadMessageInterface {
-        void onUploadMessageSucceed(ChatMessage message, boolean isMine);
+        void onUploadMessageSucceed(ChatMessage message);
 
         void onUploadMessageFailed(String error);
     }
@@ -753,24 +753,24 @@ public class Repository {
         mDBChats.child(chatId)
                 .child("Messages")
                 .child(chatMessage.getTime().toString())
-                .setValue(chatMessage);
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        /*if (mUploadMessageListener != null) {
-//                            mUploadMessageListener.onUploadMessageSucceed(chatMessage, true);
-//                        }*/
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Log.d(TAG, "onFailure: " + e.getMessage());
-//                        if (mUploadMessageListener != null) {
-//                            mUploadMessageListener.onUploadMessageFailed(e.getMessage());
-//                        }
-//                    }
-//                });
+                .setValue(chatMessage)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        if (mUploadMessageListener != null) {
+                            mUploadMessageListener.onUploadMessageSucceed(chatMessage);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "onFailure: " + e.getMessage());
+                        if (mUploadMessageListener != null) {
+                            mUploadMessageListener.onUploadMessageFailed(e.getMessage());
+                        }
+                    }
+                });
     }
 
     public Query ConversationQuery(final String chatId) {
@@ -784,7 +784,6 @@ public class Repository {
 
         if (user != null) {
             userEmail = Objects.requireNonNull(user.getEmail()).replace(".", "");
-            Log.d(TAG, "downloadActiveChats: "+"Inside if"+userEmail);
         }
 
         mDBChats.orderByChild(userEmail).equalTo(true)
@@ -800,7 +799,6 @@ public class Repository {
                                 conversation = ds.child("Conversation").getValue(Conversation.class);
                                 if (conversation != null) {
                                     conversations.add(conversation);
-                                    Log.d(TAG, "downloadActiveChats: "+conversation.toString());
                                 }
                             }
 

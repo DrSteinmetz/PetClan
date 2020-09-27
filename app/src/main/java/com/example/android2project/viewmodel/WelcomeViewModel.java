@@ -33,6 +33,10 @@ public class WelcomeViewModel extends ViewModel {
         });
     }
 
+    public void setUserToken(final String token) {
+        mAuthRepository.setUserToken(token);
+    }
+
     public void deleteUserFromAuth() {
         mAuthRepository.deleteUserFromAuth();
     }

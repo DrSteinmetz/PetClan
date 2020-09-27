@@ -13,16 +13,18 @@ public class User implements Comparable<Object>, Serializable{
     private String mBusinessName = null;
     private Map<String, User> mFriendsMap = new HashMap<>();
     private String mLocation;
+    private String mToken;
 
     public User() {
     }
 
-    public User(String email, String firstName, String lastName, String photoUri) {
+    public User(String email, String firstName, String lastName, String photoUri, String token) {
         this.mEmail = email;
         this.mFirstName = firstName;
         this.mLastName = lastName;
         this.mPhotoUri = photoUri;
         this.mLocation="Unknown";
+        this.mToken = token;
     }
 
     public String getEmail() {
@@ -89,6 +91,14 @@ public class User implements Comparable<Object>, Serializable{
         this.mLocation = location;
     }
 
+    public String getToken() {
+        return mToken;
+    }
+
+    public void setToken(String token) {
+        this.mToken = token;
+    }
+
     @Override
     public int compareTo(Object object) {
         if (object instanceof User) {
@@ -114,6 +124,7 @@ public class User implements Comparable<Object>, Serializable{
                 ", mBusinessName='" + mBusinessName + '\'' +
                 ", mFriendsMap=" + mFriendsMap +
                 ", mLocation='" + mLocation + '\'' +
+                ", mToken='" + mToken + '\'' +
                 '}';
     }
 }
