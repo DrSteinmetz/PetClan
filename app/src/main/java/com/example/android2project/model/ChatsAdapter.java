@@ -25,8 +25,11 @@ import java.util.Map;
 public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatsViewHolder> {
 
     private Context mContext;
-    private List<Conversation> mConversations;
+    private static List<Conversation> mConversations;
     private Map<String, User> mUsersMap=new HashMap<>();
+
+
+
 
 
 
@@ -47,7 +50,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatsViewHol
     public ChatsAdapter(Context context,List<Conversation> conversations,List<User> userList) {
         this.mContext=context;
         setUserMap(userList);
-        this.mConversations = conversations;
+        mConversations = conversations;
     }
 
 
@@ -128,5 +131,8 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatsViewHol
         for(User user:userList){
             mUsersMap.put(user.getEmail(),user);
         }
+    }
+    public static void clearConversationList(){
+        mConversations.clear();
     }
 }

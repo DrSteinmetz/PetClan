@@ -55,6 +55,7 @@ public class ChatsFragment extends Fragment {
         usersObserver = new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
+
                 mChatsAdapter = new ChatsAdapter(getContext(),
                         mViewModel.getConversations(),
                         mViewModel.getActiveUsers());

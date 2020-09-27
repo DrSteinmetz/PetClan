@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.android2project.model.ChatsAdapter;
 import com.example.android2project.repository.AuthRepository;
 
 public class MainViewModel extends ViewModel {
@@ -47,6 +48,7 @@ public class MainViewModel extends ViewModel {
         mAuthRepository.setSignOutUserListener(new AuthRepository.RepositorySignOutUserInterface() {
             @Override
             public void onSignOutUserSucceed(boolean value) {
+                ChatsAdapter.clearConversationList();
                 mSignOutSucceed.setValue(value);
             }
         });
@@ -67,4 +69,5 @@ public class MainViewModel extends ViewModel {
     public String downloadUserProfilePicture() {
         return mAuthRepository.getUserImageUri();
     }
+
 }

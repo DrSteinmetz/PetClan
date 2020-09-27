@@ -784,6 +784,7 @@ public class Repository {
 
         if (user != null) {
             userEmail = Objects.requireNonNull(user.getEmail()).replace(".", "");
+            Log.d(TAG, "downloadActiveChats: "+"Inside if"+userEmail);
         }
 
         mDBChats.orderByChild(userEmail).equalTo(true)
@@ -792,11 +793,14 @@ public class Repository {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
                             Conversation conversation;
+
                             conversations.clear();
                             for (DataSnapshot ds : snapshot.getChildren()) {
+
                                 conversation = ds.child("Conversation").getValue(Conversation.class);
                                 if (conversation != null) {
                                     conversations.add(conversation);
+                                    Log.d(TAG, "downloadActiveChats: "+conversation.toString());
                                 }
                             }
 

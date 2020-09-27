@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 
+import com.example.android2project.model.ChatsAdapter;
+import com.example.android2project.view.fragments.ChatsFragment;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -191,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements
                         WelcomeActivity.class);
                 startActivity(welcomeIntent);
                 finish();
+
             }
         };
 
@@ -370,4 +373,6 @@ public class MainActivity extends AppCompatActivity implements
             startLocation();
         }
     }
+
+
 }
