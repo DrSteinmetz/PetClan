@@ -42,8 +42,8 @@ public class ConversationViewModel extends ViewModel {
 
     private List<ChatMessage> mConversation = new ArrayList<>();
 
-    private MutableLiveData<List<ChatMessage>> mDownloadConversationSucceed;
-    private MutableLiveData<String> mDownloadConversationFailed;
+    //private MutableLiveData<List<ChatMessage>> mDownloadConversationSucceed;
+    //private MutableLiveData<String> mDownloadConversationFailed;
 
     private MutableLiveData<ChatMessage> mUploadMessageSucceed;
     private MutableLiveData<String> mUploadMessageFailed;
@@ -57,7 +57,7 @@ public class ConversationViewModel extends ViewModel {
         mContext = context;
     }
 
-    public MutableLiveData<List<ChatMessage>> getDownloadConversationSucceed() {
+    /*public MutableLiveData<List<ChatMessage>> getDownloadConversationSucceed() {
         if (mDownloadConversationSucceed == null) {
             mDownloadConversationSucceed = new MutableLiveData<>();
             attachSetDownloadConversationListener();
@@ -74,7 +74,7 @@ public class ConversationViewModel extends ViewModel {
     }
 
     private void attachSetDownloadConversationListener() {
-        /*mRepository.setDownloadConversationListener(new Repository.RepositoryDownloadConversationInterface() {
+        mRepository.setDownloadConversationListener(new Repository.RepositoryDownloadConversationInterface() {
             @Override
             public void onDownloadConversationSucceed(List<ChatMessage> conversation) {
                 mDownloadConversationSucceed.setValue(conversation);
@@ -88,8 +88,8 @@ public class ConversationViewModel extends ViewModel {
             public void onDownloadConversationFailed(String error) {
                 mDownloadConversationFailed.setValue(error);
             }
-        });*/
-    }
+        });
+    }*/
 
     public MutableLiveData<ChatMessage> getUploadMessageSucceed() {
         if (mUploadMessageSucceed == null) {
@@ -181,19 +181,19 @@ public class ConversationViewModel extends ViewModel {
         this.mConversation = mConversation;
     }
 
-    //    public void downloadConversation() {
-//        final String id1 = mRecipientEmail.replace(".", "");
-//        final String id2 = Objects.requireNonNull(mUser.getEmail()).replace(".", "");
-//
-//        String tempChatId = id2 + "&" + id1;
-//        if (Objects.requireNonNull(id1).compareTo(id2) < 0) {
-//            tempChatId = id1 + "&" + id2;
-//        }
-//        final String chatId = tempChatId;
-//
-//        mRepository.downloadConversationFromDB(chatId);
-//    }
-//
+    /*public void downloadConversation() {
+        final String id1 = mRecipientEmail.replace(".", "");
+        final String id2 = Objects.requireNonNull(mUser.getEmail()).replace(".", "");
+
+        String tempChatId = id2 + "&" + id1;
+        if (Objects.requireNonNull(id1).compareTo(id2) < 0) {
+            tempChatId = id1 + "&" + id2;
+        }
+        final String chatId = tempChatId;
+
+        mRepository.downloadConversationFromDB(chatId);
+    }*/
+
     public void uploadChatMessage(final User userRecipient, final String messageContent) {
         mRecipient = userRecipient;
         mRepository.uploadMessageToDB(messageContent,
