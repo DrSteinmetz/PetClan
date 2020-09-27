@@ -21,13 +21,14 @@ import com.example.android2project.viewmodel.ChatClanViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChatClanFragment extends Fragment {
 
     private RecyclerView mRecyclerview;
     private ChatClanAdapter mAdapter;
     private ChatClanViewModel mViewModel;
-    private Observer<ArrayList<User>> usersObserver;
+    private Observer<List<User>> usersObserver;
 
     public static ChatClanFragment newInstance() {
         return new ChatClanFragment();
@@ -38,17 +39,17 @@ public class ChatClanFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.ChatClan)).get(ChatClanViewModel.class);
-        mViewModel.getAllUsers();
+//        mViewModel.getAllUsers();
 
-        usersObserver = new Observer<ArrayList<User>>() {
+        usersObserver = new Observer<List<User>>() {
             @Override
-            public void onChanged(ArrayList<User> users) {
+            public void onChanged(List<User> users) {
                 mAdapter = new ChatClanAdapter(getContext(),users);
                 mRecyclerview.setAdapter(mAdapter);
                 mAdapter.setFriendItemListener(new ChatClanAdapter.FriendItemListener() {
                     @Override
                     public void onClicked(int position, View view) {
-                        User recipient = mViewModel.getFriends().get(position);
+                        User recipient = mViewModel.getUsers().get(position);
                         ConversationFragment.newInstance(recipient)
                                 .show(getParentFragmentManager().beginTransaction(),"conversation_fragment");
                     }
@@ -56,7 +57,7 @@ public class ChatClanFragment extends Fragment {
             }
         };
 
-        mViewModel.getFriendsMutableLiveData().observe(this,usersObserver);
+        mViewModel.getUsersLiveData().observe(this,usersObserver);
     }
 
     @Override
@@ -72,7 +73,7 @@ public class ChatClanFragment extends Fragment {
 
     @Override
     public void onStop() {
-        mViewModel.getFriendsMutableLiveData().removeObservers(this);
+        mViewModel.getUsersLiveData().removeObservers(this);
         super.onStop();
     }
 }

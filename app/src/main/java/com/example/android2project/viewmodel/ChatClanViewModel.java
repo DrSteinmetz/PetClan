@@ -7,48 +7,46 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.android2project.model.User;
 import com.example.android2project.repository.AuthRepository;
+import com.example.android2project.repository.Repository;
 
 import java.util.ArrayList;
+import java.util.List;
+
 
 public class ChatClanViewModel extends ViewModel {
-    private AuthRepository mAuth;
-    private ArrayList<User> mFriends = new ArrayList<>();
+    private static ChatClanViewModel chatClanViewModel;
+    private Repository mRepository;
+    private List<User> mUsers = new ArrayList<>();
 
-    private MutableLiveData<ArrayList<User>> mFriendsMutableLiveData;
+    private MutableLiveData<List<User>> mUsersLiveData;
 
-    public ChatClanViewModel(Context context) {
-        mAuth = AuthRepository.getInstance(context);
-    }
-
-    public MutableLiveData<ArrayList<User>> getFriendsMutableLiveData() {
-        if (mFriendsMutableLiveData == null) {
-            mFriendsMutableLiveData = new MutableLiveData<>();
-            attachGetAllUsersListener();
-            getAllUsers();
+    public static ChatClanViewModel getInstance(Context context) {
+        if (chatClanViewModel == null) {
+            chatClanViewModel = new ChatClanViewModel(context);
         }
-        return mFriendsMutableLiveData;
+        return chatClanViewModel;
     }
 
-    private void attachGetAllUsersListener() {
-        mAuth.setGetAllUsersListener(new AuthRepository.RepositoryGetAllUsersInterface() {
-            @Override
-            public void onGetAllUsersSucceed(ArrayList<User> value) {
-                mFriendsMutableLiveData.setValue(value);
-
-                if (!mFriends.isEmpty()) {
-                    mFriends.clear();
-                }
-
-                mFriends.addAll(value);
-            }
-        });
+    private ChatClanViewModel(Context context) {
+        mRepository = Repository.getInstance(context);
     }
 
-    public void getAllUsers() {
-        mAuth.getAllUsers();
+    public MutableLiveData<List<User>> getUsersLiveData() {
+        if (mUsersLiveData == null) {
+            mUsersLiveData = new MutableLiveData<>();
+        }
+        return mUsersLiveData;
     }
 
-    public ArrayList<User> getFriends(){
-        return mFriends;
+    public List<User> getUsers() {
+        return mUsers;
+    }
+
+    public void setUsers(List<User> users) {
+        if(!mUsers.isEmpty()) {
+            this.mUsers.clear();
+        }
+        this.mUsers.addAll(users);
+        mUsersLiveData.setValue(users);
     }
 }

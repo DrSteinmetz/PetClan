@@ -579,23 +579,4 @@ public class AuthRepository {
     }
 
 
-    public void getAllUsers() {
-        final ArrayList<User> users = new ArrayList<>();
-        mCloudUsers.get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                                if (!Objects.equals(document.getData().get("email"),
-                                        Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()))
-                                    users.add(document.toObject(User.class));
-                            }
-                            if (mGetAllUsersListener != null) {
-                                mGetAllUsersListener.onGetAllUsersSucceed(users);
-                            }
-                        }
-                    }
-                });
-    }
 }
