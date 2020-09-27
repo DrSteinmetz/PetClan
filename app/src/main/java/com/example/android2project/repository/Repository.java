@@ -202,7 +202,6 @@ public class Repository {
     /**<-------Update User Cover Image interface------->**/
     public interface RepositoryUpdateUserCoverImageInterface {
         void onUpdateUserCoverImageSucceed(String newUserProfileCoverPic);
-
         void onUpdateUserCoverImageFailed(String error);
     }
 
@@ -211,6 +210,8 @@ public class Repository {
     public void setUpdateUserCoverImageListener(RepositoryUpdateUserCoverImageInterface repositoryUpdateUserCoverImageInterface) {
         this.mUpdateUserCoverImageListener = repositoryUpdateUserCoverImageInterface;
     }
+
+
 
     /**<-------User Deletion interface------->**/
     public interface RepositoryUserDeletionInterface {
@@ -242,7 +243,6 @@ public class Repository {
     /**<-------Download Conversation interface------->**/
     public interface RepositoryDownloadConversationInterface {
         void onDownloadConversationSucceed(List<ChatMessage> conversation);
-
         void onDownloadConversationFailed(String error);
     }
 
@@ -276,6 +276,18 @@ public class Repository {
 
     public void setDownloadActiveChatsListener(RepositoryDownloadActiveChatsInterface repositoryDownloadActiveChatsInterface) {
         this.mDownloadActiveChatsListener = repositoryDownloadActiveChatsInterface;
+    }
+
+    /**<-------Download All Users interface------->**/
+    public interface RepositoryDownloadAllUsersInterface {
+        void onDownloadAllUsersSucceed(List<User> value);
+        void onDownloadAllUsersFailed(String error);
+    }
+
+    private RepositoryDownloadAllUsersInterface mDownloadAllUsersListener;
+
+    public void setDownloadAllUsersListener(RepositoryDownloadAllUsersInterface repositoryDownloadAllUsersInterface) {
+        this.mDownloadAllUsersListener = repositoryDownloadAllUsersInterface;
     }
 
     public static Repository getInstance(final Context context) {
@@ -852,5 +864,26 @@ public class Repository {
                         }
                     }
                 });*/
+    }
+
+
+    public void downloadAllUsers() {
+        final ArrayList<User> users = new ArrayList<>();
+        mCloudUsers.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+                                if (!Objects.equals(document.getData().get("email"),
+                                        Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()))
+                                    users.add(document.toObject(User.class));
+                            }
+                            if (mDownloadAllUsersListener != null) {
+                                mDownloadAllUsersListener.onDownloadAllUsersSucceed(users);
+                            }
+                        }
+                    }
+                });
     }
 }

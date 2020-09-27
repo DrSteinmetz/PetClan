@@ -6,6 +6,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.android2project.model.User;
+<<<<<<< HEAD
+=======
+import com.example.android2project.repository.AuthRepository;
+>>>>>>> bf66adb70a3c63a9a94e97680925c2220bbdd029
 import com.example.android2project.repository.Repository;
 
 import java.util.List;
@@ -44,4 +48,8 @@ public class SocialViewModel extends ViewModel {
     public void downloadAllUsers() {
         mRepository.downloadAllUsers();
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bf66adb70a3c63a9a94e97680925c2220bbdd029
