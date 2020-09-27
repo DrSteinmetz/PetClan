@@ -1,13 +1,14 @@
 package com.example.android2project.model;
 
-public class Conversation {
+public class Conversation implements Comparable<Object> {
     private String mChatId;
     private String mSenderEmail;
     private String mRecipientEmail;
+    private ChatMessage mLastMessage;
 
     public Conversation() {}
 
-    public Conversation(String senderEmail, String recipientEmail) {
+    public Conversation(String senderEmail, String recipientEmail,ChatMessage lastMessage) {
         final String id1 = senderEmail.replace(".", "");
         final String id2 = recipientEmail.replace(".", "");
 
@@ -18,6 +19,15 @@ public class Conversation {
 
         this.mSenderEmail = senderEmail;
         this.mRecipientEmail = recipientEmail;
+        this.mLastMessage=lastMessage;
+    }
+
+    public ChatMessage getLastMessage() {
+        return mLastMessage;
+    }
+
+    public void setLastMessage(ChatMessage LastMessage) {
+        this.mLastMessage = LastMessage;
     }
 
     public String getChatId() {
@@ -47,9 +57,19 @@ public class Conversation {
     @Override
     public String toString() {
         return "Conversation{" +
-                "chatId='" + mChatId + '\'' +
-                ", senderEmail='" + mSenderEmail + '\'' +
-                ", receiverEmail='" + mRecipientEmail + '\'' +
+                "mChatId='" + mChatId + '\'' +
+                ", mSenderEmail='" + mSenderEmail + '\'' +
+                ", mRecipientEmail='" + mRecipientEmail + '\'' +
+                ", mLastMessage=" + mLastMessage +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Object object) {
+        if (object instanceof Conversation) {
+            Conversation otherConversation = (Conversation) object;
+            return otherConversation.getLastMessage().getTime().compareTo(this.getLastMessage().getTime());
+        }
+        return 0;
     }
 }

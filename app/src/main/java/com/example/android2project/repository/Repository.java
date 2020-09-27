@@ -742,7 +742,7 @@ public class Repository {
         final String id1 = senderEmail.replace(".", "");
         final String id2 = recipientEmail.replace(".", "");
 
-        Conversation conversation = new Conversation(senderEmail, recipientEmail);
+        Conversation conversation = new Conversation(senderEmail, recipientEmail,chatMessage);
         final String chatId = conversation.getChatId();
 
         mDBChats.child(chatId).child(id1).setValue(true);

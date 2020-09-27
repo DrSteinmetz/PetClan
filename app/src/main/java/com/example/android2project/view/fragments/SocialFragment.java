@@ -61,7 +61,7 @@ public class SocialFragment extends Fragment {
             public void onChanged(List<User> users) {
                 chatClanViewModel.setUsers(users);
 
-//                chatsViewModel.setActiveUsers(users);
+                chatsViewModel.setActiveUsers(users);
             }
         };
 

@@ -87,7 +87,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                 break;
             case Chats:
                 if (modelClass.isAssignableFrom(ChatsViewModel.class)) {
-                    objToReturn = (T) new ChatsViewModel(mContext);
+                    objToReturn = (T) ChatsViewModel.getInstance(mContext);
                 }
                 break;
         }
