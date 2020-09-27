@@ -260,8 +260,8 @@ public class ConversationFragment extends DialogFragment {
 
     private void startObservation() {
         if (mViewModel != null) {
-            mViewModel.getDownloadConversationSucceed().observe(this, mOnDownloadConversationSucceed);
-            mViewModel.getDownloadConversationFailed().observe(this, mOnDownloadConversationFailed);
+//            mViewModel.getDownloadConversationSucceed().observe(this, mOnDownloadConversationSucceed);
+//            mViewModel.getDownloadConversationFailed().observe(this, mOnDownloadConversationFailed);
             mViewModel.getUploadMessageSucceed().observe(this, mOnUploadMessageSucceed);
             mViewModel.getUploadMessageFailed().observe(this, mOnUploadMessageFailed);
         }

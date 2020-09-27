@@ -45,7 +45,7 @@ public class AuthRepository {
 
     private Context mContext;
     private FirebaseAuth mAuth;
-    private String mUserToken;
+    private String mUserToken = "";
 
     private FirebaseFirestore mCloudDB = FirebaseFirestore.getInstance();
     private CollectionReference mCloudUsers = mCloudDB.collection("users");

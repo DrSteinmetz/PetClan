@@ -801,7 +801,6 @@ public class Repository {
 
     public void downloadActiveChats() {
         final ArrayList<Conversation> conversations = new ArrayList<>();
-        final ArrayList<User> activeChatUsers = new ArrayList<>();
 
         FirebaseUser user = mAuth.getCurrentUser();
         String userEmail = "";

@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.android2project.R;
+import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.view.fragments.LoginDetailsFragment;
 import com.example.android2project.view.fragments.LoginRegistrationFragment;
@@ -61,7 +62,20 @@ public class WelcomeActivity extends AppCompatActivity implements
                 ViewModelEnum.Welcome)).get(WelcomeViewModel.class);
 
         if (mViewModel.isUserLoggedIn()) {
-            startMainActivity();
+            Log.d(TAG, "onCreate: " + getIntent().getSerializableExtra("whatever"));
+            Bundle bundle = getIntent().getExtras(); // add these lines of code to get data from notification
+            if (bundle != null && bundle.getSerializable("whatever") instanceof User) {
+                Log.d(TAG, "onCreate: matan? " + bundle.toString());
+                User recipient = (User) bundle.getSerializable("whatever");
+                if (recipient != null) {
+                    Log.d(TAG, "onCreate: matan? " + recipient.toString());
+                    Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+                    intent.putExtra("whatever", recipient);
+                    startActivity(intent);
+                }
+            } else {
+                startMainActivity();
+            }
         }
 
         FirebaseInstanceId.getInstance()

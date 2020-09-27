@@ -1,5 +1,6 @@
 package com.example.android2project.viewmodel;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
@@ -32,7 +33,7 @@ import java.util.Objects;
 
 public class ConversationViewModel extends ViewModel {
     private Repository mRepository;
-    //    private FirebaseMessaging mFirebaseMessaging;
+    //private FirebaseMessaging mFirebaseMessaging;
     private FirebaseUser mUser;
     private Context mContext;
     private User mRecipient;
@@ -51,7 +52,7 @@ public class ConversationViewModel extends ViewModel {
 
     public ConversationViewModel(Context context) {
         mRepository = Repository.getInstance(context);
-//        mFirebaseMessaging = FirebaseMessaging.getInstance();
+        //mFirebaseMessaging = FirebaseMessaging.getInstance();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         mContext = context;
     }
@@ -59,7 +60,7 @@ public class ConversationViewModel extends ViewModel {
     public MutableLiveData<List<ChatMessage>> getDownloadConversationSucceed() {
         if (mDownloadConversationSucceed == null) {
             mDownloadConversationSucceed = new MutableLiveData<>();
-//            attachSetDownloadConversationListener();
+            attachSetDownloadConversationListener();
         }
         return mDownloadConversationSucceed;
     }
@@ -67,26 +68,26 @@ public class ConversationViewModel extends ViewModel {
     public MutableLiveData<String> getDownloadConversationFailed() {
         if (mDownloadConversationFailed == null) {
             mDownloadConversationFailed = new MutableLiveData<>();
-//            attachSetDownloadConversationListener();
+            attachSetDownloadConversationListener();
         }
         return mDownloadConversationFailed;
     }
 
-//    private void attachSetDownloadConversationListener() {
-////        mRepository.setDownloadConversationListener(new Repository.RepositoryDownloadConversationInterface() {
-////            @Override
-////            public void onDownloadConversationSucceed(List<ChatMessage> conversation) {
-////                mDownloadConversationSucceed.setValue(conversation);
-////                mConversation.clear();
-////                mConversation.addAll(conversation);
-////            }
-////
-////            @Override
-////            public void onDownloadConversationFailed(String error) {
-////                mDownloadConversationFailed.setValue(error);
-////            }
-//        });
-//    }
+    private void attachSetDownloadConversationListener() {
+        /*mRepository.setDownloadConversationListener(new Repository.RepositoryDownloadConversationInterface() {
+            @Override
+            public void onDownloadConversationSucceed(List<ChatMessage> conversation) {
+                mDownloadConversationSucceed.setValue(conversation);
+                mConversation.clear();
+                mConversation.addAll(conversation);
+            }
+
+            @Override
+            public void onDownloadConversationFailed(String error) {
+                mDownloadConversationFailed.setValue(error);
+            }
+        });*/
+    }
 
     public MutableLiveData<ChatMessage> getUploadMessageSucceed() {
         if (mUploadMessageSucceed == null) {
@@ -115,8 +116,6 @@ public class ConversationViewModel extends ViewModel {
                 final JSONObject notificationObject = new JSONObject();
                 try {
                     rootObject.put("to", mRecipient.getToken());
-                    //rootObject.put("data", new JSONObject());
-                    Log.d(TAG, "TOKEN " + mRecipient.getToken());
                     notificationObject.put("title", mUser.getDisplayName());
                     notificationObject.put("body", message.getContent());
                     notificationObject.put("tag", mUser.getEmail());
@@ -124,6 +123,7 @@ public class ConversationViewModel extends ViewModel {
                     notificationObject.put("click_action", "OPEN_MAIN_ACTIVITY");
                     dataObject.put("whatever", mRecipient);
                     rootObject.put("notification", notificationObject);
+                    rootObject.put("data", dataObject);
 
                     //https://fcm.googleapis.com/v1/projects/petclan-2fdce/messages:send
                     final String url = "https://fcm.googleapis.com/fcm/send";

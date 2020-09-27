@@ -6,15 +6,6 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
-
-import com.example.android2project.model.User;
-import com.example.android2project.view.fragments.ConversationFragment;
-import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,23 +30,28 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.android2project.R;
 import com.example.android2project.model.MenuAdapter;
 import com.example.android2project.model.Post;
+import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.view.fragments.CommentsFragment;
+import com.example.android2project.view.fragments.ConversationFragment;
 import com.example.android2project.view.fragments.FeedFragment;
-import com.example.android2project.view.fragments.UserProfileFragment;
 import com.example.android2project.view.fragments.SocialFragment;
+import com.example.android2project.view.fragments.UserProfileFragment;
 import com.example.android2project.viewmodel.MainViewModel;
 import com.example.android2project.viewmodel.UserPictureViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -281,7 +277,6 @@ public class MainActivity extends AppCompatActivity implements
         this.mLocationListener = locationListener;
     }
 
-
     public void startLocation() {
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -320,10 +315,8 @@ public class MainActivity extends AppCompatActivity implements
 
             builder.setAlwaysShow(true);
 
-
             SettingsClient client = LocationServices.getSettingsClient(this);
             Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
-
 
             task.addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
                 @Override
