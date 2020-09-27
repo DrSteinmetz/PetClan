@@ -1,11 +1,9 @@
 package com.example.android2project.view.fragments;
 
-<<<<<<< HEAD
-=======
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
->>>>>>> bf66adb70a3c63a9a94e97680925c2220bbdd029
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,13 +37,9 @@ public class SocialFragment extends Fragment {
 
     private Observer<List<User>> mUserListObserver;
 
-<<<<<<< HEAD
-    public static final String CHAT_FRAG = "conversation_fragment";
-=======
-    private Observer<List<User>> mUserListObserver;
 
-    public static final String CHAT_FRAG="conversation_fragment";
->>>>>>> bf66adb70a3c63a9a94e97680925c2220bbdd029
+    public static final String CHAT_FRAG = "conversation_fragment";
+
 
     public static SocialFragment newInstance() {
         return new SocialFragment();
@@ -61,10 +55,6 @@ public class SocialFragment extends Fragment {
         final ChatClanViewModel chatClanViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.ChatClan)).get(ChatClanViewModel.class);
 
-<<<<<<< HEAD
-=======
-
->>>>>>> bf66adb70a3c63a9a94e97680925c2220bbdd029
         final ChatsViewModel chatsViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Chats)).get(ChatsViewModel.class);
 
@@ -72,12 +62,9 @@ public class SocialFragment extends Fragment {
             @Override
             public void onChanged(List<User> users) {
                 chatClanViewModel.setUsers(users);
-
-<<<<<<< HEAD
                 chatsViewModel.setActiveUsers(users);
-=======
-//                chatsViewModel.setActiveUsers(users);
->>>>>>> bf66adb70a3c63a9a94e97680925c2220bbdd029
+
+
             }
         };
 
@@ -109,10 +96,8 @@ public class SocialFragment extends Fragment {
     public void onStop() {
         super.onStop();
 
-<<<<<<< HEAD
         //mViewModel.getFriendsMutableLiveData().removeObservers(this);
-=======
         // TODO: Use the ViewModel
->>>>>>> bf66adb70a3c63a9a94e97680925c2220bbdd029
+
     }
 }

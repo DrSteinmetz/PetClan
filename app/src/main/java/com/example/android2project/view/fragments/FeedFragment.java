@@ -20,6 +20,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.android2project.R;
 import com.example.android2project.model.Post;
@@ -35,7 +36,7 @@ import java.util.List;
 
 public class FeedFragment extends Fragment {
     private FeedViewModel mViewModel;
-
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private PostsAdapter mPostsAdapter;
     private List<Post> mPosts = new ArrayList<>();
 
@@ -96,6 +97,7 @@ public class FeedFragment extends Fragment {
                 }
                 mPosts.addAll(posts);
                 mPostsAdapter.notifyDataSetChanged();
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         };
 
@@ -176,7 +178,7 @@ public class FeedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
-
+        mSwipeRefreshLayout=rootView.findViewById(R.id.swipe_layout);
         final RecyclerView recyclerView = rootView.findViewById(R.id.feed_recycler_view);
         final FloatingActionButton addPostBtn = rootView.findViewById(R.id.add_post_btn);
 
@@ -197,6 +199,13 @@ public class FeedFragment extends Fragment {
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mViewModel.downloadPosts();
+            }
+        });
 
         mPostsAdapter = new PostsAdapter(mPosts, getContext());
 
@@ -347,7 +356,6 @@ public class FeedFragment extends Fragment {
 
     private void showDeletePostDialog(final Post postToDelete) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
-        ViewGroup root;
         View view = LayoutInflater.from(getContext())
                 .inflate(R.layout.add_post_dialog,
                         (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));

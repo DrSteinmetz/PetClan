@@ -23,6 +23,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -88,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
     private TextView userLocationTv;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private final String FEED_FRAG = "feed_fragment";
     private final String COMMENTS_FRAG = "comments_fragment";
@@ -105,6 +107,9 @@ public class MainActivity extends AppCompatActivity implements
 
         mGeoCoder = new Geocoder(this, Locale.getDefault());
         userLocationTv = findViewById(R.id.location_tv);
+        mSwipeRefreshLayout=findViewById(R.id.swipe_layout);
+
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int hasLocationPermission = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);

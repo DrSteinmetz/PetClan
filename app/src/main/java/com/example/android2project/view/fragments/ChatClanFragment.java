@@ -20,21 +20,19 @@ import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.viewmodel.ChatClanViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
 
-<<<<<<< HEAD
-=======
+
 import java.util.ArrayList;
->>>>>>> bf66adb70a3c63a9a94e97680925c2220bbdd029
+
 import java.util.List;
 
 public class ChatClanFragment extends Fragment {
     private ChatClanViewModel mViewModel;
     private RecyclerView mRecyclerview;
     private ChatClanAdapter mAdapter;
-<<<<<<< HEAD
 
-=======
-    private ChatClanViewModel mViewModel;
->>>>>>> bf66adb70a3c63a9a94e97680925c2220bbdd029
+
+
+
     private Observer<List<User>> usersObserver;
 
     public static ChatClanFragment newInstance() {
@@ -46,20 +44,17 @@ public class ChatClanFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.ChatClan)).get(ChatClanViewModel.class);
-<<<<<<< HEAD
-=======
+
+
 //        mViewModel.getAllUsers();
->>>>>>> bf66adb70a3c63a9a94e97680925c2220bbdd029
+
 
         usersObserver = new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
-<<<<<<< HEAD
-                mAdapter = new ChatClanAdapter(getContext(), users);
-=======
                 mAdapter = new ChatClanAdapter(getContext(),users);
                 mRecyclerview.setAdapter(mAdapter);
->>>>>>> bf66adb70a3c63a9a94e97680925c2220bbdd029
+
                 mAdapter.setFriendItemListener(new ChatClanAdapter.FriendItemListener() {
                     @Override
                     public void onClicked(int position, View view) {
@@ -73,11 +68,11 @@ public class ChatClanFragment extends Fragment {
             }
         };
 
-<<<<<<< HEAD
+
         mViewModel.getUsersLiveData().observe(this, usersObserver);
-=======
+
         mViewModel.getUsersLiveData().observe(this,usersObserver);
->>>>>>> bf66adb70a3c63a9a94e97680925c2220bbdd029
+
     }
 
     @Override
@@ -90,9 +85,8 @@ public class ChatClanFragment extends Fragment {
 
         return rootView;
     }
-<<<<<<< HEAD
-}
-=======
+
+
 
     @Override
     public void onStop() {
@@ -100,4 +94,4 @@ public class ChatClanFragment extends Fragment {
         super.onStop();
     }
 }
->>>>>>> bf66adb70a3c63a9a94e97680925c2220bbdd029
+

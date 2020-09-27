@@ -32,7 +32,7 @@ public class FeedViewModel extends ViewModel {
 
     public FeedViewModel(final Context context) {
         this.mRepository = Repository.getInstance(context);
-        mRepository.downloadPosts();
+        downloadPosts();
     }
 
     public MutableLiveData<Post> getPostUploadSucceed() {
@@ -203,5 +203,9 @@ public class FeedViewModel extends ViewModel {
 
     public void deletePost(String postId) {
         mRepository.deletePost(postId);
+    }
+
+    public void downloadPosts(){
+        mRepository.downloadPosts();
     }
 }

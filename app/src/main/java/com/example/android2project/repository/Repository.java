@@ -278,17 +278,7 @@ public class Repository {
         this.mDownloadActiveChatsListener = repositoryDownloadActiveChatsInterface;
     }
 
-    /**<-------Download All Users interface------->**/
-    public interface RepositoryDownloadAllUsersInterface {
-        void onDownloadAllUsersSucceed(List<User> value);
-        void onDownloadAllUsersFailed(String error);
-    }
 
-    private RepositoryDownloadAllUsersInterface mDownloadAllUsersListener;
-
-    public void setDownloadAllUsersListener(RepositoryDownloadAllUsersInterface repositoryDownloadAllUsersInterface) {
-        this.mDownloadAllUsersListener = repositoryDownloadAllUsersInterface;
-    }
 
     public static Repository getInstance(final Context context) {
         if (repository == null) {
@@ -869,23 +859,5 @@ public class Repository {
     }
 
 
-    public void downloadAllUsers() {
-        final ArrayList<User> users = new ArrayList<>();
-        mCloudUsers.get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                                if (!Objects.equals(document.getData().get("email"),
-                                        Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()))
-                                    users.add(document.toObject(User.class));
-                            }
-                            if (mDownloadAllUsersListener != null) {
-                                mDownloadAllUsersListener.onDownloadAllUsersSucceed(users);
-                            }
-                        }
-                    }
-                });
-    }
+
 }
