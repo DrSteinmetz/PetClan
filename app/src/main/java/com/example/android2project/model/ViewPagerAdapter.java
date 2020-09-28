@@ -1,4 +1,4 @@
-package com.example.android2project.view;
+package com.example.android2project.model;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -9,7 +9,6 @@ import java.util.List;
 public class ViewPagerAdapter extends FragmentPagerAdapter {
     private List<Fragment> fragments;
 
-
     public ViewPagerAdapter(FragmentManager fragmentManager, List<Fragment> fragments) {
         super(fragmentManager);
         this.fragments = fragments;
@@ -19,8 +18,6 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         return this.fragments.get(position);
     }
-
-
 
     @Override
     public int getCount() {

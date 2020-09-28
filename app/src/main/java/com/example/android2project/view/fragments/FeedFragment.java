@@ -37,6 +37,8 @@ import java.util.List;
 public class FeedFragment extends Fragment {
     private FeedViewModel mViewModel;
 
+    private boolean mIsProfileFeed = false;
+
     private PostsAdapter mPostsAdapter;
     private List<Post> mPosts = new ArrayList<>();
 
@@ -69,8 +71,12 @@ public class FeedFragment extends Fragment {
 
     private FeedListener listener;
 
-    public static FeedFragment newInstance() {
-        return new FeedFragment();
+    public static FeedFragment newInstance(final boolean isProfileFeed) {
+        FeedFragment fragment = new FeedFragment();
+        Bundle args = new Bundle();
+        args.putBoolean("posts", isProfileFeed);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -88,8 +94,14 @@ public class FeedFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (getArguments() != null) {
+            mIsProfileFeed = getArguments().getBoolean("posts");
+        }
+
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Feed)).get(FeedViewModel.class);
+        mViewModel.setProfilePost(mIsProfileFeed);
+        mViewModel.refreshPosts();
 
         mOnPostDownloadSucceed = new Observer<List<Post>>() {
             @Override
@@ -97,6 +109,7 @@ public class FeedFragment extends Fragment {
                 if (!mPosts.isEmpty()) {
                     mPosts.clear();
                 }
+                Log.d(TAG, "onChanged: " + posts);
                 mPosts.addAll(posts);
                 mPostsAdapter.notifyDataSetChanged();
                 mSwipeRefreshLayout.setRefreshing(false);
@@ -201,9 +214,11 @@ public class FeedFragment extends Fragment {
         });
 
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
+                mIsProfileFeed ? RecyclerView.HORIZONTAL : RecyclerView.VERTICAL,
+                false));
 
-        mPostsAdapter = new PostsAdapter(mPosts, getContext());
+        mPostsAdapter = new PostsAdapter(mPosts, getContext(), mIsProfileFeed);
 
         mPostsAdapter.setPostListener(new PostsAdapter.PostListener() {
             @Override

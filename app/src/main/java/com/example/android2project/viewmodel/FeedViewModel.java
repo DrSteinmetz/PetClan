@@ -12,6 +12,7 @@ import java.util.List;
 
 public class FeedViewModel extends ViewModel {
     private Repository mRepository;
+    private boolean isProfilePost = false;
 
     private MutableLiveData<List<Post>> mPostDownloadSucceed;
     private MutableLiveData<String> mPostDownloadFailed;
@@ -32,7 +33,6 @@ public class FeedViewModel extends ViewModel {
 
     public FeedViewModel(final Context context) {
         this.mRepository = Repository.getInstance(context);
-        mRepository.downloadPosts();
     }
 
     public MutableLiveData<Post> getPostUploadSucceed() {
@@ -185,6 +185,10 @@ public class FeedViewModel extends ViewModel {
         });
     }
 
+    public void setProfilePost(boolean isProfilePost) {
+        this.isProfilePost = isProfilePost;
+    }
+
     public void uploadNewPost(String postContent) {
         mRepository.uploadNewPost(postContent);
     }
@@ -194,7 +198,11 @@ public class FeedViewModel extends ViewModel {
     }
 
     public void refreshPosts() {
-        mRepository.downloadPosts();
+        if (isProfilePost) {
+            mRepository.downloadUserPosts();
+        } else {
+            mRepository.downloadPosts();
+        }
     }
 
     public void updatePostLikes(Post post, final boolean isLike) {

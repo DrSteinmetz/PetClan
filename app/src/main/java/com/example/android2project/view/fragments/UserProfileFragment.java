@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -21,6 +20,7 @@ import com.example.android2project.R;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.viewmodel.UserProfileViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class UserProfileFragment extends Fragment {
 
@@ -105,6 +105,10 @@ public class UserProfileFragment extends Fragment {
             }
         };
 
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.user_posts_fragment, FeedFragment.newInstance(true), "feed_fragment")
+                .commit();
+
         startObservation();
     }
 
@@ -115,7 +119,8 @@ public class UserProfileFragment extends Fragment {
                 container,false);
 
         final CoordinatorLayout coordinatorLayout = rootView.findViewById(R.id.coordinator_layout);
-        final Toolbar toolbar = rootView.findViewById(R.id.toolbar);
+        final FloatingActionButton addPostBtn = rootView.findViewById(R.id.message_edit_btn);
+
 
         mProfileCoverPicIv = rootView.findViewById(R.id.cover_image_iv);
 
@@ -142,7 +147,6 @@ public class UserProfileFragment extends Fragment {
 
     private void loadProfilePictureWithGlide(String uri, ImageView imageView) {
         RequestOptions options = new RequestOptions()
-                .circleCrop()
                 .placeholder(R.drawable.ic_default_user_pic)
                 .error(R.drawable.ic_default_user_pic);
 

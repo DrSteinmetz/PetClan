@@ -12,6 +12,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -33,12 +34,15 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
     private String mUserEmail;
 
+    private boolean mIsProfilePost = false;
+
     private final String TAG = "PostsAdapter";
 
-    public PostsAdapter(List<Post> posts, Context context) {
+    public PostsAdapter(List<Post> posts, Context context, final boolean isProfilePost) {
         this.mPosts = posts;
         this.mContext = context;
         this.mUserEmail = AuthRepository.getInstance(context).getUserEmail();
+        this.mIsProfilePost = isProfilePost;
     }
 
     public interface PostListener {
@@ -57,6 +61,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
     }
 
     public class PostViewHolder extends RecyclerView.ViewHolder {
+        CardView postCardLayout;
         ImageView authorPicIv;
         TextView authorNameTv;
         TextView postTimeAgo;
@@ -73,6 +78,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            postCardLayout = itemView.findViewById(R.id.post_card_layout);
             authorPicIv = itemView.findViewById(R.id.author_pic_iv);
             authorNameTv = itemView.findViewById(R.id.author_name_tv);
             postTimeAgo = itemView.findViewById(R.id.time_ago_tv);
@@ -87,6 +93,17 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             optionsBtn = itemView.findViewById(R.id.post_options_menu);
 
             setContentTvProperties();
+
+            if (mIsProfilePost) {
+                ViewGroup.MarginLayoutParams layoutParams =
+                        (ViewGroup.MarginLayoutParams) postCardLayout.getLayoutParams();
+                final float density = mContext.getResources().getDisplayMetrics().density;
+                final int margin = (int) (12 * density);
+                layoutParams.setMargins(margin, 0, margin, 0);
+                postCardLayout.setRadius(50);
+                postCardLayout.requestLayout();
+                //TODO: Make the posts scroll automatically till user touch
+            }
 
             authorPicIv.setOnClickListener(new View.OnClickListener() {
                 @Override

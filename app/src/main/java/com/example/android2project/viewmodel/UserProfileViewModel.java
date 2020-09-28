@@ -198,6 +198,10 @@ public class UserProfileViewModel extends ViewModel {
     }
 
 
+    public void downloadUserPosts() {
+        mRepository.downloadUserPosts();
+    }
+
     public void updateUserName(final String newUserName) {
         mRepository.updateUserName(newUserName);
     }

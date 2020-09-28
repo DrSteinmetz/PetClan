@@ -72,6 +72,19 @@ public class Repository {
         this.mPostDownloadListener = repositoryPostDownloadInterface;
     }
 
+    /**<-------User's Posts Downloading interface------->**/
+    /*public interface RepositoryUserPostsDownloadInterface {
+        void onUserPostsDownloadSucceed(List<Post> posts);
+
+        void onUserPostsDownloadFailed(String error);
+    }
+
+    private RepositoryUserPostsDownloadInterface mUserPostsDownloadListener;
+
+    public void setUserPostsDownloadListener(RepositoryUserPostsDownloadInterface repositoryUserPostsDownloadInterface) {
+        this.mUserPostsDownloadListener = repositoryUserPostsDownloadInterface;
+    }*/
+
     /**<-------Post Uploading interface------->**/
     public interface RepositoryPostUploadInterface {
         void onPostUploadSucceed(Post post);
@@ -314,6 +327,40 @@ public class Repository {
                                     posts.add(document.toObject(Post.class));
                                     Log.d(TAG, "onComplete: " + document.toObject(Post.class).toString());
                                 }
+
+                                if (mPostDownloadListener != null) {
+                                    Collections.sort(posts);
+                                    mPostDownloadListener.onPostDownloadSucceed(posts);
+                                }
+                            } else {
+                                if (mPostDownloadListener != null) {
+                                    Log.wtf(TAG, "onComplete: ", task.getException());
+                                    mPostDownloadListener.onPostDownloadFailed(Objects
+                                            .requireNonNull(task.getException()).getMessage());
+                                }
+                            }
+                        }
+                    });
+        }
+    }
+
+    public void downloadUserPosts() {
+        final List<Post> posts = new ArrayList<>();
+        final FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user != null) {
+            mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
+                    .collection(POSTS)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+                                    posts.add(document.toObject(Post.class));
+                                    Log.d(TAG, "onComplete: " + document.toObject(Post.class).toString());
+                                }
+
                                 if (mPostDownloadListener != null) {
                                     Collections.sort(posts);
                                     mPostDownloadListener.onPostDownloadSucceed(posts);

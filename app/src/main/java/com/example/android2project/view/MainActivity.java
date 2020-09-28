@@ -32,6 +32,7 @@ import com.example.android2project.model.MenuAdapter;
 import com.example.android2project.model.Post;
 import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
+import com.example.android2project.model.ViewPagerAdapter;
 import com.example.android2project.view.fragments.CommentsFragment;
 import com.example.android2project.view.fragments.ConversationFragment;
 import com.example.android2project.view.fragments.FeedFragment;
@@ -248,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private List<Fragment> getFragments() {
         List<Fragment> fragmentList = new ArrayList<Fragment>();
-        fragmentList.add(FeedFragment.newInstance());
+        fragmentList.add(FeedFragment.newInstance(false));
         fragmentList.add(SocialFragment.newInstance());
         fragmentList.add(UserProfileFragment.newInstance());
 
@@ -260,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements
         CommentsFragment.newInstance(post)
                 .show(getSupportFragmentManager().beginTransaction(), COMMENTS_FRAG);
     }
+
     public interface LocationInterface {
         void onLocationChanged(String cityLocation);
 
