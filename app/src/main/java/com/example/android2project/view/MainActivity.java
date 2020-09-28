@@ -206,17 +206,26 @@ public class MainActivity extends AppCompatActivity implements
             Log.d(TAG, "URL of downloaded picture: " + userProfileImageUri);
             loadProfilePictureWithGlide(userProfileImageUri, userProfilePictureIv);
         }
+    }
 
-        Bundle bundle = getIntent().getExtras(); // add these lines of code to get data from notification
-        if (bundle != null) {
-            Log.d(TAG, "onCreate: matan? " + bundle.toString());
-            User recipient = (User) bundle.getSerializable("whatever");
-            if (recipient != null) {
-                Log.d(TAG, "onCreate: matan? " + recipient.toString());
-                ConversationFragment.newInstance(recipient)
-                        .show(getSupportFragmentManager()
-                                .beginTransaction(), "conversation_fragment");
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_REQUEST_CODE) {
+            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                //TODO alert dialog that explains that we need permissions.
+                Toast.makeText(this, "In order to have functionality you must provide location", Toast.LENGTH_SHORT).show();
+            } else {
+                startLocation();
             }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == RESULT_OK) {
+            startLocation();
         }
     }
 
@@ -251,22 +260,9 @@ public class MainActivity extends AppCompatActivity implements
         CommentsFragment.newInstance(post)
                 .show(getSupportFragmentManager().beginTransaction(), COMMENTS_FRAG);
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_REQUEST_CODE) {
-            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                //TODO alert dialog that explains that we need permissions.
-                Toast.makeText(this, "In order to have functionality you must provide location", Toast.LENGTH_SHORT).show();
-            } else {
-                startLocation();
-            }
-        }
-    }
-
     public interface LocationInterface {
         void onLocationChanged(String cityLocation);
+
     }
 
     private LocationInterface mLocationListener;
@@ -277,7 +273,8 @@ public class MainActivity extends AppCompatActivity implements
 
     public void startLocation() {
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mLocationCallback = new LocationCallback() {
                 @Override
                 public void onLocationResult(final LocationResult locationResult) {
@@ -287,7 +284,9 @@ public class MainActivity extends AppCompatActivity implements
                         @Override
                         public void run() {
                             try {
-                                List<Address> addressList = mGeoCoder.getFromLocation(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude(), 1);
+                                List<Address> addressList = mGeoCoder
+                                        .getFromLocation(locationResult.getLastLocation().getLatitude(),
+                                                locationResult.getLastLocation().getLongitude(), 1);
                                 mCityName = addressList.get(0).getLocality();
                                 if (mCityName != null) {
                                     if (mLocationListener != null) {
@@ -345,15 +344,29 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 }
             });
-
         }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == RESULT_OK) {
-            startLocation();
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        Bundle bundle = intent.getExtras();;
+        //Log.d(TAG, "onNewIntent: matan? " + recipient);
+        if (bundle != null) {
+            final String email = bundle.getString("email");
+            final String userName = bundle.getString("name");
+            final String firstName = userName.split(" ")[0];
+            final String lastName = userName.split(" ")[1];
+            final String photoPath = bundle.getString("photo");
+            final String token = bundle.getString("token");
+            User recipient = new User(email, firstName, lastName, photoPath, token);
+            Log.d(TAG, "onNewIntent: matan? " + recipient.toString());
+            if (recipient.getEmail() != null) {
+                ConversationFragment.newInstance(recipient)
+                        .show(getSupportFragmentManager()
+                                .beginTransaction(), "conversation_fragment");
+            }
         }
     }
 }

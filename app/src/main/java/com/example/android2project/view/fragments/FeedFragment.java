@@ -56,7 +56,7 @@ public class FeedFragment extends Fragment {
 
     private int mPosition;
 
-    private String mUserLocation="Unknown";
+    private String mUserLocation = "Unknown";
 
     private final String TAG = "FeedFragment";
 
@@ -183,7 +183,7 @@ public class FeedFragment extends Fragment {
         ((MainActivity) requireActivity()).setLocationListener(new MainActivity.LocationInterface() {
             @Override
             public void onLocationChanged(String cityLocation) {
-                mUserLocation=cityLocation;
+                mUserLocation = cityLocation;
             }
         });
 
@@ -280,7 +280,8 @@ public class FeedFragment extends Fragment {
 
         postContentEt.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -288,7 +289,8 @@ public class FeedFragment extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         postBtn.setOnClickListener(new View.OnClickListener() {
@@ -322,7 +324,8 @@ public class FeedFragment extends Fragment {
 
         postContentEt.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -330,7 +333,8 @@ public class FeedFragment extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         updateBtn.setOnClickListener(new View.OnClickListener() {

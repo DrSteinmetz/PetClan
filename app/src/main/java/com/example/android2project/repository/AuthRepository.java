@@ -465,6 +465,10 @@ public class AuthRepository {
         this.mUserToken = userToken;
     }
 
+    public final String getUserToken() {
+        return mUserToken;
+    }
+
     public String getUserId() {
         return Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
     }

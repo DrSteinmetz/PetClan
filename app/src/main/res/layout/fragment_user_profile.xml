@@ -47,15 +47,11 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <RelativeLayout
-            android:id="@+id/profile_details_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <ScrollView
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/profile_details_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -146,9 +142,7 @@
 
                 </LinearLayout>
 
-            </ScrollView>
-
-        </RelativeLayout>
+            </androidx.core.widget.NestedScrollView>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

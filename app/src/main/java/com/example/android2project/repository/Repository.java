@@ -51,6 +51,11 @@ public class Repository {
     private FirebaseFirestore mCloudDB = FirebaseFirestore.getInstance();
     private CollectionReference mCloudUsers = mCloudDB.collection("users");
 
+    private final String MESSAGES = "Messages";
+    private final String CONVERSATION = "Conversation";
+    private final String POSTS = "posts";
+    private final String COMMENTS = "comments";
+
     private final String TAG = "Repository";
 
     /**<-------Posts Interfaces------->**/
@@ -299,7 +304,7 @@ public class Repository {
         final FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {
-            mCloudDB.collectionGroup("posts")
+            mCloudDB.collectionGroup(POSTS)
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
@@ -336,7 +341,7 @@ public class Repository {
             post.setPostId(user.getEmail() + System.nanoTime());
 
             mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
-                    .collection("posts")
+                    .collection(POSTS)
                     .document(post.getPostId())
                     .set(post)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -369,7 +374,7 @@ public class Repository {
             updatePostMap.put("authorContent", updatedPostContent);
 
             mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
-                    .collection("posts")
+                    .collection(POSTS)
                     .document(postId)
                     .update(updatePostMap)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -406,7 +411,7 @@ public class Repository {
         updateLikesMap.put("likesMap", post.getLikesMap());
 
         mCloudUsers.document(post.getAuthorEmail())
-                .collection("posts")
+                .collection(POSTS)
                 .document(post.getPostId())
                 .update(updateLikesMap)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -432,7 +437,7 @@ public class Repository {
 
         if (user != null) {
             mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
-                    .collection("posts")
+                    .collection(POSTS)
                     .document(postId)
                     .delete()
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -463,9 +468,9 @@ public class Repository {
 
         if (user != null) {
             mCloudUsers.document(authorEmail)
-                    .collection("posts")
+                    .collection(POSTS)
                     .document(postId)
-                    .collection("comments")
+                    .collection(COMMENTS)
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
@@ -506,9 +511,9 @@ public class Repository {
             comment.setCommentId(user.getEmail() + System.nanoTime());
 
             mCloudUsers.document(authorEmail)
-                    .collection("posts")
+                    .collection(POSTS)
                     .document(postId)
-                    .collection("comments")
+                    .collection(COMMENTS)
                     .document(comment.getCommentId())
                     .set(comment)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -543,9 +548,9 @@ public class Repository {
             updateCommentMap.put("authorContent", updatedComment);
 
             mCloudUsers.document(postAuthorEmail)
-                    .collection("posts")
+                    .collection(POSTS)
                     .document(postId)
-                    .collection("comments")
+                    .collection(COMMENTS)
                     .document(commentId)
                     .update(updateCommentMap)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -576,7 +581,7 @@ public class Repository {
         updateCommentsAmountMap.put("commentsCount", commentsAmount);
 
         mCloudUsers.document(authorEmail)
-                .collection("posts")
+                .collection(POSTS)
                 .document(postId)
                 .update(updateCommentsAmountMap)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -605,9 +610,9 @@ public class Repository {
             final String postAuthorEmail = post.getAuthorEmail();
 
             mCloudUsers.document(postAuthorEmail)
-                    .collection("posts")
+                    .collection(POSTS)
                     .document(postId)
-                    .collection("comments")
+                    .collection(COMMENTS)
                     .document(commentId)
                     .delete()
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -770,10 +775,10 @@ public class Repository {
         mDBChats.child(chatId).child(id1).setValue(true);
         mDBChats.child(chatId).child(id2).setValue(true);
         mDBChats.child(chatId)
-                .child("Conversation")
+                .child(CONVERSATION)
                 .setValue(conversation);
         mDBChats.child(chatId)
-                .child("Messages")
+                .child(MESSAGES)
                 .child(message.getTime().toString())
                 .setValue(message)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -796,7 +801,7 @@ public class Repository {
     }
 
     public Query ConversationQuery(final String chatId) {
-        return mDBChats.child(chatId).child("Messages");
+        return mDBChats.child(chatId).child(MESSAGES).orderByChild("time/time");
     }
 
     public void downloadActiveChats() {
@@ -819,7 +824,7 @@ public class Repository {
                                 conversations.clear();
                             }
                             for (DataSnapshot ds : snapshot.getChildren()) {
-                                conversation = ds.child("Conversation").getValue(Conversation.class);
+                                conversation = ds.child(CONVERSATION).getValue(Conversation.class);
                                 if (conversation != null) {
                                     conversations.add(conversation);
                                 }

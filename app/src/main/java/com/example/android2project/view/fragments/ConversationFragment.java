@@ -4,6 +4,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,6 +85,8 @@ public class ConversationFragment extends DialogFragment {
 
         mViewModel.setRecipientEmail(mUserRecipient.getEmail());
 
+        Log.d(TAG, "onCreate: matan? Conversation");
+
         /*mOnDownloadConversationSucceed = new Observer<List<ChatMessage>>() {
             @Override
             public void onChanged(List<ChatMessage> chatMessages) {
@@ -139,7 +142,7 @@ public class ConversationFragment extends DialogFragment {
         mMessageRecycler.setLayoutManager(mLinearLayoutManager);
 
         final String chatId = mViewModel.generateChatId();
-
+        Log.d(TAG, "onCreateView: matan? Conversation");
         FirebaseRecyclerOptions<ChatMessage> recyclerOptions = new FirebaseRecyclerOptions.Builder<ChatMessage>()
                 .setQuery(mViewModel.ConversationQuery(chatId), ChatMessage.class).build();
 
