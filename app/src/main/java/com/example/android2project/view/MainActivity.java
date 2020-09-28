@@ -352,17 +352,16 @@ public class MainActivity extends AppCompatActivity implements
         super.onNewIntent(intent);
 
         Bundle bundle = intent.getExtras();;
-        //Log.d(TAG, "onNewIntent: matan? " + recipient);
         if (bundle != null) {
-            final String email = bundle.getString("email");
             final String userName = bundle.getString("name");
-            final String firstName = userName.split(" ")[0];
-            final String lastName = userName.split(" ")[1];
-            final String photoPath = bundle.getString("photo");
-            final String token = bundle.getString("token");
-            User recipient = new User(email, firstName, lastName, photoPath, token);
-            Log.d(TAG, "onNewIntent: matan? " + recipient.toString());
-            if (recipient.getEmail() != null) {
+            if (userName != null) {
+                final String email = bundle.getString("email");
+                final String firstName = userName.split(" ")[0];
+                final String lastName = userName.split(" ")[1];
+                final String photoPath = bundle.getString("photo");
+                final String token = bundle.getString("token");
+                User recipient = new User(email, firstName, lastName, photoPath, token);
+                Log.d(TAG, "onNewIntent: matan? " + recipient.toString());
                 ConversationFragment.newInstance(recipient)
                         .show(getSupportFragmentManager()
                                 .beginTransaction(), "conversation_fragment");

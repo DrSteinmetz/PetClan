@@ -63,34 +63,7 @@ public class WelcomeActivity extends AppCompatActivity implements
                 ViewModelEnum.Welcome)).get(WelcomeViewModel.class);
 
         if (mViewModel.isUserLoggedIn()) {
-            Bundle bundle = getIntent().getExtras();
-            if (bundle != null) {
-                final String email = bundle.getString("email");
-                final String userName = bundle.getString("name");
-                final String firstName = userName.split(" ")[0];
-                final String lastName = userName.split(" ")[1];
-                final String photoPath = bundle.getString("photo");
-                final String token = bundle.getString("token");
-                User recipient = new User(email, firstName, lastName, photoPath, token);
-                Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-                intent.putExtra("recipient", recipient);
-                intent.putExtras(bundle);
-                intent.putExtra("email", recipient.getEmail());
-                intent.putExtra("first_name", recipient.getFirstName());
-                intent.putExtra("last_name", recipient.getLastName());
-                intent.putExtra("photo", recipient.getPhotoUri());
-                intent.putExtra("token", recipient.getToken());
-                startActivity(intent);
-                finish();
-                if (recipient.getEmail() != null) {
-                    Log.d(TAG, "onCreate: matan? " + recipient.toString());
-                    ConversationFragment.newInstance(recipient)
-                            .show(getSupportFragmentManager()
-                                    .beginTransaction(), "conversation_fragment");
-                }
-            } else {
-                startMainActivity();
-            }
+            startMainActivity();
         }
 
         FirebaseInstanceId.getInstance()

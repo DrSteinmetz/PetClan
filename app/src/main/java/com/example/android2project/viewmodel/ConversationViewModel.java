@@ -124,13 +124,12 @@ public class ConversationViewModel extends ViewModel {
                     notificationObject.put("title", mUser.getDisplayName());
                     notificationObject.put("body", message.getContent());
                     notificationObject.put("tag", mUser.getEmail());
-                    notificationObject.put("icon", R.drawable.ic_petclan_app_icon);
+                    notificationObject.put("icon", R.drawable.ic_petclan_logo);
                     notificationObject.put("click_action", "OPEN_MAIN_ACTIVITY");
 
                     dataObject.put("email", mUser.getEmail());
                     dataObject.put("name", mUser.getDisplayName());
                     dataObject.put("photo", mUser.getPhotoUrl());
-                    Log.d(TAG, "onUploadMessageSucceed: " + mAuth.getUserToken());
                     dataObject.put("token", mAuth.getUserToken());
 
                     rootObject.put("notification", notificationObject);
