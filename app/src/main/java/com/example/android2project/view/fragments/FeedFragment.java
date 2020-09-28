@@ -20,6 +20,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.android2project.R;
 import com.example.android2project.model.Post;
@@ -38,6 +39,8 @@ public class FeedFragment extends Fragment {
 
     private PostsAdapter mPostsAdapter;
     private List<Post> mPosts = new ArrayList<>();
+
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private Observer<List<Post>> mOnPostDownloadSucceed;
     private Observer<String> mOnPostDownloadFailed;
@@ -96,6 +99,7 @@ public class FeedFragment extends Fragment {
                 }
                 mPosts.addAll(posts);
                 mPostsAdapter.notifyDataSetChanged();
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         };
 
@@ -179,6 +183,7 @@ public class FeedFragment extends Fragment {
 
         final RecyclerView recyclerView = rootView.findViewById(R.id.feed_recycler_view);
         final FloatingActionButton addPostBtn = rootView.findViewById(R.id.add_post_btn);
+        mSwipeRefreshLayout = rootView.findViewById(R.id.feed_refresher);
 
         ((MainActivity) requireActivity()).setLocationListener(new MainActivity.LocationInterface() {
             @Override
@@ -239,6 +244,13 @@ public class FeedFragment extends Fragment {
             public void onDeleteOptionClicked(int position, View view) {
                 mPosition = position;
                 showDeletePostDialog(mPosts.get(position));
+            }
+        });
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mViewModel.refreshPosts();
             }
         });
 

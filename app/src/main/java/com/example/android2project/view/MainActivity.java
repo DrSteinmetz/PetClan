@@ -351,7 +351,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        Bundle bundle = intent.getExtras();;
+        Bundle bundle = intent.getExtras();
         if (bundle != null) {
             final String userName = bundle.getString("name");
             if (userName != null) {
