@@ -37,8 +37,9 @@ import java.util.List;
 public class FeedFragment extends Fragment {
     private FeedViewModel mViewModel;
 
-    private boolean mIsProfileFeed = false;
+    private String mUserEmail;
 
+    RecyclerView mRecyclerView;
     private PostsAdapter mPostsAdapter;
     private List<Post> mPosts = new ArrayList<>();
 
@@ -71,10 +72,10 @@ public class FeedFragment extends Fragment {
 
     private FeedListener listener;
 
-    public static FeedFragment newInstance(final boolean isProfileFeed) {
+    public static FeedFragment newInstance(final String userEmail) {
         FeedFragment fragment = new FeedFragment();
         Bundle args = new Bundle();
-        args.putBoolean("posts", isProfileFeed);
+        args.putString("posts", userEmail);
         fragment.setArguments(args);
         return fragment;
     }
@@ -95,12 +96,12 @@ public class FeedFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mIsProfileFeed = getArguments().getBoolean("posts");
+            mUserEmail = getArguments().getString("posts");
         }
 
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Feed)).get(FeedViewModel.class);
-        mViewModel.setProfilePost(mIsProfileFeed);
+        mViewModel.setUserEmail(mUserEmail);
         mViewModel.refreshPosts();
 
         mOnPostDownloadSucceed = new Observer<List<Post>>() {
@@ -194,8 +195,8 @@ public class FeedFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
 
-        final RecyclerView recyclerView = rootView.findViewById(R.id.feed_recycler_view);
         final FloatingActionButton addPostBtn = rootView.findViewById(R.id.add_post_btn);
+        mRecyclerView = rootView.findViewById(R.id.feed_recycler_view);
         mSwipeRefreshLayout = rootView.findViewById(R.id.feed_refresher);
 
         ((MainActivity) requireActivity()).setLocationListener(new MainActivity.LocationInterface() {
@@ -213,17 +214,19 @@ public class FeedFragment extends Fragment {
             }
         });
 
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
-                mIsProfileFeed ? RecyclerView.HORIZONTAL : RecyclerView.VERTICAL,
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
+                mUserEmail != null ? RecyclerView.HORIZONTAL : RecyclerView.VERTICAL,
                 false));
 
-        mPostsAdapter = new PostsAdapter(mPosts, getContext(), mIsProfileFeed);
+        mPostsAdapter = new PostsAdapter(mPosts, getContext(), mUserEmail);
 
         mPostsAdapter.setPostListener(new PostsAdapter.PostListener() {
             @Override
             public void onAuthorImageClicked(int position, View view) {
-                //TODO: Open the Author's Profile/big profile image
+                final String userEmail = mPosts.get(position).getAuthorEmail();
+                UserProfileFragment.newInstance(userEmail)
+                        .show(getChildFragmentManager(), "profile_fragment");
             }
 
             @Override
@@ -269,7 +272,12 @@ public class FeedFragment extends Fragment {
             }
         });
 
-        recyclerView.setAdapter(mPostsAdapter);
+        mRecyclerView.setAdapter(mPostsAdapter);
+
+        if (mUserEmail != null) {
+            mRecyclerView.smoothScrollBy(2000, 0, null, 30000);
+            // TODO: Improve this
+        }
 
         return rootView;
     }

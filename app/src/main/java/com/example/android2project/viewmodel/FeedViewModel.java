@@ -12,7 +12,7 @@ import java.util.List;
 
 public class FeedViewModel extends ViewModel {
     private Repository mRepository;
-    private boolean isProfilePost = false;
+    private String mUserEmail = null;
 
     private MutableLiveData<List<Post>> mPostDownloadSucceed;
     private MutableLiveData<String> mPostDownloadFailed;
@@ -185,8 +185,8 @@ public class FeedViewModel extends ViewModel {
         });
     }
 
-    public void setProfilePost(boolean isProfilePost) {
-        this.isProfilePost = isProfilePost;
+    public void setUserEmail(final String userEmail) {
+        this.mUserEmail = userEmail;
     }
 
     public void uploadNewPost(String postContent) {
@@ -198,8 +198,8 @@ public class FeedViewModel extends ViewModel {
     }
 
     public void refreshPosts() {
-        if (isProfilePost) {
-            mRepository.downloadUserPosts();
+        if (mUserEmail != null) {
+            mRepository.downloadUserPosts(mUserEmail);
         } else {
             mRepository.downloadPosts();
         }

@@ -33,16 +33,15 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
     private Context mContext;
 
     private String mUserEmail;
-
-    private boolean mIsProfilePost = false;
+    private String mMyEmail = null;
 
     private final String TAG = "PostsAdapter";
 
-    public PostsAdapter(List<Post> posts, Context context, final boolean isProfilePost) {
+    public PostsAdapter(List<Post> posts, Context context, final String userEmail) {
         this.mPosts = posts;
         this.mContext = context;
-        this.mUserEmail = AuthRepository.getInstance(context).getUserEmail();
-        this.mIsProfilePost = isProfilePost;
+        this.mMyEmail = AuthRepository.getInstance(context).getUserEmail();
+        this.mUserEmail = userEmail;
     }
 
     public interface PostListener {
@@ -94,7 +93,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
             setContentTvProperties();
 
-            if (mIsProfilePost) {
+            if (mUserEmail != null) {
                 ViewGroup.MarginLayoutParams layoutParams =
                         (ViewGroup.MarginLayoutParams) postCardLayout.getLayoutParams();
                 final float density = mContext.getResources().getDisplayMetrics().density;
@@ -102,7 +101,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                 layoutParams.setMargins(margin, 0, margin, 0);
                 postCardLayout.setRadius(50);
                 postCardLayout.requestLayout();
-                //TODO: Make the posts scroll automatically till user touch
             }
 
             authorPicIv.setOnClickListener(new View.OnClickListener() {
@@ -221,10 +219,16 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
         holder.postTimeAgo.setText(timestampToTimeAgo(post.getPostTime()));
 
-        if (post.getAuthorEmail().equals(mUserEmail)) {
+        if (post.getAuthorEmail().equals(mMyEmail)) {
             holder.optionsBtn.setVisibility(View.VISIBLE);
         } else {
             holder.optionsBtn.setVisibility(View.GONE);
+        }
+
+        if (post.getAuthorEmail().equals(mUserEmail != null ? mUserEmail : mMyEmail)) {
+            holder.authorPicIv.setClickable(false);
+        } else {
+            holder.authorPicIv.setClickable(true);
         }
 
         boolean isUserLikedPost = post.getLikesMap().containsKey(mUserEmail);

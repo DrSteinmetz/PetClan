@@ -122,17 +122,6 @@ public class AuthRepository {
         this.mDeleteUserListener = repositoryDeleteUserInterface;
     }
 
-    /**<-------User Get User Name interface------->**/
-    public interface RepositoryGetUserNameInterface {
-        void onGetUserNameSucceed(String value);
-    }
-
-    private RepositoryGetUserNameInterface mGetUserNameListener;
-
-    public void setGetUserNameListener(RepositoryGetUserNameInterface repositoryGetUserNameInterface) {
-        this.mGetUserNameListener = repositoryGetUserNameInterface;
-    }
-
     /**<-------Sign Out User interface------->**/
     public interface RepositorySignOutUserInterface {
         void onSignOutUserSucceed(boolean value);
@@ -370,7 +359,7 @@ public class AuthRepository {
             Log.d(TAG, "onComplete: sign up " + user.getUid());
         } else {
             if (mSelectedImage.toString().equals("facebook")) {
-                mSelectedImage = Profile.getCurrentProfile().getProfilePictureUri(200, 200);
+                mSelectedImage = Profile.getCurrentProfile().getProfilePictureUri(1000, 1000);
             } else {
                 mSelectedImage = Uri.parse(Objects.requireNonNull(user.getPhotoUrl()).toString());
             }
@@ -534,7 +523,7 @@ public class AuthRepository {
         return userEmail;
     }
 
-    public void getUserName() {
+    public String getUserName() {
         String name = "No Name Found";
         FirebaseUser user = mAuth.getCurrentUser();
 
@@ -542,9 +531,7 @@ public class AuthRepository {
             name = user.getDisplayName();
         }
 
-        if (mGetUserNameListener != null) {
-            mGetUserNameListener.onGetUserNameSucceed(name);
-        }
+        return name;
     }
 
     public void signOutUser() {

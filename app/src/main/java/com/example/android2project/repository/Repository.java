@@ -191,6 +191,19 @@ public class Repository {
     }
 
     /**<-------Settings Interfaces------->**/
+    /**<-------Download User interface------->**/
+    public interface RepositoryDownloadUserInterface {
+        void onDownloadUserSucceed(User user);
+
+        void onDownloadUserFailed(String error);
+    }
+
+    private RepositoryDownloadUserInterface mDownloadUserListener;
+
+    public void setDownloadUserListener(RepositoryDownloadUserInterface repositoryDownloadUserInterface) {
+        this.mDownloadUserListener = repositoryDownloadUserInterface;
+    }
+
     /**<-------Update User Name interface------->**/
     public interface RepositoryUpdateUserNameInterface {
         void onUpdateUserNameSucceed(String newUserName);
@@ -215,19 +228,6 @@ public class Repository {
 
     public void setUpdateUserImageListener(RepositoryUpdateUserImageInterface repositoryUpdateUserImageInterface) {
         this.mUpdateUserImageListener = repositoryUpdateUserImageInterface;
-    }
-
-    /**<-------Update User Cover Image interface------->**/
-    public interface RepositoryUpdateUserCoverImageInterface {
-        void onUpdateUserCoverImageSucceed(String newUserProfileCoverPic);
-
-        void onUpdateUserCoverImageFailed(String error);
-    }
-
-    private RepositoryUpdateUserCoverImageInterface mUpdateUserCoverImageListener;
-
-    public void setUpdateUserCoverImageListener(RepositoryUpdateUserCoverImageInterface repositoryUpdateUserCoverImageInterface) {
-        this.mUpdateUserCoverImageListener = repositoryUpdateUserCoverImageInterface;
     }
 
     /**<-------User Deletion interface------->**/
@@ -344,37 +344,34 @@ public class Repository {
         }
     }
 
-    public void downloadUserPosts() {
+    public void downloadUserPosts(final String userEmail) {
         final List<Post> posts = new ArrayList<>();
-        final FirebaseUser user = mAuth.getCurrentUser();
 
-        if (user != null) {
-            mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
-                    .collection(POSTS)
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                                    posts.add(document.toObject(Post.class));
-                                    Log.d(TAG, "onComplete: " + document.toObject(Post.class).toString());
-                                }
+        mCloudUsers.document(userEmail)
+                .collection(POSTS)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+                                posts.add(document.toObject(Post.class));
+                                Log.d(TAG, "onComplete: " + document.toObject(Post.class).toString());
+                            }
 
-                                if (mPostDownloadListener != null) {
-                                    Collections.sort(posts);
-                                    mPostDownloadListener.onPostDownloadSucceed(posts);
-                                }
-                            } else {
-                                if (mPostDownloadListener != null) {
-                                    Log.wtf(TAG, "onComplete: ", task.getException());
-                                    mPostDownloadListener.onPostDownloadFailed(Objects
-                                            .requireNonNull(task.getException()).getMessage());
-                                }
+                            if (mPostDownloadListener != null) {
+                                Collections.sort(posts);
+                                mPostDownloadListener.onPostDownloadSucceed(posts);
+                            }
+                        } else {
+                            if (mPostDownloadListener != null) {
+                                Log.wtf(TAG, "onComplete: ", task.getException());
+                                mPostDownloadListener.onPostDownloadFailed(Objects
+                                        .requireNonNull(task.getException()).getMessage());
                             }
                         }
-                    });
-        }
+                    }
+                });
     }
 
     public void uploadNewPost(String postContent) {
@@ -683,8 +680,31 @@ public class Repository {
         }
     }
 
-    /**<-------Settings methods------->**/
-    public void updateUserName(String newUserName) {
+    /**<-------Profile methods------->**/
+    public void downloadUser(final String userEmail) {
+        mCloudUsers.document(userEmail)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            User user = task.getResult().toObject(User.class);
+                            if (mDownloadUserListener != null && user != null) {
+                                mDownloadUserListener.onDownloadUserSucceed(user);
+                            } else if (mDownloadUserListener != null && user == null) {
+                                mDownloadUserListener.onDownloadUserFailed("USER NOT FOUND");
+                            }
+                        } else {
+                            if (mDownloadUserListener != null) {
+                                mDownloadUserListener.onDownloadUserFailed(Objects.
+                                        requireNonNull(task.getException()).getMessage());
+                            }
+                        }
+                    }
+                });
+    }
+
+    public void updateUserName(final String newUserName) {
         final FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {

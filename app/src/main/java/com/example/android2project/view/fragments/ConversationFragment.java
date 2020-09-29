@@ -35,7 +35,6 @@ import com.example.android2project.viewmodel.ViewModelFactory;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
-import java.util.List;
 import java.util.Objects;
 
 public class ConversationFragment extends DialogFragment {
@@ -84,8 +83,6 @@ public class ConversationFragment extends DialogFragment {
                 ViewModelEnum.Conversation)).get(ConversationViewModel.class);
 
         mViewModel.setRecipientEmail(mUserRecipient.getEmail());
-
-        Log.d(TAG, "onCreate: matan? Conversation");
 
         /*mOnDownloadConversationSucceed = new Observer<List<ChatMessage>>() {
             @Override
@@ -192,9 +189,11 @@ public class ConversationFragment extends DialogFragment {
         });
 
 
-        Window window = Objects.requireNonNull(getDialog()).getWindow();
-        if (window != null) {
-            window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        if (getDialog() != null) {
+            Window window = Objects.requireNonNull(getDialog()).getWindow();
+            if (window != null) {
+                window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            }
         }
 
         if (mUserRecipient != null) {
@@ -274,10 +273,12 @@ public class ConversationFragment extends DialogFragment {
         super.onStart();
 
         mMessageAdapter.startListening();
-        Window window = Objects.requireNonNull(getDialog()).getWindow();
-        if (window != null) {
-            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT);
+        if (getDialog() != null) {
+            Window window = Objects.requireNonNull(getDialog()).getWindow();
+            if (window != null) {
+                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+            }
         }
     }
 

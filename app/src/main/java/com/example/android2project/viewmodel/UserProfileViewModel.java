@@ -6,6 +6,7 @@ import android.net.Uri;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.android2project.model.User;
 import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.repository.Repository;
 import com.example.android2project.repository.StorageRepository;
@@ -20,14 +21,14 @@ public class UserProfileViewModel extends ViewModel {
     //private MutableLiveData<String> mUploadPicSucceed;
     //private MutableLiveData<String> mUploadPicFailed;
 
+    private MutableLiveData<User> mDownloadUserSucceed;
+    private MutableLiveData<String> mDownloadUserFailed;
+
     private MutableLiveData<String> mUpdateUserNameSucceed;
     private MutableLiveData<String> mUpdateUserNameFailed;
 
     private MutableLiveData<String> mUpdateUserImageSucceed;
     private MutableLiveData<String> mUpdateUserImageFailed;
-
-    private MutableLiveData<String> mUpdateUserCoverImageSucceed;
-    private MutableLiveData<String> mUpdateUserCoverImageFailed;
 
     private MutableLiveData<String> mUserDeletionSucceed;
     private MutableLiveData<String> mUserDeletionFailed;
@@ -68,6 +69,36 @@ public class UserProfileViewModel extends ViewModel {
             @Override
             public void onUploadPicFailed(String error) {
                 //mUploadPicFailed.setValue(error);
+            }
+        });
+    }
+
+    public MutableLiveData<User> getDownloadUserSucceed() {
+        if (mDownloadUserSucceed == null) {
+            mDownloadUserSucceed = new MutableLiveData<>();
+            attachSetDownloadUserListener();
+        }
+        return mDownloadUserSucceed;
+    }
+
+    public MutableLiveData<String> getDownloadUserFailed() {
+        if (mDownloadUserFailed == null) {
+            mDownloadUserFailed = new MutableLiveData<>();
+            attachSetDownloadUserListener();
+        }
+        return mDownloadUserFailed;
+    }
+
+    public void attachSetDownloadUserListener() {
+        mRepository.setDownloadUserListener(new Repository.RepositoryDownloadUserInterface() {
+            @Override
+            public void onDownloadUserSucceed(User user) {
+                mDownloadUserSucceed.setValue(user);
+            }
+
+            @Override
+            public void onDownloadUserFailed(String error) {
+                mDownloadUserFailed.setValue(error);
             }
         });
     }
@@ -134,37 +165,6 @@ public class UserProfileViewModel extends ViewModel {
         });
     }
 
-    /**<-------Update User Cover Image------->**/
-    public MutableLiveData<String> getUpdateUserCoverImageSucceed() {
-        if (mUpdateUserCoverImageSucceed == null) {
-            mUpdateUserCoverImageSucceed = new MutableLiveData<>();
-            attachSetUpdateUserCoverImageListener();
-        }
-        return mUpdateUserCoverImageSucceed;
-    }
-
-    public MutableLiveData<String> getUpdateUserCoverImageFailed() {
-        if (mUpdateUserCoverImageFailed == null) {
-            mUpdateUserCoverImageFailed = new MutableLiveData<>();
-            attachSetUpdateUserCoverImageListener();
-        }
-        return mUpdateUserCoverImageFailed;
-    }
-
-    private void attachSetUpdateUserCoverImageListener() {
-        mRepository.setUpdateUserCoverImageListener(new Repository.RepositoryUpdateUserCoverImageInterface() {
-            @Override
-            public void onUpdateUserCoverImageSucceed(String newUserProfileCoverPicUri) {
-                mUpdateUserCoverImageSucceed.setValue(newUserProfileCoverPicUri);
-            }
-
-            @Override
-            public void onUpdateUserCoverImageFailed(String error) {
-                mUpdateUserCoverImageFailed.setValue(error);
-            }
-        });
-    }
-
     /**<-------Delete User------->**/
     public MutableLiveData<String> getUserDeletionSucceed() {
         if (mUserDeletionSucceed == null) {
@@ -198,8 +198,8 @@ public class UserProfileViewModel extends ViewModel {
     }
 
 
-    public void downloadUserPosts() {
-        mRepository.downloadUserPosts();
+    public void downloadUser(String userEmail) {
+        mRepository.downloadUser(userEmail);
     }
 
     public void updateUserName(final String newUserName) {
@@ -220,7 +220,14 @@ public class UserProfileViewModel extends ViewModel {
         mRepository.deleteUser();
     }
 
-    public String getUserProfileImage() {
-        return mAuthRepository.getUserImageUri();
+    public User getMyDetails() {
+        final String userEmail = mAuthRepository.getUserEmail();
+        final String userName = mAuthRepository.getUserName();
+        final String firstName = userName.split(" ")[0];
+        final String lastName = userName.split(" ")[1];
+        final String photoUri = mAuthRepository.getUserImageUri();
+        final String token = mAuthRepository.getUserToken();
+
+        return new User(userEmail, firstName, lastName, photoUri, token);
     }
 }

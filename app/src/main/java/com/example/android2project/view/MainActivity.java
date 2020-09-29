@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements
     private MainViewModel mViewModel;
     private UserPictureViewModel mUserPictureViewModel;
 
-    private Observer<String> mGetUserNameObserver;
     private Observer<Boolean> mSignOutUserObserver;
 
     private ArrayList<String> mMenuOptions = new ArrayList<>();
@@ -155,13 +154,6 @@ public class MainActivity extends AppCompatActivity implements
 
         mViewPager.setAdapter(mPageAdapter);
 
-        mGetUserNameObserver = new Observer<String>() {
-            @Override
-            public void onChanged(String username) {
-                userNameTv.setText(username);
-            }
-        };
-
         mSignOutUserObserver = new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
@@ -200,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements
         mDrawerLayout.setDrawerListener(drawerToggle);
         drawerToggle.syncState();
 
-        mViewModel.getUserName();
+        userNameTv.setText(mViewModel.getUserName());
 
         String userProfileImageUri = mViewModel.downloadUserProfilePicture();
         if (userProfileImageUri != null) {
@@ -231,7 +223,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void startObservation() {
-        mViewModel.getGetUserName().observe(this, mGetUserNameObserver);
         mViewModel.getSignOutSucceed().observe(this, mSignOutUserObserver);
     }
 
@@ -249,9 +240,9 @@ public class MainActivity extends AppCompatActivity implements
 
     private List<Fragment> getFragments() {
         List<Fragment> fragmentList = new ArrayList<Fragment>();
-        fragmentList.add(FeedFragment.newInstance(false));
+        fragmentList.add(FeedFragment.newInstance(null));
         fragmentList.add(SocialFragment.newInstance());
-        fragmentList.add(UserProfileFragment.newInstance());
+        fragmentList.add(UserProfileFragment.newInstance(null));
 
         return fragmentList;
     }
