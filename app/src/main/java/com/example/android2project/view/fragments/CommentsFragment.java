@@ -91,7 +91,9 @@ public class CommentsFragment extends DialogFragment {
         mOnCommentsDownloadSucceed = new Observer<List<Comment>>() {
             @Override
             public void onChanged(List<Comment> comments) {
-                mComments.clear();
+                if (!mComments.isEmpty()) {
+                    mComments.clear();
+                }
                 mComments.addAll(comments);
                 mNoCommentsTv.setVisibility(mComments.size() > 0 ? View.GONE : View.VISIBLE);
 

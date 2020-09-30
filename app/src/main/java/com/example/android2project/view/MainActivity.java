@@ -7,8 +7,6 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 
-import com.example.android2project.model.ChatsAdapter;
-import com.example.android2project.view.fragments.ChatsFragment;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -39,23 +37,29 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.android2project.R;
 import com.example.android2project.model.MenuAdapter;
 import com.example.android2project.model.Post;
+import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
+import com.example.android2project.model.ViewPagerAdapter;
 import com.example.android2project.view.fragments.CommentsFragment;
+import com.example.android2project.view.fragments.ConversationFragment;
 import com.example.android2project.view.fragments.FeedFragment;
-import com.example.android2project.view.fragments.UserProfileFragment;
 import com.example.android2project.view.fragments.SocialFragment;
+import com.example.android2project.view.fragments.UserProfileFragment;
 import com.example.android2project.viewmodel.MainViewModel;
 import com.example.android2project.viewmodel.UserPictureViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -75,12 +79,9 @@ public class MainActivity extends AppCompatActivity implements
     private MainViewModel mViewModel;
     private UserPictureViewModel mUserPictureViewModel;
 
-    private Observer<String> mGetUserNameObserver;
     private Observer<Boolean> mSignOutUserObserver;
 
     private ArrayList<String> mMenuOptions = new ArrayList<>();
-
-    private String bestProvider;
 
     private ViewPager mViewPager;
     private ViewPagerAdapter mPageAdapter;
@@ -113,8 +114,8 @@ public class MainActivity extends AppCompatActivity implements
         userLocationTv = findViewById(R.id.location_tv);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int hasLocationPremission = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
-            if (hasLocationPremission != PackageManager.PERMISSION_GRANTED) {
+            int hasLocationPermission = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+            if (hasLocationPermission != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
             } else {
                 startLocation();
@@ -122,25 +123,6 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             startLocation();
         }
-
-        FirebaseInstanceId.getInstance()
-                .getInstanceId()
-                .addOnSuccessListener(MainActivity.this,
-                        new OnSuccessListener<InstanceIdResult>() {
-                            @Override
-                            public void onSuccess(InstanceIdResult instanceIdResult) {
-                                String newToken = instanceIdResult.getToken();
-                                Log.d("newToken: ", newToken);
-
-                                //TODO: Send the token to server
-                            }
-                        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "onFailure: " + e.getMessage());
-                    }
-                });
 
         final ImageView userProfilePictureIv = findViewById(R.id.user_pic_iv);
         final TextView userNameTv = findViewById(R.id.user_name_tv);
@@ -178,13 +160,6 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         mViewPager.setAdapter(mPageAdapter);
-
-        mGetUserNameObserver = new Observer<String>() {
-            @Override
-            public void onChanged(String username) {
-                userNameTv.setText(username);
-            }
-        };
 
         mSignOutUserObserver = new Observer<Boolean>() {
             @Override
@@ -224,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements
         mDrawerLayout.setDrawerListener(drawerToggle);
         drawerToggle.syncState();
 
-        mViewModel.getUserName();
+        userNameTv.setText(mViewModel.getUserName());
 
         String userProfileImageUri = mViewModel.downloadUserProfilePicture();
         if (userProfileImageUri != null) {
@@ -233,8 +208,28 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_REQUEST_CODE) {
+            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                //TODO alert dialog that explains that we need permissions.
+                Toast.makeText(this, "In order to have functionality you must provide location", Toast.LENGTH_SHORT).show();
+            } else {
+                startLocation();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == RESULT_OK) {
+            startLocation();
+        }
+    }
+
     private void startObservation() {
-        mViewModel.getGetUserName().observe(this, mGetUserNameObserver);
         mViewModel.getSignOutSucceed().observe(this, mSignOutUserObserver);
     }
 
@@ -252,9 +247,9 @@ public class MainActivity extends AppCompatActivity implements
 
     private List<Fragment> getFragments() {
         List<Fragment> fragmentList = new ArrayList<Fragment>();
-        fragmentList.add(FeedFragment.newInstance());
+        fragmentList.add(FeedFragment.newInstance(null));
         fragmentList.add(SocialFragment.newInstance());
-        fragmentList.add(UserProfileFragment.newInstance());
+        fragmentList.add(UserProfileFragment.newInstance(null));
 
         return fragmentList;
     }
@@ -265,21 +260,9 @@ public class MainActivity extends AppCompatActivity implements
                 .show(getSupportFragmentManager().beginTransaction(), COMMENTS_FRAG);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_REQUEST_CODE) {
-            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                //TODO alert dialog that explains that we need permissions.
-                Toast.makeText(this, "In order to have functionality you must provide location", Toast.LENGTH_SHORT).show();
-            } else {
-                startLocation();
-            }
-        }
-    }
-
     public interface LocationInterface {
         void onLocationChanged(String cityLocation);
+
     }
 
     private LocationInterface mLocationListener;
@@ -288,10 +271,10 @@ public class MainActivity extends AppCompatActivity implements
         this.mLocationListener = locationListener;
     }
 
-
     public void startLocation() {
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mLocationCallback = new LocationCallback() {
                 @Override
                 public void onLocationResult(final LocationResult locationResult) {
@@ -301,7 +284,9 @@ public class MainActivity extends AppCompatActivity implements
                         @Override
                         public void run() {
                             try {
-                                List<Address> addressList = mGeoCoder.getFromLocation(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude(), 1);
+                                List<Address> addressList = mGeoCoder
+                                        .getFromLocation(locationResult.getLastLocation().getLatitude(),
+                                                locationResult.getLastLocation().getLongitude(), 1);
                                 mCityName = addressList.get(0).getLocality();
                                 if (mCityName != null) {
                                     if (mLocationListener != null) {
@@ -329,7 +314,6 @@ public class MainActivity extends AppCompatActivity implements
 
             SettingsClient client = LocationServices.getSettingsClient(this);
             Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
-
 
             task.addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
                 @Override
@@ -363,10 +347,24 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == RESULT_OK) {
-            startLocation();
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            final String userName = bundle.getString("name");
+            if (userName != null) {
+                final String email = bundle.getString("email");
+                final String firstName = userName.split(" ")[0];
+                final String lastName = userName.split(" ")[1];
+                final String photoPath = bundle.getString("photo");
+                final String token = bundle.getString("token");
+                User recipient = new User(email, firstName, lastName, photoPath, token);
+                Log.d(TAG, "onNewIntent: matan? " + recipient.toString());
+                ConversationFragment.newInstance(recipient)
+                        .show(getSupportFragmentManager()
+                                .beginTransaction(), "conversation_fragment");
+            }
         }
     }
 }

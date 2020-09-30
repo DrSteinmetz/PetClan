@@ -62,8 +62,7 @@ public class UserPictureFragment extends Fragment {
     public UserPictureFragment() {}
 
     public static UserPictureFragment newInstance() {
-        UserPictureFragment fragment = new UserPictureFragment();
-        return fragment;
+        return new UserPictureFragment();
     }
 
     @Override
@@ -147,9 +146,9 @@ public class UserPictureFragment extends Fragment {
                         requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                                 WRITE_PERMISSION_REQUEST);
                     } else {
-                        mFile = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                        mFile = new File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
                                 "petclan" + System.nanoTime() + "pic.jpg");
-                        mSelectedImage = FileProvider.getUriForFile(getContext(),
+                        mSelectedImage = FileProvider.getUriForFile(requireContext(),
                                 "com.example.android2project.provider", mFile);
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         intent.putExtra(MediaStore.EXTRA_OUTPUT, mSelectedImage);
@@ -179,7 +178,7 @@ public class UserPictureFragment extends Fragment {
                 mFile = new File(requireContext().
                         getExternalFilesDir(Environment.DIRECTORY_PICTURES),
                         "petclan" + System.nanoTime() + "pic.jpg");
-                mSelectedImage = FileProvider.getUriForFile(getContext(),
+                mSelectedImage = FileProvider.getUriForFile(requireContext(),
                         "com.example.android2project.provider", mFile);
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, mSelectedImage);

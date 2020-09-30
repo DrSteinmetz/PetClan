@@ -36,10 +36,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -125,17 +122,6 @@ public class AuthRepository {
         this.mDeleteUserListener = repositoryDeleteUserInterface;
     }
 
-    /**<-------User Get User Name interface------->**/
-    public interface RepositoryGetUserNameInterface {
-        void onGetUserNameSucceed(String value);
-    }
-
-    private RepositoryGetUserNameInterface mGetUserNameListener;
-
-    public void setGetUserNameListener(RepositoryGetUserNameInterface repositoryGetUserNameInterface) {
-        this.mGetUserNameListener = repositoryGetUserNameInterface;
-    }
-
     /**<-------Sign Out User interface------->**/
     public interface RepositorySignOutUserInterface {
         void onSignOutUserSucceed(boolean value);
@@ -145,17 +131,6 @@ public class AuthRepository {
 
     public void setSignOutUserListener(RepositorySignOutUserInterface repositorySignOutUserInterface) {
         this.mSignOutUserListener = repositorySignOutUserInterface;
-    }
-
-    /**<-------Get All Users interface------->**/
-    public interface RepositoryGetAllUsersInterface {
-        void onGetAllUsersSucceed(ArrayList<User> value);
-    }
-
-    private RepositoryGetAllUsersInterface mGetAllUsersListener;
-
-    public void setGetAllUsersListener(RepositoryGetAllUsersInterface repositoryGetAllUsersInterface) {
-        this.mGetAllUsersListener = repositoryGetAllUsersInterface;
     }
 
     /**<-------Singleton------->**/
@@ -384,7 +359,7 @@ public class AuthRepository {
             Log.d(TAG, "onComplete: sign up " + user.getUid());
         } else {
             if (mSelectedImage.toString().equals("facebook")) {
-                mSelectedImage = Profile.getCurrentProfile().getProfilePictureUri(200, 200);
+                mSelectedImage = Profile.getCurrentProfile().getProfilePictureUri(1000, 1000);
             } else {
                 mSelectedImage = Uri.parse(Objects.requireNonNull(user.getPhotoUrl()).toString());
             }
@@ -479,6 +454,10 @@ public class AuthRepository {
         this.mUserToken = userToken;
     }
 
+    public final String getUserToken() {
+        return mUserToken;
+    }
+
     public String getUserId() {
         return Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
     }
@@ -544,7 +523,7 @@ public class AuthRepository {
         return userEmail;
     }
 
-    public void getUserName() {
+    public String getUserName() {
         String name = "No Name Found";
         FirebaseUser user = mAuth.getCurrentUser();
 
@@ -552,9 +531,7 @@ public class AuthRepository {
             name = user.getDisplayName();
         }
 
-        if (mGetUserNameListener != null) {
-            mGetUserNameListener.onGetUserNameSucceed(name);
-        }
+        return name;
     }
 
     public void signOutUser() {
@@ -582,6 +559,4 @@ public class AuthRepository {
 
         return imageUri;
     }
-
-
 }

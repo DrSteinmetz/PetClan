@@ -1,5 +1,6 @@
 package com.example.android2project.viewmodel;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
@@ -16,6 +17,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.android2project.R;
 import com.example.android2project.model.ChatMessage;
 import com.example.android2project.model.User;
+import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.repository.Repository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,7 +34,8 @@ import java.util.Objects;
 
 public class ConversationViewModel extends ViewModel {
     private Repository mRepository;
-    //    private FirebaseMessaging mFirebaseMessaging;
+    private AuthRepository mAuth;
+    //private FirebaseMessaging mFirebaseMessaging;
     private FirebaseUser mUser;
     private Context mContext;
     private User mRecipient;
@@ -41,8 +44,8 @@ public class ConversationViewModel extends ViewModel {
 
     private List<ChatMessage> mConversation = new ArrayList<>();
 
-    private MutableLiveData<List<ChatMessage>> mDownloadConversationSucceed;
-    private MutableLiveData<String> mDownloadConversationFailed;
+    //private MutableLiveData<List<ChatMessage>> mDownloadConversationSucceed;
+    //private MutableLiveData<String> mDownloadConversationFailed;
 
     private MutableLiveData<ChatMessage> mUploadMessageSucceed;
     private MutableLiveData<String> mUploadMessageFailed;
@@ -51,12 +54,13 @@ public class ConversationViewModel extends ViewModel {
 
     public ConversationViewModel(Context context) {
         mRepository = Repository.getInstance(context);
-//        mFirebaseMessaging = FirebaseMessaging.getInstance();
+        mAuth = AuthRepository.getInstance(context);
+        //mFirebaseMessaging = FirebaseMessaging.getInstance();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         mContext = context;
     }
 
-    public MutableLiveData<List<ChatMessage>> getDownloadConversationSucceed() {
+    /*public MutableLiveData<List<ChatMessage>> getDownloadConversationSucceed() {
         if (mDownloadConversationSucceed == null) {
             mDownloadConversationSucceed = new MutableLiveData<>();
             attachSetDownloadConversationListener();
@@ -73,11 +77,13 @@ public class ConversationViewModel extends ViewModel {
     }
 
     private void attachSetDownloadConversationListener() {
-        /*mRepository.setDownloadConversationListener(new Repository.RepositoryDownloadConversationInterface() {
+        mRepository.setDownloadConversationListener(new Repository.RepositoryDownloadConversationInterface() {
             @Override
             public void onDownloadConversationSucceed(List<ChatMessage> conversation) {
                 mDownloadConversationSucceed.setValue(conversation);
-                mConversation.clear();
+                if (!mConversation.isEmpty()) {
+                    mConversation.clear();
+                }
                 mConversation.addAll(conversation);
             }
 
@@ -85,13 +91,13 @@ public class ConversationViewModel extends ViewModel {
             public void onDownloadConversationFailed(String error) {
                 mDownloadConversationFailed.setValue(error);
             }
-        });*/
-    }
+        });
+    }*/
 
     public MutableLiveData<ChatMessage> getUploadMessageSucceed() {
         if (mUploadMessageSucceed == null) {
             mUploadMessageSucceed = new MutableLiveData<>();
-//            attachSetUploadMessageListener();
+            attachSetUploadMessageListener();
         }
         return mUploadMessageSucceed;
     }
@@ -99,7 +105,7 @@ public class ConversationViewModel extends ViewModel {
     public MutableLiveData<String> getUploadMessageFailed() {
         if (mUploadMessageFailed == null) {
             mUploadMessageFailed = new MutableLiveData<>();
-//            attachSetUploadMessageListener();
+            attachSetUploadMessageListener();
         }
         return mUploadMessageFailed;
     }
@@ -118,9 +124,14 @@ public class ConversationViewModel extends ViewModel {
                     notificationObject.put("title", mUser.getDisplayName());
                     notificationObject.put("body", message.getContent());
                     notificationObject.put("tag", mUser.getEmail());
-                    notificationObject.put("icon", R.drawable.ic_petclan_app_icon);
+                    notificationObject.put("icon", R.drawable.ic_petclan_logo);
                     notificationObject.put("click_action", "OPEN_MAIN_ACTIVITY");
-                    dataObject.put("whatever", mRecipient);
+
+                    dataObject.put("email", mUser.getEmail());
+                    dataObject.put("name", mUser.getDisplayName());
+                    dataObject.put("photo", mUser.getPhotoUrl());
+                    dataObject.put("token", mAuth.getUserToken());
+
                     rootObject.put("notification", notificationObject);
                     rootObject.put("data", dataObject);
 
@@ -178,19 +189,19 @@ public class ConversationViewModel extends ViewModel {
         this.mConversation = mConversation;
     }
 
-    //    public void downloadConversation() {
-//        final String id1 = mRecipientEmail.replace(".", "");
-//        final String id2 = Objects.requireNonNull(mUser.getEmail()).replace(".", "");
-//
-//        String tempChatId = id2 + "&" + id1;
-//        if (Objects.requireNonNull(id1).compareTo(id2) < 0) {
-//            tempChatId = id1 + "&" + id2;
-//        }
-//        final String chatId = tempChatId;
-//
-//        mRepository.downloadConversationFromDB(chatId);
-//    }
-//
+    /*public void downloadConversation() {
+        final String id1 = mRecipientEmail.replace(".", "");
+        final String id2 = Objects.requireNonNull(mUser.getEmail()).replace(".", "");
+
+        String tempChatId = id2 + "&" + id1;
+        if (Objects.requireNonNull(id1).compareTo(id2) < 0) {
+            tempChatId = id1 + "&" + id2;
+        }
+        final String chatId = tempChatId;
+
+        mRepository.downloadConversationFromDB(chatId);
+    }*/
+
     public void uploadChatMessage(final User userRecipient, final String messageContent) {
         mRecipient = userRecipient;
         mRepository.uploadMessageToDB(messageContent,

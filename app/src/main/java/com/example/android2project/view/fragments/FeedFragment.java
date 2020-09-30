@@ -20,6 +20,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.android2project.R;
 import com.example.android2project.model.Post;
@@ -36,8 +37,13 @@ import java.util.List;
 public class FeedFragment extends Fragment {
     private FeedViewModel mViewModel;
 
+    private String mUserEmail;
+
+    RecyclerView mRecyclerView;
     private PostsAdapter mPostsAdapter;
     private List<Post> mPosts = new ArrayList<>();
+
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private Observer<List<Post>> mOnPostDownloadSucceed;
     private Observer<String> mOnPostDownloadFailed;
@@ -56,7 +62,7 @@ public class FeedFragment extends Fragment {
 
     private int mPosition;
 
-    private String mUserLocation="Unknown";
+    private String mUserLocation = "Unknown";
 
     private final String TAG = "FeedFragment";
 
@@ -66,8 +72,12 @@ public class FeedFragment extends Fragment {
 
     private FeedListener listener;
 
-    public static FeedFragment newInstance() {
-        return new FeedFragment();
+    public static FeedFragment newInstance(final String userEmail) {
+        FeedFragment fragment = new FeedFragment();
+        Bundle args = new Bundle();
+        args.putString("posts", userEmail);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -85,15 +95,25 @@ public class FeedFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (getArguments() != null) {
+            mUserEmail = getArguments().getString("posts");
+        }
+
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Feed)).get(FeedViewModel.class);
+        mViewModel.setUserEmail(mUserEmail);
+        mViewModel.refreshPosts();
 
         mOnPostDownloadSucceed = new Observer<List<Post>>() {
             @Override
             public void onChanged(List<Post> posts) {
-                mPosts.clear();
+                if (!mPosts.isEmpty()) {
+                    mPosts.clear();
+                }
+                Log.d(TAG, "onChanged: " + posts);
                 mPosts.addAll(posts);
                 mPostsAdapter.notifyDataSetChanged();
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         };
 
@@ -175,13 +195,14 @@ public class FeedFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
 
-        final RecyclerView recyclerView = rootView.findViewById(R.id.feed_recycler_view);
         final FloatingActionButton addPostBtn = rootView.findViewById(R.id.add_post_btn);
+        mRecyclerView = rootView.findViewById(R.id.feed_recycler_view);
+        mSwipeRefreshLayout = rootView.findViewById(R.id.feed_refresher);
 
         ((MainActivity) requireActivity()).setLocationListener(new MainActivity.LocationInterface() {
             @Override
             public void onLocationChanged(String cityLocation) {
-                mUserLocation=cityLocation;
+                mUserLocation = cityLocation;
             }
         });
 
@@ -193,15 +214,19 @@ public class FeedFragment extends Fragment {
             }
         });
 
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
+                mUserEmail != null ? RecyclerView.HORIZONTAL : RecyclerView.VERTICAL,
+                false));
 
-        mPostsAdapter = new PostsAdapter(mPosts, getContext());
+        mPostsAdapter = new PostsAdapter(mPosts, getContext(), mUserEmail);
 
         mPostsAdapter.setPostListener(new PostsAdapter.PostListener() {
             @Override
             public void onAuthorImageClicked(int position, View view) {
-                //TODO: Open the Author's Profile/big profile image
+                final String userEmail = mPosts.get(position).getAuthorEmail();
+                UserProfileFragment.newInstance(userEmail)
+                        .show(getChildFragmentManager(), "profile_fragment");
             }
 
             @Override
@@ -240,7 +265,19 @@ public class FeedFragment extends Fragment {
             }
         });
 
-        recyclerView.setAdapter(mPostsAdapter);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mViewModel.refreshPosts();
+            }
+        });
+
+        mRecyclerView.setAdapter(mPostsAdapter);
+
+        if (mUserEmail != null) {
+            mRecyclerView.smoothScrollBy(2000, 0, null, 30000);
+            // TODO: Improve this
+        }
 
         return rootView;
     }
@@ -278,7 +315,8 @@ public class FeedFragment extends Fragment {
 
         postContentEt.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -286,7 +324,8 @@ public class FeedFragment extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         postBtn.setOnClickListener(new View.OnClickListener() {
@@ -320,7 +359,8 @@ public class FeedFragment extends Fragment {
 
         postContentEt.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -328,7 +368,8 @@ public class FeedFragment extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         updateBtn.setOnClickListener(new View.OnClickListener() {

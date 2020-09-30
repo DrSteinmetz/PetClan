@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.android2project.R;
 
 import java.util.List;
@@ -44,8 +45,19 @@ public class ChatClanAdapter extends RecyclerView.Adapter<ChatClanAdapter.ChatCl
     @Override
     public void onBindViewHolder(@NonNull ChatClanViewHolder holder, int position) {
         User user = mFriends.get(position);
-        holder.userName.setText(user.getFirstName() + " " + user.getLastName());
-        Glide.with(mContext).load(user.getPhotoUri()).into(holder.userProfilePic);
+
+        RequestOptions options = new RequestOptions()
+                .circleCrop()
+                .placeholder(R.drawable.ic_default_user_pic)
+                .error(R.drawable.ic_default_user_pic);
+
+        Glide.with(mContext)
+                .load(user.getPhotoUri())
+                .apply(options)
+                .into(holder.userProfilePic);
+
+        final String userName = user.getFirstName() + " " + user.getLastName();
+        holder.userName.setText(userName);
     }
 
     @Override

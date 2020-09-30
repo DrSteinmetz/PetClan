@@ -24,12 +24,15 @@ public class ChatsViewModel extends ViewModel {
     private List<Conversation> mConversations = new ArrayList<>();
 
     private MutableLiveData<List<User>> mUsersLiveData;
+
     private MutableLiveData<List<Conversation>> mDownloadActiveConversationsSucceed;
     private MutableLiveData<String> mDownloadActiveConversationsFailed;
 
-    public static ChatsViewModel getInstance(final Context context){
-        if(chatsViewModel==null){
-            chatsViewModel=new ChatsViewModel(context);
+    private final String TAG = "ChatsViewModel";
+
+    public static ChatsViewModel getInstance(Context context) {
+        if (chatsViewModel == null) {
+            chatsViewModel = new ChatsViewModel(context);
         }
         return chatsViewModel;
     }
@@ -39,24 +42,6 @@ public class ChatsViewModel extends ViewModel {
         this.mRepository = Repository.getInstance(context);
     }
 
-
-
-    public MutableLiveData<List<Conversation>> getGetActiveConversationsSucceed() {
-        if (mDownloadActiveConversationsSucceed == null) {
-            mDownloadActiveConversationsSucceed = new MutableLiveData<>();
-            attachSetGetActiveConversationsListener();
-        }
-        return mDownloadActiveConversationsSucceed;
-    }
-
-    public MutableLiveData<String> getGetActiveConversationsFailed() {
-        if (mDownloadActiveConversationsFailed == null) {
-            mDownloadActiveConversationsFailed = new MutableLiveData<>();
-            attachSetGetActiveConversationsListener();
-        }
-        return mDownloadActiveConversationsFailed;
-    }
-
     public MutableLiveData<List<User>> getUsersLiveData() {
         if (mUsersLiveData == null) {
             mUsersLiveData = new MutableLiveData<>();
@@ -64,17 +49,34 @@ public class ChatsViewModel extends ViewModel {
         return mUsersLiveData;
     }
 
-    private void attachSetGetActiveConversationsListener() {
+    public MutableLiveData<List<Conversation>> getDownloadActiveConversationsSucceed() {
+        if (mDownloadActiveConversationsSucceed == null) {
+            mDownloadActiveConversationsSucceed = new MutableLiveData<>();
+            attachSetDownloadActiveConversationsListener();
+        }
+        return mDownloadActiveConversationsSucceed;
+    }
+
+    public MutableLiveData<String> getDownloadActiveConversationsFailed() {
+        if (mDownloadActiveConversationsFailed == null) {
+            mDownloadActiveConversationsFailed = new MutableLiveData<>();
+            attachSetDownloadActiveConversationsListener();
+        }
+        return mDownloadActiveConversationsFailed;
+    }
+
+    private void attachSetDownloadActiveConversationsListener() {
         mRepository.setDownloadActiveChatsListener(new Repository.RepositoryDownloadActiveChatsInterface() {
             @Override
             public void onDownloadActiveChatsSucceed(List<Conversation> conversations) {
-                if(!mConversations.isEmpty()) {
+                if (!mConversations.isEmpty()) {
                     mConversations.clear();
                 }
                 mConversations.addAll(conversations);
                 Collections.sort(mConversations);
                 getRelevantUsers();
-                mDownloadActiveConversationsSucceed.setValue(mConversations);
+
+                mDownloadActiveConversationsSucceed.setValue(conversations);
             }
 
             @Override
@@ -84,40 +86,32 @@ public class ChatsViewModel extends ViewModel {
         });
     }
 
-    public List<Conversation> getConversations() {
-        return mConversations;
-    }
-
-    public void getActiveChats() {
-        mRepository.downloadActiveChats();
-    }
-
     public List<User> getActiveUsers() {
         return mActiveUsers;
     }
 
-    public void setActiveUsers(List<User> users) {
-        if(!mAllUsers.isEmpty()) {
+    public void setActiveUsers(List<User> allUsers) {
+        if (!mAllUsers.isEmpty()) {
             mAllUsers.clear();
         }
 
-        mAllUsers.addAll(users);
+        mAllUsers.addAll(allUsers);
         mUsersLiveData.setValue(getRelevantUsers());
     }
-
 
     private List<User> getRelevantUsers() {
         final String myEmail = mAuth.getUserEmail();
         final List<User> relevantUsers = new ArrayList<>();
         for (Conversation conversation : mConversations) {
-            for (User user: mAllUsers) {
+            for (User user : mAllUsers) {
                 if ((conversation.getRecipientEmail().equals(user.getEmail()) && !myEmail.equals(user.getEmail())) ||
                         (conversation.getSenderEmail().equals(user.getEmail()) && !myEmail.equals(user.getEmail()))) {
                     relevantUsers.add(user);
                 }
             }
         }
-        if(!this.mActiveUsers.isEmpty()){
+
+        if (!this.mActiveUsers.isEmpty()) {
             this.mActiveUsers.clear();
         }
         this.mActiveUsers.addAll(relevantUsers);
@@ -125,4 +119,11 @@ public class ChatsViewModel extends ViewModel {
         return relevantUsers;
     }
 
+    public List<Conversation> getConversations() {
+        return mConversations;
+    }
+
+    public void getActiveChats() {
+        mRepository.downloadActiveChats();
+    }
 }

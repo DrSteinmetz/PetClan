@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class User implements Comparable<Object>, Serializable{
+public class User implements Comparable<Object>, Serializable {
     private String mEmail;
     private String mFirstName;
     private String mLastName;
@@ -23,7 +23,7 @@ public class User implements Comparable<Object>, Serializable{
         this.mFirstName = firstName;
         this.mLastName = lastName;
         this.mPhotoUri = photoUri;
-        this.mLocation="Unknown";
+        this.mLocation = "Unknown";
         this.mToken = token;
     }
 

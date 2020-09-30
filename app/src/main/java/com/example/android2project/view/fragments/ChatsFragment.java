@@ -33,8 +33,11 @@ public class ChatsFragment extends Fragment {
     private ChatsAdapter mChatsAdapter;
 
     private Observer<List<User>> usersObserver;
-    private Observer<List<Conversation>> mOnDownloadGetActiveConversationsSucceed;
-    private Observer<String> mOnDownloadGetActiveConversationsFailed;
+
+    private Observer<List<Conversation>> mOnDownloadActiveConversationsSucceed;
+    private Observer<String> mOnDownloadActiveConversationsFailed;
+
+    private final String CONVERSATION_FRAG = "conversation_fragment";
 
     private static final String tag="CONVERSATION_FRAGMENT";
     private final String TAG = "ChatsFragment";
@@ -55,7 +58,6 @@ public class ChatsFragment extends Fragment {
         usersObserver = new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
-
                 mChatsAdapter = new ChatsAdapter(getContext(),
                         mViewModel.getConversations(),
                         mViewModel.getActiveUsers());
@@ -65,24 +67,24 @@ public class ChatsFragment extends Fragment {
                         User recipient = mViewModel.getActiveUsers().get(position);
                         ConversationFragment.newInstance(recipient)
                                 .show(getParentFragmentManager()
-                                        .beginTransaction(), tag);
+                                        .beginTransaction(), CONVERSATION_FRAG);
                     }
                 });
                 mRecyclerView.setAdapter(mChatsAdapter);
             }
         };
 
-        mOnDownloadGetActiveConversationsSucceed = new Observer<List<Conversation>>() {
+        mOnDownloadActiveConversationsSucceed = new Observer<List<Conversation>>() {
             @Override
             public void onChanged(List<Conversation> conversations) {
-                if(mChatsAdapter!=null) {
+                if (mChatsAdapter != null) {
                     mChatsAdapter.setUserMap(mViewModel.getActiveUsers());
                     mChatsAdapter.notifyDataSetChanged();
                 }
             }
         };
 
-        mOnDownloadGetActiveConversationsFailed = new Observer<String>() {
+        mOnDownloadActiveConversationsFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
                 Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
@@ -100,42 +102,14 @@ public class ChatsFragment extends Fragment {
         mRecyclerView = rootView.findViewById(R.id.chats_recyclerview);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        usersObserver=new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> userList) {
-                mChatsAdapter = new ChatsAdapter(getContext(),mViewModel.getConversations(),mViewModel.getActiveUsers());
-                mChatsAdapter.setChatAdapterListener(new ChatsAdapter.ChatAdapterInterface() {
-                    @Override
-                    public void onClicked(int position, View view) {
-                        User recepient=mViewModel.getActiveUsers().get(position);
-                        ConversationFragment.newInstance(recepient).show(getParentFragmentManager().beginTransaction(),tag);
-
-                    }
-
-                });
-                mRecyclerView.setAdapter(mChatsAdapter);
-            }
-        };
-
-        mOnDownloadGetActiveConversationsSucceed = new Observer<List<Conversation>>() {
-            @Override
-            public void onChanged(List<Conversation> conversations) {
-                if (mChatsAdapter != null) {
-                    mChatsAdapter.setUserMap(mViewModel.getActiveUsers());
-                    mChatsAdapter.notifyDataSetChanged();
-                }
-            }
-        };
-
         return rootView;
     }
 
     public void startObservation() {
         if (mViewModel != null) {
-            mViewModel.getUsersLiveData().observe(this,usersObserver);
-            mViewModel.getGetActiveConversationsSucceed().observe(this, mOnDownloadGetActiveConversationsSucceed);
-            mViewModel.getGetActiveConversationsFailed().observe(this, mOnDownloadGetActiveConversationsFailed);
+            mViewModel.getUsersLiveData().observe(this, usersObserver);
+            mViewModel.getDownloadActiveConversationsSucceed().observe(this, mOnDownloadActiveConversationsSucceed);
+            mViewModel.getDownloadActiveConversationsFailed().observe(this, mOnDownloadActiveConversationsFailed);
         }
     }
 }

@@ -13,7 +13,9 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.android2project.R;
+import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
+import com.example.android2project.view.fragments.ConversationFragment;
 import com.example.android2project.view.fragments.LoginDetailsFragment;
 import com.example.android2project.view.fragments.LoginRegistrationFragment;
 import com.example.android2project.view.fragments.SignUpDetailsFragment;
@@ -72,6 +74,7 @@ public class WelcomeActivity extends AppCompatActivity implements
                             public void onSuccess(InstanceIdResult instanceIdResult) {
                                 final String newToken = instanceIdResult.getToken();
                                 Log.d("newToken: ", newToken);
+
                                 mViewModel.setUserToken(newToken);
                             }
                         })

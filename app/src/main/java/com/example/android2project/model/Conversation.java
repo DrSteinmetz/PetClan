@@ -8,7 +8,7 @@ public class Conversation implements Comparable<Object> {
 
     public Conversation() {}
 
-    public Conversation(String senderEmail, String recipientEmail,ChatMessage lastMessage) {
+    public Conversation(String senderEmail, String recipientEmail, ChatMessage lastMessage) {
         final String id1 = senderEmail.replace(".", "");
         final String id2 = recipientEmail.replace(".", "");
 
@@ -19,15 +19,7 @@ public class Conversation implements Comparable<Object> {
 
         this.mSenderEmail = senderEmail;
         this.mRecipientEmail = recipientEmail;
-        this.mLastMessage=lastMessage;
-    }
-
-    public ChatMessage getLastMessage() {
-        return mLastMessage;
-    }
-
-    public void setLastMessage(ChatMessage LastMessage) {
-        this.mLastMessage = LastMessage;
+        this.mLastMessage = lastMessage;
     }
 
     public String getChatId() {
@@ -54,14 +46,12 @@ public class Conversation implements Comparable<Object> {
         this.mRecipientEmail = recipientEmail;
     }
 
-    @Override
-    public String toString() {
-        return "Conversation{" +
-                "mChatId='" + mChatId + '\'' +
-                ", mSenderEmail='" + mSenderEmail + '\'' +
-                ", mRecipientEmail='" + mRecipientEmail + '\'' +
-                ", mLastMessage=" + mLastMessage +
-                '}';
+    public ChatMessage getLastMessage() {
+        return mLastMessage;
+    }
+
+    public void setLastMessage(ChatMessage lastMessage) {
+        this.mLastMessage = lastMessage;
     }
 
     @Override
@@ -71,5 +61,15 @@ public class Conversation implements Comparable<Object> {
             return otherConversation.getLastMessage().getTime().compareTo(this.getLastMessage().getTime());
         }
         return 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Conversation{" +
+                "mChatId='" + mChatId + '\'' +
+                ", mSenderEmail='" + mSenderEmail + '\'' +
+                ", mRecipientEmail='" + mRecipientEmail + '\'' +
+                ", mLastMessage=" + mLastMessage.toString() +
+                '}';
     }
 }

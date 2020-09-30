@@ -41,7 +41,7 @@ public class MessageListAdapter extends FirebaseRecyclerAdapter<ChatMessage, Mes
 
         public void bind(ChatMessage message) {
             this.content.setText(message.getContent());
-            this.time.setText(DateToFormatDate(message.getTime()));
+            this.time.setText(dateToFormatDate(message.getTime()));
         }
     }
 
@@ -83,7 +83,7 @@ public class MessageListAdapter extends FirebaseRecyclerAdapter<ChatMessage, Mes
     }
 
     @SuppressLint("SimpleDateFormat")
-    private String DateToFormatDate(Date date) {
+    private String dateToFormatDate(Date date) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm | dd/MM");
         return simpleDateFormat.format(date);
     }
