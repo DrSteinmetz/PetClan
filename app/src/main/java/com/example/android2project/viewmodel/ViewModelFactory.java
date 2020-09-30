@@ -90,6 +90,12 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     objToReturn = (T) ChatsViewModel.getInstance(mContext);
                 }
                 break;
+            case Pet:
+                if (modelClass.isAssignableFrom(PetViewModel.class)) {
+                    objToReturn = (T) new PetViewModel(mContext);
+                }
+                break;
+
         }
 
         return objToReturn;

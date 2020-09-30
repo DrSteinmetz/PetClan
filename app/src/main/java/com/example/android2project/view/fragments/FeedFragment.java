@@ -110,10 +110,13 @@ public class FeedFragment extends Fragment {
                 if (!mPosts.isEmpty()) {
                     mPosts.clear();
                 }
-                Log.d(TAG, "onChanged: " + posts);
+                Log.d(TAG, "onChanged: Swipe" + posts);
                 mPosts.addAll(posts);
+
+                if (mSwipeRefreshLayout.isRefreshing()) {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
                 mPostsAdapter.notifyDataSetChanged();
-                mSwipeRefreshLayout.setRefreshing(false);
             }
         };
 

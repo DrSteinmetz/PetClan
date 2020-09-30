@@ -1,6 +1,7 @@
 package com.example.android2project.viewmodel;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -115,6 +116,7 @@ public class FeedViewModel extends ViewModel {
         mRepository.setPostDownloadListener(new Repository.RepositoryPostDownloadInterface() {
             @Override
             public void onPostDownloadSucceed(List<Post> posts) {
+                Log.d(TAG, "onPostDownloadSucceed: swipe"+posts);
                 mPostDownloadSucceed.setValue(posts);
             }
 
@@ -200,8 +202,10 @@ public class FeedViewModel extends ViewModel {
     public void refreshPosts() {
         if (mUserEmail != null) {
             mRepository.downloadUserPosts(mUserEmail);
+            Log.d(TAG, "refreshPosts: swipe user");
         } else {
             mRepository.downloadPosts();
+            Log.d(TAG, "refreshPosts: swipe feed");
         }
     }
 

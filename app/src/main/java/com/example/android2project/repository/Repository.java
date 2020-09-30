@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import com.example.android2project.model.ChatMessage;
 import com.example.android2project.model.Comment;
 import com.example.android2project.model.Conversation;
+import com.example.android2project.model.Pet;
 import com.example.android2project.model.Post;
 import com.example.android2project.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -296,6 +297,17 @@ public class Repository {
         this.mDownloadActiveChatsListener = repositoryDownloadActiveChatsInterface;
     }
 
+    /**<-------Upload Pet Interface------->**/
+    public interface RepositoryPetUploadInterface {
+        void onPetUploadFailed(String error);
+    }
+
+    private RepositoryPetUploadInterface mPetUploadListener;
+
+    public void setPetUploadListener(RepositoryPetUploadInterface repositoryPetUploadInterface) {
+        this.mPetUploadListener = repositoryPetUploadInterface;
+    }
+
     public static Repository getInstance(final Context context) {
         if (repository == null) {
             repository = new Repository(context);
@@ -329,6 +341,7 @@ public class Repository {
                                 }
 
                                 if (mPostDownloadListener != null) {
+                                    Log.d(TAG, "onComplete: swipe"+posts);
                                     Collections.sort(posts);
                                     mPostDownloadListener.onPostDownloadSucceed(posts);
                                 }
@@ -871,6 +884,11 @@ public class Repository {
         return mDBChats.child(chatId).child(MESSAGES).orderByChild("time/time");
     }
 
+    public com.google.firebase.firestore.Query PetsQuery(final String userEmail){
+        return mCloudUsers.document(userEmail).collection("pets");
+    }
+
+
     public void downloadActiveChats() {
         final ArrayList<Conversation> conversations = new ArrayList<>();
 
@@ -926,5 +944,22 @@ public class Repository {
                         }
                     }
                 });*/
+    }
+
+    public void uploadPetToUser(Pet pet){
+        String userEmail = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
+        if(userEmail != null) {
+            mCloudUsers.document(userEmail).collection("pets")
+                    .document(String.valueOf(System.nanoTime())).set(pet)
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    if(mPetUploadListener !=null) {
+                        mPetUploadListener.onPetUploadFailed(e.getMessage());
+                    }
+                }
+            });
+
+        }
     }
 }

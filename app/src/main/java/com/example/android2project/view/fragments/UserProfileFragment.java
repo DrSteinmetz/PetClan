@@ -15,14 +15,21 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.android2project.R;
+import com.example.android2project.model.ChatMessage;
+import com.example.android2project.model.Pet;
+import com.example.android2project.model.PetsAdapter;
 import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.viewmodel.UserProfileViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Objects;
@@ -35,6 +42,9 @@ public class UserProfileFragment extends DialogFragment {
     private String mUserEmail;
     private ImageView mProfilePicIv;
     private TextView mUserNameTv;
+    private RecyclerView mPetsRecyclerView;
+    private PetsAdapter mPetsAdapter;
+    private FirestoreRecyclerOptions<Pet> mRecyclerviewOptions;
 
     private Observer<User> mOnDownloadUserSucceed;
     private Observer<String> mOnDownloadUserFailed;
@@ -144,6 +154,9 @@ public class UserProfileFragment extends DialogFragment {
         final FloatingActionButton addPostBtn = rootView.findViewById(R.id.message_edit_btn);
         mUserNameTv = rootView.findViewById(R.id.user_name_tv);
         mProfilePicIv = rootView.findViewById(R.id.profile_image_iv);
+        mPetsRecyclerView = rootView.findViewById(R.id.pets_recyclerview);
+        mPetsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mPetsRecyclerView.setHasFixedSize(true);
 
         if (mUserEmail == null) {
             mUser = mViewModel.getMyDetails();
@@ -152,9 +165,17 @@ public class UserProfileFragment extends DialogFragment {
             mUserNameTv.setText(userName);
             addPostBtn.setImageResource(R.drawable.ic_round_settings_24);
             showUserFeed(mUser.getEmail());
+
+            mRecyclerviewOptions = new FirestoreRecyclerOptions.Builder<Pet>()
+                    .setQuery(mViewModel.getUserPets(mUser.getEmail()), Pet.class).build();
         } else {
             addPostBtn.setImageResource(R.drawable.ic_send_comment_btn);
+            mRecyclerviewOptions = new FirestoreRecyclerOptions.Builder<Pet>()
+                    .setQuery(mViewModel.getUserPets(mUserEmail), Pet.class).build();
         }
+
+        mPetsAdapter = new PetsAdapter(mRecyclerviewOptions);
+        mPetsRecyclerView.setAdapter(mPetsAdapter);
 
         addPostBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,6 +188,13 @@ public class UserProfileFragment extends DialogFragment {
             }
         });
 
+        mUserNameTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddPetFragment.newInstance()
+                        .show(getChildFragmentManager().beginTransaction(), "add_pet_fragment");
+            }
+        });
         return rootView;
     }
 
@@ -204,6 +232,7 @@ public class UserProfileFragment extends DialogFragment {
     public void onStart() {
         super.onStart();
 
+        mPetsAdapter.startListening();
         if (getDialog() != null) {
             Window window = Objects.requireNonNull(getDialog()).getWindow();
             if (window != null) {
@@ -211,5 +240,11 @@ public class UserProfileFragment extends DialogFragment {
                         ViewGroup.LayoutParams.WRAP_CONTENT);
             }
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mPetsAdapter.stopListening();
     }
 }

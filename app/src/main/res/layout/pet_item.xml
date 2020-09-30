@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/pet_card_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="5dp"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.denzcoskun.imageslider.ImageSlider
+            android:id="@+id/images_slider"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_margin="10dp"
+            app:iss_auto_cycle="true"
+            app:iss_corner_radius="10"
+            app:iss_delay="0"
+            app:iss_period="2000" />
+
+        <TextView
+            android:id="@+id/pet_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/images_slider"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="Name"
+            android:textColor="@color/colorBlack"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/pet_description_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:textSize="25sp"
+            android:textColor="@color/colorBlack"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/pet_name_tv"
+            android:layout_marginTop="10dp"/>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

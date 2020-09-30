@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".view.fragments.AddPetFragment">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="Add A Pet"
+            android:textSize="30sp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/pet_name_et_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="5dp"
+            android:hint="Pet Name"
+            android:textColorHint="@color/colorPrimaryDark">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/pet_name_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/colorPrimaryDark"
+                android:textCursorDrawable="@null"
+                android:textSize="18sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/pet_type_et_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/pet_name_et_layout"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="10dp"
+            android:hint="Type"
+            android:textColorHint="@color/colorPrimaryDark">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/pet_type_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/colorPrimaryDark"
+                android:textCursorDrawable="@null"
+                android:textSize="18sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/pet_description_et_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/pet_type_et_layout"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="10dp"
+            android:hint="Description"
+            android:textColorHint="@color/colorPrimaryDark">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/pet_description_et"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:gravity="start"
+                android:inputType="textMultiLine"
+                android:textColor="@color/colorPrimaryDark"
+                android:textCursorDrawable="@null"
+                android:textSize="18sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:id="@+id/photos_btns"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/pet_description_et_layout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp">
+
+            <ImageButton
+                android:id="@+id/camera_btn"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_round_add_photo_camera_50" />
+
+            <ImageButton
+                android:id="@+id/gallery_btn"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_round_add_photo_gallery_50" />
+
+        </LinearLayout>
+
+        <HorizontalScrollView
+            android:id="@+id/photos_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/photos_btns">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/photo_1_preview"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_marginVertical="10dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/rounded_shape"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/ic_launcher" />
+
+                <ImageView
+                    android:id="@+id/photo_2_preview"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_marginVertical="10dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/rounded_shape"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/ic_launcher" />
+
+                <ImageView
+                    android:id="@+id/photo_3_preview"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_marginVertical="10dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/rounded_shape"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/ic_launcher" />
+
+                <ImageView
+                    android:id="@+id/photo_4_preview"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_marginVertical="10dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/rounded_shape"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/ic_launcher" />
+
+                <ImageView
+                    android:id="@+id/photo_5_preview"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_marginVertical="10dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/rounded_shape"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/ic_launcher" />
+
+                <ImageView
+                    android:id="@+id/photo_6_preview"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_marginVertical="10dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/rounded_shape"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/ic_launcher" />
+
+                <ImageView
+                    android:id="@+id/photo_7_preview"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_marginVertical="10dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/rounded_shape"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/ic_launcher" />
+
+                <ImageView
+                    android:id="@+id/photo_8_preview"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginVertical="10dp"
+                    android:background="@drawable/rounded_shape"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/ic_launcher" />
+
+
+            </LinearLayout>
+
+
+        </HorizontalScrollView>
+
+
+        <Button
+            android:id="@+id/add_pet_btn"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/photos_preview"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="Add"
+            android:textAllCaps="false" />
+
+
+    </RelativeLayout>
+
+</ScrollView>

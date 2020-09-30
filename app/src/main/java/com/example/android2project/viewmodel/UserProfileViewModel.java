@@ -10,6 +10,7 @@ import com.example.android2project.model.User;
 import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.repository.Repository;
 import com.example.android2project.repository.StorageRepository;
+import com.google.firebase.firestore.Query;
 
 public class UserProfileViewModel extends ViewModel {
     private Repository mRepository;
@@ -229,5 +230,9 @@ public class UserProfileViewModel extends ViewModel {
         final String token = mAuthRepository.getUserToken();
 
         return new User(userEmail, firstName, lastName, photoUri, token);
+    }
+
+    public Query getUserPets(String email) {
+        return mRepository.PetsQuery(email);
     }
 }
