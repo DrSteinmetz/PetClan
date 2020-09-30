@@ -328,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     if (e instanceof ResolvableApiException) {
-                        // Location settings are not satisfied, but this can be fixed
+                        // Location preferences are not satisfied, but this can be fixed
                         // by showing the user a dialog.
                         try {
                             //TODO:make a custom window.

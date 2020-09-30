@@ -386,7 +386,7 @@ public class FeedFragment extends Fragment {
 
     private void showDeletePostDialog(final Post postToDelete) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
-        ViewGroup root;
+        
         View view = LayoutInflater.from(getContext())
                 .inflate(R.layout.add_post_dialog,
                         (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));
