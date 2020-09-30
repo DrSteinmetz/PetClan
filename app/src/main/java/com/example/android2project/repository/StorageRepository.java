@@ -16,6 +16,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class StorageRepository {
@@ -28,9 +29,13 @@ public class StorageRepository {
     private final int COMPRESS_PERCENTAGE = 20;
     private final String TAG = "StorageRepository";
 
-    /**<-------Picture Download interface------->**/
+
+    /**
+     * <-------Picture Download interface------->
+     **/
     public interface StorageDownloadPicInterface {
         void onDownloadPicSuccess(Uri uri);
+
         void onDownloadPicFailed(String error);
     }
 
@@ -40,9 +45,12 @@ public class StorageRepository {
         this.mDownloadPicListener = storageDownloadPicInterface;
     }
 
-    /**<-------Picture Upload interface------->**/
+    /**
+     * <-------Picture Upload interface------->
+     **/
     public interface StorageUploadPicInterface {
         void onUploadPicSuccess(String imagePath);
+
         void onUploadPicFailed(String error);
     }
 
@@ -52,9 +60,27 @@ public class StorageRepository {
         this.mUploadPicListener = storageUploadPicInterface;
     }
 
-    /**<-------Picture Deletion interface------->**/
+    /**
+     * <-------Pet Picture Upload interface------->
+     **/
+    public interface StoragePetUploadPicInterface {
+        void onPetUploadPicSuccess(String imagePath,int iteration);
+
+        void onPetUploadPicFailed(String error);
+    }
+
+    StoragePetUploadPicInterface mPetUploadPicListener;
+
+    public void setPetUploadPicListener(StoragePetUploadPicInterface storagePetUploadPicInterface) {
+        this.mPetUploadPicListener = storagePetUploadPicInterface;
+    }
+
+    /**
+     * <-------Picture Deletion interface------->
+     **/
     public interface StorageDeletePicInterface {
         void onDeletePicSuccess(String imagePath);
+
         void onDeletePicFailed(String error);
     }
 
@@ -64,7 +90,9 @@ public class StorageRepository {
         this.mDeletePicListener = storageDeletePicInterface;
     }
 
-    /**<-------Singleton------->**/
+    /**
+     * <-------Singleton------->
+     **/
     public static StorageRepository getInstance(Context context) {
         if (storageRepository == null) {
             storageRepository = new StorageRepository(context);
@@ -123,28 +151,69 @@ public class StorageRepository {
         }
     }
 
-    public void downloadFile(final String imageUri) {
-        StorageReference fileToDownload = mStorage.child(imageUri);
-
-        fileToDownload.getDownloadUrl()
-                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+    public void uploadPetPhoto(final Uri uri, final String userEmail, final int iteration) {
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESS_PERCENTAGE, byteArrayOutputStream);
+                byte[] bytes = byteArrayOutputStream.toByteArray();
+                mStorage.child(userEmail+"/pets").child(userEmail+System.currentTimeMillis()+".jpg").putBytes(bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
-                    public void onSuccess(Uri uri) {
-                        if (mDownloadPicListener != null) {
-                            mDownloadPicListener.onDownloadPicSuccess(uri);
-                        }
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Objects.requireNonNull(Objects.requireNonNull(
+                                Objects.requireNonNull(taskSnapshot.getMetadata())
+                                        .getReference())
+                                .getDownloadUrl()
+                                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        if (mPetUploadPicListener != null) {
+                                            mPetUploadPicListener.onPetUploadPicSuccess(uri.toString(),iteration);
+                                        }
+                                        Log.d(TAG, "onSuccess: " + uri.toString());
+                                    }
+                                }));
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
+                }).addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onFailure(@NonNull Exception ex) {
-                        if (mDownloadPicListener != null) {
-                            mDownloadPicListener.onDownloadPicFailed(ex.getMessage());
+                    public void onFailure(@NonNull Exception e) {
+                        if (mPetUploadPicListener != null) {
+                            mPetUploadPicListener.onPetUploadPicFailed(e.getMessage());
                         }
                     }
                 });
-
+                byteArrayOutputStream.close();
+            } catch (IOException e) {
+                if (mPetUploadPicListener != null) {
+                    mPetUploadPicListener.onPetUploadPicFailed(e.getMessage());
+                }
+                e.printStackTrace();
+            }
     }
+
+
+//    public void downloadFile(final String imageUri) {
+//        StorageReference fileToDownload = mStorage.child(imageUri);
+//
+//        fileToDownload.getDownloadUrl()
+//                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                    @Override
+//                    public void onSuccess(Uri uri) {
+//                        if (mDownloadPicListener != null) {
+//                            mDownloadPicListener.onDownloadPicSuccess(uri);
+//                        }
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception ex) {
+//                        if (mDownloadPicListener != null) {
+//                            mDownloadPicListener.onDownloadPicFailed(ex.getMessage());
+//                        }
+//                    }
+//                });
+//
+//    }
 
     public void deleteFile(final String userId) {
         final StorageReference fileToDelete = mStorage.child("users_profile_picture/" + userId + ".jpg");
