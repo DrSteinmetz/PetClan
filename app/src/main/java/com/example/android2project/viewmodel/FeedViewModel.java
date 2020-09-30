@@ -9,11 +9,15 @@ import androidx.lifecycle.ViewModel;
 import com.example.android2project.model.Post;
 import com.example.android2project.repository.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FeedViewModel extends ViewModel {
     private Repository mRepository;
     private String mUserEmail = null;
+
+    private List<Post> mPosts = new ArrayList<>();
+    private int mPosition;
 
     private MutableLiveData<List<Post>> mPostDownloadSucceed;
     private MutableLiveData<String> mPostDownloadFailed;
@@ -21,13 +25,13 @@ public class FeedViewModel extends ViewModel {
     private MutableLiveData<Post> mPostUploadSucceed;
     private MutableLiveData<String> mPostUploadFailed;
 
-    private MutableLiveData<Post> mPostUpdateSucceed;
+    private MutableLiveData<Integer> mPostUpdateSucceed;
     private MutableLiveData<String> mPostUpdatedFailed;
 
-    private MutableLiveData<Post> mPostLikesUpdateSucceed;
+    private MutableLiveData<Integer> mPostLikesUpdateSucceed;
     private MutableLiveData<String> mPostLikesUpdateFailed;
 
-    private MutableLiveData<String> mPostDeletionSucceed;
+    private MutableLiveData<Integer> mPostDeletionSucceed;
     private MutableLiveData<String> mPostDeletionFailed;
 
     private final String TAG = "FeedViewModel";
@@ -56,6 +60,7 @@ public class FeedViewModel extends ViewModel {
         mRepository.setPostUploadListener(new Repository.RepositoryPostUploadInterface() {
             @Override
             public void onPostUploadSucceed(Post post) {
+                mPosts.add(0,post);
                 mPostUploadSucceed.setValue(post);
             }
 
@@ -66,7 +71,7 @@ public class FeedViewModel extends ViewModel {
         });
     }
 
-    public MutableLiveData<Post> getPostUpdateSucceed() {
+    public MutableLiveData<Integer> getPostUpdateSucceed() {
         if (mPostUpdateSucceed == null) {
             mPostUpdateSucceed = new MutableLiveData<>();
             attachSetPostUpdateListener();
@@ -86,7 +91,9 @@ public class FeedViewModel extends ViewModel {
         mRepository.setPostUpdatingListener(new Repository.RepositoryPostUpdatingInterface() {
             @Override
             public void onPostUpdatingSucceed(Post updatedPost) {
-                mPostUpdateSucceed.setValue(updatedPost);
+                mPosts.get(mPosition).setAuthorContent(updatedPost.getAuthorContent());
+                mPosts.get(mPosition).setCommentsCount(updatedPost.getCommentsCount());
+                mPostUpdateSucceed.setValue(mPosition);
             }
 
             @Override
@@ -116,8 +123,12 @@ public class FeedViewModel extends ViewModel {
         mRepository.setPostDownloadListener(new Repository.RepositoryPostDownloadInterface() {
             @Override
             public void onPostDownloadSucceed(List<Post> posts) {
-                Log.d(TAG, "onPostDownloadSucceed: swipe"+posts);
-                mPostDownloadSucceed.setValue(posts);
+                Log.d(TAG, "FeedViewModel: onPostDownloadSucceed: swipe"+posts);
+                if(!mPosts.isEmpty()){
+                    mPosts.clear();
+                }
+                mPosts.addAll(posts);
+                mPostDownloadSucceed.setValue(mPosts);
             }
 
             @Override
@@ -127,7 +138,7 @@ public class FeedViewModel extends ViewModel {
         });
     }
 
-    public MutableLiveData<Post> getPostLikesUpdateSucceed() {
+    public MutableLiveData<Integer> getPostLikesUpdateSucceed() {
         if (mPostLikesUpdateSucceed == null) {
             mPostLikesUpdateSucceed = new MutableLiveData<>();
             attachSetPostLikesUpdateListener();
@@ -147,7 +158,7 @@ public class FeedViewModel extends ViewModel {
         mRepository.setPostLikesUpdatingListener(new Repository.RepositoryPostLikesUpdatingInterface() {
             @Override
             public void onPostLikesUpdateSucceed(Post post) {
-                mPostLikesUpdateSucceed.setValue(post);
+                mPostLikesUpdateSucceed.setValue(mPosition);
             }
 
             @Override
@@ -157,7 +168,7 @@ public class FeedViewModel extends ViewModel {
         });
     }
 
-    public MutableLiveData<String> getPostDeletionSucceed() {
+    public MutableLiveData<Integer> getPostDeletionSucceed() {
         if (mPostDeletionSucceed == null) {
             mPostDeletionSucceed = new MutableLiveData<>();
             attachSetPostDeletionListener();
@@ -177,7 +188,10 @@ public class FeedViewModel extends ViewModel {
         mRepository.setPostDeletingListener(new Repository.RepositoryPostDeletingInterface() {
             @Override
             public void onPostDeletingSucceed(String postId) {
-                mPostDeletionSucceed.setValue(postId);
+                if (mPosts.get(mPosition).getPostId().equals(postId)) {
+                    mPosts.remove(mPosition);
+                }
+                mPostDeletionSucceed.setValue(mPosition);
             }
 
             @Override
@@ -195,25 +209,36 @@ public class FeedViewModel extends ViewModel {
         mRepository.uploadNewPost(postContent);
     }
 
-    public void updatePost(Post post) {
+    public void updatePost(Post post,final int position) {
+        mPosition=position;
         mRepository.updatePost(post);
     }
 
     public void refreshPosts() {
         if (mUserEmail != null) {
             mRepository.downloadUserPosts(mUserEmail);
-            Log.d(TAG, "refreshPosts: swipe user");
+            Log.d(TAG, "refreshPosts: swipe user "+this.toString());
         } else {
             mRepository.downloadPosts();
-            Log.d(TAG, "refreshPosts: swipe feed");
+            Log.d(TAG, "refreshPosts: swipe feed "+this.toString());
         }
     }
 
-    public void updatePostLikes(Post post, final boolean isLike) {
-        mRepository.updatePostLikes(post, isLike);
+    public void updatePostLikes(final boolean isLike,final int position) {
+        mPosition=position;
+        mRepository.updatePostLikes(mPosts.get(position), isLike);
     }
 
-    public void deletePost(String postId) {
+    public void deletePost(String postId,final int position) {
+        mPosition=position;
         mRepository.deletePost(postId);
+    }
+
+    public void setPosts(List<Post> Posts) {
+        this.mPosts = Posts;
+    }
+
+    public List<Post> getPosts() {
+        return mPosts;
     }
 }

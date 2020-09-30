@@ -129,10 +129,10 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
                     if (listener != null) {
                         if (likeBtnTv.getText().toString().equals("Like")) {
-                            post.getLikesMap().put(mUserEmail, true);
+                            post.getLikesMap().put(mMyEmail, true);
                             isLike = true;
                         } else {
-                            post.getLikesMap().remove(mUserEmail);
+                            post.getLikesMap().remove(mMyEmail);
                             isLike = false;
                         }
                         listener.onLikeBtnClicked(getAdapterPosition(), v, isLike);
@@ -231,7 +231,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             holder.authorPicIv.setClickable(true);
         }
 
-        boolean isUserLikedPost = post.getLikesMap().containsKey(mUserEmail);
+        boolean isUserLikedPost = post.getLikesMap().containsKey(mMyEmail);
         holder.likeBtnTv.setText(isUserLikedPost ? "Unlike" : "Like");
         holder.likeBtnIv.setRotation(isUserLikedPost ? 180 : 0);
         if (post.getLikesCount() > 0) {

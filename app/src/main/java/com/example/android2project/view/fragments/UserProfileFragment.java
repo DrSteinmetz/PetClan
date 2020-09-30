@@ -87,7 +87,6 @@ public class UserProfileFragment extends DialogFragment {
             @Override
             public void onChanged(User user) {
                 mUser = user;
-
                 loadProfilePictureWithGlide(user.getPhotoUri(), mProfilePicIv);
                 final String userName = user.getFirstName() + "\n" + user.getLastName();
                 mUserNameTv.setText(userName);
@@ -246,5 +245,6 @@ public class UserProfileFragment extends DialogFragment {
     public void onStop() {
         super.onStop();
         mPetsAdapter.stopListening();
+
     }
 }
