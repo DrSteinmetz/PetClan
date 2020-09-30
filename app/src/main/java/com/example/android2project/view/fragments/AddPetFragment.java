@@ -31,7 +31,7 @@ import com.example.android2project.R;
 import com.example.android2project.model.Pet;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.viewmodel.PetViewModel;
-import com.example.android2project.viewmodel.ViewModelFactory;
+import com.example.android2project.model.ViewModelFactory;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.File;

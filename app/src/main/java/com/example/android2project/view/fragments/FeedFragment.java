@@ -28,7 +28,7 @@ import com.example.android2project.model.PostsAdapter;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.view.MainActivity;
 import com.example.android2project.viewmodel.FeedViewModel;
-import com.example.android2project.viewmodel.ViewModelFactory;
+import com.example.android2project.model.ViewModelFactory;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        android:title="Your Details">
+        android:title="Personal Details">
 
         <EditTextPreference
             android:key="username_et"
@@ -26,33 +27,44 @@
         android:title="Location"
         android:icon="@drawable/ic_baseline_location_black_24">
 
-        <EditTextPreference
-            android:key="location_et"
+        <Preference
+            android:key="location"
             android:title="Where are you?"
-            android:summary="Insert your location"
+            android:summary="Unknown"
             android:textAllCaps="false"
             android:dialogTitle="Location"
             android:dialogMessage="Enter your Location:" />
 
+        <SwitchPreferenceCompat
+            android:key="gps_switch"
+            android:title="GPS"
+            android:summaryOn="On"
+            android:summaryOff="Off" />
+
         <SeekBarPreference
-            android:key="location_sb"
+            android:key="distance_sb"
             android:title="How far do you want to see?"
-            android:summary=""
-            android:max="100"
+            android:max="500"
             android:textAllCaps="false" />
 
     </PreferenceCategory>
 
-    <Preference
-        android:key="help_pref"
-        android:title="Help"
-        android:textAllCaps="false" />
+    <PreferenceCategory
+        android:title="Others">
 
-    <EditTextPreference
-        android:key="account_deletion"
-        android:title="Delete Your Account"
-        android:textAllCaps="false"
-        android:dialogTitle="Delete Your Account"
-        android:dialogMessage="Enter your password:" />
+        <Preference
+            android:key="help"
+            android:title="Help"
+            android:textAllCaps="false" />
+
+        <EditTextPreference
+            android:key="account_deletion"
+            android:title="Delete Your Account"
+            android:textAllCaps="false"
+            android:dialogTitle="Delete Your Account"
+            android:dialogMessage="Enter your password:" />
+
+    </PreferenceCategory>
+
 
 </PreferenceScreen>

@@ -29,7 +29,7 @@ import com.bumptech.glide.Glide;
 import com.example.android2project.R;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.viewmodel.UserPictureViewModel;
-import com.example.android2project.viewmodel.ViewModelFactory;
+import com.example.android2project.model.ViewModelFactory;
 
 import java.io.File;
 

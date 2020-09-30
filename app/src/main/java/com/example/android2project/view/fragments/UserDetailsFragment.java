@@ -20,7 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.android2project.R;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.viewmodel.UserDetailsViewModel;
-import com.example.android2project.viewmodel.ViewModelFactory;
+import com.example.android2project.model.ViewModelFactory;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class UserDetailsFragment extends Fragment {

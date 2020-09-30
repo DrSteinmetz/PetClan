@@ -21,14 +21,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.android2project.R;
-import com.example.android2project.model.ChatMessage;
 import com.example.android2project.model.Pet;
 import com.example.android2project.model.PetsAdapter;
 import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.viewmodel.UserProfileViewModel;
-import com.example.android2project.viewmodel.ViewModelFactory;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.example.android2project.model.ViewModelFactory;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 

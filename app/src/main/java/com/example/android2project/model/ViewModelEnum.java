@@ -13,5 +13,6 @@ public enum ViewModelEnum {
     Chats,
     ChatClan,
     Conversation,
-    Pet
+    Pet,
+    Settings
 }

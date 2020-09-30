@@ -734,7 +734,7 @@ public class Repository {
                         @Override
                         public void onSuccess(Void aVoid) {
                             if (mUpdateUserNameListener != null) {
-                                mUpdateUserNameListener.onUpdateUserNameSucceed(user.getUid());
+                                mUpdateUserNameListener.onUpdateUserNameSucceed(user.getDisplayName());
                             }
                         }
                     }).addOnFailureListener(new OnFailureListener() {
