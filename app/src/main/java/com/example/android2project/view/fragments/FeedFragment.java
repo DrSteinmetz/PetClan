@@ -31,7 +31,6 @@ import com.example.android2project.viewmodel.FeedViewModel;
 import com.example.android2project.viewmodel.ViewModelFactory;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FeedFragment extends Fragment {
@@ -41,7 +40,7 @@ public class FeedFragment extends Fragment {
 
     RecyclerView mRecyclerView;
     private PostsAdapter mPostsAdapter;
-//    private List<Post> mPosts = new ArrayList<>();
+    //private List<Post> mPosts = new ArrayList<>();
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -60,7 +59,7 @@ public class FeedFragment extends Fragment {
     private Observer<Integer> mOnPostDeletionSucceed;
     private Observer<String> mOnPostDeletionFailed;
 
-    private int mPosition;
+    //private int mPosition;
 
     private String mUserLocation = "Unknown";
 
@@ -108,7 +107,7 @@ public class FeedFragment extends Fragment {
         mOnPostDownloadSucceed = new Observer<List<Post>>() {
             @Override
             public void onChanged(List<Post> posts) {
-                Log.d(TAG, "onChanged swipe: "+ this.toString());
+                Log.d(TAG, "onChanged swipe: " + this.toString());
                 mSwipeRefreshLayout.setRefreshing(false);
                 mPostsAdapter.notifyDataSetChanged();
             }
@@ -125,6 +124,7 @@ public class FeedFragment extends Fragment {
             @Override
             public void onChanged(Post post) {
                 mPostsAdapter.notifyItemInserted(0);
+                mRecyclerView.smoothScrollToPosition(0);
             }
         };
 
@@ -222,37 +222,41 @@ public class FeedFragment extends Fragment {
 
             @Override
             public void onCommentsTvClicked(int position, View view) {
-                mPosition = position;
+                //mPosition = position;
                 if (listener != null) {
-                    listener.onComment(mViewModel.getPosts().get(position));
+                    final Post post = mViewModel.getPosts().get(position);
+                    listener.onComment(post);
                 }
             }
 
             @Override
             public void onLikeBtnClicked(int position, View view, boolean isLike) {
-//                mPosition = position;
-//                Post post = mPosts.get(position);
-                mViewModel.updatePostLikes(isLike,position);
+                //mPosition = position;
+                //Post post = mPosts.get(position);
+                mViewModel.updatePostLikes(isLike, position);
             }
 
             @Override
             public void onCommentBtnClicked(int position, View view) {
-                mPosition = position;
+                //mPosition = position;
                 if (listener != null) {
-                    listener.onComment(mViewModel.getPosts().get(position));
+                    final Post post = mViewModel.getPosts().get(position);
+                    listener.onComment(post);
                 }
             }
 
             @Override
             public void onEditOptionClicked(int position, View view) {
-//                mPosition = position;
-                showPostEditingDialog(mViewModel.getPosts().get(position),position);
+                //mPosition = position;
+                final Post post = mViewModel.getPosts().get(position);
+                showPostEditingDialog(post, position);
             }
 
             @Override
             public void onDeleteOptionClicked(int position, View view) {
-//                mPosition = position;
-                showDeletePostDialog(mViewModel.getPosts().get(position),position);
+                //mPosition = position;
+                final Post post = mViewModel.getPosts().get(position);
+                showDeletePostDialog(post, position);
             }
         });
 
@@ -275,7 +279,7 @@ public class FeedFragment extends Fragment {
 
     private void startObservation() {
         if (mViewModel != null) {
-            mViewModel.getPostDownloadSucceed().observe(this,mOnPostDownloadSucceed);
+            mViewModel.getPostDownloadSucceed().observe(this, mOnPostDownloadSucceed);
             mViewModel.getPostDownloadFailed().observe(this, mOnPostDownloadFailed);
             mViewModel.getPostUploadSucceed().observe(this, mOnPostUploadSucceed);
             mViewModel.getPostUploadFailed().observe(this, mOnPostUploadFailed);
@@ -331,7 +335,7 @@ public class FeedFragment extends Fragment {
     }
 
 
-    private void showPostEditingDialog(final Post postToEdit,final int position) {
+    private void showPostEditingDialog(final Post postToEdit, final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
         View view = LayoutInflater.from(getContext())
                 .inflate(R.layout.add_post_dialog,
@@ -350,8 +354,7 @@ public class FeedFragment extends Fragment {
 
         postContentEt.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -359,15 +362,14 @@ public class FeedFragment extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-            }
+            public void afterTextChanged(Editable s) {}
         });
 
         updateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 postToEdit.setAuthorContent(postContentEt.getText().toString());
-                mViewModel.updatePost(postToEdit,position);
+                mViewModel.updatePost(postToEdit, position);
                 alertDialog.dismiss();
             }
         });
@@ -375,7 +377,7 @@ public class FeedFragment extends Fragment {
         alertDialog.show();
     }
 
-    private void showDeletePostDialog(final Post postToDelete,final int position) {
+    private void showDeletePostDialog(final Post postToDelete, final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
         ViewGroup root;
         View view = LayoutInflater.from(getContext())
@@ -394,7 +396,7 @@ public class FeedFragment extends Fragment {
         updateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mViewModel.deletePost(postToDelete.getPostId(),position);
+                mViewModel.deletePost(postToDelete.getPostId(), position);
                 alertDialog.dismiss();
             }
         });

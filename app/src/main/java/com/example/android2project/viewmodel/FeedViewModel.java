@@ -190,8 +190,8 @@ public class FeedViewModel extends ViewModel {
             public void onPostDeletingSucceed(String postId) {
                 if (mPosts.get(mPosition).getPostId().equals(postId)) {
                     mPosts.remove(mPosition);
+                    mPostDeletionSucceed.setValue(mPosition);
                 }
-                mPostDeletionSucceed.setValue(mPosition);
             }
 
             @Override

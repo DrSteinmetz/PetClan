@@ -16,7 +16,6 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class StorageRepository {
@@ -30,9 +29,7 @@ public class StorageRepository {
     private final String TAG = "StorageRepository";
 
 
-    /**
-     * <-------Picture Download interface------->
-     **/
+    /**<-------Picture Download interface------->**/
     public interface StorageDownloadPicInterface {
         void onDownloadPicSuccess(Uri uri);
 
@@ -45,9 +42,7 @@ public class StorageRepository {
         this.mDownloadPicListener = storageDownloadPicInterface;
     }
 
-    /**
-     * <-------Picture Upload interface------->
-     **/
+    /**<-------Picture Upload interface------->**/
     public interface StorageUploadPicInterface {
         void onUploadPicSuccess(String imagePath);
 
@@ -60,9 +55,7 @@ public class StorageRepository {
         this.mUploadPicListener = storageUploadPicInterface;
     }
 
-    /**
-     * <-------Pet Picture Upload interface------->
-     **/
+    /**<-------Pet Picture Upload interface------->**/
     public interface StoragePetUploadPicInterface {
         void onPetUploadPicSuccess(String imagePath,int iteration);
 
@@ -75,9 +68,7 @@ public class StorageRepository {
         this.mPetUploadPicListener = storagePetUploadPicInterface;
     }
 
-    /**
-     * <-------Picture Deletion interface------->
-     **/
+    /**<-------Picture Deletion interface------->**/
     public interface StorageDeletePicInterface {
         void onDeletePicSuccess(String imagePath);
 
@@ -90,9 +81,7 @@ public class StorageRepository {
         this.mDeletePicListener = storageDeletePicInterface;
     }
 
-    /**
-     * <-------Singleton------->
-     **/
+    /**<-------Singleton------->**/
     public static StorageRepository getInstance(Context context) {
         if (storageRepository == null) {
             storageRepository = new StorageRepository(context);
@@ -192,28 +181,28 @@ public class StorageRepository {
     }
 
 
-//    public void downloadFile(final String imageUri) {
-//        StorageReference fileToDownload = mStorage.child(imageUri);
-//
-//        fileToDownload.getDownloadUrl()
-//                .addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                    @Override
-//                    public void onSuccess(Uri uri) {
-//                        if (mDownloadPicListener != null) {
-//                            mDownloadPicListener.onDownloadPicSuccess(uri);
-//                        }
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception ex) {
-//                        if (mDownloadPicListener != null) {
-//                            mDownloadPicListener.onDownloadPicFailed(ex.getMessage());
-//                        }
-//                    }
-//                });
-//
-//    }
+    public void downloadFile(final String imageUri) {
+        StorageReference fileToDownload = mStorage.child(imageUri);
+
+        fileToDownload.getDownloadUrl()
+                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        if (mDownloadPicListener != null) {
+                            mDownloadPicListener.onDownloadPicSuccess(uri);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception ex) {
+                        if (mDownloadPicListener != null) {
+                            mDownloadPicListener.onDownloadPicFailed(ex.getMessage());
+                        }
+                    }
+                });
+
+    }
 
     public void deleteFile(final String userId) {
         final StorageReference fileToDelete = mStorage.child("users_profile_picture/" + userId + ".jpg");

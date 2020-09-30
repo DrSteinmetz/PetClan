@@ -96,8 +96,8 @@ public class AddPetFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if (mImageViewCounter < 8) {
-                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    intent.setType("image/*");
+                    Intent intent = new Intent(Intent.ACTION_PICK,
+                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(Intent.createChooser(intent,
                             "Select Picture"), GALLERY_REQUEST);
                 } else {

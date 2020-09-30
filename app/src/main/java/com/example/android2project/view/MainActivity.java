@@ -36,6 +36,7 @@ import com.example.android2project.model.ViewPagerAdapter;
 import com.example.android2project.view.fragments.CommentsFragment;
 import com.example.android2project.view.fragments.ConversationFragment;
 import com.example.android2project.view.fragments.FeedFragment;
+import com.example.android2project.view.fragments.SettingsFragment;
 import com.example.android2project.view.fragments.SocialFragment;
 import com.example.android2project.view.fragments.UserProfileFragment;
 import com.example.android2project.viewmodel.MainViewModel;
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements
             public void onPageScrollStateChanged(int state) {
             }
         });
-       mViewPager.setOffscreenPageLimit(1);
+       //mViewPager.setOffscreenPageLimit(1);
 
         mBottomBar.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
@@ -179,15 +180,40 @@ public class MainActivity extends AppCompatActivity implements
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DuoMenuView duoMenuView = (DuoMenuView) findViewById(R.id.menu);
-        DuoDrawerToggle drawerToggle = new DuoDrawerToggle(this, mDrawerLayout, toolbar,
+        final DuoMenuView duoMenuView = (DuoMenuView) findViewById(R.id.menu);
+        final DuoDrawerToggle drawerToggle = new DuoDrawerToggle(this, mDrawerLayout, toolbar,
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
 
+        mMenuOptions.add("Feed");
+        mMenuOptions.add("Chats");
         mMenuOptions.add("Profile");
+        mMenuOptions.add("Market Place");
         mMenuOptions.add("Settings");
 
-        MenuAdapter menuAdapter = new MenuAdapter(mMenuOptions);
+        duoMenuView.setOnMenuClickListener(new DuoMenuView.OnMenuClickListener() {
+            @Override
+            public void onFooterClicked() {}
+
+            @Override
+            public void onHeaderClicked() {}
+
+            @Override
+            public void onOptionClicked(int position, Object objectClicked) {
+                if (position < 4) {
+                    mViewPager.setCurrentItem(position);
+                    mDrawerLayout.closeDrawer();
+                } else if (position == 4) {
+                    mDrawerLayout.closeDrawer();
+                    getSupportFragmentManager().beginTransaction()
+                            .add(android.R.id.content, SettingsFragment.newInstance())
+                            .addToBackStack(null)
+                            .commit();
+                }
+            }
+        });
+
+        final MenuAdapter menuAdapter = new MenuAdapter(mMenuOptions);
         duoMenuView.setAdapter(menuAdapter);
 
         mDrawerLayout.setDrawerListener(drawerToggle);
@@ -323,7 +349,7 @@ public class MainActivity extends AppCompatActivity implements
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     if (e instanceof ResolvableApiException) {
-                        // Location settings are not satisfied, but this can be fixed
+                        // Location preferences are not satisfied, but this can be fixed
                         // by showing the user a dialog.
                         try {
                             //TODO:make a custom window.
