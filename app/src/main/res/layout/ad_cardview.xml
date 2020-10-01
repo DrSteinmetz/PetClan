@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="200dp"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="5dp"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/ad_image"
+            android:layout_width="200dp"
+            android:layout_height="150dp"
+            android:background="@drawable/rounded_shape"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_launcher" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ad_image"
+            android:layout_alignStart="@id/ad_image"
+            android:layout_marginHorizontal="10dp">
+
+            <TextView
+                android:id="@+id/ad_price_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorBlack"
+                android:text="price"
+
+                />
+
+            <TextView
+                android:id="@+id/pet_description_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="3dp"
+                android:text="description"
+                android:maxLines="1"
+                android:textSize="13sp"
+                android:textColor="@color/colorBlack"
+                android:layout_below="@id/ad_price_tv"/>
+
+            <TextView
+                android:id="@+id/location_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="location"
+                android:textSize="12sp"
+                android:textColor="@color/colorBlack"
+                android:layout_below="@id/pet_description_tv"/>
+
+            <TextView
+                android:id="@+id/ad_type_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="| Sell/adopt"
+                android:textSize="12sp"
+                android:textColor="@color/colorBlack"
+                android:layout_below="@id/pet_description_tv"
+                android:layout_toEndOf="@id/location_tv"
+                android:layout_marginStart="3dp"/>
+
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+
+</androidx.cardview.widget.CardView>

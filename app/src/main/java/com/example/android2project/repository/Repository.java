@@ -51,6 +51,7 @@ public class Repository {
 
     private FirebaseFirestore mCloudDB = FirebaseFirestore.getInstance();
     private CollectionReference mCloudUsers = mCloudDB.collection("users");
+    private CollectionReference mCloudAds = mCloudDB.collection("advertisements");
 
     private final String MESSAGES = "Messages";
     private final String CONVERSATION = "Conversation";
@@ -58,6 +59,7 @@ public class Repository {
     private final String COMMENTS = "comments";
 
     private final String TAG = "Repository";
+
 
     /**<-------Posts Interfaces------->**/
     /**<-------Post Downloading interface------->**/
@@ -961,5 +963,9 @@ public class Repository {
             });
 
         }
+    }
+
+    public com.google.firebase.firestore.Query getAllAds() {
+        return mCloudAds;
     }
 }
