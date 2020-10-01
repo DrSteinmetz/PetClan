@@ -14,5 +14,7 @@ public enum ViewModelEnum {
     ChatClan,
     Conversation,
     Pet,
-    Settings
+    Settings,
+    MarketPlace,
+    UserFeed
 }

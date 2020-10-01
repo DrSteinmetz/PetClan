@@ -36,6 +36,7 @@ import com.example.android2project.model.ViewPagerAdapter;
 import com.example.android2project.view.fragments.CommentsFragment;
 import com.example.android2project.view.fragments.ConversationFragment;
 import com.example.android2project.view.fragments.FeedFragment;
+import com.example.android2project.view.fragments.MarketPlaceFragment;
 import com.example.android2project.view.fragments.SettingsFragment;
 import com.example.android2project.view.fragments.SocialFragment;
 import com.example.android2project.view.fragments.UserProfileFragment;
@@ -144,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements
             public void onPageScrollStateChanged(int state) {
             }
         });
-       //mViewPager.setOffscreenPageLimit(1);
+        //mViewPager.setOffscreenPageLimit(1);
 
         mBottomBar.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
@@ -187,16 +188,18 @@ public class MainActivity extends AppCompatActivity implements
 
         mMenuOptions.add("Feed");
         mMenuOptions.add("Chats");
-        mMenuOptions.add("Profile");
         mMenuOptions.add("Market Place");
+        mMenuOptions.add("Profile");
         mMenuOptions.add("Settings");
 
         duoMenuView.setOnMenuClickListener(new DuoMenuView.OnMenuClickListener() {
             @Override
-            public void onFooterClicked() {}
+            public void onFooterClicked() {
+            }
 
             @Override
-            public void onHeaderClicked() {}
+            public void onHeaderClicked() {
+            }
 
             @Override
             public void onOptionClicked(int position, Object objectClicked) {
@@ -269,6 +272,7 @@ public class MainActivity extends AppCompatActivity implements
         List<Fragment> fragmentList = new ArrayList<Fragment>();
         fragmentList.add(FeedFragment.newInstance(null));
         fragmentList.add(SocialFragment.newInstance());
+        fragmentList.add(MarketPlaceFragment.newInstance());
         fragmentList.add(UserProfileFragment.newInstance(null));
 
         return fragmentList;

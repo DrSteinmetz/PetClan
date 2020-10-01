@@ -222,7 +222,7 @@ public class UserProfileFragment extends DialogFragment {
 
     private void showUserFeed(final String userEmail) {
         getChildFragmentManager().beginTransaction()
-                .replace(R.id.user_posts_fragment, FeedFragment.newInstance(userEmail), "feed_fragment")
+                .replace(R.id.user_posts_fragment, UserFeedFragment.newInstance(userEmail), "user_feed_fragment")
                 .commit();
     }
 
@@ -238,12 +238,5 @@ public class UserProfileFragment extends DialogFragment {
                         ViewGroup.LayoutParams.WRAP_CONTENT);
             }
         }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        mPetsAdapter.stopListening();
-
     }
 }

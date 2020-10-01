@@ -1,7 +1,6 @@
 package com.example.android2project.view.fragments;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -26,21 +26,21 @@ import com.example.android2project.R;
 import com.example.android2project.model.Post;
 import com.example.android2project.model.PostsAdapter;
 import com.example.android2project.model.ViewModelEnum;
-import com.example.android2project.view.MainActivity;
-import com.example.android2project.viewmodel.FeedViewModel;
 import com.example.android2project.model.ViewModelFactory;
+import com.example.android2project.view.MainActivity;
+import com.example.android2project.viewmodel.UserFeedViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
-public class FeedFragment extends Fragment {
-    private FeedViewModel mViewModel;
+public class UserFeedFragment extends Fragment {
+
+    private UserFeedViewModel mViewModel;
 
     private String mUserEmail;
 
     private RecyclerView mRecyclerView;
     private PostsAdapter mPostsAdapter;
-    //private List<Post> mPosts = new ArrayList<>();
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -59,35 +59,16 @@ public class FeedFragment extends Fragment {
     private Observer<Integer> mOnPostDeletionSucceed;
     private Observer<String> mOnPostDeletionFailed;
 
-    //private int mPosition;
-
     private String mUserLocation = "Unknown";
 
-    private final String TAG = "FeedFragment";
+    private final String TAG = "UserFeedFragment";
 
-    public interface FeedListener {
-        void onComment(Post post);
-    }
-
-    private FeedListener listener;
-
-    public static FeedFragment newInstance(final String userEmail) {
-        FeedFragment fragment = new FeedFragment();
+    public static UserFeedFragment newInstance(final String userEmail) {
+        UserFeedFragment fragment = new UserFeedFragment();
         Bundle args = new Bundle();
         args.putString("posts", userEmail);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-
-        try {
-            listener = (FeedListener) context;
-        } catch (ClassCastException ex) {
-            throw new ClassCastException("The activity must implement Feed Listener!");
-        }
     }
 
     @Override
@@ -99,7 +80,7 @@ public class FeedFragment extends Fragment {
         }
 
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
-                ViewModelEnum.Feed)).get(FeedViewModel.class);
+                ViewModelEnum.UserFeed)).get(UserFeedViewModel.class);
         mViewModel.setUserEmail(mUserEmail);
         mViewModel.refreshPosts();
 
@@ -181,9 +162,9 @@ public class FeedFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
 
         final FloatingActionButton addPostBtn = rootView.findViewById(R.id.add_post_btn);
         mRecyclerView = rootView.findViewById(R.id.feed_recycler_view);
@@ -221,39 +202,30 @@ public class FeedFragment extends Fragment {
 
             @Override
             public void onCommentsTvClicked(int position, View view) {
-                //mPosition = position;
-                if (listener != null) {
-                    final Post post = mViewModel.getPosts().get(position);
-                    listener.onComment(post);
-                }
+                final Post post = mViewModel.getPosts().get(position);
+                showCommentDialog(post);
             }
 
             @Override
             public void onLikeBtnClicked(int position, View view, boolean isLike) {
-                //mPosition = position;
-                //Post post = mPosts.get(position);
                 mViewModel.updatePostLikes(isLike, position);
             }
 
             @Override
             public void onCommentBtnClicked(int position, View view) {
                 //mPosition = position;
-                if (listener != null) {
-                    final Post post = mViewModel.getPosts().get(position);
-                    listener.onComment(post);
-                }
+                final Post post = mViewModel.getPosts().get(position);
+                showCommentDialog(post);
             }
 
             @Override
             public void onEditOptionClicked(int position, View view) {
-                //mPosition = position;
                 final Post post = mViewModel.getPosts().get(position);
                 showPostEditingDialog(post, position);
             }
 
             @Override
             public void onDeleteOptionClicked(int position, View view) {
-                //mPosition = position;
                 final Post post = mViewModel.getPosts().get(position);
                 showDeletePostDialog(post, position);
             }
@@ -278,16 +250,16 @@ public class FeedFragment extends Fragment {
 
     private void startObservation() {
         if (mViewModel != null) {
-            mViewModel.getPostDownloadSucceed().observe(getViewLifecycleOwner(), mOnPostDownloadSucceed);
-            mViewModel.getPostDownloadFailed().observe(getViewLifecycleOwner(), mOnPostDownloadFailed);
-            mViewModel.getPostUploadSucceed().observe(getViewLifecycleOwner(), mOnPostUploadSucceed);
-            mViewModel.getPostUploadFailed().observe(getViewLifecycleOwner(), mOnPostUploadFailed);
-            mViewModel.getPostUpdateSucceed().observe(getViewLifecycleOwner(), mOnPostUpdateSucceed);
-            mViewModel.getPostUpdatedFailed().observe(getViewLifecycleOwner(), mOnPostUpdateFailed);
-            mViewModel.getPostLikesUpdateSucceed().observe(getViewLifecycleOwner(), mOnPostLikesUpdateSucceed);
-            mViewModel.getPostLikesUpdateFailed().observe(getViewLifecycleOwner(), mOnPostLikesUpdateFailed);
-            mViewModel.getPostDeletionSucceed().observe(getViewLifecycleOwner(), mOnPostDeletionSucceed);
-            mViewModel.getPostDeletionFailed().observe(getViewLifecycleOwner(), mOnPostDeletionFailed);
+            mViewModel.getPostDownloadSucceed().observe(this, mOnPostDownloadSucceed);
+            mViewModel.getPostDownloadFailed().observe(this, mOnPostDownloadFailed);
+            mViewModel.getPostUploadSucceed().observe(this, mOnPostUploadSucceed);
+            mViewModel.getPostUploadFailed().observe(this, mOnPostUploadFailed);
+            mViewModel.getPostUpdateSucceed().observe(this, mOnPostUpdateSucceed);
+            mViewModel.getPostUpdatedFailed().observe(this, mOnPostUpdateFailed);
+            mViewModel.getPostLikesUpdateSucceed().observe(this, mOnPostLikesUpdateSucceed);
+            mViewModel.getPostLikesUpdateFailed().observe(this, mOnPostLikesUpdateFailed);
+            mViewModel.getPostDeletionSucceed().observe(this, mOnPostDeletionSucceed);
+            mViewModel.getPostDeletionFailed().observe(this, mOnPostDeletionFailed);
         }
     }
 
@@ -304,6 +276,11 @@ public class FeedFragment extends Fragment {
             mViewModel.getPostDeletionSucceed().removeObserver(mOnPostDeletionSucceed);
             mViewModel.getPostDeletionFailed().removeObserver(mOnPostDeletionFailed);
         }
+    }
+
+    private void showCommentDialog(Post post) {
+        CommentsFragment.newInstance(post)
+                .show(getChildFragmentManager().beginTransaction(), "comments_fragment");
     }
 
     private void showPostAddingDialog() {

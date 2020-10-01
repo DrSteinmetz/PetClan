@@ -12,12 +12,8 @@ import com.example.android2project.repository.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FeedViewModel extends ViewModel {
+public class UserFeedViewModel extends FeedViewModel {
     private Repository mRepository;
-    protected String mUserEmail = null;
-
-    protected List<Post> mPosts = new ArrayList<>();
-    protected int mPosition;
 
     private MutableLiveData<List<Post>> mPostDownloadSucceed;
     private MutableLiveData<String> mPostDownloadFailed;
@@ -34,10 +30,10 @@ public class FeedViewModel extends ViewModel {
     private MutableLiveData<Integer> mPostDeletionSucceed;
     private MutableLiveData<String> mPostDeletionFailed;
 
-    private final String TAG = "FeedViewModel";
+    public UserFeedViewModel(final Context context) {
+        super(context);
 
-    public FeedViewModel(final Context context) {
-        this.mRepository = Repository.getInstance(context);
+        mRepository = Repository.getInstance(context);
     }
 
     public MutableLiveData<Post> getPostUploadSucceed() {
@@ -60,7 +56,7 @@ public class FeedViewModel extends ViewModel {
         mRepository.setPostUploadListener(new Repository.RepositoryPostUploadInterface() {
             @Override
             public void onPostUploadSucceed(Post post) {
-                mPosts.add(0, post);
+                mPosts.add(0,post);
                 mPostUploadSucceed.setValue(post);
             }
 
@@ -123,8 +119,7 @@ public class FeedViewModel extends ViewModel {
         mRepository.setPostDownloadListener(new Repository.RepositoryPostDownloadInterface() {
             @Override
             public void onPostDownloadSucceed(List<Post> posts) {
-                Log.d(TAG, "FeedViewModel: onPostDownloadSucceed: swipe" + posts);
-                if (!mPosts.isEmpty()) {
+                if(!mPosts.isEmpty()){
                     mPosts.clear();
                 }
                 mPosts.addAll(posts);
@@ -203,42 +198,5 @@ public class FeedViewModel extends ViewModel {
 
     public void setUserEmail(final String userEmail) {
         this.mUserEmail = userEmail;
-    }
-
-    public void uploadNewPost(String postContent) {
-        mRepository.uploadNewPost(postContent);
-    }
-
-    public void updatePost(Post post, final int position) {
-        mPosition = position;
-        mRepository.updatePost(post);
-    }
-
-    public void refreshPosts() {
-        if (mUserEmail != null) {
-            mRepository.downloadUserPosts(mUserEmail);
-            Log.d(TAG, "refreshPosts: swipe user " + this.toString());
-        } else {
-            mRepository.downloadPosts();
-            Log.d(TAG, "refreshPosts: swipe feed " + this.toString());
-        }
-    }
-
-    public void updatePostLikes(final boolean isLike, final int position) {
-        mPosition = position;
-        mRepository.updatePostLikes(mPosts.get(position), isLike);
-    }
-
-    public void deletePost(String postId, final int position) {
-        mPosition = position;
-        mRepository.deletePost(postId);
-    }
-
-    public void setPosts(List<Post> Posts) {
-        this.mPosts = Posts;
-    }
-
-    public List<Post> getPosts() {
-        return mPosts;
     }
 }
