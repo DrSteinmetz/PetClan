@@ -26,6 +26,7 @@ public class PetViewModel extends ViewModel {
     private List<String> mPhotosDownloadString = new ArrayList<>();
 
     final String TAG = "PetViewModel";
+    private final String PATH = "pets";
 
     public PetViewModel(final Context context) {
         this.mRepository = Repository.getInstance(context);
@@ -39,7 +40,7 @@ public class PetViewModel extends ViewModel {
         mTotalCount = imageList.size();
         Log.d(TAG, "uploadPetPhotos: " + mTotalCount);
         for (Uri uri : imageList) {
-            mStorageRepository.uploadPetPhoto(uri, userEmail, 1);
+            mStorageRepository.uploadPhoto(PATH, uri, userEmail, 1);
         }
     }
 

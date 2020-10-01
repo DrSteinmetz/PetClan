@@ -1,5 +1,6 @@
 package com.example.android2project.model;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +14,13 @@ import com.bumptech.glide.Glide;
 import com.example.android2project.R;
 import com.firebase.ui.database.paging.DatabasePagingOptions;
 import com.firebase.ui.database.paging.FirebaseRecyclerPagingAdapter;
-import com.firebase.ui.database.paging.LoadingState;
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
+import com.firebase.ui.firestore.paging.LoadingState;
 
 public class AdsAdapter extends FirestorePagingAdapter<Advertisement, AdsAdapter.AdViewHolder> {
+
+    private static final String TAG = "AdsAdapter";
 
     public AdsAdapter(@NonNull FirestorePagingOptions<Advertisement> options) {
         super(options);
@@ -26,10 +29,10 @@ public class AdsAdapter extends FirestorePagingAdapter<Advertisement, AdsAdapter
     @Override
     protected void onBindViewHolder(@NonNull AdViewHolder holder, int position, @NonNull Advertisement ad) {
         Glide.with(holder.adImageIv.getContext()).load(ad.getImages().get(0)).into(holder.adImageIv);
-            holder.adPriceTv.setText(ad.getPrice()+"₪");
-            holder.adDescriptionTv.setText(ad.getDescription());
-            holder.adLocationTv.setText(ad.getLocation());
-            holder.adTypeTv.setText(ad.getAdType());
+        holder.adPriceTv.setText(ad.getPrice() + "₪");
+        holder.adDescriptionTv.setText(ad.getDescription());
+        holder.adLocationTv.setText(ad.getLocation());
+        holder.adTypeTv.setText(ad.getAdType() ? "Sell" : "Hand Over");
     }
 
     @NonNull
@@ -39,7 +42,8 @@ public class AdsAdapter extends FirestorePagingAdapter<Advertisement, AdsAdapter
         return new AdViewHolder(view);
     }
 
-    class AdViewHolder extends RecyclerView.ViewHolder{
+
+    class AdViewHolder extends RecyclerView.ViewHolder {
         private ImageView adImageIv;
         private TextView adPriceTv;
         private TextView adDescriptionTv;

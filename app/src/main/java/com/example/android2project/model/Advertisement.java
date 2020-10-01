@@ -1,5 +1,7 @@
 package com.example.android2project.model;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -8,9 +10,10 @@ public class Advertisement {
     private String mLocation;
     private int mPrice;
     private String mPetType;
-    private String mAdType;
+    private String mPetKind;
+    private boolean mAdType;
     private String mDescription;
-    private List<String> mImages;
+    private ArrayList<String> mImages;
     private boolean mGender;
     private boolean mIsPet;
     private Date mPublishDate;
@@ -18,7 +21,7 @@ public class Advertisement {
     public Advertisement() {
     }
 
-    public Advertisement(User user, String location, int price, String adType, String description, boolean isPet) {
+    public Advertisement(User user, String location, int price, boolean adType, String description, boolean isPet) {
         this.mUser = user;
         this.mLocation = location;
         this.mPrice = price;
@@ -60,12 +63,20 @@ public class Advertisement {
         this.mPetType = petType;
     }
 
-    public String getAdType() {
+    public boolean getAdType() {
         return mAdType;
     }
 
-    public void setAdType(String adType) {
+    public void setAdType(boolean adType) {
         this.mAdType = adType;
+    }
+
+    public String getPetKind() {
+        return mPetKind;
+    }
+
+    public void setPetKind(String petKind) {
+        this.mPetKind = petKind;
     }
 
     public String getDescription() {
@@ -76,11 +87,11 @@ public class Advertisement {
         this.mDescription = description;
     }
 
-    public List<String> getImages() {
+    public ArrayList<String> getImages() {
         return mImages;
     }
 
-    public void setImages(List<String> images) {
+    public void setImages(ArrayList<String> images) {
         this.mImages = images;
     }
 
@@ -106,5 +117,22 @@ public class Advertisement {
 
     public void setPublishDate(Date publishDate) {
         this.mPublishDate = publishDate;
+    }
+
+    @Override
+    public String toString() {
+        return "Advertisement{" +
+                "mUser=" + mUser +
+                ", mLocation='" + mLocation + '\'' +
+                ", mPrice=" + mPrice +
+                ", mPetType='" + mPetType + '\'' +
+                ", mPetKind='" + mPetKind + '\'' +
+                ", mAdType=" + mAdType +
+                ", mDescription='" + mDescription + '\'' +
+                ", mImages=" + mImages +
+                ", mGender=" + mGender +
+                ", mIsPet=" + mIsPet +
+                ", mPublishDate=" + mPublishDate +
+                '}';
     }
 }

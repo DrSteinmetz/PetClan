@@ -6,6 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.android2project.model.Advertisement;
 import com.example.android2project.model.ChatMessage;
 import com.example.android2project.model.Comment;
 import com.example.android2project.model.Conversation;
@@ -309,6 +310,8 @@ public class Repository {
     public void setPetUploadListener(RepositoryPetUploadInterface repositoryPetUploadInterface) {
         this.mPetUploadListener = repositoryPetUploadInterface;
     }
+
+
 
     public static Repository getInstance(final Context context) {
         if (repository == null) {
@@ -962,6 +965,13 @@ public class Repository {
                 }
             });
 
+        }
+    }
+
+    public void uploadAd(Advertisement advertisement){
+        String userEmail = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
+        if(userEmail != null) {
+            mCloudAds.document(userEmail+System.nanoTime()).set(advertisement);
         }
     }
 
