@@ -1,9 +1,7 @@
 package com.example.android2project.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class Advertisement implements Comparable<Object> {
     private User mUser;
@@ -18,8 +16,7 @@ public class Advertisement implements Comparable<Object> {
     private boolean mIsPet;
     private Date mPublishDate;
 
-    public Advertisement() {
-    }
+    public Advertisement() {}
 
     public Advertisement(User user, String location, int price, boolean adType, String description, boolean isPet) {
         this.mUser = user;

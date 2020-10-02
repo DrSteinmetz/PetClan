@@ -425,7 +425,6 @@ public class FeedFragment extends Fragment {
         super.onResume();
 
         startObservation();
-        Log.d(TAG, "wtf onStart: ");
     }
 
     @Override
@@ -433,6 +432,5 @@ public class FeedFragment extends Fragment {
         super.onPause();
 
         stopObservation();
-        Log.d(TAG, "wtf onStop: ");
     }
 }

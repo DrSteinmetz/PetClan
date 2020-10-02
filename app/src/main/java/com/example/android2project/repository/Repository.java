@@ -311,6 +311,20 @@ public class Repository {
         this.mPetUploadListener = repositoryPetUploadInterface;
     }
 
+    /**<-------MarketPlace interfaces------->**/
+    /**<-------Upload Advertisement interface------->**/
+    public interface RepositoryUploadAdInterface {
+        void onUploadAdSucceed(Advertisement advertisement);
+
+        void onUploadAdFailed(String error);
+    }
+
+    private RepositoryUploadAdInterface mUploadAdListener;
+
+    public void setUploadAdListener(RepositoryUploadAdInterface repositoryUploadAdInterface) {
+        this.mUploadAdListener = repositoryUploadAdInterface;
+    }
+
 
 
     public static Repository getInstance(final Context context) {
@@ -968,10 +982,27 @@ public class Repository {
         }
     }
 
-    public void uploadAd(Advertisement advertisement){
+    public void uploadAd(final Advertisement advertisement){
         String userEmail = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
         if(userEmail != null) {
-            mCloudAds.document(userEmail+System.nanoTime()).set(advertisement);
+            mCloudAds.document(userEmail+System.nanoTime())
+                    .set(advertisement)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            if (mUploadAdListener != null) {
+                                mUploadAdListener.onUploadAdSucceed(advertisement);
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            if (mUploadAdListener != null) {
+                                mUploadAdListener.onUploadAdFailed(e.getMessage());
+                            }
+                        }
+                    });
         }
     }
 

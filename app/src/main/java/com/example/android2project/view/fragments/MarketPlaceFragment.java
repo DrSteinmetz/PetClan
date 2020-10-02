@@ -1,9 +1,5 @@
 package com.example.android2project.view.fragments;
 
-import androidx.core.content.FileProvider;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -13,14 +9,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.paging.PagedList;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -38,6 +26,16 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.paging.PagedList;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.example.android2project.R;
 import com.example.android2project.model.AdsAdapter;
@@ -52,6 +50,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MarketPlaceFragment extends Fragment {
     private MarketPlaceViewModel mViewModel;
@@ -66,7 +65,11 @@ public class MarketPlaceFragment extends Fragment {
     private AlertDialog mLoadingDialog;
     private FirestorePagingOptions<Advertisement> mOptions;
 
-    private Observer<Integer> mDoneUploadingObserver;
+    private Observer<Integer> mOnUploadingAdPhotosSucceed;
+    private Observer<String> mOnUploadingAdPhotosFailed;
+
+    private Observer<Advertisement> mOnUploadingAdSucceed;
+    private Observer<String> mOnUploadingAdFailed;
 
     private final int CAMERA_REQUEST = 1;
     private final int GALLERY_REQUEST = 2;
@@ -82,6 +85,29 @@ public class MarketPlaceFragment extends Fragment {
 
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.MarketPlace)).get(MarketPlaceViewModel.class);
+
+        mOnUploadingAdPhotosFailed = new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        mOnUploadingAdSucceed = new Observer<Advertisement>() {
+            @Override
+            public void onChanged(Advertisement advertisement) {
+                mLoadingDialog.dismiss();
+                mAdsAdapter.refresh();
+                stopObservation();
+            }
+        };
+
+        mOnUploadingAdFailed = new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+            }
+        };
     }
 
     @Override
@@ -107,7 +133,7 @@ public class MarketPlaceFragment extends Fragment {
 
         mRecycler.setLayoutManager(new GridLayoutManager(getContext(), 2));
         mRecycler.setHasFixedSize(true);
-        mAdsAdapter = new AdsAdapter(mOptions);
+        mAdsAdapter = new AdsAdapter(getContext(), mOptions);
         mRecycler.setAdapter(mAdsAdapter);
 
         addAdBtn.setOnClickListener(new View.OnClickListener() {
@@ -118,6 +144,24 @@ public class MarketPlaceFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    private void startObservation() {
+        if (mViewModel != null) {
+            mViewModel.getOnAdUploadPhotoSucceed().observe(getViewLifecycleOwner(), mOnUploadingAdPhotosSucceed);
+            mViewModel.getOnAdUploadPhotoFailed().observe(getViewLifecycleOwner(), mOnUploadingAdPhotosFailed);
+            mViewModel.getOnAdUploadSucceed().observe(getViewLifecycleOwner(), mOnUploadingAdSucceed);
+            mViewModel.getOnAdUploadFailed().observe(getViewLifecycleOwner(), mOnUploadingAdFailed);
+        }
+    }
+
+    private void stopObservation() {
+        if (mViewModel != null) {
+            mViewModel.getOnAdUploadPhotoSucceed().removeObserver(mOnUploadingAdPhotosSucceed);
+            mViewModel.getOnAdUploadPhotoFailed().removeObserver(mOnUploadingAdPhotosFailed);
+            mViewModel.getOnAdUploadSucceed().removeObserver(mOnUploadingAdSucceed);
+            mViewModel.getOnAdUploadFailed().removeObserver(mOnUploadingAdFailed);
+        }
     }
 
     public void showAddAdDialog() {
@@ -153,17 +197,16 @@ public class MarketPlaceFragment extends Fragment {
                 if (!mImageViews.isEmpty()) {
                     mImageViews.clear();
                 }
-                mViewModel.getOnAdUploadPhotoLiveData().removeObserver(mDoneUploadingObserver);
             }
         });
 
-        mDoneUploadingObserver = new Observer<Integer>() {
+        mOnUploadingAdPhotosSucceed = new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 final boolean isSell = actionRg.getCheckedRadioButtonId() == R.id.sell_rb;
                 final boolean isPet = categoryRg.getCheckedRadioButtonId() == R.id.pet_rb;
                 final boolean isMale = genderRg.getCheckedRadioButtonId() == R.id.male_rb;
-                final String type = typeEt.getText().toString().trim();
+                final String type = Objects.requireNonNull(typeEt.getText()).toString().trim();
                 final String kind = kindEt.getText().toString().trim();
                 final int price = Integer.parseInt(priceEt.getText().toString());
                 final String description = descriptionEt.getText().toString().trim();
@@ -174,19 +217,11 @@ public class MarketPlaceFragment extends Fragment {
                 advertisement.setPetKind(kind);
                 Toast.makeText(getContext(), "Done Uploading", Toast.LENGTH_SHORT).show();
                 mViewModel.addAdvertisement(advertisement);
-                mLoadingDialog.dismiss();
                 alertDialog.dismiss();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-//                        mAdsAdapter.notifyItemInserted(mAdsAdapter.getItemCount()-1);
-                        mAdsAdapter.refresh();
-                    }
-                }, 2000);
             }
         };
 
-        mViewModel.getOnAdUploadPhotoLiveData().observe(getViewLifecycleOwner(), mDoneUploadingObserver);
+        startObservation();
 
         cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -228,8 +263,7 @@ public class MarketPlaceFragment extends Fragment {
 
         descriptionEt.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -237,8 +271,7 @@ public class MarketPlaceFragment extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-            }
+            public void afterTextChanged(Editable s) {}
         });
 
         publishBtn.setOnClickListener(new View.OnClickListener() {

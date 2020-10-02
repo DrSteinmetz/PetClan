@@ -8,12 +8,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.android2project.model.Advertisement;
-import com.example.android2project.model.Pet;
 import com.example.android2project.model.User;
 import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.repository.Repository;
 import com.example.android2project.repository.StorageRepository;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
@@ -29,7 +27,12 @@ public class MarketPlaceViewModel extends ViewModel {
     private final String PATH = "ads";
 
     private List<String> mPhotosDownloadString = new ArrayList<>();
-    private MutableLiveData<Integer> onAdUploadPhotoLiveData;
+
+    private MutableLiveData<Integer> onAdUploadPhotoSucceed;
+    private MutableLiveData<String> onAdUploadPhotoFailed;
+
+    private MutableLiveData<Advertisement> onAdUploadSucceed;
+    private MutableLiveData<String> onAdUploadFailed;
 
     public MarketPlaceViewModel(final Context context) {
         this.mRepository = Repository.getInstance(context);
@@ -50,12 +53,20 @@ public class MarketPlaceViewModel extends ViewModel {
         }
     }
 
-    public MutableLiveData<Integer> getOnAdUploadPhotoLiveData() {
-        if (onAdUploadPhotoLiveData == null) {
-            onAdUploadPhotoLiveData = new MutableLiveData<>();
+    public MutableLiveData<Integer> getOnAdUploadPhotoSucceed() {
+        if (onAdUploadPhotoSucceed == null) {
+            onAdUploadPhotoSucceed = new MutableLiveData<>();
             attachUploadAdPhotosListener();
         }
-        return onAdUploadPhotoLiveData;
+        return onAdUploadPhotoSucceed;
+    }
+
+    public MutableLiveData<String> getOnAdUploadPhotoFailed() {
+        if (onAdUploadPhotoFailed == null) {
+            onAdUploadPhotoFailed = new MutableLiveData<>();
+            attachUploadAdPhotosListener();
+        }
+        return onAdUploadPhotoFailed;
     }
 
     private void attachUploadAdPhotosListener() {
@@ -67,7 +78,7 @@ public class MarketPlaceViewModel extends ViewModel {
                 Log.d(TAG, "onPetUploadPicSuccess iteration: " + iteration);
                 Log.d(TAG, "onPetUploadPicSuccess: totalCount "+mTotalCount);
                 if (mIterationCount == mTotalCount) {
-                    onAdUploadPhotoLiveData.setValue(mIterationCount);
+                    onAdUploadPhotoSucceed.setValue(mIterationCount);
                     Log.d(TAG, "onAdUploadPicSuccess: " + mIterationCount);
                 }
 
@@ -75,10 +86,41 @@ public class MarketPlaceViewModel extends ViewModel {
 
             @Override
             public void onAdUploadPicFailed(String error) {
+                onAdUploadPhotoFailed.setValue(error);
             }
         });
-
     }
+
+    public MutableLiveData<Advertisement> getOnAdUploadSucceed() {
+        if (onAdUploadSucceed == null) {
+            onAdUploadSucceed = new MutableLiveData<>();
+            attachSetOnUploadAdListener();
+        }
+        return onAdUploadSucceed;
+    }
+
+    public MutableLiveData<String> getOnAdUploadFailed() {
+        if (onAdUploadFailed == null) {
+            onAdUploadFailed = new MutableLiveData<>();
+            attachSetOnUploadAdListener();
+        }
+        return onAdUploadFailed;
+    }
+
+    private void attachSetOnUploadAdListener() {
+        mRepository.setUploadAdListener(new Repository.RepositoryUploadAdInterface() {
+            @Override
+            public void onUploadAdSucceed(Advertisement advertisement) {
+                onAdUploadSucceed.setValue(advertisement);
+            }
+
+            @Override
+            public void onUploadAdFailed(String error) {
+                onAdUploadFailed.setValue(error);
+            }
+        });
+    }
+
 
     public void addAdvertisement(Advertisement advertisement) {
         advertisement.setImages((ArrayList<String>) mPhotosDownloadString);
