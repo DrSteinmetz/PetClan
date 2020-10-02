@@ -59,9 +59,7 @@ public class AuthRepository {
 
     private final String TAG = "AuthRepository";
 
-    /**
-     * <-------Login interface------->
-     **/
+    /**<-------Login interface------->**/
     public interface RepositoryLoginInterface {
         void onLoginSucceed(String uId);
 
@@ -74,9 +72,7 @@ public class AuthRepository {
         this.mLoginListener = repositoryLoginInterface;
     }
 
-    /**
-     * <-------Registration interface------->
-     **/
+    /**<-------Registration interface------->**/
     public interface RepositoryRegistrationInterface {
         void onRegistrationSucceed(String uId);
 
@@ -89,9 +85,7 @@ public class AuthRepository {
         this.mRegistrationListener = repositoryRegistrationInterface;
     }
 
-    /**
-     * <-------Details Setting interface------->
-     **/
+    /**<-------Details Setting interface------->**/
     public interface RepositoryDetailsSetInterface {
         void onDetailsSetSucceed(String uId);
 
@@ -104,9 +98,7 @@ public class AuthRepository {
         this.mDetailsSetListener = repositoryDetailsSetInterface;
     }
 
-    /**
-     * <-------User Creation interface------->
-     **/
+    /**<-------User Creation interface------->**/
     public interface RepositoryCreateUserInterface {
         void onCreateUserSucceed(boolean isDefaultPic);
 
@@ -119,9 +111,7 @@ public class AuthRepository {
         this.mCreateUserListener = repositoryCreateUserInterface;
     }
 
-    /**
-     * <-------Update User Name interface------->
-     **/
+    /**<-------Update User Name interface------->**/
     public interface RepositoryUpdateUserNameInterface {
         void onUpdateUserNameSucceed(String newUsername);
 
@@ -134,9 +124,7 @@ public class AuthRepository {
         this.mUpdateUserNameListener = repositoryUpdateUserNameInterface;
     }
 
-    /**
-     * <-------Update Password interface------->
-     **/
+    /**<-------Update Password interface------->**/
     public interface RepositoryUpdatePasswordInterface {
         void onUpdatePasswordSucceed(String newPassword);
 
@@ -149,9 +137,7 @@ public class AuthRepository {
         this.mUpdatePasswordListener = repositoryUpdatePasswordInterface;
     }
 
-    /**
-     * <-------User Deletion interface------->
-     **/
+    /**<-------User Deletion interface------->**/
     public interface RepositoryDeleteUserInterface {
         void onDeleteUserSucceed(boolean value);
     }
@@ -162,9 +148,7 @@ public class AuthRepository {
         this.mDeleteUserListener = repositoryDeleteUserInterface;
     }
 
-    /**
-     * <-------Sign Out User interface------->
-     **/
+    /**<-------Sign Out User interface------->**/
     public interface RepositorySignOutUserInterface {
         void onSignOutUserSucceed(boolean value);
     }
@@ -175,9 +159,7 @@ public class AuthRepository {
         this.mSignOutUserListener = repositorySignOutUserInterface;
     }
 
-    /**
-     * <-------Singleton------->
-     **/
+    /**<-------Singleton------->**/
     public static AuthRepository getInstance(Context context) {
         if (authRepository == null) {
             authRepository = new AuthRepository(context);
@@ -215,9 +197,7 @@ public class AuthRepository {
         );
     }
 
-    /**
-     * <-------Fire Base Authentication Methods------->
-     **/
+    /**<-------Fire Base Authentication Methods------->**/
     public void registerNewUser(String email, String password) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener((Activity) mContext, new OnCompleteListener<AuthResult>() {
@@ -271,9 +251,7 @@ public class AuthRepository {
     }
 
 
-    /**
-     * <-------Google Methods------->
-     **/
+    /**<-------Google Methods------->**/
     public void onGoogle(Fragment fragment) {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(mContext.getString(R.string.default_web_client_id))
@@ -325,9 +303,7 @@ public class AuthRepository {
                 });
     }
 
-    /**
-     * <-------Facebook Methods------->
-     **/
+    /**<-------Facebook Methods------->**/
     public void onFacebook(Fragment fragment) {
         LoginManager.getInstance().logInWithReadPermissions(fragment,
                 Arrays.asList("email", "public_profile"));
@@ -371,9 +347,7 @@ public class AuthRepository {
                 });
     }
 
-    /**
-     * <-------Update user details------->
-     **/
+    /**<-------Update user details------->**/
     public void onUserDetailsInsertion(String firstName, String lastName) {
         final FirebaseUser user = mAuth.getCurrentUser();
 

@@ -22,7 +22,7 @@ public class FCM extends FirebaseMessagingService {
         }
     }
 
-    @Override
+    /*@Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
@@ -32,7 +32,7 @@ public class FCM extends FirebaseMessagingService {
             if (remoteMessage.getData().size() > 0) {
                 Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-                if (/* Check if data needs to be processed by long running job */ true) {
+                if (*//* Check if data needs to be processed by long running job *//* true) {
                     // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
                     //scheduleJob();
                 } else {
@@ -51,5 +51,5 @@ public class FCM extends FirebaseMessagingService {
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
         }
-    }
+    }*/
 }

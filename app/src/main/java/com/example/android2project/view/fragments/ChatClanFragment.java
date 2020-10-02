@@ -44,7 +44,7 @@ public class ChatClanFragment extends Fragment {
         usersObserver = new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
-                mAdapter = new ChatClanAdapter(getContext(),users);
+                mAdapter = new ChatClanAdapter(getContext(), users);
                 mAdapter.setFriendItemListener(new ChatClanAdapter.FriendItemListener() {
                     @Override
                     public void onClicked(int position, View view) {

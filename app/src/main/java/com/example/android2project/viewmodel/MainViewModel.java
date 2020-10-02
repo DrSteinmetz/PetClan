@@ -29,7 +29,7 @@ public class MainViewModel extends ViewModel {
         mAuthRepository.setSignOutUserListener(new AuthRepository.RepositorySignOutUserInterface() {
             @Override
             public void onSignOutUserSucceed(boolean value) {
-                ChatsAdapter.clearConversationList();
+                ChatsAdapter.clearConversations();
                 mSignOutSucceed.setValue(value);
             }
         });
@@ -50,5 +50,4 @@ public class MainViewModel extends ViewModel {
     public String downloadUserProfilePicture() {
         return mAuthRepository.getUserImageUri();
     }
-
 }

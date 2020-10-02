@@ -38,7 +38,6 @@ public class ChatsFragment extends Fragment {
 
     private final String CONVERSATION_FRAG = "fragment_conversation";
 
-    private static final String tag="CONVERSATION_FRAGMENT";
     private final String TAG = "ChatsFragment";
 
     public ChatsFragment() {}
@@ -103,6 +102,7 @@ public class ChatsFragment extends Fragment {
         mRecyclerView = rootView.findViewById(R.id.chats_recyclerview);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
         return rootView;
     }
 
