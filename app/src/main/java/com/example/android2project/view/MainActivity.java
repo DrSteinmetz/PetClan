@@ -29,18 +29,22 @@ import androidx.viewpager.widget.ViewPager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.android2project.R;
+import com.example.android2project.model.LocationUtils;
 import com.example.android2project.model.MenuAdapter;
 import com.example.android2project.model.Post;
 import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
+import com.example.android2project.model.ViewPagerAdapter;
 import com.example.android2project.view.fragments.CommentsFragment;
 import com.example.android2project.view.fragments.ConversationFragment;
 import com.example.android2project.view.fragments.FeedFragment;
+import com.example.android2project.view.fragments.MarketPlaceFragment;
+import com.example.android2project.view.fragments.SettingsFragment;
 import com.example.android2project.view.fragments.SocialFragment;
 import com.example.android2project.view.fragments.UserProfileFragment;
 import com.example.android2project.viewmodel.MainViewModel;
 import com.example.android2project.viewmodel.UserPictureViewModel;
-import com.example.android2project.viewmodel.ViewModelFactory;
+import com.example.android2project.model.ViewModelFactory;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -72,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements
     private MainViewModel mViewModel;
     private UserPictureViewModel mUserPictureViewModel;
 
-    private Observer<String> mGetUserNameObserver;
     private Observer<Boolean> mSignOutUserObserver;
 
     private ArrayList<String> mMenuOptions = new ArrayList<>();
@@ -81,12 +84,9 @@ public class MainActivity extends AppCompatActivity implements
     private ViewPagerAdapter mPageAdapter;
     private SmoothBottomBar mBottomBar;
 
-    private Handler mHandler;
-    private Geocoder mGeoCoder;
-    private String mCityName = null;
-    private LocationCallback mLocationCallback;
+    private LocationUtils mLocationUtils;
 
-    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private Observer<Address> mOnLocationChanged;
 
     private TextView userLocationTv;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+<<<<<<< HEAD
         mGeoCoder = new Geocoder(this, Locale.getDefault());
         userLocationTv = findViewById(R.id.location_tv);
         mSwipeRefreshLayout=findViewById(R.id.swipe_layout);
@@ -117,10 +118,19 @@ public class MainActivity extends AppCompatActivity implements
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
             } else {
                 startLocation();
+=======
+        mLocationUtils = LocationUtils.getInstance(this);
+        mOnLocationChanged = new Observer<Address>() {
+            @Override
+            public void onChanged(Address address) {
+                userLocationTv.setText(address.getLocality());
+                Log.d(TAG, "onChanged: address: " + address.getLocality());
+>>>>>>> eb172845159c7621cecddc092d80089cee821f04
             }
-        } else {
-            startLocation();
-        }
+        };
+        mLocationUtils.getLocationLiveData().observe(this, mOnLocationChanged);
+
+        userLocationTv = findViewById(R.id.location_tv);
 
         final ImageView userProfilePictureIv = findViewById(R.id.user_pic_iv);
         final TextView userNameTv = findViewById(R.id.user_name_tv);
@@ -141,13 +151,13 @@ public class MainActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void onPageSelected(int position) {
-            }
+            public void onPageSelected(int position) {}
 
             @Override
-            public void onPageScrollStateChanged(int state) {
-            }
+            public void onPageScrollStateChanged(int state) {}
         });
+
+        mViewPager.setOffscreenPageLimit(2);
 
         mBottomBar.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
@@ -158,13 +168,6 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         mViewPager.setAdapter(mPageAdapter);
-
-        mGetUserNameObserver = new Observer<String>() {
-            @Override
-            public void onChanged(String username) {
-                userNameTv.setText(username);
-            }
-        };
 
         mSignOutUserObserver = new Observer<Boolean>() {
             @Override
@@ -190,43 +193,76 @@ public class MainActivity extends AppCompatActivity implements
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DuoMenuView duoMenuView = (DuoMenuView) findViewById(R.id.menu);
-        DuoDrawerToggle drawerToggle = new DuoDrawerToggle(this, mDrawerLayout, toolbar,
+        final DuoMenuView duoMenuView = (DuoMenuView) findViewById(R.id.menu);
+        final DuoDrawerToggle drawerToggle = new DuoDrawerToggle(this, mDrawerLayout, toolbar,
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
 
+        mMenuOptions.add("Feed");
+        mMenuOptions.add("Chats");
+        mMenuOptions.add("Market Place");
         mMenuOptions.add("Profile");
         mMenuOptions.add("Settings");
 
-        MenuAdapter menuAdapter = new MenuAdapter(mMenuOptions);
+        duoMenuView.setOnMenuClickListener(new DuoMenuView.OnMenuClickListener() {
+            @Override
+            public void onFooterClicked() {}
+
+            @Override
+            public void onHeaderClicked() {}
+
+            @Override
+            public void onOptionClicked(int position, Object objectClicked) {
+                if (position < 4) {
+                    mViewPager.setCurrentItem(position);
+                    mDrawerLayout.closeDrawer();
+                } else if (position == 4) {
+                    mDrawerLayout.closeDrawer();
+                    getSupportFragmentManager().beginTransaction()
+                            .add(android.R.id.content, SettingsFragment.newInstance())
+                            .addToBackStack(null)
+                            .commit();
+                }
+            }
+        });
+
+        final MenuAdapter menuAdapter = new MenuAdapter(mMenuOptions);
         duoMenuView.setAdapter(menuAdapter);
 
         mDrawerLayout.setDrawerListener(drawerToggle);
         drawerToggle.syncState();
 
-        mViewModel.getUserName();
+        userNameTv.setText(mViewModel.getUserName());
 
         String userProfileImageUri = mViewModel.downloadUserProfilePicture();
         if (userProfileImageUri != null) {
             Log.d(TAG, "URL of downloaded picture: " + userProfileImageUri);
             loadProfilePictureWithGlide(userProfileImageUri, userProfilePictureIv);
         }
+    }
 
-        Bundle bundle = getIntent().getExtras(); // add these lines of code to get data from notification
-        if (bundle != null) {
-            Log.d(TAG, "onCreate: matan? " + bundle.toString());
-            User recipient = (User) bundle.getSerializable("whatever");
-            if (recipient != null) {
-                Log.d(TAG, "onCreate: matan? " + recipient.toString());
-                ConversationFragment.newInstance(recipient)
-                        .show(getSupportFragmentManager()
-                                .beginTransaction(), "conversation_fragment");
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_REQUEST_CODE) {
+            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                //TODO alert dialog that explains that we need permissions.
+                Toast.makeText(this, "In order to have functionality you must provide location", Toast.LENGTH_SHORT).show();
+            } else {
+                mLocationUtils.startLocation();
             }
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == RESULT_OK) {
+            mLocationUtils.startLocation();
+        }
+    }
+
     private void startObservation() {
-        mViewModel.getGetUserName().observe(this, mGetUserNameObserver);
         mViewModel.getSignOutSucceed().observe(this, mSignOutUserObserver);
     }
 
@@ -244,9 +280,10 @@ public class MainActivity extends AppCompatActivity implements
 
     private List<Fragment> getFragments() {
         List<Fragment> fragmentList = new ArrayList<Fragment>();
-        fragmentList.add(FeedFragment.newInstance());
+        fragmentList.add(FeedFragment.newInstance(null));
         fragmentList.add(SocialFragment.newInstance());
-        fragmentList.add(UserProfileFragment.newInstance());
+        fragmentList.add(MarketPlaceFragment.newInstance());
+        fragmentList.add(UserProfileFragment.newInstance(null));
 
         return fragmentList;
     }
@@ -258,107 +295,24 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_REQUEST_CODE) {
-            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                //TODO alert dialog that explains that we need permissions.
-                Toast.makeText(this, "In order to have functionality you must provide location", Toast.LENGTH_SHORT).show();
-            } else {
-                startLocation();
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            final String userName = bundle.getString("name");
+            if (userName != null) {
+                final String email = bundle.getString("email");
+                final String firstName = userName.split(" ")[0];
+                final String lastName = userName.split(" ")[1];
+                final String photoPath = bundle.getString("photo");
+                final String token = bundle.getString("token");
+                User recipient = new User(email, firstName, lastName, photoPath, token);
+                Log.d(TAG, "onNewIntent: matan? " + recipient.toString());
+                ConversationFragment.newInstance(recipient)
+                        .show(getSupportFragmentManager()
+                                .beginTransaction(), "fragment_conversation");
             }
-        }
-    }
-
-    public interface LocationInterface {
-        void onLocationChanged(String cityLocation);
-    }
-
-    private LocationInterface mLocationListener;
-
-    public void setLocationListener(LocationInterface locationListener) {
-        this.mLocationListener = locationListener;
-    }
-
-    public void startLocation() {
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mLocationCallback = new LocationCallback() {
-                @Override
-                public void onLocationResult(final LocationResult locationResult) {
-                    super.onLocationResult(locationResult);
-                    mHandler = new Handler();
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                List<Address> addressList = mGeoCoder.getFromLocation(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude(), 1);
-                                mCityName = addressList.get(0).getLocality();
-                                if (mCityName != null) {
-                                    if (mLocationListener != null) {
-                                        mLocationListener.onLocationChanged(mCityName);
-                                        mHandler.removeCallbacks(this);
-                                        mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
-                                        userLocationTv.setText(mCityName);
-                                    }
-                                }
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                }
-            };
-            final LocationRequest locationRequest = LocationRequest.create();
-            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-            locationRequest.setInterval(500);
-
-            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                    .addLocationRequest(locationRequest);
-
-            builder.setAlwaysShow(true);
-
-            SettingsClient client = LocationServices.getSettingsClient(this);
-            Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
-
-            task.addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
-                @Override
-                public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-
-                    if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                        mFusedLocationProviderClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
-                    }
-                }
-            });
-
-            task.addOnFailureListener(this, new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    if (e instanceof ResolvableApiException) {
-                        // Location settings are not satisfied, but this can be fixed
-                        // by showing the user a dialog.
-                        try {
-                            //TODO:make a custom window.
-                            // Show the dialog by calling startResolutionForResult(),
-                            // and check the result in onActivityResult().
-                            ResolvableApiException resolvable = (ResolvableApiException) e;
-                            resolvable.startResolutionForResult(MainActivity.this,
-                                    REQUEST_CHECK_SETTINGS);
-                        } catch (IntentSender.SendIntentException sendEx) {
-                            // Ignore the error.
-                        }
-                    }
-                }
-            });
-
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == RESULT_OK) {
-            startLocation();
         }
     }
 }

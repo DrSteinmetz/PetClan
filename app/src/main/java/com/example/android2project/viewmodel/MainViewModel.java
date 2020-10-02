@@ -11,29 +11,10 @@ import com.example.android2project.repository.AuthRepository;
 public class MainViewModel extends ViewModel {
     private AuthRepository mAuthRepository;
 
-    private MutableLiveData<String> mGetUserName;
-
     private MutableLiveData<Boolean> mSignOutSucceed;
 
     public MainViewModel(Context context) {
         mAuthRepository = AuthRepository.getInstance(context);
-    }
-
-    public MutableLiveData<String> getGetUserName() {
-        if (mGetUserName == null) {
-            mGetUserName = new MutableLiveData<>();
-            attachGetUserNameListener();
-        }
-        return mGetUserName;
-    }
-
-    private void attachGetUserNameListener() {
-        mAuthRepository.setGetUserNameListener(new AuthRepository.RepositoryGetUserNameInterface() {
-            @Override
-            public void onGetUserNameSucceed(String value) {
-                mGetUserName.setValue(value);
-            }
-        });
     }
 
     public MutableLiveData<Boolean> getSignOutSucceed() {
@@ -58,8 +39,8 @@ public class MainViewModel extends ViewModel {
         return mAuthRepository.getUserId();
     }
 
-    public void getUserName() {
-        mAuthRepository.getUserName();
+    public String getUserName() {
+        return mAuthRepository.getUserName();
     }
 
     public void signOutUser () {

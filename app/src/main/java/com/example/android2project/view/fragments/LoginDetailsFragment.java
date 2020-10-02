@@ -22,7 +22,7 @@ import com.example.android2project.R;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.viewmodel.LoginRegistrationViewModel;
-import com.example.android2project.viewmodel.ViewModelFactory;
+import com.example.android2project.model.ViewModelFactory;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.ApiException;
@@ -40,15 +40,6 @@ public class LoginDetailsFragment extends Fragment {
 
     private boolean mIsGoogle;
     private boolean mIsFacebook;
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    /*private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";*/
-
-    // TODO: Rename and change types of parameters
-    /*private String mParam1;
-    private String mParam2;*/
 
     private final String TAG = "LoginDetailsFragment";
 

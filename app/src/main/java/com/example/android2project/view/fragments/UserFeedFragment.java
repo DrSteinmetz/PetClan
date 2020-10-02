@@ -1,7 +1,6 @@
 package com.example.android2project.view.fragments;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.location.Address;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -29,21 +29,18 @@ import com.example.android2project.model.Post;
 import com.example.android2project.model.PostsAdapter;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.model.ViewModelFactory;
-import com.example.android2project.viewmodel.FeedViewModel;
+import com.example.android2project.viewmodel.UserFeedViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
-public class FeedFragment extends Fragment {
-    private FeedViewModel mViewModel;
-<<<<<<< HEAD
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-=======
+public class UserFeedFragment extends Fragment {
+
+    private UserFeedViewModel mViewModel;
 
     private String mUserEmail;
 
     private RecyclerView mRecyclerView;
->>>>>>> eb172845159c7621cecddc092d80089cee821f04
     private PostsAdapter mPostsAdapter;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -68,33 +65,16 @@ public class FeedFragment extends Fragment {
     private LocationUtils mLocationUtils;
     private String mUserLocation = "Unknown";
 
-    private final String TAG = "FeedFragment";
+    private final String TAG = "UserFeedFragment";
 
-    public interface FeedListener {
-        void onComment(Post post);
-    }
+    public UserFeedFragment() {}
 
-    private FeedListener listener;
-
-    public FeedFragment() {}
-
-    public static FeedFragment newInstance(final String userEmail) {
-        FeedFragment fragment = new FeedFragment();
+    public static UserFeedFragment newInstance(final String userEmail) {
+        UserFeedFragment fragment = new UserFeedFragment();
         Bundle args = new Bundle();
         args.putString("posts", userEmail);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-
-        try {
-            listener = (FeedListener) context;
-        } catch (ClassCastException ex) {
-            throw new ClassCastException("The activity must implement Feed Listener!");
-        }
     }
 
     @Override
@@ -108,11 +88,9 @@ public class FeedFragment extends Fragment {
         mLocationUtils = LocationUtils.getInstance(requireActivity());
 
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
-                ViewModelEnum.Feed)).get(FeedViewModel.class);
+                ViewModelEnum.UserFeed)).get(UserFeedViewModel.class);
         mViewModel.setUserEmail(mUserEmail);
         mViewModel.refreshPosts();
-
-        mLocationUtils.requestLocationPermissions();
 
         mOnPostDownloadSucceed = new Observer<List<Post>>() {
             @Override
@@ -120,7 +98,6 @@ public class FeedFragment extends Fragment {
                 Log.d(TAG, "onChanged swipe: " + this.toString());
                 mSwipeRefreshLayout.setRefreshing(false);
                 mPostsAdapter.notifyDataSetChanged();
-                mSwipeRefreshLayout.setRefreshing(false);
             }
         };
 
@@ -200,15 +177,10 @@ public class FeedFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
-<<<<<<< HEAD
-        mSwipeRefreshLayout=rootView.findViewById(R.id.swipe_layout);
-        final RecyclerView recyclerView = rootView.findViewById(R.id.feed_recycler_view);
-=======
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
 
->>>>>>> eb172845159c7621cecddc092d80089cee821f04
         final FloatingActionButton addPostBtn = rootView.findViewById(R.id.add_post_btn);
         mRecyclerView = rootView.findViewById(R.id.feed_recycler_view);
         mSwipeRefreshLayout = rootView.findViewById(R.id.feed_refresher);
@@ -226,18 +198,7 @@ public class FeedFragment extends Fragment {
                 mUserEmail != null ? RecyclerView.HORIZONTAL : RecyclerView.VERTICAL,
                 false));
 
-<<<<<<< HEAD
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mViewModel.downloadPosts();
-            }
-        });
-
-        mPostsAdapter = new PostsAdapter(mPosts, getContext());
-=======
         mPostsAdapter = new PostsAdapter(mViewModel.getPosts(), getContext(), mUserEmail);
->>>>>>> eb172845159c7621cecddc092d80089cee821f04
 
         mPostsAdapter.setPostListener(new PostsAdapter.PostListener() {
             @Override
@@ -249,10 +210,8 @@ public class FeedFragment extends Fragment {
 
             @Override
             public void onCommentsTvClicked(int position, View view) {
-                if (listener != null) {
-                    final Post post = mViewModel.getPosts().get(position);
-                    listener.onComment(post);
-                }
+                final Post post = mViewModel.getPosts().get(position);
+                showCommentDialog(post);
             }
 
             @Override
@@ -262,10 +221,8 @@ public class FeedFragment extends Fragment {
 
             @Override
             public void onCommentBtnClicked(int position, View view) {
-                if (listener != null) {
-                    final Post post = mViewModel.getPosts().get(position);
-                    listener.onComment(post);
-                }
+                final Post post = mViewModel.getPosts().get(position);
+                showCommentDialog(post);
             }
 
             @Override
@@ -300,16 +257,16 @@ public class FeedFragment extends Fragment {
 
     private void startObservation() {
         if (mViewModel != null) {
-            mViewModel.getPostDownloadSucceed().observe(getViewLifecycleOwner(), mOnPostDownloadSucceed);
-            mViewModel.getPostDownloadFailed().observe(getViewLifecycleOwner(), mOnPostDownloadFailed);
-            mViewModel.getPostUploadSucceed().observe(getViewLifecycleOwner(), mOnPostUploadSucceed);
-            mViewModel.getPostUploadFailed().observe(getViewLifecycleOwner(), mOnPostUploadFailed);
-            mViewModel.getPostUpdateSucceed().observe(getViewLifecycleOwner(), mOnPostUpdateSucceed);
-            mViewModel.getPostUpdatedFailed().observe(getViewLifecycleOwner(), mOnPostUpdateFailed);
-            mViewModel.getPostLikesUpdateSucceed().observe(getViewLifecycleOwner(), mOnPostLikesUpdateSucceed);
-            mViewModel.getPostLikesUpdateFailed().observe(getViewLifecycleOwner(), mOnPostLikesUpdateFailed);
-            mViewModel.getPostDeletionSucceed().observe(getViewLifecycleOwner(), mOnPostDeletionSucceed);
-            mViewModel.getPostDeletionFailed().observe(getViewLifecycleOwner(), mOnPostDeletionFailed);
+            mViewModel.getPostDownloadSucceed().observe(this, mOnPostDownloadSucceed);
+            mViewModel.getPostDownloadFailed().observe(this, mOnPostDownloadFailed);
+            mViewModel.getPostUploadSucceed().observe(this, mOnPostUploadSucceed);
+            mViewModel.getPostUploadFailed().observe(this, mOnPostUploadFailed);
+            mViewModel.getPostUpdateSucceed().observe(this, mOnPostUpdateSucceed);
+            mViewModel.getPostUpdatedFailed().observe(this, mOnPostUpdateFailed);
+            mViewModel.getPostLikesUpdateSucceed().observe(this, mOnPostLikesUpdateSucceed);
+            mViewModel.getPostLikesUpdateFailed().observe(this, mOnPostLikesUpdateFailed);
+            mViewModel.getPostDeletionSucceed().observe(this, mOnPostDeletionSucceed);
+            mViewModel.getPostDeletionFailed().observe(this, mOnPostDeletionFailed);
         }
     }
 
@@ -326,6 +283,11 @@ public class FeedFragment extends Fragment {
             mViewModel.getPostDeletionSucceed().removeObserver(mOnPostDeletionSucceed);
             mViewModel.getPostDeletionFailed().removeObserver(mOnPostDeletionFailed);
         }
+    }
+
+    private void showCommentDialog(Post post) {
+        CommentsFragment.newInstance(post)
+                .show(getChildFragmentManager().beginTransaction(), "comments_fragment");
     }
 
     private void showPostAddingDialog() {
@@ -417,6 +379,7 @@ public class FeedFragment extends Fragment {
 
     private void showDeletePostDialog(final Post postToDelete, final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        ViewGroup root;
         View view = LayoutInflater.from(getContext())
                 .inflate(R.layout.add_post_dialog,
                         (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));
@@ -446,6 +409,7 @@ public class FeedFragment extends Fragment {
         super.onResume();
 
         startObservation();
+        Log.d(TAG, "wtf onStart: ");
     }
 
     @Override
@@ -453,5 +417,6 @@ public class FeedFragment extends Fragment {
         super.onPause();
 
         stopObservation();
+        Log.d(TAG, "wtf onStop: ");
     }
 }

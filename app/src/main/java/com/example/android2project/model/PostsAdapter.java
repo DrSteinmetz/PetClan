@@ -12,6 +12,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -32,13 +33,15 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
     private Context mContext;
 
     private String mUserEmail;
+    private String mMyEmail = null;
 
     private final String TAG = "PostsAdapter";
 
-    public PostsAdapter(List<Post> posts, Context context) {
+    public PostsAdapter(List<Post> posts, Context context, final String userEmail) {
         this.mPosts = posts;
         this.mContext = context;
-        this.mUserEmail = AuthRepository.getInstance(context).getUserEmail();
+        this.mMyEmail = AuthRepository.getInstance(context).getUserEmail();
+        this.mUserEmail = userEmail;
     }
 
     public interface PostListener {
@@ -57,22 +60,24 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
     }
 
     public class PostViewHolder extends RecyclerView.ViewHolder {
-        ImageView authorPicIv;
-        TextView authorNameTv;
-        TextView postTimeAgo;
-        ShowMoreTextView contentTv;
-        ImageView likesAmountIv;
-        TextView likesAmountTv;
-        TextView commentsAmountTv;
-        LinearLayout likeBtn;
-        ImageView likeBtnIv;
-        TextView likeBtnTv;
-        LinearLayout commentBtn;
-        ImageButton optionsBtn;
+        private CardView postCardLayout;
+        private ImageView authorPicIv;
+        private TextView authorNameTv;
+        private TextView postTimeAgo;
+        private ShowMoreTextView contentTv;
+        private ImageView likesAmountIv;
+        private TextView likesAmountTv;
+        private TextView commentsAmountTv;
+        private LinearLayout likeBtn;
+        private ImageView likeBtnIv;
+        private TextView likeBtnTv;
+        private LinearLayout commentBtn;
+        private ImageButton optionsBtn;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            postCardLayout = itemView.findViewById(R.id.post_card_layout);
             authorPicIv = itemView.findViewById(R.id.author_pic_iv);
             authorNameTv = itemView.findViewById(R.id.author_name_tv);
             postTimeAgo = itemView.findViewById(R.id.time_ago_tv);
@@ -87,6 +92,16 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             optionsBtn = itemView.findViewById(R.id.post_options_menu);
 
             setContentTvProperties();
+
+            if (mUserEmail != null) {
+                ViewGroup.MarginLayoutParams layoutParams =
+                        (ViewGroup.MarginLayoutParams) postCardLayout.getLayoutParams();
+                final float density = mContext.getResources().getDisplayMetrics().density;
+                final int margin = (int) (12 * density);
+                layoutParams.setMargins(margin, 0, margin, 0);
+                postCardLayout.setRadius(50);
+                postCardLayout.requestLayout();
+            }
 
             authorPicIv.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -114,10 +129,10 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
                     if (listener != null) {
                         if (likeBtnTv.getText().toString().equals("Like")) {
-                            post.getLikesMap().put(mUserEmail, true);
+                            post.getLikesMap().put(mMyEmail, true);
                             isLike = true;
                         } else {
-                            post.getLikesMap().remove(mUserEmail);
+                            post.getLikesMap().remove(mMyEmail);
                             isLike = false;
                         }
                         listener.onLikeBtnClicked(getAdapterPosition(), v, isLike);
@@ -204,13 +219,19 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
         holder.postTimeAgo.setText(timestampToTimeAgo(post.getPostTime()));
 
-        if (post.getAuthorEmail().equals(mUserEmail)) {
+        if (post.getAuthorEmail().equals(mMyEmail)) {
             holder.optionsBtn.setVisibility(View.VISIBLE);
         } else {
             holder.optionsBtn.setVisibility(View.GONE);
         }
 
-        boolean isUserLikedPost = post.getLikesMap().containsKey(mUserEmail);
+        if (post.getAuthorEmail().equals(mUserEmail != null ? mUserEmail : mMyEmail)) {
+            holder.authorPicIv.setClickable(false);
+        } else {
+            holder.authorPicIv.setClickable(true);
+        }
+
+        boolean isUserLikedPost = post.getLikesMap().containsKey(mMyEmail);
         holder.likeBtnTv.setText(isUserLikedPost ? "Unlike" : "Like");
         holder.likeBtnIv.setRotation(isUserLikedPost ? 180 : 0);
         if (post.getLikesCount() > 0) {

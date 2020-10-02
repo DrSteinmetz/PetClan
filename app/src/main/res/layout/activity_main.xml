@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     tools:context=".view.MainActivity"
     app:menu="@menu/navigation_bar_menu"
-    android:id="@+id/main_drawer_layout">
+    android:id="@+id/main_drawer_layout"
+    android:layoutDirection="ltr">
 
     <nl.psdcompany.duonavigationdrawer.views.DuoMenuView
         android:layout_width="wrap_content"

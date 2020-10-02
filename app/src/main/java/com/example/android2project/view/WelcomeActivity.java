@@ -13,14 +13,13 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.android2project.R;
-import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.view.fragments.LoginDetailsFragment;
 import com.example.android2project.view.fragments.LoginRegistrationFragment;
 import com.example.android2project.view.fragments.SignUpDetailsFragment;
 import com.example.android2project.view.fragments.UserDetailsFragment;
 import com.example.android2project.view.fragments.UserPictureFragment;
-import com.example.android2project.viewmodel.ViewModelFactory;
+import com.example.android2project.model.ViewModelFactory;
 import com.example.android2project.viewmodel.WelcomeViewModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -62,20 +61,7 @@ public class WelcomeActivity extends AppCompatActivity implements
                 ViewModelEnum.Welcome)).get(WelcomeViewModel.class);
 
         if (mViewModel.isUserLoggedIn()) {
-            Log.d(TAG, "onCreate: " + getIntent().getSerializableExtra("whatever"));
-            Bundle bundle = getIntent().getExtras(); // add these lines of code to get data from notification
-            if (bundle != null && bundle.getSerializable("whatever") instanceof User) {
-                Log.d(TAG, "onCreate: matan? " + bundle.toString());
-                User recipient = (User) bundle.getSerializable("whatever");
-                if (recipient != null) {
-                    Log.d(TAG, "onCreate: matan? " + recipient.toString());
-                    Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-                    intent.putExtra("whatever", recipient);
-                    startActivity(intent);
-                }
-            } else {
-                startMainActivity();
-            }
+            startMainActivity();
         }
 
         FirebaseInstanceId.getInstance()

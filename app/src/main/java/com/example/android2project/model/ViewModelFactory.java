@@ -1,4 +1,4 @@
-package com.example.android2project.viewmodel;
+package com.example.android2project.model;
 
 import android.content.Context;
 
@@ -6,7 +6,22 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.android2project.model.ViewModelEnum;
+import com.example.android2project.viewmodel.ChatClanViewModel;
+import com.example.android2project.viewmodel.ChatsViewModel;
+import com.example.android2project.viewmodel.CommentsViewModel;
+import com.example.android2project.viewmodel.ConversationViewModel;
+import com.example.android2project.viewmodel.FeedViewModel;
+import com.example.android2project.viewmodel.LoginRegistrationViewModel;
+import com.example.android2project.viewmodel.MainViewModel;
+import com.example.android2project.viewmodel.MarketPlaceViewModel;
+import com.example.android2project.viewmodel.PetViewModel;
+import com.example.android2project.viewmodel.SettingsViewModel;
+import com.example.android2project.viewmodel.SocialViewModel;
+import com.example.android2project.viewmodel.UserDetailsViewModel;
+import com.example.android2project.viewmodel.UserFeedViewModel;
+import com.example.android2project.viewmodel.UserPictureViewModel;
+import com.example.android2project.viewmodel.UserProfileViewModel;
+import com.example.android2project.viewmodel.WelcomeViewModel;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
     private Context mContext;
@@ -88,6 +103,26 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             case Chats:
                 if (modelClass.isAssignableFrom(ChatsViewModel.class)) {
                     objToReturn = (T) ChatsViewModel.getInstance(mContext);
+                }
+                break;
+            case Pet:
+                if (modelClass.isAssignableFrom(PetViewModel.class)) {
+                    objToReturn = (T) new PetViewModel(mContext);
+                }
+                break;
+            case Settings:
+                if (modelClass.isAssignableFrom(SettingsViewModel.class)) {
+                    objToReturn = (T) new SettingsViewModel(mContext);
+                }
+                break;
+            case MarketPlace:
+                if (modelClass.isAssignableFrom(MarketPlaceViewModel.class)) {
+                    objToReturn = (T) new MarketPlaceViewModel(mContext);
+                }
+                break;
+            case UserFeed:
+                if (modelClass.isAssignableFrom(UserFeedViewModel.class)) {
+                    objToReturn = (T) new UserFeedViewModel(mContext);
                 }
                 break;
         }

@@ -1,155 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.fragments.UserProfileFragment">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/coordinator_layout"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".view.fragments.UserProfileFragment">
+        android:layout_height="wrap_content">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/app_bar_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:id="@+id/collapsing_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:contentScrim="@color/colorWhite"
-                app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
-
-                <ImageView
-                    android:id="@+id/cover_image_iv"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layout_collapseMode="parallax"
-                    android:layout_marginTop="50dp"
-                    app:layout_collapseParallaxMultiplier="0.7"
-                    android:src="@drawable/ic_default_user_pic"
-                    android:scaleType="centerCrop" />
-
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary"
-                    android:theme="@style/ThemeOverlay.AppCompat.Dark"
-                    app:layout_scrollFlags="scroll|enterAlways"
-                    app:layout_collapseMode="pin" />
-
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <RelativeLayout
-            android:id="@+id/profile_details_layout"
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsing_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            app:contentScrim="@color/colorWhite"
+            app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
 
-            <ScrollView
+            <ImageView
+                android:id="@+id/profile_image_iv"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.7"
+                android:src="@drawable/ic_default_user_pic"
+                android:scaleType="centerCrop" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:gravity="center"
-                        android:text="@string/app_name"
-                        android:textSize="50sp"
-                        android:textColor="@color/colorBlack"
-                        android:textStyle="bold"
-                        android:textAllCaps="false" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:gravity="center"
-                        android:text="@string/app_name"
-                        android:textSize="50sp"
-                        android:textColor="@color/colorBlack"
-                        android:textStyle="bold"
-                        android:textAllCaps="false" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:gravity="center"
-                        android:text="@string/app_name"
-                        android:textSize="50sp"
-                        android:textColor="@color/colorBlack"
-                        android:textStyle="bold"
-                        android:textAllCaps="false" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:gravity="center"
-                        android:text="@string/app_name"
-                        android:textSize="50sp"
-                        android:textColor="@color/colorBlack"
-                        android:textStyle="bold"
-                        android:textAllCaps="false" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:gravity="center"
-                        android:text="@string/app_name"
-                        android:textSize="50sp"
-                        android:textColor="@color/colorBlack"
-                        android:textStyle="bold"
-                        android:textAllCaps="false" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:gravity="center"
-                        android:text="@string/app_name"
-                        android:textSize="50sp"
-                        android:textColor="@color/colorBlack"
-                        android:textStyle="bold"
-                        android:textAllCaps="false" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:gravity="center"
-                        android:text="@string/app_name"
-                        android:textSize="50sp"
-                        android:textColor="@color/colorBlack"
-                        android:textStyle="bold"
-                        android:textAllCaps="false" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:gravity="center"
-                        android:text="@string/app_name"
-                        android:textSize="50sp"
-                        android:textColor="@color/colorBlack"
-                        android:textStyle="bold"
-                        android:textAllCaps="false" />
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardElevation="8dp"
+        app:cardCornerRadius="20dp"
+        app:cardUseCompatPadding="false"
+        app:contentPadding="5dp"
+        android:layout_margin="5dp"
+        app:cardBackgroundColor="@color/colorAccent"
+        app:layout_anchor="@id/app_bar_layout"
+        app:layout_anchorGravity="bottom|center">
 
-                </LinearLayout>
+        <TextView
+            android:id="@+id/user_name_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textSize="30sp"
+            android:textColor="@color/colorBlack"
+            android:textStyle="bold"
+            android:textAllCaps="false" />
 
-            </ScrollView>
+    </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/message_edit_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@id/app_bar_layout"
+        app:layout_anchorGravity="bottom|end"
+        android:layout_marginEnd="15dp"
+        android:src="@drawable/ic_send_comment_btn" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/profile_details_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/user_posts_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:minHeight="200dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/pets_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="400dp"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/user_posts_fragment" />
 
         </RelativeLayout>
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.core.widget.NestedScrollView>
 
-</FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

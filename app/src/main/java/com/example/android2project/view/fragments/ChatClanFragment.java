@@ -18,7 +18,7 @@ import com.example.android2project.model.ChatClanAdapter;
 import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.viewmodel.ChatClanViewModel;
-import com.example.android2project.viewmodel.ViewModelFactory;
+import com.example.android2project.model.ViewModelFactory;
 
 
 import java.util.ArrayList;
@@ -34,6 +34,8 @@ public class ChatClanFragment extends Fragment {
 
 
     private Observer<List<User>> usersObserver;
+
+    public ChatClanFragment() {}
 
     public static ChatClanFragment newInstance() {
         return new ChatClanFragment();
@@ -61,7 +63,7 @@ public class ChatClanFragment extends Fragment {
                         User recipient = mViewModel.getUsers().get(position);
                         ConversationFragment.newInstance(recipient)
                                 .show(getParentFragmentManager()
-                                        .beginTransaction(), "conversation_fragment");
+                                        .beginTransaction(), "fragment_conversation");
                     }
                 });
                 mRecyclerview.setAdapter(mAdapter);
@@ -78,7 +80,7 @@ public class ChatClanFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.chat_clan_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_chat_clan, container, false);
         mRecyclerview = rootView.findViewById(R.id.chatclan_recyclerview);
         mRecyclerview.setHasFixedSize(true);
         mRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));

@@ -17,6 +17,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.android2project.R;
 import com.example.android2project.model.ChatMessage;
 import com.example.android2project.model.User;
+import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.repository.Repository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,6 +34,7 @@ import java.util.Objects;
 
 public class ConversationViewModel extends ViewModel {
     private Repository mRepository;
+    private AuthRepository mAuth;
     //private FirebaseMessaging mFirebaseMessaging;
     private FirebaseUser mUser;
     private Context mContext;
@@ -52,6 +54,7 @@ public class ConversationViewModel extends ViewModel {
 
     public ConversationViewModel(Context context) {
         mRepository = Repository.getInstance(context);
+        mAuth = AuthRepository.getInstance(context);
         //mFirebaseMessaging = FirebaseMessaging.getInstance();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         mContext = context;
@@ -121,9 +124,14 @@ public class ConversationViewModel extends ViewModel {
                     notificationObject.put("title", mUser.getDisplayName());
                     notificationObject.put("body", message.getContent());
                     notificationObject.put("tag", mUser.getEmail());
-                    notificationObject.put("icon", R.drawable.ic_petclan_app_icon);
+                    notificationObject.put("icon", R.drawable.ic_petclan_logo);
                     notificationObject.put("click_action", "OPEN_MAIN_ACTIVITY");
-                    dataObject.put("whatever", mRecipient);
+
+                    dataObject.put("email", mUser.getEmail());
+                    dataObject.put("name", mUser.getDisplayName());
+                    dataObject.put("photo", mUser.getPhotoUrl());
+                    dataObject.put("token", mAuth.getUserToken());
+
                     rootObject.put("notification", notificationObject);
                     rootObject.put("data", dataObject);
 

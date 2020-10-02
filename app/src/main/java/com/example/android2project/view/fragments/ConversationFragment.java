@@ -4,6 +4,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,11 +31,10 @@ import com.example.android2project.model.MessageListAdapter;
 import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.viewmodel.ConversationViewModel;
-import com.example.android2project.viewmodel.ViewModelFactory;
+import com.example.android2project.model.ViewModelFactory;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
-import java.util.List;
 import java.util.Objects;
 
 public class ConversationFragment extends DialogFragment {
@@ -43,10 +43,6 @@ public class ConversationFragment extends DialogFragment {
     private MessageListAdapter mMessageAdapter;
     private RecyclerView mMessageRecycler;
 
-    //private Observer<List<ChatMessage>> mOnDownloadConversationSucceed;
-    //private Observer<String> mOnDownloadConversationFailed;
-
-    private Observer<ChatMessage> mOnUploadMessageSucceed;
     private Observer<String> mOnUploadMessageFailed;
 
     private EditText mChatBox;
@@ -62,6 +58,8 @@ public class ConversationFragment extends DialogFragment {
     private static final String RECIPIENT = "recipient";
 
     private final String TAG = "ConversationFragment";
+
+    public ConversationFragment() {}
 
     public static ConversationFragment newInstance(User recipient) {
         ConversationFragment fragment = new ConversationFragment();
@@ -84,33 +82,6 @@ public class ConversationFragment extends DialogFragment {
 
         mViewModel.setRecipientEmail(mUserRecipient.getEmail());
 
-        /*mOnDownloadConversationSucceed = new Observer<List<ChatMessage>>() {
-            @Override
-            public void onChanged(List<ChatMessage> chatMessages) {
-                mMessageAdapter.notifyDataSetChanged();
-                if (chatMessages.size() > 0) {
-                    mMessageRecycler.scrollToPosition(chatMessages.size() - 1);
-                }
-            }
-        };
-
-        mOnDownloadConversationFailed = new Observer<String>() {
-            @Override
-            public void onChanged(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
-            }
-        };*/
-
-        mOnUploadMessageSucceed = new Observer<ChatMessage>() {
-            @Override
-            public void onChanged(ChatMessage message) {
-                /*mMessageAdapter.notifyItemInserted(mViewModel.getConversation().size() - 1);
-                if (mViewModel.getConversation().size() > 0) {
-                    mMessageRecycler.smoothScrollToPosition(mViewModel.getConversation().size() - 1);
-                }*/
-            }
-        };
-
         mOnUploadMessageFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
@@ -118,15 +89,13 @@ public class ConversationFragment extends DialogFragment {
             }
         };
 
-//        mViewModel.downloadConversation();
-
         startObservation();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.conversation_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_conversation, container, false);
 
         mMessageRecycler = rootView.findViewById(R.id.recycler_view_message_list);
         mChatBox = rootView.findViewById(R.id.chatbox_et);
@@ -139,7 +108,7 @@ public class ConversationFragment extends DialogFragment {
         mMessageRecycler.setLayoutManager(mLinearLayoutManager);
 
         final String chatId = mViewModel.generateChatId();
-
+        Log.d(TAG, "onCreateView: matan? Conversation");
         FirebaseRecyclerOptions<ChatMessage> recyclerOptions = new FirebaseRecyclerOptions.Builder<ChatMessage>()
                 .setQuery(mViewModel.ConversationQuery(chatId), ChatMessage.class).build();
 
@@ -189,9 +158,11 @@ public class ConversationFragment extends DialogFragment {
         });
 
 
-        Window window = Objects.requireNonNull(getDialog()).getWindow();
-        if (window != null) {
-            window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        if (getDialog() != null) {
+            Window window = Objects.requireNonNull(getDialog()).getWindow();
+            if (window != null) {
+                window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            }
         }
 
         if (mUserRecipient != null) {
@@ -259,9 +230,6 @@ public class ConversationFragment extends DialogFragment {
 
     private void startObservation() {
         if (mViewModel != null) {
-            //mViewModel.getDownloadConversationSucceed().observe(this, mOnDownloadConversationSucceed);
-            //mViewModel.getDownloadConversationFailed().observe(this, mOnDownloadConversationFailed);
-            mViewModel.getUploadMessageSucceed().observe(this, mOnUploadMessageSucceed);
             mViewModel.getUploadMessageFailed().observe(this, mOnUploadMessageFailed);
         }
     }
@@ -271,10 +239,12 @@ public class ConversationFragment extends DialogFragment {
         super.onStart();
 
         mMessageAdapter.startListening();
-        Window window = Objects.requireNonNull(getDialog()).getWindow();
-        if (window != null) {
-            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT);
+        if (getDialog() != null) {
+            Window window = Objects.requireNonNull(getDialog()).getWindow();
+            if (window != null) {
+                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+            }
         }
     }
 

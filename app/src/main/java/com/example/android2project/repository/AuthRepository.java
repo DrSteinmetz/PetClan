@@ -59,7 +59,9 @@ public class AuthRepository {
 
     private final String TAG = "AuthRepository";
 
-    /**<-------Login interface------->**/
+    /**
+     * <-------Login interface------->
+     **/
     public interface RepositoryLoginInterface {
         void onLoginSucceed(String uId);
 
@@ -72,7 +74,9 @@ public class AuthRepository {
         this.mLoginListener = repositoryLoginInterface;
     }
 
-    /**<-------Registration interface------->**/
+    /**
+     * <-------Registration interface------->
+     **/
     public interface RepositoryRegistrationInterface {
         void onRegistrationSucceed(String uId);
 
@@ -85,7 +89,9 @@ public class AuthRepository {
         this.mRegistrationListener = repositoryRegistrationInterface;
     }
 
-    /**<-------Details Setting interface------->**/
+    /**
+     * <-------Details Setting interface------->
+     **/
     public interface RepositoryDetailsSetInterface {
         void onDetailsSetSucceed(String uId);
 
@@ -98,7 +104,9 @@ public class AuthRepository {
         this.mDetailsSetListener = repositoryDetailsSetInterface;
     }
 
-    /**<-------User Creation interface------->**/
+    /**
+     * <-------User Creation interface------->
+     **/
     public interface RepositoryCreateUserInterface {
         void onCreateUserSucceed(boolean isDefaultPic);
 
@@ -111,7 +119,39 @@ public class AuthRepository {
         this.mCreateUserListener = repositoryCreateUserInterface;
     }
 
-    /**<-------User Deletion interface------->**/
+    /**
+     * <-------Update User Name interface------->
+     **/
+    public interface RepositoryUpdateUserNameInterface {
+        void onUpdateUserNameSucceed(String newUsername);
+
+        void onUpdateUserNameFailed(String error);
+    }
+
+    private RepositoryUpdateUserNameInterface mUpdateUserNameListener;
+
+    public void setUpdateUserNameListener(RepositoryUpdateUserNameInterface repositoryUpdateUserNameInterface) {
+        this.mUpdateUserNameListener = repositoryUpdateUserNameInterface;
+    }
+
+    /**
+     * <-------Update Password interface------->
+     **/
+    public interface RepositoryUpdatePasswordInterface {
+        void onUpdatePasswordSucceed(String newPassword);
+
+        void onUpdatePasswordFailed(String error);
+    }
+
+    private RepositoryUpdatePasswordInterface mUpdatePasswordListener;
+
+    public void setUpdatePasswordListener(RepositoryUpdatePasswordInterface repositoryUpdatePasswordInterface) {
+        this.mUpdatePasswordListener = repositoryUpdatePasswordInterface;
+    }
+
+    /**
+     * <-------User Deletion interface------->
+     **/
     public interface RepositoryDeleteUserInterface {
         void onDeleteUserSucceed(boolean value);
     }
@@ -122,18 +162,9 @@ public class AuthRepository {
         this.mDeleteUserListener = repositoryDeleteUserInterface;
     }
 
-    /**<-------User Get User Name interface------->**/
-    public interface RepositoryGetUserNameInterface {
-        void onGetUserNameSucceed(String value);
-    }
-
-    private RepositoryGetUserNameInterface mGetUserNameListener;
-
-    public void setGetUserNameListener(RepositoryGetUserNameInterface repositoryGetUserNameInterface) {
-        this.mGetUserNameListener = repositoryGetUserNameInterface;
-    }
-
-    /**<-------Sign Out User interface------->**/
+    /**
+     * <-------Sign Out User interface------->
+     **/
     public interface RepositorySignOutUserInterface {
         void onSignOutUserSucceed(boolean value);
     }
@@ -144,7 +175,9 @@ public class AuthRepository {
         this.mSignOutUserListener = repositorySignOutUserInterface;
     }
 
-    /**<-------Singleton------->**/
+    /**
+     * <-------Singleton------->
+     **/
     public static AuthRepository getInstance(Context context) {
         if (authRepository == null) {
             authRepository = new AuthRepository(context);
@@ -182,7 +215,9 @@ public class AuthRepository {
         );
     }
 
-    /**<-------Fire Base Authentication Methods------->**/
+    /**
+     * <-------Fire Base Authentication Methods------->
+     **/
     public void registerNewUser(String email, String password) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener((Activity) mContext, new OnCompleteListener<AuthResult>() {
@@ -236,7 +271,9 @@ public class AuthRepository {
     }
 
 
-    /**<-------Google Methods------->**/
+    /**
+     * <-------Google Methods------->
+     **/
     public void onGoogle(Fragment fragment) {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(mContext.getString(R.string.default_web_client_id))
@@ -288,7 +325,9 @@ public class AuthRepository {
                 });
     }
 
-    /**<-------Facebook Methods------->**/
+    /**
+     * <-------Facebook Methods------->
+     **/
     public void onFacebook(Fragment fragment) {
         LoginManager.getInstance().logInWithReadPermissions(fragment,
                 Arrays.asList("email", "public_profile"));
@@ -332,7 +371,9 @@ public class AuthRepository {
                 });
     }
 
-    /**<-------Update user details------->**/
+    /**
+     * <-------Update user details------->
+     **/
     public void onUserDetailsInsertion(String firstName, String lastName) {
         final FirebaseUser user = mAuth.getCurrentUser();
 
@@ -370,7 +411,7 @@ public class AuthRepository {
             Log.d(TAG, "onComplete: sign up " + user.getUid());
         } else {
             if (mSelectedImage.toString().equals("facebook")) {
-                mSelectedImage = Profile.getCurrentProfile().getProfilePictureUri(200, 200);
+                mSelectedImage = Profile.getCurrentProfile().getProfilePictureUri(1000, 1000);
             } else {
                 mSelectedImage = Uri.parse(Objects.requireNonNull(user.getPhotoUrl()).toString());
             }
@@ -465,6 +506,10 @@ public class AuthRepository {
         this.mUserToken = userToken;
     }
 
+    public final String getUserToken() {
+        return mUserToken;
+    }
+
     public String getUserId() {
         return Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
     }
@@ -478,6 +523,59 @@ public class AuthRepository {
         }
 
         return isUserLoggedIn;
+    }
+
+    public void updateUserName(final String userName) {
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(userName)
+                .build();
+
+        if (user != null) {
+            user.updateProfile(profileUpdates)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            if (mUpdateUserNameListener != null) {
+                                mUpdateUserNameListener.onUpdateUserNameSucceed(userName);
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "onFailure: Failed to update user name in Auth");
+                            if (mUpdateUserNameListener != null) {
+                                mUpdateUserNameListener.onUpdateUserNameFailed(e.getMessage());
+                            }
+                        }
+                    });
+        }
+    }
+
+    public void updateUserPassword(final String password) {
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user != null) {
+            user.updatePassword(password)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            if (mUpdatePasswordListener != null) {
+                                mUpdatePasswordListener.onUpdatePasswordSucceed(password);
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            if (mUpdatePasswordListener != null) {
+                                mUpdatePasswordListener.onUpdatePasswordFailed(e.getMessage());
+                            }
+                        }
+                    });
+        }
     }
 
     public void deleteUserFromAuth() {
@@ -530,7 +628,7 @@ public class AuthRepository {
         return userEmail;
     }
 
-    public void getUserName() {
+    public String getUserName() {
         String name = "No Name Found";
         FirebaseUser user = mAuth.getCurrentUser();
 
@@ -538,9 +636,7 @@ public class AuthRepository {
             name = user.getDisplayName();
         }
 
-        if (mGetUserNameListener != null) {
-            mGetUserNameListener.onGetUserNameSucceed(name);
-        }
+        return name;
     }
 
     public void signOutUser() {
