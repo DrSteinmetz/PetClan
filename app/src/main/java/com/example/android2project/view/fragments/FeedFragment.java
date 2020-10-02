@@ -2,6 +2,7 @@ package com.example.android2project.view.fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.location.Address;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,12 +24,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.android2project.R;
+import com.example.android2project.model.LocationUtils;
 import com.example.android2project.model.Post;
 import com.example.android2project.model.PostsAdapter;
 import com.example.android2project.model.ViewModelEnum;
-import com.example.android2project.view.MainActivity;
-import com.example.android2project.viewmodel.FeedViewModel;
 import com.example.android2project.model.ViewModelFactory;
+import com.example.android2project.viewmodel.FeedViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -40,7 +41,6 @@ public class FeedFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private PostsAdapter mPostsAdapter;
-    //private List<Post> mPosts = new ArrayList<>();
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -59,8 +59,9 @@ public class FeedFragment extends Fragment {
     private Observer<Integer> mOnPostDeletionSucceed;
     private Observer<String> mOnPostDeletionFailed;
 
-    //private int mPosition;
+    private Observer<Address> mOnLocationChanged;
 
+    private LocationUtils mLocationUtils;
     private String mUserLocation = "Unknown";
 
     private final String TAG = "FeedFragment";
@@ -70,6 +71,8 @@ public class FeedFragment extends Fragment {
     }
 
     private FeedListener listener;
+
+    public FeedFragment() {}
 
     public static FeedFragment newInstance(final String userEmail) {
         FeedFragment fragment = new FeedFragment();
@@ -98,10 +101,14 @@ public class FeedFragment extends Fragment {
             mUserEmail = getArguments().getString("posts");
         }
 
+        mLocationUtils = LocationUtils.getInstance(requireActivity());
+
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Feed)).get(FeedViewModel.class);
         mViewModel.setUserEmail(mUserEmail);
         mViewModel.refreshPosts();
+
+        mLocationUtils.requestLocationPermissions();
 
         mOnPostDownloadSucceed = new Observer<List<Post>>() {
             @Override
@@ -177,7 +184,14 @@ public class FeedFragment extends Fragment {
             }
         };
 
-        //startObservation();
+        mOnLocationChanged = new Observer<Address>() {
+            @Override
+            public void onChanged(Address address) {
+                mUserLocation = address.getLocality();
+                Log.d(TAG, "onChanged: address: " + address.getLocality());
+            }
+        };
+        mLocationUtils.getLocationLiveData().observe(this, mOnLocationChanged);
     }
 
     @Override
@@ -188,13 +202,6 @@ public class FeedFragment extends Fragment {
         final FloatingActionButton addPostBtn = rootView.findViewById(R.id.add_post_btn);
         mRecyclerView = rootView.findViewById(R.id.feed_recycler_view);
         mSwipeRefreshLayout = rootView.findViewById(R.id.feed_refresher);
-
-        ((MainActivity) requireActivity()).setLocationListener(new MainActivity.LocationInterface() {
-            @Override
-            public void onLocationChanged(String cityLocation) {
-                mUserLocation = cityLocation;
-            }
-        });
 
 
         addPostBtn.setOnClickListener(new View.OnClickListener() {
@@ -221,7 +228,6 @@ public class FeedFragment extends Fragment {
 
             @Override
             public void onCommentsTvClicked(int position, View view) {
-                //mPosition = position;
                 if (listener != null) {
                     final Post post = mViewModel.getPosts().get(position);
                     listener.onComment(post);
@@ -230,14 +236,11 @@ public class FeedFragment extends Fragment {
 
             @Override
             public void onLikeBtnClicked(int position, View view, boolean isLike) {
-                //mPosition = position;
-                //Post post = mPosts.get(position);
                 mViewModel.updatePostLikes(isLike, position);
             }
 
             @Override
             public void onCommentBtnClicked(int position, View view) {
-                //mPosition = position;
                 if (listener != null) {
                     final Post post = mViewModel.getPosts().get(position);
                     listener.onComment(post);
@@ -246,14 +249,12 @@ public class FeedFragment extends Fragment {
 
             @Override
             public void onEditOptionClicked(int position, View view) {
-                //mPosition = position;
                 final Post post = mViewModel.getPosts().get(position);
                 showPostEditingDialog(post, position);
             }
 
             @Override
             public void onDeleteOptionClicked(int position, View view) {
-                //mPosition = position;
                 final Post post = mViewModel.getPosts().get(position);
                 showDeletePostDialog(post, position);
             }

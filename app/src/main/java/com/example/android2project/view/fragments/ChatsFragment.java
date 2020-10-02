@@ -36,9 +36,11 @@ public class ChatsFragment extends Fragment {
     private Observer<List<Conversation>> mOnDownloadActiveConversationsSucceed;
     private Observer<String> mOnDownloadActiveConversationsFailed;
 
-    private final String CONVERSATION_FRAG = "conversation_fragment";
+    private final String CONVERSATION_FRAG = "fragment_conversation";
 
     private final String TAG = "ChatsFragment";
+
+    public ChatsFragment() {}
 
     public static ChatsFragment newInstance() {
         return new ChatsFragment();
@@ -95,7 +97,7 @@ public class ChatsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.chats_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_chats, container, false);
 
         mRecyclerView = rootView.findViewById(R.id.chats_recyclerview);
         mRecyclerView.setHasFixedSize(true);

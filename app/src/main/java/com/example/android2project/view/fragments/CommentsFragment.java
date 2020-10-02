@@ -64,6 +64,8 @@ public class CommentsFragment extends DialogFragment {
 
     private final String TAG = "CommentsFragment";
 
+    public CommentsFragment() {}
+
     public static CommentsFragment newInstance(Post post) {
         CommentsFragment fragment = new CommentsFragment();
         Bundle args = new Bundle();

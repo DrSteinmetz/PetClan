@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -37,9 +36,11 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.android2project.R;
 import com.example.android2project.model.AdsAdapter;
 import com.example.android2project.model.Advertisement;
+import com.example.android2project.model.LocationUtils;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.model.ViewModelFactory;
 import com.example.android2project.viewmodel.MarketPlaceViewModel;
@@ -74,6 +75,8 @@ public class MarketPlaceFragment extends Fragment {
     private final int CAMERA_REQUEST = 1;
     private final int GALLERY_REQUEST = 2;
     private final int WRITE_PERMISSION_REQUEST = 7;
+
+    public MarketPlaceFragment() {}
 
     public static MarketPlaceFragment newInstance() {
         return new MarketPlaceFragment();
@@ -113,7 +116,7 @@ public class MarketPlaceFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.market_place_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_market_place, container, false);
         mRecycler = rootView.findViewById(R.id.ads_recycler);
         final ImageButton searchBtn = rootView.findViewById(R.id.search_btn);
         final Spinner optionsFilter = rootView.findViewById(R.id.filter_option_spinner);
@@ -134,6 +137,27 @@ public class MarketPlaceFragment extends Fragment {
         mRecycler.setLayoutManager(new GridLayoutManager(getContext(), 2));
         mRecycler.setHasFixedSize(true);
         mAdsAdapter = new AdsAdapter(getContext(), mOptions);
+
+        mAdsAdapter.setAdsAdapterListener(new AdsAdapter.AdsAdapterInterface() {
+            @Override
+            public void onAdClick(View view, int position) {
+                final Advertisement ad = mAdsAdapter.getCurrentAd(position);
+
+                DisplayAdFragment.newInstance(ad, mViewModel.getCurrentUser().getEmail())
+                        .show(getChildFragmentManager().beginTransaction(), "");
+            }
+
+            @Override
+            public void onEditOptionClicked(int position, View view) {
+                final Advertisement ad = mAdsAdapter.getCurrentAd(position);
+
+                showEditAdDialog(ad);
+            }
+
+            @Override
+            public void onDeleteOptionClicked(int position, View view) {}
+        });
+
         mRecycler.setAdapter(mAdsAdapter);
 
         addAdBtn.setOnClickListener(new View.OnClickListener() {
@@ -167,7 +191,7 @@ public class MarketPlaceFragment extends Fragment {
     public void showAddAdDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
         View view = LayoutInflater.from(getContext())
-                .inflate(R.layout.add_advertisement_fragment,
+                .inflate(R.layout.fragment_add_advertisement,
                         (RelativeLayout) requireActivity().findViewById(R.id.add_ad_container));
 
         builder.setView(view);
@@ -176,7 +200,7 @@ public class MarketPlaceFragment extends Fragment {
         final RadioGroup actionRg = view.findViewById(R.id.action_rg);
         final RadioGroup categoryRg = view.findViewById(R.id.category_rg);
         final RadioGroup genderRg = view.findViewById(R.id.gender_rg);
-        final TextInputEditText typeEt = view.findViewById(R.id.pet_type_et);
+        final TextInputEditText itemNameEt = view.findViewById(R.id.item_name_et);
         final TextInputEditText kindEt = view.findViewById(R.id.pet_kind_et);
         final TextInputEditText priceEt = view.findViewById(R.id.pet_price_et);
         final TextInputEditText descriptionEt = view.findViewById(R.id.pet_description_et);
@@ -206,17 +230,162 @@ public class MarketPlaceFragment extends Fragment {
                 final boolean isSell = actionRg.getCheckedRadioButtonId() == R.id.sell_rb;
                 final boolean isPet = categoryRg.getCheckedRadioButtonId() == R.id.pet_rb;
                 final boolean isMale = genderRg.getCheckedRadioButtonId() == R.id.male_rb;
-                final String type = Objects.requireNonNull(typeEt.getText()).toString().trim();
+                final String itemName = Objects.requireNonNull(itemNameEt.getText()).toString().trim();
                 final String kind = kindEt.getText().toString().trim();
-                final int price = Integer.parseInt(priceEt.getText().toString());
+                final String price = priceEt.getText().toString();
                 final String description = descriptionEt.getText().toString().trim();
 
-                Advertisement advertisement = new Advertisement(mViewModel.getCurrentUser(), "Unknown", price, isSell, description, isPet);
-                advertisement.setGender(isMale);
-                advertisement.setPetType(type);
+                Advertisement advertisement = new Advertisement(mViewModel.getCurrentUser(),
+                        itemName, "Unknown", price, isSell, description, isPet);
+                advertisement.setIsMale(isMale);
                 advertisement.setPetKind(kind);
-                Toast.makeText(getContext(), "Done Uploading", Toast.LENGTH_SHORT).show();
                 mViewModel.addAdvertisement(advertisement);
+                alertDialog.dismiss();
+            }
+        };
+
+        startObservation();
+
+        cameraBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /**<-------Requesting user permissions------->**/
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && mImageViewCounter < 8) {
+                    int hasWritePermission = requireContext().
+                            checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                    if (hasWritePermission != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                WRITE_PERMISSION_REQUEST);
+                    } else {
+                        mFile = new File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                                "petclan" + System.nanoTime() + "pic.jpg");
+                        Uri uri = FileProvider.getUriForFile(requireContext(),
+                                "com.example.android2project.provider", mFile);
+                        mSelectedImageList.add(uri);
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                        startActivityForResult(intent, CAMERA_REQUEST);
+                    }
+                }
+            }
+        });
+
+        galleryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mImageViewCounter < 8) {
+                    Intent intent = new Intent(Intent.ACTION_PICK,
+                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(Intent.createChooser(intent,
+                            "Select Picture"), GALLERY_REQUEST);
+                } else {
+                    Toast.makeText(getContext(), "Woof!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        descriptionEt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                publishBtn.setEnabled(s.toString().trim().length() > 0);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        publishBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Todo: add checks for fields
+                mViewModel.uploadAdPhotos(mSelectedImageList);
+                showLoadingDialog();
+            }
+        });
+
+        alertDialog.show();
+    }
+
+    public void showEditAdDialog(final Advertisement ad) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(getContext())
+                .inflate(R.layout.fragment_add_advertisement,
+                        (RelativeLayout) requireActivity().findViewById(R.id.add_ad_container));
+
+        builder.setView(view);
+        builder.setCancelable(true);
+
+        final RadioGroup actionRg = view.findViewById(R.id.action_rg);
+        final RadioGroup categoryRg = view.findViewById(R.id.category_rg);
+        final RadioGroup genderRg = view.findViewById(R.id.gender_rg);
+        final TextInputEditText itemNameEt = view.findViewById(R.id.item_name_et);
+        final TextInputEditText kindEt = view.findViewById(R.id.pet_kind_et);
+        final TextInputEditText priceEt = view.findViewById(R.id.pet_price_et);
+        final TextInputEditText descriptionEt = view.findViewById(R.id.pet_description_et);
+        final ImageButton galleryBtn = view.findViewById(R.id.gallery_btn);
+        final ImageButton cameraBtn = view.findViewById(R.id.camera_btn);
+        final Button publishBtn = view.findViewById(R.id.publish_btn);
+        initImageViews(view);
+
+        Log.d(TAG, "showEditAdDialog: " + ad.toString());
+
+        actionRg.check(ad.getIsSell() ? R.id.sell_rb : R.id.hand_over_rb);
+        categoryRg.check(ad.getIsPet() ? R.id.pet_rb : R.id.product_rb);
+        genderRg.check(ad.getIsMale() ? R.id.male_rb : R.id.female_rb);
+        itemNameEt.setText(ad.getItemName());
+        kindEt.setText(ad.getPetKind());
+        priceEt.setText(ad.getPrice() + "₪");
+        descriptionEt.setText(ad.getDescription());
+
+        RequestOptions options = new RequestOptions()
+                .placeholder(R.drawable.ic_default_user_pic)
+                .error(R.drawable.ic_default_user_pic);
+        for (int i = 0; i < ad.getImages().size(); i++) {
+            Glide.with(requireContext())
+                    .load(ad.getImages().get(i))
+                    .apply(options)
+                    .into(mImageViews.get(i));
+        }
+
+        final AlertDialog alertDialog = builder.create();
+
+        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                mImageViewCounter = 0;
+                if (!mSelectedImageList.isEmpty()) {
+                    mSelectedImageList.clear();
+                }
+                if (!mImageViews.isEmpty()) {
+                    mImageViews.clear();
+                }
+            }
+        });
+
+        mOnUploadingAdPhotosSucceed = new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                final boolean isSell = actionRg.getCheckedRadioButtonId() == R.id.sell_rb;
+                final boolean isPet = categoryRg.getCheckedRadioButtonId() == R.id.pet_rb;
+                final boolean isMale = genderRg.getCheckedRadioButtonId() == R.id.male_rb;
+                final String itemName = Objects.requireNonNull(itemNameEt.getText()).toString().trim();
+                final String kind = kindEt.getText().toString().trim();
+                final String price = priceEt.getText().toString();
+                final String description = descriptionEt.getText().toString().trim();
+
+                ad.setIsSell(isSell);
+                ad.setIsPet(isPet);
+                ad.setIsMale(isMale);
+                ad.setItemName(itemName);
+                ad.setPetKind(kind);
+                ad.setPrice(price);
+                ad.setDescription(description);
+                mViewModel.addAdvertisement(ad);
                 alertDialog.dismiss();
             }
         };
@@ -340,6 +509,7 @@ public class MarketPlaceFragment extends Fragment {
         mImageViews.add((ImageView) rootView.findViewById(R.id.photo_6_preview));
         mImageViews.add((ImageView) rootView.findViewById(R.id.photo_7_preview));
         mImageViews.add((ImageView) rootView.findViewById(R.id.photo_8_preview));
+
         for (ImageView imageView : mImageViews) {
             imageView.setClipToOutline(true);
         }

@@ -22,7 +22,7 @@ public class MarketPlaceViewModel extends ViewModel {
     private Repository mRepository;
     private StorageRepository mStorageRepository;
     private AuthRepository mAuth;
-    private int mTotalCount=0;
+    private int mTotalCount = 0;
     private int mIterationCount = 0;
     private final String PATH = "ads";
 
@@ -76,7 +76,7 @@ public class MarketPlaceViewModel extends ViewModel {
                 mIterationCount += iteration;
                 mPhotosDownloadString.add(imagePath);
                 Log.d(TAG, "onPetUploadPicSuccess iteration: " + iteration);
-                Log.d(TAG, "onPetUploadPicSuccess: totalCount "+mTotalCount);
+                Log.d(TAG, "onPetUploadPicSuccess: totalCount " + mTotalCount);
                 if (mIterationCount == mTotalCount) {
                     onAdUploadPhotoSucceed.setValue(mIterationCount);
                     Log.d(TAG, "onAdUploadPicSuccess: " + mIterationCount);
@@ -124,22 +124,22 @@ public class MarketPlaceViewModel extends ViewModel {
 
     public void addAdvertisement(Advertisement advertisement) {
         advertisement.setImages((ArrayList<String>) mPhotosDownloadString);
-        Log.d(TAG, "addAdvertisement: "+advertisement.toString());
+        Log.d(TAG, "addAdvertisement: " + advertisement.toString());
         mRepository.uploadAd(advertisement);
         mIterationCount = 0;
         mTotalCount = 0;
-        if(!mPhotosDownloadString.isEmpty()){
+        if (!mPhotosDownloadString.isEmpty()) {
             mPhotosDownloadString.clear();
         }
     }
 
-    public User getCurrentUser(){
+    public User getCurrentUser() {
         final String email = mAuth.getUserEmail();
         final String username = mAuth.getUserName();
         final String firstName = username.split(" ")[0];
         final String lastName = username.split(" ")[1];
         final String photoUri = mAuth.getUserImageUri();
         final String token = mAuth.getUserToken();
-        return new User(email,firstName,lastName,photoUri,token);
+        return new User(email, firstName, lastName, photoUri, token);
     }
 }

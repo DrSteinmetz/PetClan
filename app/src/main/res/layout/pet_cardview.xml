@@ -17,10 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:layout_margin="10dp"
-            app:iss_auto_cycle="true"
-            app:iss_corner_radius="10"
-            app:iss_delay="0"
-            app:iss_period="2000" />
+            app:iss_corner_radius="10" />
 
         <TextView
             android:id="@+id/pet_name_tv"

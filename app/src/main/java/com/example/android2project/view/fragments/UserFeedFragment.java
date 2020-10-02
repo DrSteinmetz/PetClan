@@ -1,6 +1,7 @@
 package com.example.android2project.view.fragments;
 
 import android.app.AlertDialog;
+import android.location.Address;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,11 +24,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.android2project.R;
+import com.example.android2project.model.LocationUtils;
 import com.example.android2project.model.Post;
 import com.example.android2project.model.PostsAdapter;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.model.ViewModelFactory;
-import com.example.android2project.view.MainActivity;
 import com.example.android2project.viewmodel.UserFeedViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -59,9 +60,14 @@ public class UserFeedFragment extends Fragment {
     private Observer<Integer> mOnPostDeletionSucceed;
     private Observer<String> mOnPostDeletionFailed;
 
+    private Observer<Address> mOnLocationChanged;
+
+    private LocationUtils mLocationUtils;
     private String mUserLocation = "Unknown";
 
     private final String TAG = "UserFeedFragment";
+
+    public UserFeedFragment() {}
 
     public static UserFeedFragment newInstance(final String userEmail) {
         UserFeedFragment fragment = new UserFeedFragment();
@@ -78,6 +84,8 @@ public class UserFeedFragment extends Fragment {
         if (getArguments() != null) {
             mUserEmail = getArguments().getString("posts");
         }
+
+        mLocationUtils = LocationUtils.getInstance(requireActivity());
 
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.UserFeed)).get(UserFeedViewModel.class);
@@ -158,7 +166,14 @@ public class UserFeedFragment extends Fragment {
             }
         };
 
-        //startObservation();
+        mOnLocationChanged = new Observer<Address>() {
+            @Override
+            public void onChanged(Address address) {
+                mUserLocation = address.getLocality();
+                Log.d(TAG, "onChanged: address: " + address.getLocality());
+            }
+        };
+        mLocationUtils.getLocationLiveData().observe(this, mOnLocationChanged);
     }
 
     @Override
@@ -169,13 +184,6 @@ public class UserFeedFragment extends Fragment {
         final FloatingActionButton addPostBtn = rootView.findViewById(R.id.add_post_btn);
         mRecyclerView = rootView.findViewById(R.id.feed_recycler_view);
         mSwipeRefreshLayout = rootView.findViewById(R.id.feed_refresher);
-
-        ((MainActivity) requireActivity()).setLocationListener(new MainActivity.LocationInterface() {
-            @Override
-            public void onLocationChanged(String cityLocation) {
-                mUserLocation = cityLocation;
-            }
-        });
 
 
         addPostBtn.setOnClickListener(new View.OnClickListener() {
@@ -213,7 +221,6 @@ public class UserFeedFragment extends Fragment {
 
             @Override
             public void onCommentBtnClicked(int position, View view) {
-                //mPosition = position;
                 final Post post = mViewModel.getPosts().get(position);
                 showCommentDialog(post);
             }

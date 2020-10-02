@@ -52,6 +52,8 @@ public class AddPetFragment extends DialogFragment {
     private final int GALLERY_REQUEST = 2;
     private final int WRITE_PERMISSION_REQUEST = 7;
 
+    public AddPetFragment() {}
+
     public static AddPetFragment newInstance() {
         return new AddPetFragment();
     }
@@ -67,8 +69,9 @@ public class AddPetFragment extends DialogFragment {
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.pet_fragment, container, false);
+
         final TextInputEditText petNameEt = rootView.findViewById(R.id.pet_name_et);
-        final TextInputEditText petTypeEt = rootView.findViewById(R.id.pet_type_et);
+        final TextInputEditText petTypeEt = rootView.findViewById(R.id.item_name_et);
         final TextInputEditText petDescriptionEt = rootView.findViewById(R.id.pet_description_et);
         final ImageButton cameraBtn = rootView.findViewById(R.id.camera_btn);
         final ImageButton galleryBtn = rootView.findViewById(R.id.gallery_btn);

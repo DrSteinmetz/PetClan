@@ -22,7 +22,13 @@
             android:background="@drawable/rounded_shape"
             android:scaleType="centerCrop"
             android:src="@mipmap/ic_launcher" />
-
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/ad_options_menu_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/ad_image"
+            android:src="@drawable/ic_round_more_vert_24"
+            app:fabCustomSize="30dp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -32,23 +38,32 @@
             android:layout_marginHorizontal="10dp">
 
             <TextView
-                android:id="@+id/ad_price_tv"
+                android:id="@+id/item_name_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="@color/colorBlack"
-                android:text="price"
+                android:text="Item Name" />
 
-                />
+            <TextView
+                android:id="@+id/ad_price_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/item_name_tv"
+                android:layout_marginTop="3dp"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorBlack"
+                android:text="Price" />
 
             <TextView
                 android:id="@+id/pet_description_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="3dp"
-                android:text="description"
+                android:text="Description"
                 android:maxLines="1"
                 android:textSize="13sp"
                 android:textColor="@color/colorBlack"
@@ -58,7 +73,7 @@
                 android:id="@+id/location_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="location"
+                android:text="Location"
                 android:textSize="12sp"
                 android:textColor="@color/colorBlack"
                 android:layout_below="@id/pet_description_tv"/>
@@ -67,18 +82,15 @@
                 android:id="@+id/ad_type_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="| Sell/adopt"
+                android:text="| Sell/Adopt"
                 android:textSize="12sp"
                 android:textColor="@color/colorBlack"
                 android:layout_below="@id/pet_description_tv"
                 android:layout_toEndOf="@id/location_tv"
                 android:layout_marginStart="3dp"/>
 
-
         </RelativeLayout>
 
-
     </RelativeLayout>
-
 
 </androidx.cardview.widget.CardView>

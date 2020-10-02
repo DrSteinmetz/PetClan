@@ -63,7 +63,9 @@ public class Repository {
 
 
     /**<-------Posts Interfaces------->**/
-    /**<-------Post Downloading interface------->**/
+    /**
+     * <-------Post Downloading interface------->
+     **/
     public interface RepositoryPostDownloadInterface {
         void onPostDownloadSucceed(List<Post> posts);
 
@@ -89,7 +91,9 @@ public class Repository {
         this.mUserPostsDownloadListener = repositoryUserPostsDownloadInterface;
     }*/
 
-    /**<-------Post Uploading interface------->**/
+    /**
+     * <-------Post Uploading interface------->
+     **/
     public interface RepositoryPostUploadInterface {
         void onPostUploadSucceed(Post post);
 
@@ -102,7 +106,9 @@ public class Repository {
         this.mPostUploadListener = repositoryPostUploadInterface;
     }
 
-    /**<-------Post Updating interface------->**/
+    /**
+     * <-------Post Updating interface------->
+     **/
     public interface RepositoryPostUpdatingInterface {
         void onPostUpdatingSucceed(Post updatedPost);
 
@@ -115,7 +121,9 @@ public class Repository {
         this.mPostUpdatingListener = repositoryPostUpdatingInterface;
     }
 
-    /**<-------Post Likes Updating interface------->**/
+    /**
+     * <-------Post Likes Updating interface------->
+     **/
     public interface RepositoryPostLikesUpdatingInterface {
         void onPostLikesUpdateSucceed(Post post);
 
@@ -128,7 +136,9 @@ public class Repository {
         this.mPostLikesUpdatingListener = repositoryPostLikesUpdatingInterface;
     }
 
-    /**<-------Post Deleting interface------->**/
+    /**
+     * <-------Post Deleting interface------->
+     **/
     public interface RepositoryPostDeletingInterface {
         void onPostDeletingSucceed(String postId);
 
@@ -142,7 +152,9 @@ public class Repository {
     }
 
     /**<-------Comments Interfaces------->**/
-    /**<-------Comment Downloading interface------->**/
+    /**
+     * <-------Comment Downloading interface------->
+     **/
     public interface RepositoryCommentDownloadInterface {
         void onCommentDownloadSucceed(List<Comment> comments);
 
@@ -155,7 +167,9 @@ public class Repository {
         this.mCommentDownloadListener = repositoryCommentDownloadInterface;
     }
 
-    /**<-------Comment Uploading interface------->**/
+    /**
+     * <-------Comment Uploading interface------->
+     **/
     public interface RepositoryCommentUploadInterface {
         void onCommentUploadSucceed(Comment comment);
 
@@ -168,7 +182,9 @@ public class Repository {
         this.mCommentUploadListener = repositoryCommentUploadInterface;
     }
 
-    /**<-------Comment Updating interface------->**/
+    /**
+     * <-------Comment Updating interface------->
+     **/
     public interface RepositoryCommentUpdatingInterface {
         void onCommentUpdatingSucceed(String updatedCommentContent);
 
@@ -181,7 +197,9 @@ public class Repository {
         this.mCommentUpdatingListener = repositoryCommentUpdatingInterface;
     }
 
-    /**<-------Comment Deleting interface------->**/
+    /**
+     * <-------Comment Deleting interface------->
+     **/
     public interface RepositoryCommentDeletingInterface {
         void onCommentDeletingSucceed(String commentId);
 
@@ -195,7 +213,9 @@ public class Repository {
     }
 
     /**<-------Settings Interfaces------->**/
-    /**<-------Download User interface------->**/
+    /**
+     * <-------Download User interface------->
+     **/
     public interface RepositoryDownloadUserInterface {
         void onDownloadUserSucceed(User user);
 
@@ -208,7 +228,9 @@ public class Repository {
         this.mDownloadUserListener = repositoryDownloadUserInterface;
     }
 
-    /**<-------Update User Name interface------->**/
+    /**
+     * <-------Update User Name interface------->
+     **/
     public interface RepositoryUpdateUserNameInterface {
         void onUpdateUserNameSucceed(String newUserName);
 
@@ -221,7 +243,9 @@ public class Repository {
         this.mUpdateUserNameListener = repositoryUpdateUserNameInterface;
     }
 
-    /**<-------Update User Image interface------->**/
+    /**
+     * <-------Update User Image interface------->
+     **/
     public interface RepositoryUpdateUserImageInterface {
         void onUpdateUserImageSucceed(String newUserProfilePic);
 
@@ -234,7 +258,9 @@ public class Repository {
         this.mUpdateUserImageListener = repositoryUpdateUserImageInterface;
     }
 
-    /**<-------User Deletion interface------->**/
+    /**
+     * <-------User Deletion interface------->
+     **/
     public interface RepositoryUserDeletionInterface {
         void onUserDeletionSucceed(String userId);
 
@@ -248,7 +274,9 @@ public class Repository {
     }
 
     /**<-------Chats Interfaces------->**/
-    /**<-------Download All Users interface------->**/
+    /**
+     * <-------Download All Users interface------->
+     **/
     public interface RepositoryDownloadAllUsersInterface {
         void onDownloadAllUsersSucceed(List<User> value);
 
@@ -261,7 +289,9 @@ public class Repository {
         this.mDownloadAllUsersListener = repositoryDownloadAllUsersInterface;
     }
 
-    /**<-------Download Conversation interface------->**/
+    /**
+     * <-------Download Conversation interface------->
+     **/
     public interface RepositoryDownloadConversationInterface {
         void onDownloadConversationSucceed(List<ChatMessage> conversation);
 
@@ -274,7 +304,9 @@ public class Repository {
         this.mDownloadConversationListener = repositoryDownloadConversationInterface;
     }
 
-    /**<-------Upload Message interface------->**/
+    /**
+     * <-------Upload Message interface------->
+     **/
     public interface RepositoryUploadMessageInterface {
         void onUploadMessageSucceed(ChatMessage message);
 
@@ -287,7 +319,9 @@ public class Repository {
         this.mUploadMessageListener = repositoryUploadMessageInterface;
     }
 
-    /**<-------Download Active Chats interface------->**/
+    /**
+     * <-------Download Active Chats interface------->
+     **/
     public interface RepositoryDownloadActiveChatsInterface {
         void onDownloadActiveChatsSucceed(List<Conversation> conversations);
 
@@ -300,7 +334,9 @@ public class Repository {
         this.mDownloadActiveChatsListener = repositoryDownloadActiveChatsInterface;
     }
 
-    /**<-------Upload Pet Interface------->**/
+    /**
+     * <-------Upload Pet Interface------->
+     **/
     public interface RepositoryPetUploadInterface {
         void onPetUploadFailed(String error);
     }
@@ -312,7 +348,9 @@ public class Repository {
     }
 
     /**<-------MarketPlace interfaces------->**/
-    /**<-------Upload Advertisement interface------->**/
+    /**
+     * <-------Upload Advertisement interface------->
+     **/
     public interface RepositoryUploadAdInterface {
         void onUploadAdSucceed(Advertisement advertisement);
 
@@ -324,7 +362,6 @@ public class Repository {
     public void setUploadAdListener(RepositoryUploadAdInterface repositoryUploadAdInterface) {
         this.mUploadAdListener = repositoryUploadAdInterface;
     }
-
 
 
     public static Repository getInstance(final Context context) {
@@ -342,7 +379,9 @@ public class Repository {
         mDBChats.keepSynced(true);
     }
 
-    /**<-------Posts methods------->**/
+    /**
+     * <-------Posts methods------->
+     **/
     public void downloadPosts() {
         final List<Post> posts = new ArrayList<>();
         final FirebaseUser user = mAuth.getCurrentUser();
@@ -360,7 +399,7 @@ public class Repository {
                                 }
 
                                 if (mPostDownloadListener != null) {
-                                    Log.d(TAG, "onComplete: swipe"+posts);
+                                    Log.d(TAG, "onComplete: swipe" + posts);
                                     Collections.sort(posts);
                                     mPostDownloadListener.onPostDownloadSucceed(posts);
                                 }
@@ -572,7 +611,9 @@ public class Repository {
         }
     }
 
-    /**<-------Comments methods------->**/
+    /**
+     * <-------Comments methods------->
+     **/
     public void uploadComment(final Post post, final String commentContent) {
         final FirebaseUser user = mAuth.getCurrentUser();
 
@@ -712,7 +753,9 @@ public class Repository {
         }
     }
 
-    /**<-------Profile methods------->**/
+    /**
+     * <-------Profile methods------->
+     **/
     public void downloadUser(final String userEmail) {
         mCloudUsers.document(userEmail)
                 .get()
@@ -839,7 +882,9 @@ public class Repository {
         }
     }
 
-    /**<-------Chat methods------->**/
+    /**
+     * <-------Chat methods------->
+     **/
     public void downloadAllUsers() {
         final ArrayList<User> users = new ArrayList<>();
         mCloudUsers.get()
@@ -903,7 +948,7 @@ public class Repository {
         return mDBChats.child(chatId).child(MESSAGES).orderByChild("time/time");
     }
 
-    public com.google.firebase.firestore.Query PetsQuery(final String userEmail){
+    public com.google.firebase.firestore.Query PetsQuery(final String userEmail) {
         return mCloudUsers.document(userEmail).collection("pets");
     }
 
@@ -965,27 +1010,27 @@ public class Repository {
                 });*/
     }
 
-    public void uploadPetToUser(Pet pet){
+    public void uploadPetToUser(Pet pet) {
         String userEmail = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
-        if(userEmail != null) {
+        if (userEmail != null) {
             mCloudUsers.document(userEmail).collection("pets")
                     .document(String.valueOf(System.nanoTime())).set(pet)
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    if(mPetUploadListener !=null) {
-                        mPetUploadListener.onPetUploadFailed(e.getMessage());
-                    }
-                }
-            });
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            if (mPetUploadListener != null) {
+                                mPetUploadListener.onPetUploadFailed(e.getMessage());
+                            }
+                        }
+                    });
 
         }
     }
 
-    public void uploadAd(final Advertisement advertisement){
+    public void uploadAd(final Advertisement advertisement) {
         String userEmail = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
-        if(userEmail != null) {
-            mCloudAds.document(userEmail+System.nanoTime())
+        if (userEmail != null) {
+            mCloudAds.document(advertisement.getAdvertisementId())
                     .set(advertisement)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override

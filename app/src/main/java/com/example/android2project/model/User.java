@@ -15,8 +15,7 @@ public class User implements Comparable<Object>, Serializable {
     private String mLocation;
     private String mToken;
 
-    public User() {
-    }
+    public User() {}
 
     public User(String email, String firstName, String lastName, String photoUri, String token) {
         this.mEmail = email;

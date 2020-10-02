@@ -54,7 +54,7 @@
             android:textColorHint="@color/colorPrimaryDark">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/pet_type_et"
+                android:id="@+id/item_name_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"

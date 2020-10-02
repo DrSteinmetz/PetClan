@@ -58,6 +58,8 @@ public class UserProfileFragment extends DialogFragment {
 
     private final String TAG = "UserProfileFragment";
 
+    public UserProfileFragment() {}
+
     public static UserProfileFragment newInstance(final String userEmail) {
         UserProfileFragment fragment =  new UserProfileFragment();
         Bundle args = new Bundle();
@@ -181,7 +183,7 @@ public class UserProfileFragment extends DialogFragment {
                 if (mUserEmail == null) {
                 } else {
                     ConversationFragment.newInstance(mUser)
-                            .show(getChildFragmentManager().beginTransaction(), "conversation_fragment");
+                            .show(getChildFragmentManager().beginTransaction(), "fragment_conversation");
                 }
             }
         });
@@ -222,7 +224,7 @@ public class UserProfileFragment extends DialogFragment {
 
     private void showUserFeed(final String userEmail) {
         getChildFragmentManager().beginTransaction()
-                .replace(R.id.user_posts_fragment, UserFeedFragment.newInstance(userEmail), "user_feed_fragment")
+                .replace(R.id.user_posts_fragment, UserFeedFragment.newInstance(userEmail), "fragment_user_feed")
                 .commit();
     }
 

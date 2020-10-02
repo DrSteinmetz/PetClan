@@ -33,7 +33,9 @@ public class SocialFragment extends Fragment {
 
     private Observer<List<User>> mUserListObserver;
 
-    public static final String CHAT_FRAG = "conversation_fragment";
+    public static final String CHAT_FRAG = "fragment_conversation";
+
+    public SocialFragment() {}
 
     public static SocialFragment newInstance() {
         return new SocialFragment();
@@ -69,7 +71,7 @@ public class SocialFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.social_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_social, container, false);
 
         viewPager = rootView.findViewById(R.id.view_pager);
         tabLayout = rootView.findViewById(R.id.tab_layout);

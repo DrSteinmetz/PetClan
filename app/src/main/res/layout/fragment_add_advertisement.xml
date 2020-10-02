@@ -40,15 +40,13 @@
                 android:id="@+id/action_rg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
+                android:orientation="horizontal">
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/sell_rb"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sell"
-                    />
+                    android:text="Sell" />
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/hand_over_rb"
@@ -98,6 +96,44 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/gender_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/category_layout"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/gender_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Gender:"
+                android:textColor="@color/colorBlack" />
+
+            <RadioGroup
+                android:id="@+id/gender_rg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/male_rb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Male" />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/female_rb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Female" />
+
+            </RadioGroup>
+
+        </LinearLayout>
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/pet_type_et_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -110,7 +146,7 @@
             android:textColorHint="@color/colorPrimaryDark">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/pet_type_et"
+                android:id="@+id/item_name_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
@@ -145,43 +181,6 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <LinearLayout
-            android:id="@+id/gender_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/category_layout"
-            android:layout_toEndOf="@id/pet_type_et_layout"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/gender_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="Gender:  "
-                android:textColor="@color/colorBlack" />
-
-            <RadioGroup
-                android:id="@+id/gender_rg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <com.google.android.material.radiobutton.MaterialRadioButton
-                    android:id="@+id/male_rb"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Male" />
-
-                <com.google.android.material.radiobutton.MaterialRadioButton
-                    android:id="@+id/female_rb"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Female" />
-
-            </RadioGroup>
-
-        </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/pet_price_et_layout"

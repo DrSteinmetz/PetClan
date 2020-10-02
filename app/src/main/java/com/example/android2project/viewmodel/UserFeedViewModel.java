@@ -1,15 +1,12 @@
 package com.example.android2project.viewmodel;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.example.android2project.model.Post;
 import com.example.android2project.repository.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserFeedViewModel extends FeedViewModel {
