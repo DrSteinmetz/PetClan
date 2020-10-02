@@ -68,6 +68,19 @@ public class StorageRepository {
         this.mPetUploadPicListener = storagePetUploadPicInterface;
     }
 
+    /**<-------Ad Picture Upload interface------->**/
+    public interface StorageAdUploadPicInterface {
+        void onAdUploadPicSuccess(String imagePath,int iteration);
+
+        void onAdUploadPicFailed(String error);
+    }
+
+    StorageAdUploadPicInterface mAdUploadPicListener;
+
+    public void setAdUploadPicListener(StorageAdUploadPicInterface storageAdUploadPicInterface) {
+        this.mAdUploadPicListener = storageAdUploadPicInterface;
+    }
+
     /**<-------Picture Deletion interface------->**/
     public interface StorageDeletePicInterface {
         void onDeletePicSuccess(String imagePath);
@@ -140,13 +153,13 @@ public class StorageRepository {
         }
     }
 
-    public void uploadPetPhoto(final Uri uri, final String userEmail, final int iteration) {
+    public void uploadPhoto(final String path, final Uri uri, final String userEmail, final int iteration) {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESS_PERCENTAGE, byteArrayOutputStream);
                 byte[] bytes = byteArrayOutputStream.toByteArray();
-                mStorage.child(userEmail+"/pets").child(userEmail+System.currentTimeMillis()+".jpg").putBytes(bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                mStorage.child(userEmail+"/"+path).child(userEmail+System.currentTimeMillis()+".jpg").putBytes(bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Objects.requireNonNull(Objects.requireNonNull(
@@ -156,10 +169,17 @@ public class StorageRepository {
                                 .addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override
                                     public void onSuccess(Uri uri) {
-                                        if (mPetUploadPicListener != null) {
-                                            mPetUploadPicListener.onPetUploadPicSuccess(uri.toString(),iteration);
+                                        if (path.equals("pets")) {
+                                            if (mPetUploadPicListener != null) {
+                                                mPetUploadPicListener.onPetUploadPicSuccess(uri.toString(),iteration);
+                                            }
+                                            Log.d(TAG, "onSuccess: " + uri.toString());
+                                        }else {
+                                            if(mAdUploadPicListener != null){
+                                                mAdUploadPicListener.onAdUploadPicSuccess(uri.toString(),iteration);
+                                            }
+
                                         }
-                                        Log.d(TAG, "onSuccess: " + uri.toString());
                                     }
                                 }));
                     }
