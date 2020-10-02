@@ -1,6 +1,5 @@
 package com.example.android2project.model;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.android2project.R;
-import com.firebase.ui.database.paging.DatabasePagingOptions;
-import com.firebase.ui.database.paging.FirebaseRecyclerPagingAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
-import com.firebase.ui.firestore.paging.LoadingState;
 
 public class AdsAdapter extends FirestorePagingAdapter<Advertisement, AdsAdapter.AdViewHolder> {
 
@@ -29,10 +25,10 @@ public class AdsAdapter extends FirestorePagingAdapter<Advertisement, AdsAdapter
     @Override
     protected void onBindViewHolder(@NonNull AdViewHolder holder, int position, @NonNull Advertisement ad) {
         Glide.with(holder.adImageIv.getContext()).load(ad.getImages().get(0)).into(holder.adImageIv);
-        holder.adPriceTv.setText(ad.getPrice() + "₪");
+        holder.adPriceTv.setText(ad.getPrice() + " ₪");
         holder.adDescriptionTv.setText(ad.getDescription());
         holder.adLocationTv.setText(ad.getLocation());
-        holder.adTypeTv.setText(ad.getAdType() ? "Sell" : "Hand Over");
+        holder.adTypeTv.setText(ad.getAdType() ? " | Sell" : " | Hand Over");
     }
 
     @NonNull

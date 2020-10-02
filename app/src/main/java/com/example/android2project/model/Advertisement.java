@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Advertisement {
+public class Advertisement implements Comparable<Object> {
     private User mUser;
     private String mLocation;
     private int mPrice;
@@ -117,6 +117,15 @@ public class Advertisement {
 
     public void setPublishDate(Date publishDate) {
         this.mPublishDate = publishDate;
+    }
+
+    @Override
+    public int compareTo(final Object object) {
+        if (object instanceof Advertisement) {
+            Advertisement otherAd = (Advertisement) object;
+            return this.mPublishDate.compareTo(otherAd.getPublishDate());
+        }
+        return 0;
     }
 
     @Override

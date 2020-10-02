@@ -976,6 +976,6 @@ public class Repository {
     }
 
     public com.google.firebase.firestore.Query getAllAds() {
-        return mCloudAds;
+        return mCloudAds.orderBy("publishDate", com.google.firebase.firestore.Query.Direction.DESCENDING);
     }
 }

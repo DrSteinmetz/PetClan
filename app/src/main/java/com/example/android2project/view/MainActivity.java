@@ -145,7 +145,8 @@ public class MainActivity extends AppCompatActivity implements
             public void onPageScrollStateChanged(int state) {
             }
         });
-        //mViewPager.setOffscreenPageLimit(1);
+
+        mViewPager.setOffscreenPageLimit(2);
 
         mBottomBar.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override

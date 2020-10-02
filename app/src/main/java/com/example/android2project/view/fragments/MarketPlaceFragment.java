@@ -150,7 +150,7 @@ public class MarketPlaceFragment extends Fragment {
                 if (!mSelectedImageList.isEmpty()) {
                     mSelectedImageList.clear();
                 }
-                if(!mImageViews.isEmpty()){
+                if (!mImageViews.isEmpty()) {
                     mImageViews.clear();
                 }
                 mViewModel.getOnAdUploadPhotoLiveData().removeObserver(mDoneUploadingObserver);
@@ -168,7 +168,7 @@ public class MarketPlaceFragment extends Fragment {
                 final int price = Integer.parseInt(priceEt.getText().toString());
                 final String description = descriptionEt.getText().toString().trim();
 
-                Advertisement advertisement = new Advertisement(mViewModel.getCurrentUser(),"Unknown",price,isSell,description,isPet);
+                Advertisement advertisement = new Advertisement(mViewModel.getCurrentUser(), "Unknown", price, isSell, description, isPet);
                 advertisement.setGender(isMale);
                 advertisement.setPetType(type);
                 advertisement.setPetKind(kind);
@@ -180,17 +180,13 @@ public class MarketPlaceFragment extends Fragment {
                     @Override
                     public void run() {
 //                        mAdsAdapter.notifyItemInserted(mAdsAdapter.getItemCount()-1);
-                        mAdsAdapter.stopListening();
-                        mAdsAdapter = new AdsAdapter(mOptions);
-                        mRecycler.setAdapter(mAdsAdapter);
-                        mAdsAdapter.startListening();
-
+                        mAdsAdapter.refresh();
                     }
-                },5000);
+                }, 2000);
             }
         };
 
-        mViewModel.getOnAdUploadPhotoLiveData().observe(getViewLifecycleOwner(),mDoneUploadingObserver);
+        mViewModel.getOnAdUploadPhotoLiveData().observe(getViewLifecycleOwner(), mDoneUploadingObserver);
 
         cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
