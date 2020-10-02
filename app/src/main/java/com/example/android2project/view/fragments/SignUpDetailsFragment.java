@@ -22,7 +22,7 @@ import com.example.android2project.R;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.viewmodel.LoginRegistrationViewModel;
-import com.example.android2project.viewmodel.ViewModelFactory;
+import com.example.android2project.model.ViewModelFactory;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.ApiException;

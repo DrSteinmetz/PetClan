@@ -1,5 +1,7 @@
 package com.example.android2project.model;
 
+import com.denzcoskun.imageslider.models.SlideModel;
+
 import java.util.ArrayList;
 
 public class Pet {
@@ -10,10 +12,10 @@ public class Pet {
 
     public Pet() {}
 
-    public Pet(String mPetName, String mAnimalType, ArrayList<String> mPhotoUri) {
+    public Pet(String mPetName, String mAnimalType, String petDescription) {
         this.mPetName = mPetName;
         this.mAnimalType = mAnimalType;
-        this.mPhotoUri = mPhotoUri;
+        this.mPetDescription = petDescription;
     }
 
     public String getPetName() {

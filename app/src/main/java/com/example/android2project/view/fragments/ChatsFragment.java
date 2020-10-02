@@ -1,7 +1,6 @@
 package com.example.android2project.view.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,7 @@ import com.example.android2project.model.Conversation;
 import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.viewmodel.ChatsViewModel;
-import com.example.android2project.viewmodel.ViewModelFactory;
+import com.example.android2project.model.ViewModelFactory;
 
 import java.util.List;
 
@@ -37,10 +36,12 @@ public class ChatsFragment extends Fragment {
     private Observer<List<Conversation>> mOnDownloadActiveConversationsSucceed;
     private Observer<String> mOnDownloadActiveConversationsFailed;
 
-    private final String CONVERSATION_FRAG = "conversation_fragment";
+    private final String CONVERSATION_FRAG = "fragment_conversation";
 
     private static final String tag="CONVERSATION_FRAGMENT";
     private final String TAG = "ChatsFragment";
+
+    public ChatsFragment() {}
 
     public static ChatsFragment newInstance() {
         return new ChatsFragment();
@@ -97,7 +98,7 @@ public class ChatsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.chats_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_chats, container, false);
 
         mRecyclerView = rootView.findViewById(R.id.chats_recyclerview);
         mRecyclerView.setHasFixedSize(true);

@@ -60,19 +60,19 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
     }
 
     public class PostViewHolder extends RecyclerView.ViewHolder {
-        CardView postCardLayout;
-        ImageView authorPicIv;
-        TextView authorNameTv;
-        TextView postTimeAgo;
-        ShowMoreTextView contentTv;
-        ImageView likesAmountIv;
-        TextView likesAmountTv;
-        TextView commentsAmountTv;
-        LinearLayout likeBtn;
-        ImageView likeBtnIv;
-        TextView likeBtnTv;
-        LinearLayout commentBtn;
-        ImageButton optionsBtn;
+        private CardView postCardLayout;
+        private ImageView authorPicIv;
+        private TextView authorNameTv;
+        private TextView postTimeAgo;
+        private ShowMoreTextView contentTv;
+        private ImageView likesAmountIv;
+        private TextView likesAmountTv;
+        private TextView commentsAmountTv;
+        private LinearLayout likeBtn;
+        private ImageView likeBtnIv;
+        private TextView likeBtnTv;
+        private LinearLayout commentBtn;
+        private ImageButton optionsBtn;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -129,10 +129,10 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
                     if (listener != null) {
                         if (likeBtnTv.getText().toString().equals("Like")) {
-                            post.getLikesMap().put(mUserEmail, true);
+                            post.getLikesMap().put(mMyEmail, true);
                             isLike = true;
                         } else {
-                            post.getLikesMap().remove(mUserEmail);
+                            post.getLikesMap().remove(mMyEmail);
                             isLike = false;
                         }
                         listener.onLikeBtnClicked(getAdapterPosition(), v, isLike);
@@ -231,7 +231,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             holder.authorPicIv.setClickable(true);
         }
 
-        boolean isUserLikedPost = post.getLikesMap().containsKey(mUserEmail);
+        boolean isUserLikedPost = post.getLikesMap().containsKey(mMyEmail);
         holder.likeBtnTv.setText(isUserLikedPost ? "Unlike" : "Like");
         holder.likeBtnIv.setRotation(isUserLikedPost ? 180 : 0);
         if (post.getLikesCount() > 0) {

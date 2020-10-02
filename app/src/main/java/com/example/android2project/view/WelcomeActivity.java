@@ -13,15 +13,13 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.android2project.R;
-import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
-import com.example.android2project.view.fragments.ConversationFragment;
 import com.example.android2project.view.fragments.LoginDetailsFragment;
 import com.example.android2project.view.fragments.LoginRegistrationFragment;
 import com.example.android2project.view.fragments.SignUpDetailsFragment;
 import com.example.android2project.view.fragments.UserDetailsFragment;
 import com.example.android2project.view.fragments.UserPictureFragment;
-import com.example.android2project.viewmodel.ViewModelFactory;
+import com.example.android2project.model.ViewModelFactory;
 import com.example.android2project.viewmodel.WelcomeViewModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;

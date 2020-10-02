@@ -28,9 +28,13 @@ public class StorageRepository {
     private final int COMPRESS_PERCENTAGE = 20;
     private final String TAG = "StorageRepository";
 
-    /**<-------Picture Download interface------->**/
+
+    /**
+     * <-------Picture Download interface------->
+     **/
     public interface StorageDownloadPicInterface {
         void onDownloadPicSuccess(Uri uri);
+
         void onDownloadPicFailed(String error);
     }
 
@@ -40,9 +44,12 @@ public class StorageRepository {
         this.mDownloadPicListener = storageDownloadPicInterface;
     }
 
-    /**<-------Picture Upload interface------->**/
+    /**
+     * <-------Picture Upload interface------->
+     **/
     public interface StorageUploadPicInterface {
         void onUploadPicSuccess(String imagePath);
+
         void onUploadPicFailed(String error);
     }
 
@@ -52,9 +59,42 @@ public class StorageRepository {
         this.mUploadPicListener = storageUploadPicInterface;
     }
 
-    /**<-------Picture Deletion interface------->**/
+    /**
+     * <-------Pet Picture Upload interface------->
+     **/
+    public interface StoragePetUploadPicInterface {
+        void onPetUploadPicSuccess(String imagePath, int iteration);
+
+        void onPetUploadPicFailed(String error);
+    }
+
+    StoragePetUploadPicInterface mPetUploadPicListener;
+
+    public void setPetUploadPicListener(StoragePetUploadPicInterface storagePetUploadPicInterface) {
+        this.mPetUploadPicListener = storagePetUploadPicInterface;
+    }
+
+    /**
+     * <-------Ad Picture Upload interface------->
+     **/
+    public interface StorageAdUploadPicInterface {
+        void onAdUploadPicSuccess(String imagePath, int iteration);
+
+        void onAdUploadPicFailed(String error);
+    }
+
+    StorageAdUploadPicInterface mAdUploadPicListener;
+
+    public void setAdUploadPicListener(StorageAdUploadPicInterface storageAdUploadPicInterface) {
+        this.mAdUploadPicListener = storageAdUploadPicInterface;
+    }
+
+    /**
+     * <-------Picture Deletion interface------->
+     **/
     public interface StorageDeletePicInterface {
         void onDeletePicSuccess(String imagePath);
+
         void onDeletePicFailed(String error);
     }
 
@@ -64,7 +104,9 @@ public class StorageRepository {
         this.mDeletePicListener = storageDeletePicInterface;
     }
 
-    /**<-------Singleton------->**/
+    /**
+     * <-------Singleton------->
+     **/
     public static StorageRepository getInstance(Context context) {
         if (storageRepository == null) {
             storageRepository = new StorageRepository(context);
@@ -122,6 +164,54 @@ public class StorageRepository {
             e.printStackTrace();
         }
     }
+
+    public void uploadPhoto(final String path, final Uri uri, final String userEmail, final int iteration) {
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESS_PERCENTAGE, byteArrayOutputStream);
+            byte[] bytes = byteArrayOutputStream.toByteArray();
+            mStorage.child(userEmail + "/" + path).child(userEmail + System.nanoTime() + ".jpg").putBytes(bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Objects.requireNonNull(Objects.requireNonNull(
+                            Objects.requireNonNull(taskSnapshot.getMetadata())
+                                    .getReference())
+                            .getDownloadUrl()
+                            .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    if (path.equals("pets")) {
+                                        if (mPetUploadPicListener != null) {
+                                            mPetUploadPicListener.onPetUploadPicSuccess(uri.toString(), iteration);
+                                        }
+                                        Log.d(TAG, "onSuccess: " + uri.toString());
+                                    } else {
+                                        if (mAdUploadPicListener != null) {
+                                            mAdUploadPicListener.onAdUploadPicSuccess(uri.toString(), iteration);
+                                        }
+
+                                    }
+                                }
+                            }));
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    if (mPetUploadPicListener != null) {
+                        mPetUploadPicListener.onPetUploadPicFailed(e.getMessage());
+                    }
+                }
+            });
+            byteArrayOutputStream.close();
+        } catch (IOException e) {
+            if (mPetUploadPicListener != null) {
+                mPetUploadPicListener.onPetUploadPicFailed(e.getMessage());
+            }
+            e.printStackTrace();
+        }
+    }
+
 
     public void downloadFile(final String imageUri) {
         StorageReference fileToDownload = mStorage.child(imageUri);

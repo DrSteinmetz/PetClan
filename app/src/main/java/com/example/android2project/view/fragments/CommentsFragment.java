@@ -1,22 +1,18 @@
 package com.example.android2project.view.fragments;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +30,7 @@ import com.example.android2project.model.CommentsAdapter;
 import com.example.android2project.model.Post;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.viewmodel.CommentsViewModel;
-import com.example.android2project.viewmodel.ViewModelFactory;
+import com.example.android2project.model.ViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +63,8 @@ public class CommentsFragment extends DialogFragment {
     private final static String POST = "post";
 
     private final String TAG = "CommentsFragment";
+
+    public CommentsFragment() {}
 
     public static CommentsFragment newInstance(Post post) {
         CommentsFragment fragment = new CommentsFragment();
