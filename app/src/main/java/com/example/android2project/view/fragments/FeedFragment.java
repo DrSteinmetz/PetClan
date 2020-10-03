@@ -36,14 +36,10 @@ import java.util.List;
 
 public class FeedFragment extends Fragment {
     private FeedViewModel mViewModel;
-<<<<<<< HEAD
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-=======
 
     private String mUserEmail;
 
     private RecyclerView mRecyclerView;
->>>>>>> eb172845159c7621cecddc092d80089cee821f04
     private PostsAdapter mPostsAdapter;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -105,14 +101,19 @@ public class FeedFragment extends Fragment {
             mUserEmail = getArguments().getString("posts");
         }
 
-        mLocationUtils = LocationUtils.getInstance(requireActivity());
-
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Feed)).get(FeedViewModel.class);
         mViewModel.setUserEmail(mUserEmail);
         mViewModel.refreshPosts();
 
-        mLocationUtils.requestLocationPermissions();
+        mLocationUtils = LocationUtils.getInstance(requireActivity());
+
+        if (!mLocationUtils.isLocationEnabled()) {
+            mLocationUtils.requestLocationPermissions();
+        }else{
+            mLocationUtils.startLocation();
+        }
+
 
         mOnPostDownloadSucceed = new Observer<List<Post>>() {
             @Override
@@ -120,7 +121,6 @@ public class FeedFragment extends Fragment {
                 Log.d(TAG, "onChanged swipe: " + this.toString());
                 mSwipeRefreshLayout.setRefreshing(false);
                 mPostsAdapter.notifyDataSetChanged();
-                mSwipeRefreshLayout.setRefreshing(false);
             }
         };
 
@@ -193,6 +193,7 @@ public class FeedFragment extends Fragment {
             @Override
             public void onChanged(Address address) {
                 mUserLocation = address.getLocality();
+                mViewModel.updateUserLocation(address);
                 Log.d(TAG, "onChanged: address: " + address.getLocality());
             }
         };
@@ -203,12 +204,7 @@ public class FeedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
-<<<<<<< HEAD
-        mSwipeRefreshLayout=rootView.findViewById(R.id.swipe_layout);
-        final RecyclerView recyclerView = rootView.findViewById(R.id.feed_recycler_view);
-=======
 
->>>>>>> eb172845159c7621cecddc092d80089cee821f04
         final FloatingActionButton addPostBtn = rootView.findViewById(R.id.add_post_btn);
         mRecyclerView = rootView.findViewById(R.id.feed_recycler_view);
         mSwipeRefreshLayout = rootView.findViewById(R.id.feed_refresher);
@@ -226,18 +222,7 @@ public class FeedFragment extends Fragment {
                 mUserEmail != null ? RecyclerView.HORIZONTAL : RecyclerView.VERTICAL,
                 false));
 
-<<<<<<< HEAD
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mViewModel.downloadPosts();
-            }
-        });
-
-        mPostsAdapter = new PostsAdapter(mPosts, getContext());
-=======
         mPostsAdapter = new PostsAdapter(mViewModel.getPosts(), getContext(), mUserEmail);
->>>>>>> eb172845159c7621cecddc092d80089cee821f04
 
         mPostsAdapter.setPostListener(new PostsAdapter.PostListener() {
             @Override
@@ -417,6 +402,7 @@ public class FeedFragment extends Fragment {
 
     private void showDeletePostDialog(final Post postToDelete, final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        ViewGroup root;
         View view = LayoutInflater.from(getContext())
                 .inflate(R.layout.add_post_dialog,
                         (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));
@@ -454,4 +440,6 @@ public class FeedFragment extends Fragment {
 
         stopObservation();
     }
+
+
 }

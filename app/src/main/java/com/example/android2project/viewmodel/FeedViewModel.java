@@ -1,6 +1,7 @@
 package com.example.android2project.viewmodel;
 
 import android.content.Context;
+import android.location.Address;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -38,10 +39,9 @@ public class FeedViewModel extends ViewModel {
 
     public FeedViewModel(final Context context) {
         this.mRepository = Repository.getInstance(context);
-<<<<<<< HEAD
+
         downloadPosts();
-=======
->>>>>>> eb172845159c7621cecddc092d80089cee821f04
+
     }
 
     public MutableLiveData<Post> getPostUploadSucceed() {
@@ -238,16 +238,20 @@ public class FeedViewModel extends ViewModel {
         mRepository.deletePost(postId);
     }
 
-<<<<<<< HEAD
-    public void downloadPosts(){
+
+    public void downloadPosts() {
         mRepository.downloadPosts();
-=======
+    }
     public void setPosts(List<Post> Posts) {
         this.mPosts = Posts;
     }
 
     public List<Post> getPosts() {
         return mPosts;
->>>>>>> eb172845159c7621cecddc092d80089cee821f04
+
+    }
+
+    public void updateUserLocation(Address address) {
+        mRepository.updateUserLocation(address);
     }
 }

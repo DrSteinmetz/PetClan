@@ -8,27 +8,16 @@
     android:id="@+id/feed_fragment_layout">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-<<<<<<< HEAD
-        android:id="@+id/swipe_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-=======
         android:id="@+id/feed_refresher"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
->>>>>>> eb172845159c7621cecddc092d80089cee821f04
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/feed_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-<<<<<<< HEAD
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-=======
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
->>>>>>> eb172845159c7621cecddc092d80089cee821f04
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_post_btn"

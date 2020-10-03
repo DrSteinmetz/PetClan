@@ -6,8 +6,11 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Handler;
+import android.provider.Settings;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -124,7 +127,6 @@ public class LocationUtils {
             task.addOnSuccessListener(mActivity, new OnSuccessListener<LocationSettingsResponse>() {
                 @Override
                 public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-
                     if (mActivity.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         mFusedLocationProviderClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
                     }
@@ -150,6 +152,22 @@ public class LocationUtils {
                     }
                 }
             });
+        }
+    }
+    public boolean isLocationEnabled()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+// This is new method provided in API 28
+            LocationManager lm = (LocationManager) mActivity.getSystemService(mActivity.LOCATION_SERVICE);
+            Log.d(TAG, "isLocationEnabled: "+ lm.isLocationEnabled());
+            return lm.isLocationEnabled();
+        } else {
+// This is Deprecated in API 28
+            int mode = Settings.Secure.getInt(mActivity.getContentResolver(), Settings.Secure.LOCATION_MODE,
+                    Settings.Secure.LOCATION_MODE_OFF);
+            Log.d(TAG, "isLocationEnabled: "+ mode);
+            return  (mode != Settings.Secure.LOCATION_MODE_OFF);
+
         }
     }
 }

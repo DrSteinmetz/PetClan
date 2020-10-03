@@ -1,14 +1,11 @@
 package com.example.android2project.view;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.IntentSender;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Address;
-import android.location.Geocoder;
-import android.os.Build;
+import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -23,12 +20,12 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.android2project.R;
+import com.example.android2project.model.GpsReceiver;
 import com.example.android2project.model.LocationUtils;
 import com.example.android2project.model.MenuAdapter;
 import com.example.android2project.model.Post;
@@ -45,23 +42,9 @@ import com.example.android2project.view.fragments.UserProfileFragment;
 import com.example.android2project.viewmodel.MainViewModel;
 import com.example.android2project.viewmodel.UserPictureViewModel;
 import com.example.android2project.model.ViewModelFactory;
-import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
-import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import me.ibrahimsn.lib.OnItemSelectedListener;
 import me.ibrahimsn.lib.SmoothBottomBar;
@@ -70,7 +53,7 @@ import nl.psdcompany.duonavigationdrawer.views.DuoMenuView;
 import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
 public class MainActivity extends AppCompatActivity implements
-        FeedFragment.FeedListener {
+        FeedFragment.FeedListener{
     private DuoDrawerLayout mDrawerLayout;
 
     private MainViewModel mViewModel;
@@ -89,7 +72,8 @@ public class MainActivity extends AppCompatActivity implements
     private Observer<Address> mOnLocationChanged;
 
     private TextView userLocationTv;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+
+    private GpsReceiver mGpsReceiver;
 
     private final String FEED_FRAG = "feed_fragment";
     private final String COMMENTS_FRAG = "comments_fragment";
@@ -105,27 +89,30 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-<<<<<<< HEAD
-        mGeoCoder = new Geocoder(this, Locale.getDefault());
-        userLocationTv = findViewById(R.id.location_tv);
-        mSwipeRefreshLayout=findViewById(R.id.swipe_layout);
+        mGpsReceiver=GpsReceiver.getInstance(new GpsReceiver.LocationCallBack() {
+            @Override
+            public void onLocationTriggered(boolean isLocationOn) {
+               if(isLocationOn){
+                   mLocationUtils.startLocation();
+               }
+            }
+        });
+        registerReceiver(mGpsReceiver,new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
 
+//        registerReceiver(new GpsReceiver(new GpsReceiver.LocationCallBack() {
+//            @Override
+//            public void onLocationTriggered() {
+//                Log.d(TAG, "onLocationTriggered: trigerred");
+//            }
+//        }), new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+////---
 
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int hasLocationPermission = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
-            if (hasLocationPermission != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
-            } else {
-                startLocation();
-=======
         mLocationUtils = LocationUtils.getInstance(this);
         mOnLocationChanged = new Observer<Address>() {
             @Override
             public void onChanged(Address address) {
                 userLocationTv.setText(address.getLocality());
                 Log.d(TAG, "onChanged: address: " + address.getLocality());
->>>>>>> eb172845159c7621cecddc092d80089cee821f04
             }
         };
         mLocationUtils.getLocationLiveData().observe(this, mOnLocationChanged);
@@ -314,5 +301,12 @@ public class MainActivity extends AppCompatActivity implements
                                 .beginTransaction(), "fragment_conversation");
             }
         }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mGpsReceiver);
     }
 }

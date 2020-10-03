@@ -1,9 +1,5 @@
 package com.example.android2project.view.fragments;
 
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,15 +33,9 @@ public class SocialFragment extends Fragment {
 
     private Observer<List<User>> mUserListObserver;
 
-<<<<<<< HEAD
-
-    public static final String CHAT_FRAG = "conversation_fragment";
-=======
     public static final String CHAT_FRAG = "fragment_conversation";
 
     public SocialFragment() {}
->>>>>>> eb172845159c7621cecddc092d80089cee821f04
-
 
     public static SocialFragment newInstance() {
         return new SocialFragment();
@@ -68,9 +58,8 @@ public class SocialFragment extends Fragment {
             @Override
             public void onChanged(List<User> users) {
                 chatClanViewModel.setUsers(users);
+
                 chatsViewModel.setActiveUsers(users);
-
-
             }
         };
 
@@ -103,7 +92,5 @@ public class SocialFragment extends Fragment {
         super.onStop();
 
         //mViewModel.getFriendsMutableLiveData().removeObservers(this);
-        // TODO: Use the ViewModel
-
     }
 }
