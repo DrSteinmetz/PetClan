@@ -120,11 +120,11 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     objToReturn = (T) new MarketPlaceViewModel(mContext);
                 }
                 break;
-            case UserFeed:
+            /*case UserFeed:
                 if (modelClass.isAssignableFrom(UserFeedViewModel.class)) {
                     objToReturn = (T) new UserFeedViewModel(mContext);
                 }
-                break;
+                break;*/
         }
 
         return objToReturn;

@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.android2project.model.Advertisement;
 import com.example.android2project.model.ChatMessage;
@@ -64,7 +65,7 @@ public class Repository {
 
     /**<-------Posts Interfaces------->**/
     /**<-------Post Downloading interface------->**/
-    public interface RepositoryPostDownloadInterface {
+    /*public interface RepositoryPostDownloadInterface {
         void onPostDownloadSucceed(List<Post> posts);
 
         void onPostDownloadFailed(String error);
@@ -74,6 +75,22 @@ public class Repository {
 
     public void setPostDownloadListener(RepositoryPostDownloadInterface repositoryPostDownloadInterface) {
         this.mPostDownloadListener = repositoryPostDownloadInterface;
+    }*/
+    private MutableLiveData<List<Post>> mRepositoryPostDownloadSucceedMLD;
+    private MutableLiveData<String> mRepositoryPostDownloadFailedMLD;
+
+    public MutableLiveData<List<Post>> getRepositoryPostDownloadSucceedMLD() {
+        if (mRepositoryPostDownloadSucceedMLD == null) {
+            mRepositoryPostDownloadSucceedMLD = new MutableLiveData<>();
+        }
+        return mRepositoryPostDownloadSucceedMLD;
+    }
+
+    public MutableLiveData<String> getRepositoryPostDownloadFailedMLD() {
+        if (mRepositoryPostDownloadFailedMLD == null) {
+            mRepositoryPostDownloadFailedMLD = new MutableLiveData<>();
+        }
+        return mRepositoryPostDownloadFailedMLD;
     }
 
     /**<-------User's Posts Downloading interface------->**/
@@ -88,9 +105,25 @@ public class Repository {
     public void setUserPostsDownloadListener(RepositoryUserPostsDownloadInterface repositoryUserPostsDownloadInterface) {
         this.mUserPostsDownloadListener = repositoryUserPostsDownloadInterface;
     }*/
+    private MutableLiveData<List<Post>> mRepositoryUserPostDownloadSucceedMLD;
+    private MutableLiveData<String> mRepositoryUserPostDownloadFailedMLD;
+
+    public MutableLiveData<List<Post>> getRepositoryUserPostDownloadSucceedMLD() {
+        if (mRepositoryUserPostDownloadSucceedMLD == null) {
+            mRepositoryUserPostDownloadSucceedMLD = new MutableLiveData<>();
+        }
+        return mRepositoryUserPostDownloadSucceedMLD;
+    }
+
+    public MutableLiveData<String> getRepositoryUserPostDownloadFailedMLD() {
+        if (mRepositoryUserPostDownloadFailedMLD == null) {
+            mRepositoryUserPostDownloadFailedMLD = new MutableLiveData<>();
+        }
+        return mRepositoryUserPostDownloadFailedMLD;
+    }
 
     /**<-------Post Uploading interface------->**/
-    public interface RepositoryPostUploadInterface {
+    /*public interface RepositoryPostUploadInterface {
         void onPostUploadSucceed(Post post);
 
         void onPostUploadFailed(String error);
@@ -100,10 +133,26 @@ public class Repository {
 
     public void setPostUploadListener(RepositoryPostUploadInterface repositoryPostUploadInterface) {
         this.mPostUploadListener = repositoryPostUploadInterface;
+    }*/
+    private MutableLiveData<Post> mRepositoryPostUploadSucceedMLD;
+    private MutableLiveData<String> mRepositoryPostUploadFailedMLD;
+
+    public MutableLiveData<Post> getRepositoryPostUploadSucceedMLD() {
+        if (mRepositoryPostUploadSucceedMLD == null) {
+            mRepositoryPostUploadSucceedMLD = new MutableLiveData<>();
+        }
+        return mRepositoryPostUploadSucceedMLD;
+    }
+
+    public MutableLiveData<String> getRepositoryPostUploadFailedMLD() {
+        if (mRepositoryPostUploadFailedMLD == null) {
+            mRepositoryPostUploadFailedMLD = new MutableLiveData<>();
+        }
+        return mRepositoryPostUploadFailedMLD;
     }
 
     /**<-------Post Updating interface------->**/
-    public interface RepositoryPostUpdatingInterface {
+    /*public interface RepositoryPostUpdatingInterface {
         void onPostUpdatingSucceed(Post updatedPost);
 
         void onPostUpdatingFailed(String error);
@@ -113,10 +162,26 @@ public class Repository {
 
     public void setPostUpdatingListener(RepositoryPostUpdatingInterface repositoryPostUpdatingInterface) {
         this.mPostUpdatingListener = repositoryPostUpdatingInterface;
+    }*/
+    private MutableLiveData<Post> mRepositoryPostUpdateSucceedMLD;
+    private MutableLiveData<String> mRepositoryPostUpdateFailedMLD;
+
+    public MutableLiveData<Post> getRepositoryPostUpdateSucceedMLD() {
+        if (mRepositoryPostUpdateSucceedMLD == null) {
+            mRepositoryPostUpdateSucceedMLD = new MutableLiveData<>();
+        }
+        return mRepositoryPostUpdateSucceedMLD;
+    }
+
+    public MutableLiveData<String> getRepositoryPostUpdateFailedMLD() {
+        if (mRepositoryPostUpdateFailedMLD == null) {
+            mRepositoryPostUpdateFailedMLD = new MutableLiveData<>();
+        }
+        return mRepositoryPostUpdateFailedMLD;
     }
 
     /**<-------Post Likes Updating interface------->**/
-    public interface RepositoryPostLikesUpdatingInterface {
+    /*public interface RepositoryPostLikesUpdatingInterface {
         void onPostLikesUpdateSucceed(Post post);
 
         void onPostLikesUpdateFailed(String error);
@@ -126,10 +191,26 @@ public class Repository {
 
     public void setPostLikesUpdatingListener(RepositoryPostLikesUpdatingInterface repositoryPostLikesUpdatingInterface) {
         this.mPostLikesUpdatingListener = repositoryPostLikesUpdatingInterface;
+    }*/
+    private MutableLiveData<Post> mRepositoryPostLikesUpdateSucceedMLD;
+    private MutableLiveData<String> mRepositoryPostLikesUpdateFailedMLD;
+
+    public MutableLiveData<Post> getRepositoryPostLikesUpdateSucceedMLD() {
+        if (mRepositoryPostLikesUpdateSucceedMLD == null) {
+            mRepositoryPostLikesUpdateSucceedMLD = new MutableLiveData<>();
+        }
+        return mRepositoryPostLikesUpdateSucceedMLD;
+    }
+
+    public MutableLiveData<String> getRepositoryPostLikesUpdateFailedMLD() {
+        if (mRepositoryPostLikesUpdateFailedMLD == null) {
+            mRepositoryPostLikesUpdateFailedMLD = new MutableLiveData<>();
+        }
+        return mRepositoryPostLikesUpdateFailedMLD;
     }
 
     /**<-------Post Deleting interface------->**/
-    public interface RepositoryPostDeletingInterface {
+    /*public interface RepositoryPostDeletingInterface {
         void onPostDeletingSucceed(String postId);
 
         void onPostDeletingFailed(String error);
@@ -139,6 +220,22 @@ public class Repository {
 
     public void setPostDeletingListener(RepositoryPostDeletingInterface repositoryPostDeletingInterface) {
         this.mPostDeletingListener = repositoryPostDeletingInterface;
+    }*/
+    private MutableLiveData<String> mRepositoryPostDeletionSucceedMLD;
+    private MutableLiveData<String> mRepositoryPostDeletionFailedMLD;
+
+    public MutableLiveData<String> getRepositoryPostDeletionSucceedMLD() {
+        if (mRepositoryPostDeletionSucceedMLD == null) {
+            mRepositoryPostDeletionSucceedMLD = new MutableLiveData<>();
+        }
+        return mRepositoryPostDeletionSucceedMLD;
+    }
+
+    public MutableLiveData<String> getRepositoryPostDeletionFailedMLD() {
+        if (mRepositoryPostDeletionFailedMLD == null) {
+            mRepositoryPostDeletionFailedMLD = new MutableLiveData<>();
+        }
+        return mRepositoryPostDeletionFailedMLD;
     }
 
     /**<-------Comments Interfaces------->**/
@@ -355,18 +452,23 @@ public class Repository {
                             if (task.isSuccessful()) {
                                 for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                                     posts.add(document.toObject(Post.class));
-                                    Log.d(TAG, "onComplete: " + document.toObject(Post.class).toString());
                                 }
 
-                                if (mPostDownloadListener != null) {
-                                    Log.d(TAG, "onComplete: swipe" + posts);
-                                    Collections.sort(posts);
+                                /*if (mPostDownloadListener != null) {
                                     mPostDownloadListener.onPostDownloadSucceed(posts);
+                                }*/
+                                if (mRepositoryPostDownloadSucceedMLD != null) {
+                                    Collections.sort(posts);
+                                    mRepositoryPostDownloadSucceedMLD.setValue(posts);
                                 }
                             } else {
-                                if (mPostDownloadListener != null) {
-                                    Log.wtf(TAG, "onComplete: ", task.getException());
+                                Log.wtf(TAG, "onComplete: ", task.getException());
+                                /*if (mPostDownloadListener != null) {
                                     mPostDownloadListener.onPostDownloadFailed(Objects
+                                            .requireNonNull(task.getException()).getMessage());
+                                }*/
+                                if (mRepositoryPostDownloadFailedMLD != null) {
+                                    mRepositoryPostDownloadFailedMLD.setValue(Objects
                                             .requireNonNull(task.getException()).getMessage());
                                 }
                             }
@@ -387,17 +489,23 @@ public class Repository {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                                 posts.add(document.toObject(Post.class));
-                                Log.d(TAG, "onComplete: " + document.toObject(Post.class).toString());
                             }
 
-                            if (mPostDownloadListener != null) {
-                                Collections.sort(posts);
+                            /*if (mPostDownloadListener != null) {
                                 mPostDownloadListener.onPostDownloadSucceed(posts);
+                            }*/
+                            if (mRepositoryUserPostDownloadSucceedMLD != null) {
+                                Collections.sort(posts);
+                                mRepositoryUserPostDownloadSucceedMLD.setValue(posts);
                             }
                         } else {
-                            if (mPostDownloadListener != null) {
-                                Log.wtf(TAG, "onComplete: ", task.getException());
+                            Log.wtf(TAG, "onComplete: ", task.getException());
+                            /*if (mPostDownloadListener != null) {
                                 mPostDownloadListener.onPostDownloadFailed(Objects
+                                        .requireNonNull(task.getException()).getMessage());
+                            }*/
+                            if (mRepositoryUserPostDownloadFailedMLD != null) {
+                                mRepositoryUserPostDownloadFailedMLD.setValue(Objects
                                         .requireNonNull(task.getException()).getMessage());
                             }
                         }
@@ -422,16 +530,22 @@ public class Repository {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            if (mPostUploadListener != null) {
+                            /*if (mPostUploadListener != null) {
                                 mPostUploadListener.onPostUploadSucceed(post);
+                            }*/
+                            if (mRepositoryPostUploadSucceedMLD != null) {
+                                mRepositoryPostUploadSucceedMLD.setValue(post);
                             }
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            if (mPostUploadListener != null) {
+                            /*if (mPostUploadListener != null) {
                                 mPostUploadListener.onPostUploadFailed(e.getMessage());
+                            }*/
+                            if (mRepositoryPostUploadFailedMLD != null) {
+                                mRepositoryPostUploadFailedMLD.setValue(e.getMessage());
                             }
                         }
                     });
@@ -455,16 +569,22 @@ public class Repository {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            if (mPostUpdatingListener != null) {
+                            /*if (mPostUpdatingListener != null) {
                                 mPostUpdatingListener.onPostUpdatingSucceed(updatedPost);
+                            }*/
+                            if (mRepositoryPostUpdateSucceedMLD != null) {
+                                mRepositoryPostUpdateSucceedMLD.setValue(updatedPost);
                             }
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            if (mPostUpdatingListener != null) {
+                            /*if (mPostUpdatingListener != null) {
                                 mPostUpdatingListener.onPostUpdatingFailed(e.getMessage());
+                            }*/
+                            if (mRepositoryPostUpdateFailedMLD != null) {
+                                mRepositoryPostUpdateFailedMLD.setValue(e.getMessage());
                             }
                         }
                     });
@@ -492,16 +612,22 @@ public class Repository {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        if (mPostLikesUpdatingListener != null) {
+                        /*if (mPostLikesUpdatingListener != null) {
                             mPostLikesUpdatingListener.onPostLikesUpdateSucceed(post);
+                        }*/
+                        if (mRepositoryPostLikesUpdateSucceedMLD != null) {
+                            mRepositoryPostLikesUpdateSucceedMLD.setValue(post);
                         }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        if (mPostLikesUpdatingListener != null) {
+                        /*if (mPostLikesUpdatingListener != null) {
                             mPostLikesUpdatingListener.onPostLikesUpdateFailed(e.getMessage());
+                        }*/
+                        if (mRepositoryPostLikesUpdateFailedMLD != null) {
+                            mRepositoryPostLikesUpdateFailedMLD.setValue(e.getMessage());
                         }
                     }
                 });
@@ -518,16 +644,22 @@ public class Repository {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            if (mPostDeletingListener != null) {
+                            /*if (mPostDeletingListener != null) {
                                 mPostDeletingListener.onPostDeletingSucceed(postId);
+                            }*/
+                            if (mRepositoryPostDeletionSucceedMLD != null) {
+                                mRepositoryPostDeletionSucceedMLD.setValue(postId);
                             }
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            if (mPostDeletingListener != null) {
+                            /*if (mPostDeletingListener != null) {
                                 mPostDeletingListener.onPostDeletingFailed(e.getMessage());
+                            }*/
+                            if (mRepositoryPostDeletionFailedMLD != null) {
+                                mRepositoryPostDeletionFailedMLD.setValue(e.getMessage());
                             }
                         }
                     });
@@ -662,16 +794,22 @@ public class Repository {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        if (mPostUpdatingListener != null) {
+                        /*if (mPostUpdatingListener != null) {
                             mPostUpdatingListener.onPostUpdatingSucceed(post);
+                        }*/
+                        if (mRepositoryPostUpdateSucceedMLD != null) {
+                            mRepositoryPostUpdateSucceedMLD.setValue(post);
                         }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        if (mPostUpdatingListener != null) {
+                        /*if (mPostUpdatingListener != null) {
                             mPostUpdatingListener.onPostUpdatingFailed(e.getMessage());
+                        }*/
+                        if (mRepositoryPostUpdateFailedMLD != null) {
+                            mRepositoryPostUpdateFailedMLD.setValue(e.getMessage());
                         }
                     }
                 });

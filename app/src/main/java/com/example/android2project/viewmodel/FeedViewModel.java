@@ -4,16 +4,20 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.example.android2project.model.Post;
+import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.repository.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FeedViewModel extends ViewModel {
+
     private Repository mRepository;
+    private AuthRepository mAuthRepository;
     protected String mUserEmail = null;
 
     protected List<Post> mPosts = new ArrayList<>();
@@ -21,6 +25,9 @@ public class FeedViewModel extends ViewModel {
 
     private MutableLiveData<List<Post>> mPostDownloadSucceed;
     private MutableLiveData<String> mPostDownloadFailed;
+
+    private MutableLiveData<List<Post>> mUserPostDownloadSucceed;
+    private MutableLiveData<String> mUserPostDownloadFailed;
 
     private MutableLiveData<Post> mPostUploadSucceed;
     private MutableLiveData<String> mPostUploadFailed;
@@ -38,69 +45,7 @@ public class FeedViewModel extends ViewModel {
 
     public FeedViewModel(final Context context) {
         this.mRepository = Repository.getInstance(context);
-    }
-
-    public MutableLiveData<Post> getPostUploadSucceed() {
-        if (mPostUploadSucceed == null) {
-            mPostUploadSucceed = new MutableLiveData<>();
-            attachSetPostUploadListener();
-        }
-        return mPostUploadSucceed;
-    }
-
-    public MutableLiveData<String> getPostUploadFailed() {
-        if (mPostUploadFailed == null) {
-            mPostUploadFailed = new MutableLiveData<>();
-            attachSetPostUploadListener();
-        }
-        return mPostUploadFailed;
-    }
-
-    private void attachSetPostUploadListener() {
-        mRepository.setPostUploadListener(new Repository.RepositoryPostUploadInterface() {
-            @Override
-            public void onPostUploadSucceed(Post post) {
-                mPosts.add(0, post);
-                mPostUploadSucceed.setValue(post);
-            }
-
-            @Override
-            public void onPostUploadFailed(String error) {
-                mPostUploadFailed.setValue(error);
-            }
-        });
-    }
-
-    public MutableLiveData<Integer> getPostUpdateSucceed() {
-        if (mPostUpdateSucceed == null) {
-            mPostUpdateSucceed = new MutableLiveData<>();
-            attachSetPostUpdateListener();
-        }
-        return mPostUpdateSucceed;
-    }
-
-    public MutableLiveData<String> getPostUpdatedFailed() {
-        if (mPostUpdatedFailed == null) {
-            mPostUpdatedFailed = new MutableLiveData<>();
-            attachSetPostUpdateListener();
-        }
-        return mPostUpdatedFailed;
-    }
-
-    private void attachSetPostUpdateListener() {
-        mRepository.setPostUpdatingListener(new Repository.RepositoryPostUpdatingInterface() {
-            @Override
-            public void onPostUpdatingSucceed(Post updatedPost) {
-                mPosts.get(mPosition).setAuthorContent(updatedPost.getAuthorContent());
-                mPosts.get(mPosition).setCommentsCount(updatedPost.getCommentsCount());
-                mPostUpdateSucceed.setValue(mPosition);
-            }
-
-            @Override
-            public void onPostUpdatingFailed(String error) {
-                mPostUpdatedFailed.setValue(error);
-            }
-        });
+        this.mAuthRepository = AuthRepository.getInstance(context);
     }
 
     public MutableLiveData<List<Post>> getPostDownloadSucceed() {
@@ -120,10 +65,31 @@ public class FeedViewModel extends ViewModel {
     }
 
     private void attachSetPostDownloadListener() {
-        mRepository.setPostDownloadListener(new Repository.RepositoryPostDownloadInterface() {
+        Observer<List<Post>> onPostDownloadSucceed = new Observer<List<Post>>() {
+            @Override
+            public void onChanged(List<Post> posts) {
+                if (mUserEmail == null) {
+                    if (!mPosts.isEmpty()) {
+                        mPosts.clear();
+                    }
+                    mPosts.addAll(posts);
+                    mPostDownloadSucceed.setValue(mPosts);
+                }
+            }
+        };
+        mRepository.getRepositoryPostDownloadSucceedMLD().observeForever(onPostDownloadSucceed);
+
+        Observer<String> onPostDownloadFailed = new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                mPostDownloadFailed.setValue(error);
+            }
+        };
+        mRepository.getRepositoryPostDownloadFailedMLD().observeForever(onPostDownloadFailed);
+
+        /*mRepository.setPostDownloadListener(new Repository.RepositoryPostDownloadInterface() {
             @Override
             public void onPostDownloadSucceed(List<Post> posts) {
-                Log.d(TAG, "FeedViewModel: onPostDownloadSucceed: swipe" + posts);
                 if (!mPosts.isEmpty()) {
                     mPosts.clear();
                 }
@@ -135,7 +101,143 @@ public class FeedViewModel extends ViewModel {
             public void onPostDownloadFailed(String error) {
                 mPostDownloadFailed.setValue(error);
             }
-        });
+        });*/
+    }
+
+    public MutableLiveData<List<Post>> getUserPostDownloadSucceed() {
+        if (mUserPostDownloadSucceed == null) {
+            mUserPostDownloadSucceed = new MutableLiveData<>();
+        }
+        attachSetUserPostDownloadListener();
+        return mUserPostDownloadSucceed;
+    }
+
+    public MutableLiveData<String> getUserPostDownloadFailed() {
+        if (mUserPostDownloadFailed == null) {
+            mUserPostDownloadFailed = new MutableLiveData<>();
+        }
+        attachSetUserPostDownloadListener();
+        return mUserPostDownloadFailed;
+    }
+
+    private void attachSetUserPostDownloadListener() {
+        Observer<List<Post>> onUserPostDownloadSucceed = new Observer<List<Post>>() {
+            @Override
+            public void onChanged(List<Post> posts) {
+                if (mUserEmail != null) {
+                    if (!mPosts.isEmpty()) {
+                        mPosts.clear();
+                    }
+                    mPosts.addAll(posts);
+                    mUserPostDownloadSucceed.setValue(mPosts);
+                }
+            }
+        };
+        mRepository.getRepositoryUserPostDownloadSucceedMLD().observeForever(onUserPostDownloadSucceed);
+
+        Observer<String> onUserPostDownloadFailed = new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                mUserPostDownloadFailed.setValue(error);
+            }
+        };
+        mRepository.getRepositoryUserPostDownloadFailedMLD().observeForever(onUserPostDownloadFailed);
+    }
+
+    public MutableLiveData<Post> getPostUploadSucceed() {
+        if (mPostUploadSucceed == null) {
+            mPostUploadSucceed = new MutableLiveData<>();
+            attachSetPostUploadListener();
+        }
+        return mPostUploadSucceed;
+    }
+
+    public MutableLiveData<String> getPostUploadFailed() {
+        if (mPostUploadFailed == null) {
+            mPostUploadFailed = new MutableLiveData<>();
+            attachSetPostUploadListener();
+        }
+        return mPostUploadFailed;
+    }
+
+    private void attachSetPostUploadListener() {
+        Observer<Post> onPostUploadSucceed = new Observer<Post>() {
+            @Override
+            public void onChanged(Post post) {
+                mPosts.add(0, post);
+                mPostUploadSucceed.setValue(post);
+            }
+        };
+        mRepository.getRepositoryPostUploadSucceedMLD().observeForever(onPostUploadSucceed);
+
+        Observer<String> onPostUploadFailed = new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                mPostUploadFailed.setValue(error);
+            }
+        };
+        mRepository.getRepositoryPostUploadFailedMLD().observeForever(onPostUploadFailed);
+        /*mRepository.setPostUploadListener(new Repository.RepositoryPostUploadInterface() {
+            @Override
+            public void onPostUploadSucceed(Post post) {
+                mPosts.add(0, post);
+                mPostUploadSucceed.setValue(post);
+            }
+
+            @Override
+            public void onPostUploadFailed(String error) {
+                mPostUploadFailed.setValue(error);
+            }
+        });*/
+    }
+
+    public MutableLiveData<Integer> getPostUpdateSucceed() {
+        if (mPostUpdateSucceed == null) {
+            mPostUpdateSucceed = new MutableLiveData<>();
+            attachSetPostUpdateListener();
+        }
+        return mPostUpdateSucceed;
+    }
+
+    public MutableLiveData<String> getPostUpdatedFailed() {
+        if (mPostUpdatedFailed == null) {
+            mPostUpdatedFailed = new MutableLiveData<>();
+            attachSetPostUpdateListener();
+        }
+        return mPostUpdatedFailed;
+    }
+
+    private void attachSetPostUpdateListener() {
+        Observer<Post> onPostUpdateSucceed = new Observer<Post>() {
+            @Override
+            public void onChanged(Post updatedPost) {
+                mPosts.get(mPosition).setAuthorContent(updatedPost.getAuthorContent());
+                mPosts.get(mPosition).setCommentsCount(updatedPost.getCommentsCount());
+                mPostUpdateSucceed.setValue(mPosition);
+            }
+        };
+        mRepository.getRepositoryPostUpdateSucceedMLD().observeForever(onPostUpdateSucceed);
+
+        Observer<String> onPostUpdateFailed = new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                mPostUpdatedFailed.setValue(error);
+            }
+        };
+        mRepository.getRepositoryPostUpdateFailedMLD().observeForever(onPostUpdateFailed);
+        /*mRepository.setPostUpdatingListener(new Repository.RepositoryPostUpdatingInterface() {
+            @Override
+            public void onPostUpdatingSucceed(Post updatedPost) {
+                mPosts.get(mPosition).setAuthorContent(updatedPost.getAuthorContent());
+                mPosts.get(mPosition).setCommentsCount(updatedPost.getCommentsCount());
+                mPostUpdateSucceed.setValue(mPosition);
+            }
+
+            @Override
+            public void onPostUpdatingFailed(String error) {
+                mPostUpdatedFailed.setValue(error);
+            }
+        });*/
     }
 
     public MutableLiveData<Integer> getPostLikesUpdateSucceed() {
@@ -155,7 +257,22 @@ public class FeedViewModel extends ViewModel {
     }
 
     private void attachSetPostLikesUpdateListener() {
-        mRepository.setPostLikesUpdatingListener(new Repository.RepositoryPostLikesUpdatingInterface() {
+        Observer<Post> onPostLikesUpdateSucceed = new Observer<Post>() {
+            @Override
+            public void onChanged(Post post) {
+                mPostLikesUpdateSucceed.setValue(mPosition);
+            }
+        };
+        mRepository.getRepositoryPostLikesUpdateSucceedMLD().observeForever(onPostLikesUpdateSucceed);
+
+        Observer<String> onPostLikesUpdateFailed = new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                mPostLikesUpdateFailed.setValue(error);
+            }
+        };
+        mRepository.getRepositoryPostLikesUpdateFailedMLD().observeForever(onPostLikesUpdateFailed);
+        /*mRepository.setPostLikesUpdatingListener(new Repository.RepositoryPostLikesUpdatingInterface() {
             @Override
             public void onPostLikesUpdateSucceed(Post post) {
                 mPostLikesUpdateSucceed.setValue(mPosition);
@@ -165,7 +282,7 @@ public class FeedViewModel extends ViewModel {
             public void onPostLikesUpdateFailed(String error) {
                 mPostLikesUpdateFailed.setValue(error);
             }
-        });
+        });*/
     }
 
     public MutableLiveData<Integer> getPostDeletionSucceed() {
@@ -185,7 +302,25 @@ public class FeedViewModel extends ViewModel {
     }
 
     private void attachSetPostDeletionListener() {
-        mRepository.setPostDeletingListener(new Repository.RepositoryPostDeletingInterface() {
+        Observer<String> onPostDeletionSucceed = new Observer<String>() {
+            @Override
+            public void onChanged(String postId) {
+                if (mPosts.get(mPosition).getPostId().equals(postId)) {
+                    mPosts.remove(mPosition);
+                    mPostDeletionSucceed.setValue(mPosition);
+                }
+            }
+        };
+        mRepository.getRepositoryPostDeletionSucceedMLD().observeForever(onPostDeletionSucceed);
+
+        Observer<String> onPostDeletionFailed = new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                mPostDeletionFailed.setValue(error);
+            }
+        };
+        mRepository.getRepositoryPostDeletionFailedMLD().observeForever(onPostDeletionFailed);
+        /*mRepository.setPostDeletingListener(new Repository.RepositoryPostDeletingInterface() {
             @Override
             public void onPostDeletingSucceed(String postId) {
                 if (mPosts.get(mPosition).getPostId().equals(postId)) {
@@ -198,7 +333,7 @@ public class FeedViewModel extends ViewModel {
             public void onPostDeletingFailed(String error) {
                 mPostDeletionFailed.setValue(error);
             }
-        });
+        });*/
     }
 
     public void setUserEmail(final String userEmail) {
@@ -217,10 +352,8 @@ public class FeedViewModel extends ViewModel {
     public void refreshPosts() {
         if (mUserEmail != null) {
             mRepository.downloadUserPosts(mUserEmail);
-            Log.d(TAG, "refreshPosts: swipe user " + this.toString());
         } else {
             mRepository.downloadPosts();
-            Log.d(TAG, "refreshPosts: swipe feed " + this.toString());
         }
     }
 
@@ -240,5 +373,9 @@ public class FeedViewModel extends ViewModel {
 
     public List<Post> getPosts() {
         return mPosts;
+    }
+
+    public String getMyEmail() {
+        return mAuthRepository.getUserEmail();
     }
 }
