@@ -157,8 +157,7 @@ public class LocationUtils extends BroadcastReceiver {
             });
         }
     }
-    public boolean isLocationEnabled()
-    {
+    public boolean isLocationEnabled() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
 // This is new method provided in API 28
             LocationManager lm = (LocationManager) mActivity.getSystemService(mActivity.LOCATION_SERVICE);
@@ -170,7 +169,6 @@ public class LocationUtils extends BroadcastReceiver {
                     Settings.Secure.LOCATION_MODE_OFF);
             Log.d(TAG, "isLocationEnabled: "+ mode);
             return  (mode != Settings.Secure.LOCATION_MODE_OFF);
-
         }
     }
 

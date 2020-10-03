@@ -909,14 +909,15 @@ public class Repository {
                                 mUpdateUserLocationListener.onUpdateUserLocationSucceed(address);
                             }
                         }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    if (mUpdateUserLocationListener != null) {
-                        mUpdateUserLocationListener.onUpdateUserLocationFailed(e.getMessage());
-                    }
-                }
-            });
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            if (mUpdateUserLocationListener != null) {
+                                mUpdateUserLocationListener.onUpdateUserLocationFailed(e.getMessage());
+                            }
+                        }
+                    });
         }
     }
 

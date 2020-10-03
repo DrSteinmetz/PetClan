@@ -3,8 +3,6 @@ package com.example.android2project.model;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 public class User implements Comparable<Object>, Serializable {
     private String mEmail;
