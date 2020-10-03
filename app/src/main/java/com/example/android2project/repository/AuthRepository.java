@@ -664,4 +664,5 @@ public class AuthRepository {
 
         return imageUri;
     }
+
 }

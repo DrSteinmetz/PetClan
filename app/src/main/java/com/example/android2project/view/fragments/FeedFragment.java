@@ -101,14 +101,23 @@ public class FeedFragment extends Fragment {
             mUserEmail = getArguments().getString("posts");
         }
 
-        mLocationUtils = LocationUtils.getInstance(requireActivity());
-
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Feed)).get(FeedViewModel.class);
         mViewModel.setUserEmail(mUserEmail);
         mViewModel.refreshPosts();
 
-        mLocationUtils.requestLocationPermissions();
+        mLocationUtils = LocationUtils.getInstance(requireActivity());
+
+        if(mUserEmail==null){
+            mLocationUtils.requestLocationPermissions();
+        }
+
+//        if (!mLocationUtils.isLocationEnabled()) {
+//            mLocationUtils.requestLocationPermissions();
+//        }else{
+//            mLocationUtils.startLocation();
+//        }
+
 
         mOnPostDownloadSucceed = new Observer<List<Post>>() {
             @Override
@@ -188,6 +197,7 @@ public class FeedFragment extends Fragment {
             @Override
             public void onChanged(Address address) {
                 mUserLocation = address.getLocality();
+                mViewModel.updateUserLocation(address);
                 Log.d(TAG, "onChanged: address: " + address.getLocality());
             }
         };
@@ -434,4 +444,6 @@ public class FeedFragment extends Fragment {
 
         stopObservation();
     }
+
+
 }

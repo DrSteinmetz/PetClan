@@ -1,14 +1,11 @@
 package com.example.android2project.view;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.IntentSender;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Address;
-import android.location.Geocoder;
-import android.os.Build;
+import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -44,23 +41,9 @@ import com.example.android2project.view.fragments.UserProfileFragment;
 import com.example.android2project.viewmodel.MainViewModel;
 import com.example.android2project.viewmodel.UserPictureViewModel;
 import com.example.android2project.model.ViewModelFactory;
-import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
-import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import me.ibrahimsn.lib.OnItemSelectedListener;
 import me.ibrahimsn.lib.SmoothBottomBar;
@@ -69,7 +52,7 @@ import nl.psdcompany.duonavigationdrawer.views.DuoMenuView;
 import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
 public class MainActivity extends AppCompatActivity implements
-        FeedFragment.FeedListener {
+        FeedFragment.FeedListener{
     private DuoDrawerLayout mDrawerLayout;
 
     private MainViewModel mViewModel;
@@ -89,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private TextView userLocationTv;
 
+
     private final String FEED_FRAG = "feed_fragment";
     private final String COMMENTS_FRAG = "comments_fragment";
 
@@ -103,7 +87,26 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        mGpsReceiver=GpsReceiver.getInstance(new GpsReceiver.LocationCallBack() {
+//            @Override
+//            public void onLocationTriggered(boolean isLocationOn) {
+//               if(isLocationOn){
+//                   mLocationUtils.startLocation();
+//               }
+//            }
+//        });
+//        registerReceiver(mGpsReceiver,new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+
+//        registerReceiver(new GpsReceiver(new GpsReceiver.LocationCallBack() {
+//            @Override
+//            public void onLocationTriggered() {
+//                Log.d(TAG, "onLocationTriggered: trigerred");
+//            }
+//        }), new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+////---
+
         mLocationUtils = LocationUtils.getInstance(this);
+        registerReceiver(mLocationUtils,new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
         mOnLocationChanged = new Observer<Address>() {
             @Override
             public void onChanged(Address address) {
@@ -297,5 +300,12 @@ public class MainActivity extends AppCompatActivity implements
                                 .beginTransaction(), "fragment_conversation");
             }
         }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mLocationUtils);
     }
 }
