@@ -106,7 +106,7 @@ public class FeedFragment extends Fragment {
         }
 
         mLocationUtils = LocationUtils.getInstance(requireActivity());
-
+      
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Feed)).get(FeedViewModel.class);
         mViewModel.setUserEmail(mUserEmail);
@@ -205,6 +205,7 @@ public class FeedFragment extends Fragment {
             @Override
             public void onChanged(Address address) {
                 mUserLocation = address.getLocality();
+                mViewModel.updateUserLocation(address);
             }
         };
         mLocationUtils.getLocationLiveData().observe(this, mOnLocationChanged);
@@ -466,4 +467,6 @@ public class FeedFragment extends Fragment {
 
         stopObservation();
     }
+
+
 }

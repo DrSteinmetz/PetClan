@@ -1,8 +1,10 @@
 package com.example.android2project.view;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Address;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -40,6 +42,7 @@ import com.example.android2project.view.fragments.UserFeedFragment;
 import com.example.android2project.view.fragments.UserProfileFragment;
 import com.example.android2project.viewmodel.MainViewModel;
 import com.example.android2project.viewmodel.UserPictureViewModel;
+import com.example.android2project.model.ViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +55,7 @@ import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
 public class MainActivity extends AppCompatActivity implements
         FeedFragment.FeedInterface {
+  
     private DuoDrawerLayout mDrawerLayout;
 
     private MainViewModel mViewModel;
@@ -71,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private TextView userLocationTv;
 
+
     private final String FEED_FRAG = "feed_fragment";
     private final String COMMENTS_FRAG = "comments_fragment";
 
@@ -85,7 +90,26 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        mGpsReceiver=GpsReceiver.getInstance(new GpsReceiver.LocationCallBack() {
+//            @Override
+//            public void onLocationTriggered(boolean isLocationOn) {
+//               if(isLocationOn){
+//                   mLocationUtils.startLocation();
+//               }
+//            }
+//        });
+//        registerReceiver(mGpsReceiver,new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+
+//        registerReceiver(new GpsReceiver(new GpsReceiver.LocationCallBack() {
+//            @Override
+//            public void onLocationTriggered() {
+//                Log.d(TAG, "onLocationTriggered: trigerred");
+//            }
+//        }), new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+////---
+
         mLocationUtils = LocationUtils.getInstance(this);
+        registerReceiver(mLocationUtils,new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
         mOnLocationChanged = new Observer<Address>() {
             @Override
             public void onChanged(Address address) {
@@ -279,5 +303,12 @@ public class MainActivity extends AppCompatActivity implements
                                 .beginTransaction(), "fragment_conversation");
             }
         }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mLocationUtils);
     }
 }

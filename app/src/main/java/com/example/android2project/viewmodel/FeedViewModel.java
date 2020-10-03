@@ -1,6 +1,7 @@
 package com.example.android2project.viewmodel;
 
 import android.content.Context;
+import android.location.Address;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -367,12 +368,21 @@ public class FeedViewModel extends ViewModel {
         mRepository.deletePost(postId);
     }
 
+
+    public void downloadPosts() {
+        mRepository.downloadPosts();
+    }
     public void setPosts(List<Post> Posts) {
         this.mPosts = Posts;
     }
 
     public List<Post> getPosts() {
         return mPosts;
+
+    }
+
+    public void updateUserLocation(Address address) {
+        mRepository.updateUserLocation(address);
     }
 
     public String getMyEmail() {

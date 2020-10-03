@@ -39,7 +39,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatsViewHol
 
     public ChatsAdapter(Context context, List<Conversation> conversations, List<User> users) {
         this.mContext = context;
-        this.mConversations = conversations;
+        mConversations = conversations;
         setUserMap(users);
     }
 

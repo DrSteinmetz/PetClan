@@ -1,6 +1,7 @@
 package com.example.android2project.repository;
 
 import android.content.Context;
+import android.location.Address;
 import android.net.Uri;
 import android.util.Log;
 
@@ -20,6 +21,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,6 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -61,6 +64,8 @@ public class Repository {
     private final String COMMENTS = "comments";
 
     private final String TAG = "Repository";
+
+
 
 
     /**<-------Posts Interfaces------->**/
@@ -317,6 +322,20 @@ public class Repository {
     public void setUpdateUserNameListener(RepositoryUpdateUserNameInterface repositoryUpdateUserNameInterface) {
         this.mUpdateUserNameListener = repositoryUpdateUserNameInterface;
     }
+
+    /**<-------Update User Location interface------->**/
+    public interface RepositoryUpdateUserLocationInterface {
+        void onUpdateUserLocationSucceed(Address address);
+
+        void onUpdateUserLocationFailed(String error);
+    }
+
+    private RepositoryUpdateUserLocationInterface mUpdateUserLocationListener;
+
+    public void setUpdateUserLocationListener(RepositoryUpdateUserLocationInterface repositoryUpdateUserLocationInterface) {
+        this.mUpdateUserLocationListener = repositoryUpdateUserLocationInterface;
+    }
+
 
     /**<-------Update User Image interface------->**/
     public interface RepositoryUpdateUserImageInterface {
@@ -871,6 +890,37 @@ public class Repository {
                         }
                     }
                 });
+    }
+
+
+    public void updateUserLocation(final Address address) {
+        final FirebaseUser user = mAuth.getCurrentUser();
+
+
+        Map<String, Object> updateUserLocationMap = new HashMap<>();
+        GeoPoint geoPoint=new GeoPoint(address.getLatitude(),address.getLongitude());
+        updateUserLocationMap.put("Location",geoPoint);
+
+        if(user!=null){
+
+            mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
+                    .update(updateUserLocationMap)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            if (mUpdateUserLocationListener != null) {
+                                mUpdateUserLocationListener.onUpdateUserLocationSucceed(address);
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    if (mUpdateUserLocationListener != null) {
+                        mUpdateUserLocationListener.onUpdateUserLocationFailed(e.getMessage());
+                    }
+                }
+            });
+        }
     }
 
     public void updateUserName(final String newUserName) {
