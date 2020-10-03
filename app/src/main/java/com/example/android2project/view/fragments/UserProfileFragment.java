@@ -151,7 +151,7 @@ public class UserProfileFragment extends DialogFragment {
                 container,false);
 
         final CoordinatorLayout coordinatorLayout = rootView.findViewById(R.id.coordinator_layout);
-        final FloatingActionButton addPostBtn = rootView.findViewById(R.id.message_edit_btn);
+        final FloatingActionButton messageEditBtn = rootView.findViewById(R.id.message_edit_btn);
         mUserNameTv = rootView.findViewById(R.id.user_name_tv);
         mProfilePicIv = rootView.findViewById(R.id.profile_image_iv);
         mPetsRecyclerView = rootView.findViewById(R.id.pets_recyclerview);
@@ -163,13 +163,13 @@ public class UserProfileFragment extends DialogFragment {
             loadProfilePictureWithGlide(mUser.getPhotoUri(), mProfilePicIv);
             final String userName = mUser.getFirstName() + "\n" + mUser.getLastName();
             mUserNameTv.setText(userName);
-            addPostBtn.setImageResource(R.drawable.ic_round_settings_24);
+            messageEditBtn.setImageResource(R.drawable.ic_round_settings_24);
             showUserFeed(mUser.getEmail());
 
             mRecyclerviewOptions = new FirestoreRecyclerOptions.Builder<Pet>()
                     .setQuery(mViewModel.getUserPets(mUser.getEmail()), Pet.class).build();
         } else {
-            addPostBtn.setImageResource(R.drawable.ic_send_comment_btn);
+            messageEditBtn.setImageResource(R.drawable.ic_send_comment_btn);
             mRecyclerviewOptions = new FirestoreRecyclerOptions.Builder<Pet>()
                     .setQuery(mViewModel.getUserPets(mUserEmail), Pet.class).build();
         }
@@ -177,7 +177,7 @@ public class UserProfileFragment extends DialogFragment {
         mPetsAdapter = new PetsAdapter(mRecyclerviewOptions);
         mPetsRecyclerView.setAdapter(mPetsAdapter);
 
-        addPostBtn.setOnClickListener(new View.OnClickListener() {
+        messageEditBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mUserEmail == null) {
@@ -224,7 +224,7 @@ public class UserProfileFragment extends DialogFragment {
 
     private void showUserFeed(final String userEmail) {
         getChildFragmentManager().beginTransaction()
-                .replace(R.id.user_posts_fragment, UserFeedFragment.newInstance(userEmail), "fragment_user_feed")
+                .replace(R.id.user_posts_fragment, FeedFragment.newInstance(userEmail), "fragment_user_feed")
                 .commit();
     }
 

@@ -96,7 +96,6 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatsViewHol
 
             final String userName = recipient.getFirstName() + " " + recipient.getLastName();
             holder.friendNameTv.setText(userName);
-
         }
 
         final String lastMessageContent = conversation.getLastMessage().getContent();

@@ -6,8 +6,7 @@ public class Conversation implements Comparable<Object> {
     private String mRecipientEmail;
     private ChatMessage mLastMessage;
 
-    public Conversation() {
-    }
+    public Conversation() {}
 
     public Conversation(String senderEmail, String recipientEmail, ChatMessage lastMessage) {
         final String id1 = senderEmail.replace(".", "");

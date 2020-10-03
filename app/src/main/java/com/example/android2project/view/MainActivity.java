@@ -30,6 +30,7 @@ import com.example.android2project.model.MenuAdapter;
 import com.example.android2project.model.Post;
 import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
+import com.example.android2project.model.ViewModelFactory;
 import com.example.android2project.model.ViewPagerAdapter;
 import com.example.android2project.view.fragments.CommentsFragment;
 import com.example.android2project.view.fragments.ConversationFragment;
@@ -37,6 +38,7 @@ import com.example.android2project.view.fragments.FeedFragment;
 import com.example.android2project.view.fragments.MarketPlaceFragment;
 import com.example.android2project.view.fragments.SettingsFragment;
 import com.example.android2project.view.fragments.SocialFragment;
+import com.example.android2project.view.fragments.UserFeedFragment;
 import com.example.android2project.view.fragments.UserProfileFragment;
 import com.example.android2project.viewmodel.MainViewModel;
 import com.example.android2project.viewmodel.UserPictureViewModel;
@@ -52,7 +54,8 @@ import nl.psdcompany.duonavigationdrawer.views.DuoMenuView;
 import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
 public class MainActivity extends AppCompatActivity implements
-        FeedFragment.FeedListener{
+        FeedFragment.FeedInterface {
+  
     private DuoDrawerLayout mDrawerLayout;
 
     private MainViewModel mViewModel;
