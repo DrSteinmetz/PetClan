@@ -25,7 +25,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.android2project.R;
-import com.example.android2project.model.GpsReceiver;
 import com.example.android2project.model.LocationUtils;
 import com.example.android2project.model.MenuAdapter;
 import com.example.android2project.model.Post;
@@ -73,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private TextView userLocationTv;
 
-    private GpsReceiver mGpsReceiver;
 
     private final String FEED_FRAG = "feed_fragment";
     private final String COMMENTS_FRAG = "comments_fragment";
@@ -89,15 +87,15 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mGpsReceiver=GpsReceiver.getInstance(new GpsReceiver.LocationCallBack() {
-            @Override
-            public void onLocationTriggered(boolean isLocationOn) {
-               if(isLocationOn){
-                   mLocationUtils.startLocation();
-               }
-            }
-        });
-        registerReceiver(mGpsReceiver,new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+//        mGpsReceiver=GpsReceiver.getInstance(new GpsReceiver.LocationCallBack() {
+//            @Override
+//            public void onLocationTriggered(boolean isLocationOn) {
+//               if(isLocationOn){
+//                   mLocationUtils.startLocation();
+//               }
+//            }
+//        });
+//        registerReceiver(mGpsReceiver,new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
 
 //        registerReceiver(new GpsReceiver(new GpsReceiver.LocationCallBack() {
 //            @Override
@@ -108,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements
 ////---
 
         mLocationUtils = LocationUtils.getInstance(this);
+        registerReceiver(mLocationUtils,new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
         mOnLocationChanged = new Observer<Address>() {
             @Override
             public void onChanged(Address address) {
@@ -307,6 +306,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mGpsReceiver);
+        unregisterReceiver(mLocationUtils);
     }
 }

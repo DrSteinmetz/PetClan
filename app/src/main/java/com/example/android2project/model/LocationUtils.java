@@ -2,6 +2,9 @@ package com.example.android2project.model;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -31,7 +34,7 @@ import com.google.android.gms.tasks.Task;
 import java.io.IOException;
 import java.util.Locale;
 
-public class LocationUtils {
+public class LocationUtils extends BroadcastReceiver {
     private static LocationUtils locationUtils;
 
     private Activity mActivity;
@@ -168,6 +171,23 @@ public class LocationUtils {
             Log.d(TAG, "isLocationEnabled: "+ mode);
             return  (mode != Settings.Secure.LOCATION_MODE_OFF);
 
+        }
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        if (intent.getAction().matches("android.location.PROVIDERS_CHANGED")) {
+            boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            boolean networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            if(gpsEnabled && networkEnabled) {
+                    startLocation();
+                Log.d(TAG, "onReceive: gps enabled");
+            } else {
+                //snackbar.show();
+                Log.d(TAG, "GPS is disabled");
+            }
         }
     }
 }

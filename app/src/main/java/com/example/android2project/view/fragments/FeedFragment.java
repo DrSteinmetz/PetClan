@@ -108,11 +108,15 @@ public class FeedFragment extends Fragment {
 
         mLocationUtils = LocationUtils.getInstance(requireActivity());
 
-        if (!mLocationUtils.isLocationEnabled()) {
+        if(mUserEmail==null){
             mLocationUtils.requestLocationPermissions();
-        }else{
-            mLocationUtils.startLocation();
         }
+
+//        if (!mLocationUtils.isLocationEnabled()) {
+//            mLocationUtils.requestLocationPermissions();
+//        }else{
+//            mLocationUtils.startLocation();
+//        }
 
 
         mOnPostDownloadSucceed = new Observer<List<Post>>() {
