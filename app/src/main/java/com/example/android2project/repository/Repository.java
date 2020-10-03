@@ -892,17 +892,14 @@ public class Repository {
                 });
     }
 
-
     public void updateUserLocation(final Address address) {
         final FirebaseUser user = mAuth.getCurrentUser();
 
-
         Map<String, Object> updateUserLocationMap = new HashMap<>();
-        GeoPoint geoPoint=new GeoPoint(address.getLatitude(),address.getLongitude());
-        updateUserLocationMap.put("Location",geoPoint);
+        GeoPoint geoPoint = new GeoPoint(address.getLatitude(), address.getLongitude());
+        updateUserLocationMap.put("geoPoint", geoPoint);
 
-        if(user!=null){
-
+        if (user != null) {
             mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
                     .update(updateUserLocationMap)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
