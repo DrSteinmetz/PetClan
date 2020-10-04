@@ -165,8 +165,10 @@ public class FeedViewModel extends ViewModel {
         Observer<Post> onPostUploadSucceed = new Observer<Post>() {
             @Override
             public void onChanged(Post post) {
-                mPosts.add(0, post);
-                mPostUploadSucceed.setValue(post);
+                if (mPosts.isEmpty() || !mPosts.get(0).getPostId().equals(post.getPostId())) {
+                    mPosts.add(0, post);
+                    mPostUploadSucceed.setValue(post);
+                }
             }
         };
         mRepository.getRepositoryPostUploadSucceedMLD().observeForever(onPostUploadSucceed);
@@ -306,7 +308,7 @@ public class FeedViewModel extends ViewModel {
         Observer<String> onPostDeletionSucceed = new Observer<String>() {
             @Override
             public void onChanged(String postId) {
-                if (mPosts.get(mPosition).getPostId().equals(postId)) {
+                if (!mPosts.isEmpty() && mPosts.get(mPosition).getPostId().equals(postId)) {
                     mPosts.remove(mPosition);
                     mPostDeletionSucceed.setValue(mPosition);
                 }

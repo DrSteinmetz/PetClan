@@ -102,19 +102,6 @@ public class UserProfileFragment extends DialogFragment {
             }
         };
 
-        mOnUserNameUpdateSucceed = new Observer<String>() {
-            @Override
-            public void onChanged(String updatedUserName) {
-            }
-        };
-
-        mOnUserNameUpdateFailed = new Observer<String>() {
-            @Override
-            public void onChanged(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
-            }
-        };
-
         mOnUserImageUpdateSucceed = new Observer<String>() {
             @Override
             public void onChanged(String updatedUserProfilePicUri) {
@@ -122,19 +109,6 @@ public class UserProfileFragment extends DialogFragment {
         };
 
         mOnUserImageUpdateFailed = new Observer<String>() {
-            @Override
-            public void onChanged(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
-            }
-        };
-
-        mOnUserDeletionSucceed = new Observer<String>() {
-            @Override
-            public void onChanged(String deletedUserId) {
-            }
-        };
-
-        mOnUserDeletionFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
                 Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
@@ -202,12 +176,8 @@ public class UserProfileFragment extends DialogFragment {
         if (mViewModel != null) {
             mViewModel.getDownloadUserSucceed().observe(this, mOnDownloadUserSucceed);
             mViewModel.getDownloadUserFailed().observe(this, mOnDownloadUserFailed);
-            mViewModel.getUpdateUserNameSucceed().observe(this, mOnUserNameUpdateSucceed);
-            mViewModel.getUpdateUserNameFailed().observe(this, mOnUserNameUpdateFailed);
             mViewModel.getUpdateUserImageSucceed().observe(this, mOnUserImageUpdateSucceed);
             mViewModel.getUpdateUserImageFailed().observe(this, mOnUserImageUpdateFailed);
-            mViewModel.getUserDeletionSucceed().observe(this, mOnUserDeletionSucceed);
-            mViewModel.getUserDeletionFailed().observe(this, mOnUserDeletionFailed);
         }
     }
 
