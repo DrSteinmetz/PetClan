@@ -1,5 +1,7 @@
 package com.example.android2project.view;
 
+
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -25,6 +27,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.android2project.R;
+import com.example.android2project.model.Advertisement;
 import com.example.android2project.model.LocationUtils;
 import com.example.android2project.model.MenuAdapter;
 import com.example.android2project.model.Post;
@@ -32,17 +35,16 @@ import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.model.ViewModelFactory;
 import com.example.android2project.model.ViewPagerAdapter;
+import com.example.android2project.view.fragments.AdvertisementFragment;
 import com.example.android2project.view.fragments.CommentsFragment;
 import com.example.android2project.view.fragments.ConversationFragment;
 import com.example.android2project.view.fragments.FeedFragment;
 import com.example.android2project.view.fragments.MarketPlaceFragment;
 import com.example.android2project.view.fragments.SettingsFragment;
 import com.example.android2project.view.fragments.SocialFragment;
-import com.example.android2project.view.fragments.UserFeedFragment;
 import com.example.android2project.view.fragments.UserProfileFragment;
 import com.example.android2project.viewmodel.MainViewModel;
 import com.example.android2project.viewmodel.UserPictureViewModel;
-import com.example.android2project.model.ViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,11 +56,12 @@ import nl.psdcompany.duonavigationdrawer.views.DuoMenuView;
 import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
 public class MainActivity extends AppCompatActivity implements
-        FeedFragment.FeedInterface {
+        FeedFragment.FeedInterface , AdvertisementFragment.AdvertisementInterface {
   
     private DuoDrawerLayout mDrawerLayout;
 
     private MainViewModel mViewModel;
+    private List<Fragment> fragmentList = new ArrayList<Fragment>();
     private UserPictureViewModel mUserPictureViewModel;
 
     private Observer<Boolean> mSignOutUserObserver;
@@ -268,7 +271,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private List<Fragment> getFragments() {
-        List<Fragment> fragmentList = new ArrayList<Fragment>();
         fragmentList.add(FeedFragment.newInstance(null));
         fragmentList.add(SocialFragment.newInstance());
         fragmentList.add(MarketPlaceFragment.newInstance());
@@ -307,8 +309,14 @@ public class MainActivity extends AppCompatActivity implements
 
 
     @Override
+    public void onAdUploadSucceed(Advertisement ad, AlertDialog loadingDialog) {
+        ((MarketPlaceFragment) fragmentList.get(2)).uploadAdSucceed(ad, loadingDialog);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+
         unregisterReceiver(mLocationUtils);
     }
 }

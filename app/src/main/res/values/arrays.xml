@@ -15,4 +15,27 @@
         <item>Price</item>
         <item>Distance</item>
     </string-array>
+
+    <string-array name="pet_types">
+        <item>כלבים</item>
+        <item>חתולים</item>
+        <item>תוכים ובעלי כנף</item>
+        <item>דגים</item>
+        <item>זוחלים</item>
+        <item>מכרסמים</item>
+        <item>סוסים</item>
+        <item>תרנגולים</item>
+        <item>חיות משק</item>
+        <item>חמוסים</item>
+    </string-array>
+
+    <string-array name="product_types">
+        <item>משחקים</item>
+        <item>מוצרי מזון</item>
+        <item>כלובים</item>
+        <item>רצועות</item>
+        <item>תרופות</item>
+        <item>מוצרי הגיינה</item>
+
+    </string-array>
 </resources>

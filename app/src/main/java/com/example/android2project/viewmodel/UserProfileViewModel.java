@@ -25,14 +25,8 @@ public class UserProfileViewModel extends ViewModel {
     private MutableLiveData<User> mDownloadUserSucceed;
     private MutableLiveData<String> mDownloadUserFailed;
 
-    private MutableLiveData<String> mUpdateUserNameSucceed;
-    private MutableLiveData<String> mUpdateUserNameFailed;
-
     private MutableLiveData<String> mUpdateUserImageSucceed;
     private MutableLiveData<String> mUpdateUserImageFailed;
-
-    private MutableLiveData<String> mUserDeletionSucceed;
-    private MutableLiveData<String> mUserDeletionFailed;
 
     private final String TAG = "UserProfileViewModel";
 
@@ -104,37 +98,6 @@ public class UserProfileViewModel extends ViewModel {
         });
     }
 
-    /**<-------Update User Name------->**/
-    public MutableLiveData<String> getUpdateUserNameSucceed() {
-        if (mUpdateUserNameSucceed == null) {
-            mUpdateUserNameSucceed = new MutableLiveData<>();
-            attachSetUpdateUserNameListener();
-        }
-        return mUpdateUserNameSucceed;
-    }
-
-    public MutableLiveData<String> getUpdateUserNameFailed() {
-        if (mUpdateUserNameFailed == null) {
-            mUpdateUserNameFailed = new MutableLiveData<>();
-            attachSetUpdateUserNameListener();
-        }
-        return mUpdateUserNameFailed;
-    }
-
-    private void attachSetUpdateUserNameListener() {
-        mRepository.setUpdateUserNameListener(new Repository.RepositoryUpdateUserNameInterface() {
-            @Override
-            public void onUpdateUserNameSucceed(String newUserName) {
-                mUpdateUserNameSucceed.setValue(newUserName);
-            }
-
-            @Override
-            public void onUpdateUserNameFailed(String error) {
-                mUpdateUserNameFailed.setValue(error);
-            }
-        });
-    }
-
     /**<-------Update User Profile Image------->**/
     public MutableLiveData<String> getUpdateUserImageSucceed() {
         if (mUpdateUserImageSucceed == null) {
@@ -166,45 +129,9 @@ public class UserProfileViewModel extends ViewModel {
         });
     }
 
-    /**<-------Delete User------->**/
-    public MutableLiveData<String> getUserDeletionSucceed() {
-        if (mUserDeletionSucceed == null) {
-            mUserDeletionSucceed = new MutableLiveData<>();
-            attachSetUserDeletionListener();
-        }
-        return mUserDeletionSucceed;
-    }
-
-    public MutableLiveData<String> getUserDeletionFailed() {
-        if (mUserDeletionFailed == null) {
-            mUserDeletionFailed = new MutableLiveData<>();
-            attachSetUserDeletionListener();
-        }
-        return mUserDeletionFailed;
-    }
-
-    private void attachSetUserDeletionListener() {
-        mRepository.setUserDeletionListener(new Repository.RepositoryUserDeletionInterface() {
-            @Override
-            public void onUserDeletionSucceed(String userId) {
-                mUserDeletionSucceed.setValue(userId);
-                mStorageRepository.deleteFile(userId);
-            }
-
-            @Override
-            public void onUserDeletionFailed(String error) {
-                mUserDeletionFailed.setValue(error);
-            }
-        });
-    }
-
 
     public void downloadUser(String userEmail) {
         mRepository.downloadUser(userEmail);
-    }
-
-    public void updateUserName(final String newUserName) {
-        mRepository.updateUserName(newUserName);
     }
 
     public void updateUserProfileImage(final Uri imageUri) {
@@ -212,13 +139,6 @@ public class UserProfileViewModel extends ViewModel {
         attachUploadPicListener();
         mStorageRepository.uploadFile(imageUri, userId);
         mAuthRepository.deleteUserFromAuth();
-    }
-
-    public void updateUserProfileCoverImage(final Uri imageUri) {
-    }
-
-    public void deleteUser() {
-        mRepository.deleteUser();
     }
 
     public User getMyDetails() {

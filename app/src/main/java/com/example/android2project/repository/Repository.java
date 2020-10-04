@@ -441,6 +441,21 @@ public class Repository {
         this.mUploadAdListener = repositoryUploadAdInterface;
     }
 
+    /**
+     * <-------Delete Advertisement interface------->
+     **/
+    public interface RepositoryAdDeletingInterface {
+        void onAdDeletingSucceed(boolean isSuccess);
+
+        void onAdDeletingFailed(String error);
+    }
+
+    private RepositoryAdDeletingInterface mAdDeletingListener;
+
+    public void setAdDeletingListener(RepositoryAdDeletingInterface repositoryAdDeletingInterface) {
+        this.mAdDeletingListener = repositoryAdDeletingInterface;
+    }
+
 
     public static Repository getInstance(final Context context) {
         if (repository == null) {
@@ -1190,6 +1205,18 @@ public class Repository {
                         }
                     });
         }
+    }
+
+    public void deleteAdvertisement(Advertisement advertisement) {
+        mCloudAds.document(advertisement.getAdvertisementId()).delete()
+        .addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                if(mAdDeletingListener!=null){
+                    mAdDeletingListener.onAdDeletingSucceed(true);
+                }
+            }
+        });
     }
 
     public com.google.firebase.firestore.Query getAllAds() {
