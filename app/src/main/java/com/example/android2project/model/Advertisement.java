@@ -155,6 +155,18 @@ public class Advertisement implements Serializable, Comparable<Object> {
                 '}';
     }
 
+    public String getStoragePath(String myEmail, String imageUri){
+        String s1 = imageUri.split("\\.jpg\\?alt=media&token=")[0];
+        int i = 2;
+        char c = s1.charAt(s1.length() - 1);
+        StringBuilder id = new StringBuilder();
+        while (c >= '0' && c <= '9') {
+            id.append(c);
+            c = s1.charAt(s1.length() - i++);
+        }
+        id = id.reverse();
+        return myEmail+"/ads/"+myEmail+id+".jpg";
+    }
     /*String s1 = s.split("\\.jpg\\?alt=media&token=")[0];
 
         int i = 2;

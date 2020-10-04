@@ -62,6 +62,8 @@ public class Repository {
     private final String TAG = "Repository";
 
 
+
+
     /**<-------Posts Interfaces------->**/
     /**
      * <-------Post Downloading interface------->
@@ -361,6 +363,21 @@ public class Repository {
 
     public void setUploadAdListener(RepositoryUploadAdInterface repositoryUploadAdInterface) {
         this.mUploadAdListener = repositoryUploadAdInterface;
+    }
+
+    /**
+     * <-------Delete Advertisement interface------->
+     **/
+    public interface RepositoryAdDeletingInterface {
+        void onAdDeletingSucceed(boolean isSuccess);
+
+        void onAdDeletingFailed(String error);
+    }
+
+    private RepositoryAdDeletingInterface mAdDeletingListener;
+
+    public void setAdDeletingListener(RepositoryAdDeletingInterface repositoryAdDeletingInterface) {
+        this.mAdDeletingListener = repositoryAdDeletingInterface;
     }
 
 
@@ -1049,6 +1066,18 @@ public class Repository {
                         }
                     });
         }
+    }
+
+    public void deleteAdvertisement(Advertisement advertisement) {
+        mCloudAds.document(advertisement.getAdvertisementId()).delete()
+        .addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                if(mAdDeletingListener!=null){
+                    mAdDeletingListener.onAdDeletingSucceed(true);
+                }
+            }
+        });
     }
 
     public com.google.firebase.firestore.Query getAllAds() {

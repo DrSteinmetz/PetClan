@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.android2project.viewmodel.AdvertisementViewModel;
 import com.example.android2project.viewmodel.ChatClanViewModel;
 import com.example.android2project.viewmodel.ChatsViewModel;
 import com.example.android2project.viewmodel.CommentsViewModel;
@@ -123,6 +124,11 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             case UserFeed:
                 if (modelClass.isAssignableFrom(UserFeedViewModel.class)) {
                     objToReturn = (T) new UserFeedViewModel(mContext);
+                }
+                break;
+            case Advertisment:
+                if (modelClass.isAssignableFrom(AdvertisementViewModel.class)) {
+                    objToReturn = (T) new AdvertisementViewModel(mContext);
                 }
                 break;
         }
