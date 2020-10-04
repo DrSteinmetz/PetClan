@@ -3,14 +3,22 @@ package com.example.android2project.viewmodel;
 import android.content.Context;
 
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
 
 import com.example.android2project.model.Post;
 import com.example.android2project.repository.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class UserFeedViewModel extends FeedViewModel {
+public class UserFeedViewModel extends ViewModel {
+/*
     private Repository mRepository;
+    protected String mUserEmail = null;
+
+    protected List<Post> mPosts = new ArrayList<>();
+    protected int mPosition;
 
     private MutableLiveData<List<Post>> mPostDownloadSucceed;
     private MutableLiveData<String> mPostDownloadFailed;
@@ -27,9 +35,9 @@ public class UserFeedViewModel extends FeedViewModel {
     private MutableLiveData<Integer> mPostDeletionSucceed;
     private MutableLiveData<String> mPostDeletionFailed;
 
-    public UserFeedViewModel(final Context context) {
-        super(context);
+    private final String TAG = "UserFeedViewModel";
 
+    public UserFeedViewModel(final Context context) {
         mRepository = Repository.getInstance(context);
     }
 
@@ -53,7 +61,7 @@ public class UserFeedViewModel extends FeedViewModel {
         mRepository.setPostUploadListener(new Repository.RepositoryPostUploadInterface() {
             @Override
             public void onPostUploadSucceed(Post post) {
-                mPosts.add(0,post);
+                mPosts.add(0, post);
                 mPostUploadSucceed.setValue(post);
             }
 
@@ -116,7 +124,7 @@ public class UserFeedViewModel extends FeedViewModel {
         mRepository.setPostDownloadListener(new Repository.RepositoryPostDownloadInterface() {
             @Override
             public void onPostDownloadSucceed(List<Post> posts) {
-                if(!mPosts.isEmpty()){
+                if (!mPosts.isEmpty()) {
                     mPosts.clear();
                 }
                 mPosts.addAll(posts);
@@ -196,4 +204,39 @@ public class UserFeedViewModel extends FeedViewModel {
     public void setUserEmail(final String userEmail) {
         this.mUserEmail = userEmail;
     }
+
+    public void uploadNewPost(String postContent) {
+        mRepository.uploadNewPost(postContent);
+    }
+
+    public void updatePost(Post post, final int position) {
+        mPosition = position;
+        mRepository.updatePost(post);
+    }
+
+    public void refreshPosts() {
+        if (mUserEmail != null) {
+            mRepository.downloadUserPosts(mUserEmail);
+        } else {
+            mRepository.downloadPosts();
+        }
+    }
+
+    public void updatePostLikes(final boolean isLike, final int position) {
+        mPosition = position;
+        mRepository.updatePostLikes(mPosts.get(position), isLike);
+    }
+
+    public void deletePost(String postId, final int position) {
+        mPosition = position;
+        mRepository.deletePost(postId);
+    }
+
+    public void setPosts(List<Post> Posts) {
+        this.mPosts = Posts;
+    }
+
+    public List<Post> getPosts() {
+        return mPosts;
+    }*/
 }

@@ -1,8 +1,8 @@
 package com.example.android2project.model;
 
+import com.google.firebase.firestore.GeoPoint;
+
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 public class User implements Comparable<Object>, Serializable {
     private String mEmail;
@@ -11,8 +11,7 @@ public class User implements Comparable<Object>, Serializable {
     private String mPhotoUri;
     private boolean mIsBusiness = false;
     private String mBusinessName = null;
-    private Map<String, User> mFriendsMap = new HashMap<>();
-    private String mLocation;
+    private GeoPoint mGeoPoint;
     private String mToken;
 
     public User() {}
@@ -22,7 +21,6 @@ public class User implements Comparable<Object>, Serializable {
         this.mFirstName = firstName;
         this.mLastName = lastName;
         this.mPhotoUri = photoUri;
-        this.mLocation = "Unknown";
         this.mToken = token;
     }
 
@@ -74,28 +72,20 @@ public class User implements Comparable<Object>, Serializable {
         this.mBusinessName = businessName;
     }
 
-    public Map<String, User> getFriendsMap() {
-        return mFriendsMap;
-    }
-
-    public void setFriendsMap(Map<String, User> friendsMap) {
-        this.mFriendsMap = friendsMap;
-    }
-
-    public String getLocation() {
-        return mLocation;
-    }
-
-    public void setLocation(String location) {
-        this.mLocation = location;
-    }
-
     public String getToken() {
         return mToken;
     }
 
     public void setToken(String token) {
         this.mToken = token;
+    }
+
+    public GeoPoint getGeoPoint() {
+        return mGeoPoint;
+    }
+
+    public void setGeoPoint(GeoPoint geoPoint) {
+        this.mGeoPoint = geoPoint;
     }
 
     @Override
@@ -121,8 +111,7 @@ public class User implements Comparable<Object>, Serializable {
                 ", mPhotoUri='" + mPhotoUri + '\'' +
                 ", mIsBusiness=" + mIsBusiness +
                 ", mBusinessName='" + mBusinessName + '\'' +
-                ", mFriendsMap=" + mFriendsMap +
-                ", mLocation='" + mLocation + '\'' +
+
                 ", mToken='" + mToken + '\'' +
                 '}';
     }

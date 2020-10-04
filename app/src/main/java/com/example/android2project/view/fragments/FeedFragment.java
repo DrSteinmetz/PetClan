@@ -35,6 +35,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 
 public class FeedFragment extends Fragment {
+
     private FeedViewModel mViewModel;
 
     private String mUserEmail;
@@ -46,6 +47,9 @@ public class FeedFragment extends Fragment {
 
     private Observer<List<Post>> mOnPostDownloadSucceed;
     private Observer<String> mOnPostDownloadFailed;
+
+    private Observer<List<Post>> mOnUserPostDownloadSucceed;
+    private Observer<String> mOnUserPostDownloadFailed;
 
     private Observer<Post> mOnPostUploadSucceed;
     private Observer<String> mOnPostUploadFailed;
@@ -66,11 +70,11 @@ public class FeedFragment extends Fragment {
 
     private final String TAG = "FeedFragment";
 
-    public interface FeedListener {
+    public interface FeedInterface {
         void onComment(Post post);
     }
 
-    private FeedListener listener;
+    private FeedInterface listener;
 
     public FeedFragment() {}
 
@@ -87,7 +91,7 @@ public class FeedFragment extends Fragment {
         super.onAttach(context);
 
         try {
-            listener = (FeedListener) context;
+            listener = (FeedInterface) context;
         } catch (ClassCastException ex) {
             throw new ClassCastException("The activity must implement Feed Listener!");
         }
@@ -102,24 +106,38 @@ public class FeedFragment extends Fragment {
         }
 
         mLocationUtils = LocationUtils.getInstance(requireActivity());
-
+      
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Feed)).get(FeedViewModel.class);
         mViewModel.setUserEmail(mUserEmail);
         mViewModel.refreshPosts();
 
-        mLocationUtils.requestLocationPermissions();
+        if (mUserEmail == null) {
+            mLocationUtils.requestLocationPermissions();
+        }
 
         mOnPostDownloadSucceed = new Observer<List<Post>>() {
             @Override
             public void onChanged(List<Post> posts) {
-                Log.d(TAG, "onChanged swipe: " + this.toString());
-                mSwipeRefreshLayout.setRefreshing(false);
-                mPostsAdapter.notifyDataSetChanged();
+                onPostsDownloaded(posts.size());
             }
         };
 
         mOnPostDownloadFailed = new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        mOnUserPostDownloadSucceed = new Observer<List<Post>>() {
+            @Override
+            public void onChanged(List<Post> posts) {
+                onPostsDownloaded(posts.size());
+            }
+        };
+
+        mOnUserPostDownloadFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
                 Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
@@ -137,7 +155,6 @@ public class FeedFragment extends Fragment {
         mOnPostUpdateSucceed = new Observer<Integer>() {
             @Override
             public void onChanged(Integer position) {
-                Log.d(TAG, "onChanged: " + position);
                 mPostsAdapter.notifyItemChanged(position);
             }
         };
@@ -188,7 +205,7 @@ public class FeedFragment extends Fragment {
             @Override
             public void onChanged(Address address) {
                 mUserLocation = address.getLocality();
-                Log.d(TAG, "onChanged: address: " + address.getLocality());
+                mViewModel.updateUserLocation(address);
             }
         };
         mLocationUtils.getLocationLiveData().observe(this, mOnLocationChanged);
@@ -204,6 +221,10 @@ public class FeedFragment extends Fragment {
         mSwipeRefreshLayout = rootView.findViewById(R.id.feed_refresher);
 
 
+        if (mUserEmail != null) {
+            addPostBtn.setVisibility(mViewModel.getMyEmail().equals(mUserEmail) ?
+                    View.VISIBLE : View.GONE);
+        }
         addPostBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -217,6 +238,7 @@ public class FeedFragment extends Fragment {
                 false));
 
         mPostsAdapter = new PostsAdapter(mViewModel.getPosts(), getContext(), mUserEmail);
+
 
         mPostsAdapter.setPostListener(new PostsAdapter.PostListener() {
             @Override
@@ -269,11 +291,6 @@ public class FeedFragment extends Fragment {
 
         mRecyclerView.setAdapter(mPostsAdapter);
 
-        if (mUserEmail != null) {
-            mRecyclerView.smoothScrollBy(2000, 0, null, 30000);
-            // TODO: Improve this
-        }
-
         return rootView;
     }
 
@@ -281,6 +298,8 @@ public class FeedFragment extends Fragment {
         if (mViewModel != null) {
             mViewModel.getPostDownloadSucceed().observe(getViewLifecycleOwner(), mOnPostDownloadSucceed);
             mViewModel.getPostDownloadFailed().observe(getViewLifecycleOwner(), mOnPostDownloadFailed);
+            mViewModel.getUserPostDownloadSucceed().observe(getViewLifecycleOwner(), mOnUserPostDownloadSucceed);
+            mViewModel.getUserPostDownloadFailed().observe(getViewLifecycleOwner(), mOnUserPostDownloadFailed);
             mViewModel.getPostUploadSucceed().observe(getViewLifecycleOwner(), mOnPostUploadSucceed);
             mViewModel.getPostUploadFailed().observe(getViewLifecycleOwner(), mOnPostUploadFailed);
             mViewModel.getPostUpdateSucceed().observe(getViewLifecycleOwner(), mOnPostUpdateSucceed);
@@ -296,6 +315,8 @@ public class FeedFragment extends Fragment {
         if (mViewModel != null) {
             mViewModel.getPostDownloadSucceed().removeObserver(mOnPostDownloadSucceed);
             mViewModel.getPostDownloadFailed().removeObserver(mOnPostDownloadFailed);
+            mViewModel.getUserPostDownloadSucceed().removeObserver(mOnUserPostDownloadSucceed);
+            mViewModel.getUserPostDownloadFailed().removeObserver(mOnUserPostDownloadFailed);
             mViewModel.getPostUploadSucceed().removeObserver(mOnPostUploadSucceed);
             mViewModel.getPostUploadFailed().removeObserver(mOnPostUploadFailed);
             mViewModel.getPostUpdateSucceed().removeObserver(mOnPostUpdateSucceed);
@@ -304,6 +325,18 @@ public class FeedFragment extends Fragment {
             mViewModel.getPostLikesUpdateFailed().removeObserver(mOnPostLikesUpdateFailed);
             mViewModel.getPostDeletionSucceed().removeObserver(mOnPostDeletionSucceed);
             mViewModel.getPostDeletionFailed().removeObserver(mOnPostDeletionFailed);
+        }
+    }
+
+    private void onPostsDownloaded(final int postsCount) {
+        mSwipeRefreshLayout.setRefreshing(false);
+        mPostsAdapter.notifyDataSetChanged();
+
+        if (mUserEmail != null) {
+            int duration = postsCount * 5000;
+            //int length = requireActivity().getWindow().getAttributes().width * postsCount;
+            mRecyclerView.smoothScrollBy(2000, 0, null, duration);
+            // TODO: Improve this
         }
     }
 
@@ -396,7 +429,7 @@ public class FeedFragment extends Fragment {
 
     private void showDeletePostDialog(final Post postToDelete, final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
-        ViewGroup root;
+
         View view = LayoutInflater.from(getContext())
                 .inflate(R.layout.add_post_dialog,
                         (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));
@@ -434,4 +467,6 @@ public class FeedFragment extends Fragment {
 
         stopObservation();
     }
+
+
 }

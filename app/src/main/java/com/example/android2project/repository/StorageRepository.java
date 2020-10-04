@@ -30,10 +30,7 @@ public class StorageRepository {
 
 
 
-
-    /**
-     * <-------Picture Download interface------->
-     **/
+    /**<-------Picture Download interface------->**/
     public interface StorageDownloadPicInterface {
         void onDownloadPicSuccess(Uri uri);
 
@@ -46,9 +43,7 @@ public class StorageRepository {
         this.mDownloadPicListener = storageDownloadPicInterface;
     }
 
-    /**
-     * <-------Picture Upload interface------->
-     **/
+    /**<-------Picture Upload interface------->**/
     public interface StorageUploadPicInterface {
         void onUploadPicSuccess(String imagePath);
 
@@ -61,9 +56,7 @@ public class StorageRepository {
         this.mUploadPicListener = storageUploadPicInterface;
     }
 
-    /**
-     * <-------Pet Picture Upload interface------->
-     **/
+    /**<-------Pet Picture Upload interface------->**/
     public interface StoragePetUploadPicInterface {
         void onPetUploadPicSuccess(String imagePath, int iteration);
 
@@ -76,9 +69,7 @@ public class StorageRepository {
         this.mPetUploadPicListener = storagePetUploadPicInterface;
     }
 
-    /**
-     * <-------Ad Picture Upload interface------->
-     **/
+    /**<-------Ad Picture Upload interface------->**/
     public interface StorageAdUploadPicInterface {
         void onAdUploadPicSuccess(String imagePath, int iteration);
 
@@ -91,9 +82,7 @@ public class StorageRepository {
         this.mAdUploadPicListener = storageAdUploadPicInterface;
     }
 
-    /**
-     * <-------Picture Deletion interface------->
-     **/
+    /**<-------Picture Deletion interface------->**/
     public interface StorageDeletePicInterface {
         void onDeletePicSuccess(String imagePath);
 
@@ -121,9 +110,8 @@ public class StorageRepository {
         this.mDeleteAdPicListener = storageDeleteAdPicInterface;
     }
 
-    /**
-     * <-------Singleton------->
-     **/
+    /**<-------Singleton------->**/
+
     public static StorageRepository getInstance(Context context) {
         if (storageRepository == null) {
             storageRepository = new StorageRepository(context);

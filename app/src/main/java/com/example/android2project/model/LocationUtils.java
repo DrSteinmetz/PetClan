@@ -2,12 +2,18 @@ package com.example.android2project.model;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Handler;
+import android.provider.Settings;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -28,7 +34,7 @@ import com.google.android.gms.tasks.Task;
 import java.io.IOException;
 import java.util.Locale;
 
-public class LocationUtils {
+public class LocationUtils extends BroadcastReceiver {
     private static LocationUtils locationUtils;
 
     private Activity mActivity;
@@ -124,7 +130,6 @@ public class LocationUtils {
             task.addOnSuccessListener(mActivity, new OnSuccessListener<LocationSettingsResponse>() {
                 @Override
                 public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-
                     if (mActivity.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         mFusedLocationProviderClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
                     }
@@ -150,6 +155,37 @@ public class LocationUtils {
                     }
                 }
             });
+        }
+    }
+    public boolean isLocationEnabled() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+// This is new method provided in API 28
+            LocationManager lm = (LocationManager) mActivity.getSystemService(mActivity.LOCATION_SERVICE);
+            Log.d(TAG, "isLocationEnabled: "+ lm.isLocationEnabled());
+            return lm.isLocationEnabled();
+        } else {
+// This is Deprecated in API 28
+            int mode = Settings.Secure.getInt(mActivity.getContentResolver(), Settings.Secure.LOCATION_MODE,
+                    Settings.Secure.LOCATION_MODE_OFF);
+            Log.d(TAG, "isLocationEnabled: "+ mode);
+            return  (mode != Settings.Secure.LOCATION_MODE_OFF);
+        }
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        if (intent.getAction().matches("android.location.PROVIDERS_CHANGED")) {
+            boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            boolean networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            if(gpsEnabled && networkEnabled) {
+                    startLocation();
+                Log.d(TAG, "onReceive: gps enabled");
+            } else {
+                //snackbar.show();
+                Log.d(TAG, "GPS is disabled");
+            }
         }
     }
 }

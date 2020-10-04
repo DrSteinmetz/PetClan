@@ -1,6 +1,7 @@
 package com.example.android2project.view.fragments;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.location.Address;
 import android.os.Bundle;
 import android.text.Editable;
@@ -35,7 +36,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 
 public class UserFeedFragment extends Fragment {
-
+/*
     private UserFeedViewModel mViewModel;
 
     private String mUserEmail;
@@ -67,6 +68,12 @@ public class UserFeedFragment extends Fragment {
 
     private final String TAG = "UserFeedFragment";
 
+    public interface UserFeedInterface {
+        void onComment(Post post);
+    }
+
+    private UserFeedInterface listener;
+
     public UserFeedFragment() {}
 
     public static UserFeedFragment newInstance(final String userEmail) {
@@ -75,6 +82,17 @@ public class UserFeedFragment extends Fragment {
         args.putString("posts", userEmail);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        try {
+            listener = (UserFeedInterface) context;
+        } catch (Exception ex) {
+            throw new ClassCastException("The activity must implement UserFeed Listener!");
+        }
     }
 
     @Override
@@ -95,7 +113,6 @@ public class UserFeedFragment extends Fragment {
         mOnPostDownloadSucceed = new Observer<List<Post>>() {
             @Override
             public void onChanged(List<Post> posts) {
-                Log.d(TAG, "onChanged swipe: " + this.toString());
                 mSwipeRefreshLayout.setRefreshing(false);
                 mPostsAdapter.notifyDataSetChanged();
             }
@@ -119,7 +136,6 @@ public class UserFeedFragment extends Fragment {
         mOnPostUpdateSucceed = new Observer<Integer>() {
             @Override
             public void onChanged(Integer position) {
-                Log.d(TAG, "onChanged: " + position);
                 mPostsAdapter.notifyItemChanged(position);
             }
         };
@@ -170,7 +186,6 @@ public class UserFeedFragment extends Fragment {
             @Override
             public void onChanged(Address address) {
                 mUserLocation = address.getLocality();
-                Log.d(TAG, "onChanged: address: " + address.getLocality());
             }
         };
         mLocationUtils.getLocationLiveData().observe(this, mOnLocationChanged);
@@ -186,6 +201,9 @@ public class UserFeedFragment extends Fragment {
         mSwipeRefreshLayout = rootView.findViewById(R.id.feed_refresher);
 
 
+        if (mUserEmail != null) {
+            addPostBtn.setVisibility(View.GONE);
+        }
         addPostBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -409,7 +427,6 @@ public class UserFeedFragment extends Fragment {
         super.onResume();
 
         startObservation();
-        Log.d(TAG, "wtf onStart: ");
     }
 
     @Override
@@ -417,6 +434,5 @@ public class UserFeedFragment extends Fragment {
         super.onPause();
 
         stopObservation();
-        Log.d(TAG, "wtf onStop: ");
-    }
+    }*/
 }

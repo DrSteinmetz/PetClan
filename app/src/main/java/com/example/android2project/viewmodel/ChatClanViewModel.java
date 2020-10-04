@@ -6,10 +6,16 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.android2project.model.User;
+
+
+
 import com.example.android2project.repository.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+
+
+
 
 public class ChatClanViewModel extends ViewModel {
     private static ChatClanViewModel chatClanViewModel;
@@ -41,9 +47,11 @@ public class ChatClanViewModel extends ViewModel {
     }
 
     public void setUsers(List<User> users) {
-        if (!this.mUsers.isEmpty()) {
+
+        if(!mUsers.isEmpty()) {
             this.mUsers.clear();
         }
+
         this.mUsers.addAll(users);
         mUsersLiveData.setValue(users);
     }

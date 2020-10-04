@@ -20,12 +20,18 @@ import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.viewmodel.ChatClanViewModel;
 import com.example.android2project.model.ViewModelFactory;
 
+
+import java.util.ArrayList;
+
 import java.util.List;
 
 public class ChatClanFragment extends Fragment {
     private ChatClanViewModel mViewModel;
     private RecyclerView mRecyclerview;
     private ChatClanAdapter mAdapter;
+
+
+
 
     private Observer<List<User>> usersObserver;
 
@@ -41,10 +47,16 @@ public class ChatClanFragment extends Fragment {
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.ChatClan)).get(ChatClanViewModel.class);
 
+
+//        mViewModel.getAllUsers();
+
+
         usersObserver = new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
-                mAdapter = new ChatClanAdapter(getContext(), users);
+                mAdapter = new ChatClanAdapter(getContext(),users);
+                mRecyclerview.setAdapter(mAdapter);
+
                 mAdapter.setFriendItemListener(new ChatClanAdapter.FriendItemListener() {
                     @Override
                     public void onClicked(int position, View view) {
@@ -58,7 +70,11 @@ public class ChatClanFragment extends Fragment {
             }
         };
 
+
         mViewModel.getUsersLiveData().observe(this, usersObserver);
+
+        mViewModel.getUsersLiveData().observe(this,usersObserver);
+
     }
 
     @Override
@@ -71,4 +87,13 @@ public class ChatClanFragment extends Fragment {
 
         return rootView;
     }
+
+
+
+    @Override
+    public void onStop() {
+        mViewModel.getUsersLiveData().removeObservers(this);
+        super.onStop();
+    }
 }
+

@@ -75,6 +75,7 @@ public class ChatsViewModel extends ViewModel {
                 mConversations.addAll(conversations);
                 Collections.sort(mConversations);
                 getRelevantUsers();
+
                 mDownloadActiveConversationsSucceed.setValue(conversations);
             }
 
@@ -93,6 +94,7 @@ public class ChatsViewModel extends ViewModel {
         if (!mAllUsers.isEmpty()) {
             mAllUsers.clear();
         }
+
         mAllUsers.addAll(allUsers);
         mUsersLiveData.setValue(getRelevantUsers());
     }
@@ -108,6 +110,7 @@ public class ChatsViewModel extends ViewModel {
                 }
             }
         }
+
         if (!this.mActiveUsers.isEmpty()) {
             this.mActiveUsers.clear();
         }
