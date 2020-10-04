@@ -42,11 +42,9 @@ import com.example.android2project.view.fragments.FeedFragment;
 import com.example.android2project.view.fragments.MarketPlaceFragment;
 import com.example.android2project.view.fragments.SettingsFragment;
 import com.example.android2project.view.fragments.SocialFragment;
-import com.example.android2project.view.fragments.UserFeedFragment;
 import com.example.android2project.view.fragments.UserProfileFragment;
 import com.example.android2project.viewmodel.MainViewModel;
 import com.example.android2project.viewmodel.UserPictureViewModel;
-import com.example.android2project.model.ViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -312,12 +310,13 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onAdUploadSucceed(Advertisement ad, AlertDialog loadingDialog) {
-        Log.d(TAG, "onAdUploadSucceed: zxc ");
-        ((MarketPlaceFragment)fragmentList.get(2)).uploadAdSucceed(ad,loadingDialog);
+        ((MarketPlaceFragment) fragmentList.get(2)).uploadAdSucceed(ad, loadingDialog);
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         unregisterReceiver(mLocationUtils);
     }
 }

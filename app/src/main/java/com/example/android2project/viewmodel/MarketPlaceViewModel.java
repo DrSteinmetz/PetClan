@@ -50,7 +50,6 @@ public class MarketPlaceViewModel extends ViewModel {
         });
     }
 
-
     public User getCurrentUser() {
         final String email = mAuth.getUserEmail();
         final String username = mAuth.getUserName();
