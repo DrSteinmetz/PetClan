@@ -29,6 +29,7 @@ public class StorageRepository {
     private final String TAG = "StorageRepository";
 
 
+
     /**<-------Picture Download interface------->**/
     public interface StorageDownloadPicInterface {
         void onDownloadPicSuccess(Uri uri);
@@ -94,7 +95,23 @@ public class StorageRepository {
         this.mDeletePicListener = storageDeletePicInterface;
     }
 
+    /**
+     * <-------Picture Deletion interface------->
+     **/
+    public interface StorageDeleteAdPicInterface {
+        void onDeleteAdPicSuccess(String imagePath);
+
+        void onDeleteAdPicFailed(String error);
+    }
+
+    StorageDeleteAdPicInterface mDeleteAdPicListener;
+
+    public void setDeleteAdPicListener(StorageDeleteAdPicInterface storageDeleteAdPicInterface) {
+        this.mDeleteAdPicListener = storageDeleteAdPicInterface;
+    }
+
     /**<-------Singleton------->**/
+
     public static StorageRepository getInstance(Context context) {
         if (storageRepository == null) {
             storageRepository = new StorageRepository(context);
@@ -173,9 +190,9 @@ public class StorageRepository {
                                         if (mPetUploadPicListener != null) {
                                             mPetUploadPicListener.onPetUploadPicSuccess(uri.toString(), iteration);
                                         }
-                                        Log.d(TAG, "onSuccess: " + uri.toString());
                                     } else {
                                         if (mAdUploadPicListener != null) {
+                                            Log.d(TAG, "onSuccess: qwerty " + uri.toString());
                                             mAdUploadPicListener.onAdUploadPicSuccess(uri.toString(), iteration);
                                         }
 
@@ -244,4 +261,29 @@ public class StorageRepository {
             }
         });
     }
+
+    public void deletePhotoFromStorage(final String photoUri) {
+        final StorageReference fileToDelete = mStorage.child(photoUri);
+
+        fileToDelete.delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "onSuccess: " + photoUri);
+                        if (mDeleteAdPicListener != null) {
+                            mDeleteAdPicListener.onDeleteAdPicSuccess(fileToDelete.toString());
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "onFailure: " + photoUri +"_" + e.getMessage());
+                if (mDeleteAdPicListener != null) {
+                    mDeleteAdPicListener.onDeleteAdPicFailed(e.getMessage());
+                }
+            }
+        });
+    }
+
+
 }

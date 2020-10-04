@@ -17,4 +17,5 @@ public enum ViewModelEnum {
     Settings,
     MarketPlace,
     UserFeed,
+    Advertisment
 }
