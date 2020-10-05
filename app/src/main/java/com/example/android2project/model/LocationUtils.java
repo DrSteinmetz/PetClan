@@ -238,14 +238,15 @@ public class LocationUtils extends BroadcastReceiver {
     }
 
     public static int getDistance(GeoPoint other) {
-
-        double theDistance = (Math.sin(Math.toRadians(mAddress.getLatitude())) *
-                Math.sin(Math.toRadians(other.getLatitude())) +
-                Math.cos(Math.toRadians(mAddress.getLatitude())) *
-                        Math.cos(Math.toRadians(other.getLatitude())) *
-                        Math.cos(Math.toRadians(mAddress.getLongitude() - other.getLongitude())));
-        return (int) (Math.toDegrees(Math.acos(theDistance) * 69.09) * 1.6);
-
+        if(mAddress!=null) {
+            double theDistance = (Math.sin(Math.toRadians(mAddress.getLatitude())) *
+                    Math.sin(Math.toRadians(other.getLatitude())) +
+                    Math.cos(Math.toRadians(mAddress.getLatitude())) *
+                            Math.cos(Math.toRadians(other.getLatitude())) *
+                            Math.cos(Math.toRadians(mAddress.getLongitude() - other.getLongitude())));
+            return (int) (Math.toDegrees(Math.acos(theDistance) * 69.09) * 1.6);
+        }
+        return 0;
     }
 
     public static Address getAddress(){
