@@ -45,6 +45,8 @@
             android:key="distance_sb"
             android:title="How far do you want to see?"
             android:max="500"
+            android:defaultValue="500"
+            
             android:textAllCaps="false" />
 
     </PreferenceCategory>

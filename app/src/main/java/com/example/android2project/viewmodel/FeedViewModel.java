@@ -343,8 +343,8 @@ public class FeedViewModel extends ViewModel {
         this.mUserEmail = userEmail;
     }
 
-    public void uploadNewPost(String postContent) {
-        mRepository.uploadNewPost(postContent);
+    public void uploadNewPost(final Post post) {
+        mRepository.uploadNewPost(post);
     }
 
     public void updatePost(Post post, final int position) {
@@ -389,5 +389,13 @@ public class FeedViewModel extends ViewModel {
 
     public String getMyEmail() {
         return mAuthRepository.getUserEmail();
+    }
+
+    public String getMyName() {
+       return mAuthRepository.getUserName();
+    }
+
+    public String getMyPhotoUri() {
+        return mAuthRepository.getUserImageUri();
     }
 }

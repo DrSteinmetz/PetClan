@@ -1,6 +1,7 @@
 package com.example.android2project.model;
 
 import android.content.Context;
+import android.location.Geocoder;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,9 @@ import com.example.android2project.repository.AuthRepository;
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.GeoPoint;
+
+import java.util.Locale;
 
 public class AdsAdapter extends FirestorePagingAdapter<Advertisement, AdsAdapter.AdViewHolder> {
 
@@ -142,6 +146,7 @@ public class AdsAdapter extends FirestorePagingAdapter<Advertisement, AdsAdapter
         holder.adPriceTv.setText(ad.getPrice() + " ₪");
 
         holder.adDescriptionTv.setText(ad.getDescription());
+
 
         holder.adLocationTv.setText(ad.getLocation());
 

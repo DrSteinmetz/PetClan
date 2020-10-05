@@ -64,6 +64,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         private ImageView authorPicIv;
         private TextView authorNameTv;
         private TextView postTimeAgo;
+        private TextView locationTv;
         private ShowMoreTextView contentTv;
         private ImageView likesAmountIv;
         private TextView likesAmountTv;
@@ -81,6 +82,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             authorPicIv = itemView.findViewById(R.id.author_pic_iv);
             authorNameTv = itemView.findViewById(R.id.author_name_tv);
             postTimeAgo = itemView.findViewById(R.id.time_ago_tv);
+            locationTv=itemView.findViewById(R.id.location_tv);
             contentTv = itemView.findViewById(R.id.post_content_tv);
             likesAmountIv = itemView.findViewById(R.id.like_amount_iv);
             likesAmountTv = itemView.findViewById(R.id.likes_amount_tv);
@@ -218,6 +220,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         holder.authorNameTv.setText(post.getAuthorName());
 
         holder.postTimeAgo.setText(timestampToTimeAgo(post.getPostTime()));
+
+        holder.locationTv.setText(post.getLocation());
 
         if (post.getAuthorEmail().equals(mMyEmail)) {
             holder.optionsBtn.setVisibility(View.VISIBLE);
