@@ -1,8 +1,6 @@
 package com.example.android2project.viewmodel;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -40,7 +38,6 @@ public class ConversationViewModel extends ViewModel {
     private Context mContext;
     private User mRecipient;
     private String mRecipientEmail;
-    private final String matan = "key=AAAAgHuON0g:APA91bH5HRhIng-B5_Zugw3c8RMJTn8YrbZgYbXRNglQayt6fKp3L0e-2bzNRyXUvaBx4sR2MwLI8oVO2Mkz4b0h5K8IZ27FROzg6vH4R64AOoUTpK8MTkftWbpOm9sCNyIB2jI0xCBO";
 
     private List<ChatMessage> mConversation = new ArrayList<>();
 
@@ -49,6 +46,8 @@ public class ConversationViewModel extends ViewModel {
 
     private MutableLiveData<ChatMessage> mUploadMessageSucceed;
     private MutableLiveData<String> mUploadMessageFailed;
+
+    private final String YEKIPA = "key=AAAAgHuON0g:APA91bH5HRhIng-B5_Zugw3c8RMJTn8YrbZgYbXRNglQayt6fKp3L0e-2bzNRyXUvaBx4sR2MwLI8oVO2Mkz4b0h5K8IZ27FROzg6vH4R64AOoUTpK8MTkftWbpOm9sCNyIB2jI0xCBO";
 
     private final String TAG = "ConversationViewModel";
 
@@ -153,7 +152,7 @@ public class ConversationViewModel extends ViewModel {
                         public Map<String, String> getHeaders() throws AuthFailureError {
                             Map<String, String> headers = new HashMap<>();
                             headers.put("Content-Type", "application/json");
-                            headers.put("Authorization", matan);
+                            headers.put("Authorization", YEKIPA);
                             return headers;
                         }
 
