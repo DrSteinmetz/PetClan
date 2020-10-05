@@ -1,5 +1,7 @@
 package com.example.android2project.model;
 
+import com.google.firebase.firestore.GeoPoint;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,8 +9,9 @@ import java.util.Date;
 public class Advertisement implements Serializable, Comparable<Object> {
     private String mAdvertisementId;
     private User mUser;
+    private GeoPoint mGeoPoint;
     private String mLocation;
-    private String mPrice;
+    private int mPrice;
     private String mItemName;
     private String mPetKind;
     private boolean mIsSell;
@@ -18,9 +21,10 @@ public class Advertisement implements Serializable, Comparable<Object> {
     private boolean mIsPet;
     private Date mPublishDate;
 
+
     public Advertisement() {}
 
-    public Advertisement(User user, String itemName, String location, String price, boolean isSell, String description, boolean isPet) {
+    public Advertisement(User user, String itemName, String location, int price, boolean isSell, String description, boolean isPet) {
         this.mAdvertisementId = user.getEmail() + System.nanoTime();
         this.mUser = user;
         this.mItemName = itemName;
@@ -48,19 +52,19 @@ public class Advertisement implements Serializable, Comparable<Object> {
         this.mUser = user;
     }
 
-    public String getLocation() {
-        return mLocation;
+    public GeoPoint getGeoPoint() {
+        return mGeoPoint;
     }
 
-    public void setLocation(String location) {
-        this.mLocation = location;
+    public void setGeoPoint(GeoPoint geoPoint) {
+        this.mGeoPoint = geoPoint;
     }
 
-    public String getPrice() {
+    public int getPrice() {
         return mPrice;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(int price) {
         this.mPrice = price;
     }
 
@@ -128,6 +132,15 @@ public class Advertisement implements Serializable, Comparable<Object> {
         this.mPublishDate = publishDate;
     }
 
+    public String getLocation() {
+        return mLocation;
+    }
+
+    public void setLocation(String location) {
+        this.mLocation = location;
+
+    }
+
     @Override
     public int compareTo(final Object object) {
         if (object instanceof Advertisement) {
@@ -142,9 +155,10 @@ public class Advertisement implements Serializable, Comparable<Object> {
         return "Advertisement{" +
                 "mAdvertisementId='" + mAdvertisementId + '\'' +
                 ", mUser=" + mUser +
+                ", mGeoPoint=" + mGeoPoint +
                 ", mLocation='" + mLocation + '\'' +
                 ", mPrice=" + mPrice +
-                ", mPetType='" + mItemName + '\'' +
+                ", mItemName='" + mItemName + '\'' +
                 ", mPetKind='" + mPetKind + '\'' +
                 ", mIsSell=" + mIsSell +
                 ", mDescription='" + mDescription + '\'' +

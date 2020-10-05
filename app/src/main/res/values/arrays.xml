@@ -38,4 +38,178 @@
         <item>מוצרי הגיינה</item>
 
     </string-array>
+
+    <string-array name="city_names">
+
+
+        <item>אביגדור</item>
+        <item>אביחיל</item>
+        <item>אבן יהודה</item>
+        <item>אודים</item>
+        <item>אום אל פחם</item>
+        <item>אופקים</item>
+        <item>אור יהודה</item>
+        <item>אור עקיבא</item>
+        <item>אזור</item>
+        <item>אחיעזר</item>
+        <item>אייל</item>
+        <item>אילת</item>
+        <item>אלישמע</item>
+        <item>אשדוד</item>
+        <item>אשקלון</item>
+        <item>באר יעקב</item>
+        <item>באר שבע</item>
+        <item>בארות יצחק</item>
+        <item>בית דגן</item>
+        <item>בית חירות</item>
+        <item>בית יהושע</item>
+        <item>בית שאן</item>
+        <item>בית שמש</item>
+        <item>ביתן אהרן</item>
+        <item>בני ברק</item>
+        <item>בני עטרות</item>
+        <item>בני ציון</item>
+        <item>בנימינה-גבעת עדה</item>
+        <item>בצרה</item>
+        <item>בת חן</item>
+        <item>בת ים</item>
+        <item>גבעת זאב</item>
+        <item>גבעת ח"ן</item>
+        <item>גבעת שמואל</item>
+        <item>גבעת שפירא</item>
+        <item>גבעתיים</item>
+        <item>גדרה</item>
+        <item>גליל ים</item>
+        <item>גן חיים</item>
+        <item>גן יבנה</item>
+        <item>גנות</item>
+        <item>גני עם</item>
+        <item>גני תקווה</item>
+        <item>גת רימון</item>
+        <item>דימונה</item>
+        <item>הוד השרון</item>
+        <item>הרצליה</item>
+        <item>זיתן</item>
+        <item>זכרון יעקב</item>
+        <item>חבצלת השרון</item>
+        <item>חגור</item>
+        <item>חדרה</item>
+        <item>חולון</item>
+        <item>חופית</item>
+        <item>חיפה</item>
+        <item>חמד</item>
+        <item>חצור הגלילית</item>
+        <item>חרוצים</item>
+        <item>חרות</item>
+        <item>טבריה</item>
+        <item>טירת כרמל</item>
+        <item>יבנה</item>
+        <item>יגל</item>
+        <item>יהוד</item>
+        <item>יקנעם עילית</item>
+        <item>ירוחם</item>
+        <item>ירושלים</item>
+        <item>ירקונה</item>
+        <item>כוכב יאיר</item>
+        <item>כנות</item>
+        <item>כפר אז"ר</item>
+        <item>כפר ביאליק</item>
+        <item>כפר הס</item>
+        <item>כפר ויתקין</item>
+        <item>כפר חב"ד</item>
+        <item>כפר יונה</item>
+        <item>כפר מל"ל</item>
+        <item>כפר מעש</item>
+        <item>כפר נטר</item>
+        <item>כפר סבא</item>
+        <item>כפר סירקין</item>
+        <item>כפר פינס</item>
+        <item>כפר שמריהו</item>
+        <item>כרמיאל</item>
+        <item>לוד</item>
+        <item>לוד נמל תעופה</item>
+        <item>מבשרת ציון</item>
+        <item>מגדל העמק</item>
+        <item>מגשימים</item>
+        <item>מודיעין-מכבים-רעות</item>
+        <item>מזכרת בתיה</item>
+        <item>מישור אדומים</item>
+        <item>מכבים</item>
+        <item>מכמורת</item>
+        <item>מעלה אדומים</item>
+        <item>מעלות</item>
+        <item>משמר השבעה</item>
+        <item>משמרת</item>
+        <item>מתן</item>
+        <item>נהריה</item>
+        <item>נוה מונסון )אפרים(</item>
+        <item>נווה ימין</item>
+        <item>נווה ירק</item>
+        <item>נחלים</item>
+        <item>ניר אליהו</item>
+        <item>ניר צבי</item>
+        <item>נס ציונה</item>
+        <item>נצר סרני</item>
+        <item>נצרת</item>
+        <item>נצרת עילית</item>
+        <item>נשר</item>
+        <item>נתיבות</item>
+        <item>נתניה</item>
+        <item>סביון</item>
+        <item>עדנים</item>
+        <item>עומר</item>
+        <item>עין ורד</item>
+        <item>עין שריד</item>
+        <item>עכו</item>
+        <item>עמק חפר</item>
+        <item>עפולה</item>
+        <item>ערד</item>
+        <item>פרדס חנה-כרכור</item>
+        <item>פרדסיה</item>
+        <item>פתח תקווה</item>
+        <item>צופית</item>
+        <item>צור יגאל</item>
+        <item>צפריה</item>
+        <item>צפת</item>
+        <item>צריפין</item>
+        <item>קדימה-צורן</item>
+        <item>קיסריה</item>
+        <item>קצרין</item>
+        <item>קרית אונו</item>
+        <item>קרית אתא</item>
+        <item>קרית ביאליק</item>
+        <item>קרית גת</item>
+        <item>קרית חיים</item>
+        <item>קרית טבעון</item>
+        <item>קרית ים</item>
+        <item>קרית מוצקין</item>
+        <item>קרית מלאכי</item>
+        <item>קרית עקרון</item>
+        <item>קרית שמואל</item>
+        <item>קרית שמונה</item>
+        <item>ראש העין</item>
+        <item>ראש פינה</item>
+        <item>ראשון לציון</item>
+        <item>רהט</item>
+        <item>רחובות</item>
+        <item>רמות השבים</item>
+        <item>רמלה</item>
+        <item>רמת אפעל</item>
+        <item>רמת גן</item>
+        <item>רמת הכובש</item>
+        <item>רמת השרון</item>
+        <item>רמת פנקס</item>
+        <item>רעות</item>
+        <item>רעננה</item>
+        <item>רשפון</item>
+        <item>שדה ורבורג</item>
+        <item>שדרות</item>
+        <item>שוהם</item>
+        <item>שפיים</item>
+        <item>תל אביב-יפו</item>
+        <item>תל השומר</item>
+        <item>תל מונד</item>
+        <item>תלמי מנשה</item>
+    </string-array>
+
 </resources>

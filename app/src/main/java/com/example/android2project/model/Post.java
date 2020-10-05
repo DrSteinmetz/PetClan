@@ -1,5 +1,7 @@
 package com.example.android2project.model;
 
+import com.google.firebase.firestore.GeoPoint;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,11 +17,14 @@ public class Post implements Serializable, Comparable<Object> {
     private int mCommentsCount = 0;
     private Map<String, Boolean> mLikesMap = new HashMap<>();
     private int mLikesCount = 0;
+    private String mLocation;
+    private GeoPoint mGeoPoint;
 
     public Post() {
     }
 
     public Post(String authorEmail, String authorName, String authorImageUri, String authorContent) {
+        this.mPostId=authorEmail+System.nanoTime();
         this.mAuthorEmail = authorEmail;
         this.mAuthorName = authorName;
         this.mAuthorImageUri = authorImageUri;
@@ -99,17 +104,36 @@ public class Post implements Serializable, Comparable<Object> {
         this.mLikesMap = likesMap;
     }
 
+    public String getLocation() {
+        return mLocation;
+    }
+
+    public void setLocation(String location) {
+        this.mLocation = location;
+    }
+
+    public GeoPoint getGeoPoint() {
+        return mGeoPoint;
+    }
+
+    public void setGeoPoint(GeoPoint geoPoint) {
+        this.mGeoPoint = geoPoint;
+    }
+
     @Override
     public String toString() {
-        return "Post: {" +
-                "AuthorEmail='" + mAuthorEmail + '\'' +
-                ", AuthorName='" + mAuthorName + '\'' +
-                ", AuthorImageUri='" + mAuthorImageUri + '\'' +
-                ", PostTime=" + mPostTime +
-                ", AuthorContent='" + mAuthorContent + '\'' +
-                ", CommentsCount=" + mCommentsCount +
-                ", LikesMap=" + mLikesMap +
-                ", LikesCount=" + mLikesCount +
+        return "Post{" +
+                "mPostId='" + mPostId + '\'' +
+                ", mAuthorEmail='" + mAuthorEmail + '\'' +
+                ", mAuthorName='" + mAuthorName + '\'' +
+                ", mAuthorImageUri='" + mAuthorImageUri + '\'' +
+                ", mPostTime=" + mPostTime +
+                ", mAuthorContent='" + mAuthorContent + '\'' +
+                ", mCommentsCount=" + mCommentsCount +
+                ", mLikesMap=" + mLikesMap +
+                ", mLikesCount=" + mLikesCount +
+                ", mLocation='" + mLocation + '\'' +
+                ", mGeoPoint=" + mGeoPoint +
                 '}';
     }
 

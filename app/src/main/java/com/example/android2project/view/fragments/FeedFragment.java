@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -31,6 +32,7 @@ import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.model.ViewModelFactory;
 import com.example.android2project.viewmodel.FeedViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.util.List;
 
@@ -44,6 +46,7 @@ public class FeedFragment extends Fragment {
     private PostsAdapter mPostsAdapter;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
+
 
     private Observer<List<Post>> mOnPostDownloadSucceed;
     private Observer<String> mOnPostDownloadFailed;
@@ -66,7 +69,7 @@ public class FeedFragment extends Fragment {
     private Observer<Address> mOnLocationChanged;
 
     private LocationUtils mLocationUtils;
-    private String mUserLocation = "Unknown";
+    private Address mUserLocation;
 
     private final String TAG = "FeedFragment";
 
@@ -110,6 +113,7 @@ public class FeedFragment extends Fragment {
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Feed)).get(FeedViewModel.class);
         mViewModel.setUserEmail(mUserEmail);
+
         mViewModel.refreshPosts();
 
         if (mUserEmail == null) {
@@ -204,7 +208,7 @@ public class FeedFragment extends Fragment {
         mOnLocationChanged = new Observer<Address>() {
             @Override
             public void onChanged(Address address) {
-                mUserLocation = address.getLocality();
+                mUserLocation = address;
                 mViewModel.updateUserLocation(address);
             }
         };
@@ -285,7 +289,9 @@ public class FeedFragment extends Fragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mViewModel.refreshPosts();
+                if (mUserLocation != null ) {
+                    mViewModel.refreshPosts();
+                }
             }
         });
 
@@ -352,9 +358,11 @@ public class FeedFragment extends Fragment {
         final EditText postContentEt = view.findViewById(R.id.new_post_content_et);
         final Button postBtn = view.findViewById(R.id.post_btn);
         postBtn.setText("Post");
+
         postBtn.setEnabled(false);
 
         final AlertDialog alertDialog = builder.create();
+
 
         postContentEt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -374,11 +382,17 @@ public class FeedFragment extends Fragment {
         postBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mViewModel.uploadNewPost(postContentEt.getText().toString());
+
+                final Post post = new Post(mViewModel.getMyEmail(), mViewModel.getMyName(),
+                        mViewModel.getMyPhotoUri(),postContentEt.getText().toString());
+
+                        post.setLocation(mUserLocation.getLocality());
+                        post.setGeoPoint(new GeoPoint(mUserLocation.getLatitude(),mUserLocation.getLongitude()));
+
+                        mViewModel.uploadNewPost(post);
                 alertDialog.dismiss();
             }
         });
-
         alertDialog.show();
     }
 

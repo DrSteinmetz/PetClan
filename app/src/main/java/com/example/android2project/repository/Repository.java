@@ -1,21 +1,28 @@
 package com.example.android2project.repository;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Path;
 import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
+import androidx.preference.PreferenceManager;
 
 import com.example.android2project.model.Advertisement;
 import com.example.android2project.model.ChatMessage;
 import com.example.android2project.model.Comment;
 import com.example.android2project.model.Conversation;
+import com.example.android2project.model.LocationUtils;
 import com.example.android2project.model.Pet;
 import com.example.android2project.model.Post;
 import com.example.android2project.model.User;
+import com.example.android2project.view.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -39,8 +46,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -50,6 +59,7 @@ public class Repository {
     private Context mContext;
 
     private static Repository repository;
+
 
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference mDBChats;
@@ -480,6 +490,8 @@ public class Repository {
         final List<Post> posts = new ArrayList<>();
         final FirebaseUser user = mAuth.getCurrentUser();
 
+        final int distance=PreferenceManager.getDefaultSharedPreferences(mContext).getInt("distance_sb",500);
+
         if (user != null) {
             mCloudDB.collectionGroup(POSTS)
                     .get()
@@ -488,12 +500,18 @@ public class Repository {
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
                                 for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                                    posts.add(document.toObject(Post.class));
+//                                    posts.add(document.toObject(Post.class));
+                                    Post post=document.toObject(Post.class);
+                                    if(LocationUtils.getDistance(post.getGeoPoint())<=distance){
+                                        posts.add(post);
+
+                                    }
                                 }
 
                                 /*if (mPostDownloadListener != null) {
                                     mPostDownloadListener.onPostDownloadSucceed(posts);
                                 }*/
+
                                 if (mRepositoryPostDownloadSucceedMLD != null) {
                                     Collections.sort(posts);
                                     mRepositoryPostDownloadSucceedMLD.setValue(posts);
@@ -550,15 +568,10 @@ public class Repository {
                 });
     }
 
-    public void uploadNewPost(String postContent) {
+    public void uploadNewPost(final Post post) {
         final FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {
-            final Post post = new Post(user.getEmail(), user.getDisplayName(),
-                    Objects.requireNonNull(user.getPhotoUrl()).toString(),
-                    postContent);
-
-            post.setPostId(user.getEmail() + System.nanoTime());
 
             mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
                     .collection(POSTS)
@@ -1188,6 +1201,9 @@ public class Repository {
 
     public void uploadAd(final Advertisement advertisement) {
         String userEmail = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
+
+
+
         if (userEmail != null) {
             mCloudAds.document(advertisement.getAdvertisementId())
                     .set(advertisement)
@@ -1196,6 +1212,7 @@ public class Repository {
                         public void onSuccess(Void aVoid) {
                             if (mUploadAdListener != null) {
                                 mUploadAdListener.onUploadAdSucceed(advertisement);
+
                             }
                         }
                     })
@@ -1209,6 +1226,36 @@ public class Repository {
                     });
         }
     }
+
+    public void updateAdLocation(final Address address,final Advertisement advertisement) {
+
+        Log.d(TAG, "updateAdLocation: momo");
+
+        final FirebaseUser user = mAuth.getCurrentUser();
+
+        Map<String, Object> updateAdMap = new HashMap<>();
+        final GeoPoint geoPoint = new GeoPoint(address.getLatitude(), address.getLongitude());
+        updateAdMap.put("geoPoint", geoPoint);
+
+        if (user != null) {
+            mCloudAds.document(advertisement.getAdvertisementId())
+                    .update(updateAdMap)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, "onSuccess: abu enak"+geoPoint.getLongitude()+geoPoint.getLatitude());
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "onFailure: bad");
+                        }
+                    });
+        }
+
+    }
+
 
     public void deleteAdvertisement(Advertisement advertisement) {
         mCloudAds.document(advertisement.getAdvertisementId()).delete()
@@ -1230,4 +1277,6 @@ public class Repository {
         com.google.firebase.firestore.Query.Direction direction = (isDes ? com.google.firebase.firestore.Query.Direction.DESCENDING : com.google.firebase.firestore.Query.Direction.ASCENDING);
         return mCloudAds.orderBy(orderBy,direction);
     }
+
+
 }

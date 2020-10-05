@@ -1,8 +1,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:scrollbarAlwaysDrawVerticalTrack="true">
 
 
@@ -114,8 +114,8 @@
                     android:gravity="center"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="3dp"
-                    android:textColor="@drawable/radio_button_text_selector"
-                    android:text="Pet" />
+                    android:text="Pet"
+                    android:textColor="@drawable/radio_button_text_selector" />
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/product_rb"
@@ -197,9 +197,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/gender_layout"
             android:layout_centerHorizontal="true"
+            android:background="@drawable/spinner_bg"
             android:paddingHorizontal="20dp"
-            android:visibility="gone"
-            android:background="@drawable/spinner_bg" />
+            android:visibility="gone" />
 
         <!--        <com.google.android.material.textfield.TextInputLayout-->
         <!--            android:id="@+id/item_name_et_layout"-->
@@ -235,9 +235,9 @@
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="5dp"
             android:hint="Kind"
-            app:endIconMode="clear_text"
             android:textColorHint="@color/colorPrimaryDark"
-            android:visibility="gone">
+            android:visibility="gone"
+            app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/pet_kind_et"
@@ -252,18 +252,56 @@
         </com.google.android.material.textfield.TextInputLayout>
 
 
+        <LinearLayout
+            android:id="@+id/location_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/pet_kind_et_layout"
+            android:visibility="gone"
+            android:orientation="horizontal">
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="5dp"
+                android:hint="Location"
+                android:textColorHint="@color/colorPrimaryDark"
+                app:endIconMode="clear_text"
+                app:startIconDrawable="@drawable/ic_baseline_location_black_24">
+
+
+                <AutoCompleteTextView
+                    android:id="@+id/location_auto_tv"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                  />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/locate_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="locate me" />
+
+
+        </LinearLayout>
+
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/pet_price_et_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/pet_kind_et_layout"
+            android:layout_below="@id/location_layout"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="10dp"
             android:hint="Price"
-            app:endIconMode="clear_text"
             android:textColorHint="@color/colorPrimaryDark"
-            android:visibility="gone">
+            android:visibility="gone"
+            app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/pet_price_et"
@@ -286,9 +324,9 @@
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="10dp"
             android:hint="Description"
-            app:endIconMode="clear_text"
             android:textColorHint="@color/colorPrimaryDark"
-            android:visibility="gone">
+            android:visibility="gone"
+            app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/pet_description_et"
@@ -333,7 +371,6 @@
             android:layout_below="@id/photos_btns"
             android:orientation="horizontal"
             android:visibility="gone">
-
 
 
         </androidx.recyclerview.widget.RecyclerView>
