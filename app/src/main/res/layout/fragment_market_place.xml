@@ -76,6 +76,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="10dp"
                 android:gravity="center_horizontal"
+                android:checkedButton="@id/filter_high_to_low_rb"
                 android:orientation="horizontal">
 
                 <com.google.android.material.radiobutton.MaterialRadioButton

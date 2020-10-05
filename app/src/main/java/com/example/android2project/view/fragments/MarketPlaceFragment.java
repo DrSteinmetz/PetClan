@@ -38,6 +38,7 @@ public class MarketPlaceFragment extends Fragment {
 
     private final String TAG = "MarketPlaceFragment";
     private FirestorePagingOptions<Advertisement> mOptions;
+    private PagedList.Config mConfig;
 
     private Observer<Boolean> mOnDeletingAdSucceed;
 
@@ -86,7 +87,7 @@ public class MarketPlaceFragment extends Fragment {
             }
         });
 
-        PagedList.Config config = new PagedList.Config.Builder()
+        mConfig = new PagedList.Config.Builder()
                 .setEnablePlaceholders(false)
                 .setPrefetchDistance(10)
                 .setPageSize(20)
@@ -94,7 +95,7 @@ public class MarketPlaceFragment extends Fragment {
 
         mOptions = new FirestorePagingOptions.Builder<Advertisement>()
                 .setLifecycleOwner(this)
-                .setQuery(mViewModel.getAds(), config, Advertisement.class)
+                .setQuery(mViewModel.getAds(), mConfig, Advertisement.class)
                 .build();
 
         mMarketRecycler.setLayoutManager(new GridLayoutManager(getContext(), 2));
@@ -112,7 +113,8 @@ public class MarketPlaceFragment extends Fragment {
             @Override
             public void onEditOptionClicked(int position, View view) {
                 currentAd = mAdsAdapter.getCurrentAd(position);
-                AdvertisementFragment.newInstance(currentAd).show(getChildFragmentManager(),"advertisement_fragment");
+                AdvertisementFragment.newInstance(currentAd)
+                        .show(getChildFragmentManager(),"advertisement_fragment");
             }
 
             @Override
@@ -128,6 +130,32 @@ public class MarketPlaceFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 AdvertisementFragment.newInstance(null).show(getChildFragmentManager(),"advertisement_fragment");
+            }
+        });
+
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String orderBy = optionsFilter.getSelectedItem().toString();
+                switch (orderBy){
+                    case "Date":
+                        orderBy = "publishDate";
+                        break;
+                    case "Price":
+                        orderBy = "price";
+                        break;
+                    case "Distance":
+                        orderBy = "location";
+                        break;
+                }
+                final boolean isDes = radioGroup.getCheckedRadioButtonId() == R.id.filter_high_to_low_rb;
+                mOptions = new FirestorePagingOptions.Builder<Advertisement>()
+                        .setLifecycleOwner(getViewLifecycleOwner())
+                        .setQuery(mViewModel.getFilteredAds(orderBy,isDes), mConfig, Advertisement.class)
+                        .build();
+
+                mAdsAdapter.updateOptions(mOptions);
+                mAdsAdapter.refresh();
             }
         });
 

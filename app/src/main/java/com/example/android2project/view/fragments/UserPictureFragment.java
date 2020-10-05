@@ -30,6 +30,8 @@ import com.example.android2project.R;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.viewmodel.UserPictureViewModel;
 import com.example.android2project.model.ViewModelFactory;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 
@@ -59,7 +61,8 @@ public class UserPictureFragment extends Fragment {
 
     private UserPictureListener listener;
 
-    public UserPictureFragment() {}
+    public UserPictureFragment() {
+    }
 
     public static UserPictureFragment newInstance() {
         return new UserPictureFragment();
@@ -128,10 +131,15 @@ public class UserPictureFragment extends Fragment {
         galleryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(Intent.createChooser(intent,
-                        "Choose your profile picture"), GALLERY_REQUEST);
+//                Intent intent = new Intent(Intent.ACTION_PICK,
+//                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                startActivityForResult(Intent.createChooser(intent,
+//                        "Choose your profile picture"), GALLERY_REQUEST);
+                CropImage.activity()
+                        .setAspectRatio(1, 1)
+                        .setCropShape(CropImageView.CropShape.RECTANGLE)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .start(requireContext(), UserPictureFragment.this);
             }
         });
 
@@ -150,9 +158,16 @@ public class UserPictureFragment extends Fragment {
                                 "petclan" + System.nanoTime() + "pic.jpg");
                         mSelectedImage = FileProvider.getUriForFile(requireContext(),
                                 "com.example.android2project.provider", mFile);
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, mSelectedImage);
-                        startActivityForResult(intent, CAMERA_REQUEST);
+//                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                        intent.putExtra(MediaStore.EXTRA_OUTPUT, mSelectedImage);
+//                        startActivityForResult(intent, CAMERA_REQUEST);
+
+                        CropImage.activity()
+                                .setAspectRatio(1, 1)
+                                .setCropShape(CropImageView.CropShape.RECTANGLE)
+                                .setGuidelines(CropImageView.Guidelines.ON)
+                                .setOutputUri(mSelectedImage)
+                                .start(requireContext(), UserPictureFragment.this);
                     }
                 }
             }
@@ -180,9 +195,15 @@ public class UserPictureFragment extends Fragment {
                         "petclan" + System.nanoTime() + "pic.jpg");
                 mSelectedImage = FileProvider.getUriForFile(requireContext(),
                         "com.example.android2project.provider", mFile);
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, mSelectedImage);
-                startActivityForResult(intent, CAMERA_REQUEST);
+//                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                intent.putExtra(MediaStore.EXTRA_OUTPUT, mSelectedImage);
+//                startActivityForResult(intent, CAMERA_REQUEST);
+                CropImage.activity()
+                        .setAspectRatio(1, 1)
+                        .setCropShape(CropImageView.CropShape.RECTANGLE)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setOutputUri(mSelectedImage)
+                        .start(requireContext(), UserPictureFragment.this);
             }
         }
     }
@@ -191,24 +212,35 @@ public class UserPictureFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == CAMERA_REQUEST) {
+//        if (resultCode == Activity.RESULT_OK) {
+//            if (requestCode == CAMERA_REQUEST) {
+//                if (mUserPictureIv != null) {
+//                    Glide.with(this)
+//                            .load(mSelectedImage)
+//                            .error(R.drawable.ic_petclan_logo)
+//                            .into(mUserPictureIv);
+//                }
+//            } else if (requestCode == GALLERY_REQUEST) {
+//                if (data != null) {
+//                    mSelectedImage = data.getData();
+//
+//                    if (mUserPictureIv != null) {
+//                        Glide.with(this)
+//                                .load(mSelectedImage)
+//                                .error(R.drawable.ic_petclan_logo)
+//                                .into(mUserPictureIv);
+//                    }
+//                }
+//            }
+//        }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (result != null) {
                 if (mUserPictureIv != null) {
                     Glide.with(this)
                             .load(mSelectedImage)
                             .error(R.drawable.ic_petclan_logo)
                             .into(mUserPictureIv);
-                }
-            } else if (requestCode == GALLERY_REQUEST) {
-                if (data != null) {
-                    mSelectedImage = data.getData();
-
-                    if (mUserPictureIv != null) {
-                        Glide.with(this)
-                                .load(mSelectedImage)
-                                .error(R.drawable.ic_petclan_logo)
-                                .into(mUserPictureIv);
-                    }
                 }
             }
         }

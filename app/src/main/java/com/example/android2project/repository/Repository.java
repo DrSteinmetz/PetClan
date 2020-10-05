@@ -1,6 +1,7 @@
 package com.example.android2project.repository;
 
 import android.content.Context;
+import android.graphics.Path;
 import android.location.Address;
 import android.net.Uri;
 import android.util.Log;
@@ -242,6 +243,8 @@ public class Repository {
         }
         return mRepositoryPostDeletionFailedMLD;
     }
+
+
 
     /**<-------Comments Interfaces------->**/
     /**<-------Comment Downloading interface------->**/
@@ -1222,5 +1225,10 @@ public class Repository {
 
     public com.google.firebase.firestore.Query getAllAds() {
         return mCloudAds.orderBy("publishDate", com.google.firebase.firestore.Query.Direction.DESCENDING);
+    }
+
+    public com.google.firebase.firestore.Query getFilteredAds(String orderBy, boolean isDes) {
+        com.google.firebase.firestore.Query.Direction direction = (isDes ? com.google.firebase.firestore.Query.Direction.DESCENDING : com.google.firebase.firestore.Query.Direction.ASCENDING);
+        return mCloudAds.orderBy(orderBy,direction);
     }
 }

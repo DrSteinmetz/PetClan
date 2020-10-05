@@ -33,6 +33,8 @@ import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.viewmodel.PetViewModel;
 import com.example.android2project.model.ViewModelFactory;
 import com.google.android.material.textfield.TextInputEditText;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -99,10 +101,15 @@ public class AddPetFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if (mImageViewCounter < 8) {
-                    Intent intent = new Intent(Intent.ACTION_PICK,
-                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(Intent.createChooser(intent,
-                            "Select Picture"), GALLERY_REQUEST);
+//                    Intent intent = new Intent(Intent.ACTION_PICK,
+////                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+////                    startActivityForResult(Intent.createChooser(intent,
+////                            "Select Picture"), GALLERY_REQUEST);
+                    CropImage.activity()
+                            .setAspectRatio(4, 3)
+                            .setCropShape(CropImageView.CropShape.RECTANGLE)
+                            .setGuidelines(CropImageView.Guidelines.ON)
+                            .start(requireContext(), AddPetFragment.this);
                 } else {
                     Toast.makeText(getContext(), "Woof!", Toast.LENGTH_SHORT).show();
                 }
@@ -124,10 +131,16 @@ public class AddPetFragment extends DialogFragment {
                                 "petclan" + System.nanoTime() + "pic.jpg");
                         Uri uri = FileProvider.getUriForFile(requireContext(),
                                 "com.example.android2project.provider", mFile);
-                        mSelectedImageList.add(uri);
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                        startActivityForResult(intent, CAMERA_REQUEST);
+//                        mSelectedImageList.add(uri);
+//                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+//                        startActivityForResult(intent, CAMERA_REQUEST);
+                        CropImage.activity()
+                                .setAspectRatio(4, 3)
+                                .setCropShape(CropImageView.CropShape.RECTANGLE)
+                                .setGuidelines(CropImageView.Guidelines.ON)
+                                .setOutputUri(uri)
+                                .start(requireContext(), AddPetFragment.this);
                     }
                 }
             }
@@ -171,10 +184,16 @@ public class AddPetFragment extends DialogFragment {
                         "petclan" + System.nanoTime() + "pic.jpg");
                 Uri uri = FileProvider.getUriForFile(requireContext(),
                         "com.example.android2project.provider", mFile);
-                mSelectedImageList.add(uri);
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                startActivityForResult(intent, CAMERA_REQUEST);
+//                mSelectedImageList.add(uri);
+//                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+//                startActivityForResult(intent, CAMERA_REQUEST);
+                CropImage.activity()
+                        .setAspectRatio(4, 3)
+                        .setCropShape(CropImageView.CropShape.RECTANGLE)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setOutputUri(uri)
+                        .start(requireContext(), AddPetFragment.this);
             }
         }
     }
@@ -183,24 +202,35 @@ public class AddPetFragment extends DialogFragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == CAMERA_REQUEST) {
+//        if (resultCode == Activity.RESULT_OK) {
+//            if (requestCode == CAMERA_REQUEST) {
+//                Glide.with(this)
+//                        .load(mSelectedImageList.get(mImageViewCounter))
+//                        .error(R.drawable.ic_petclan_logo)
+//                        .into(mImageViews.get(mImageViewCounter++));
+//
+//            } else if (requestCode == GALLERY_REQUEST) {
+//                if (data != null) {
+//                    final Uri selectedImage = data.getData();
+//                    mSelectedImageList.add(selectedImage);
+//
+//
+//                    Glide.with(this)
+//                            .load(selectedImage)
+//                            .error(R.drawable.ic_petclan_logo)
+//                            .into(mImageViews.get(mImageViewCounter++));
+//                }
+//            }
+//        }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (result!=null) {
+                //mSelectedImageList.remove(mImageViewCounter);
+                mSelectedImageList.add(mImageViewCounter, result.getUri());
                 Glide.with(this)
-                        .load(mSelectedImageList.get(mImageViewCounter))
+                        .load(result.getUri())
                         .error(R.drawable.ic_petclan_logo)
                         .into(mImageViews.get(mImageViewCounter++));
-
-            } else if (requestCode == GALLERY_REQUEST) {
-                if (data != null) {
-                    final Uri selectedImage = data.getData();
-                    mSelectedImageList.add(selectedImage);
-
-
-                    Glide.with(this)
-                            .load(selectedImage)
-                            .error(R.drawable.ic_petclan_logo)
-                            .into(mImageViews.get(mImageViewCounter++));
-                }
             }
         }
     }
