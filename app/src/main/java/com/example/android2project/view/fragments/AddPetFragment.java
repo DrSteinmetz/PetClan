@@ -260,5 +260,4 @@ public class AddPetFragment extends DialogFragment {
         mLoadingDialog = builder.create();
         mLoadingDialog.show();
     }
-
 }
