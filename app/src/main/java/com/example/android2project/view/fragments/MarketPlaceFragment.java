@@ -41,7 +41,6 @@ public class MarketPlaceFragment extends Fragment {
 
     private Observer<Boolean> mOnDeletingAdSucceed;
 
-
     public MarketPlaceFragment() {
     }
 
@@ -55,7 +54,6 @@ public class MarketPlaceFragment extends Fragment {
 
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.MarketPlace)).get(MarketPlaceViewModel.class);
-
 
         mOnDeletingAdSucceed = new Observer<Boolean>() {
             @Override
@@ -112,7 +110,7 @@ public class MarketPlaceFragment extends Fragment {
             @Override
             public void onEditOptionClicked(int position, View view) {
                 currentAd = mAdsAdapter.getCurrentAd(position);
-                AdvertisementFragment.newInstance(currentAd).show(getChildFragmentManager(),"advertisement_fragment");
+                AdvertisementFragment.newInstance(currentAd).show(getChildFragmentManager(), "advertisement_fragment");
             }
 
             @Override
@@ -127,7 +125,7 @@ public class MarketPlaceFragment extends Fragment {
         addAdBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AdvertisementFragment.newInstance(null).show(getChildFragmentManager(),"advertisement_fragment");
+                AdvertisementFragment.newInstance(null).show(getChildFragmentManager(), "advertisement_fragment");
             }
         });
 
@@ -136,15 +134,20 @@ public class MarketPlaceFragment extends Fragment {
 
     private void startObservation() {
         if (mViewModel != null) {
-            mViewModel.getOnAdDeletingSucceed().observe(this,mOnDeletingAdSucceed);
+            mViewModel.getOnAdDeletingSucceed().observe(this, mOnDeletingAdSucceed);
         }
     }
 
-
+    public void uploadAdSucceed(Advertisement ad, AlertDialog loadingDialog) {
+        Log.d(TAG, "uploadAdSucceed: zxc adapter " + mAdsAdapter);
+        loadingDialog.dismiss();
+        mAdsAdapter.refresh();
+    }
 
     @Override
     public void onStart() {
         super.onStart();
+
         mAdsAdapter.startListening();
         Log.d(TAG, "onStart: zxc adapter" + mAdsAdapter);
     }
@@ -152,17 +155,8 @@ public class MarketPlaceFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+
         mAdsAdapter.stopListening();
-        Log.d(TAG, "onStop: zxc adapter "+mAdsAdapter);
+        Log.d(TAG, "onStop: zxc adapter " + mAdsAdapter);
     }
-
-
-    public void uploadAdSucceed(Advertisement ad, AlertDialog loadingDialog) {
-        Log.d(TAG, "uploadAdSucceed: zxc adapter "+mAdsAdapter);
-        loadingDialog.dismiss();
-        mAdsAdapter.refresh();
-
-    }
-
-
 }

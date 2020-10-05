@@ -115,8 +115,7 @@
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="3dp"
                     android:textColor="@drawable/radio_button_text_selector"
-                    android:text="Pet"
-                    />
+                    android:text="Pet" />
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/product_rb"
