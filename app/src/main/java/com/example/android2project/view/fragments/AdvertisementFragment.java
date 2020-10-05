@@ -108,7 +108,6 @@ public class AdvertisementFragment extends DialogFragment {
         return fragment;
     }
 
-
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -449,7 +448,6 @@ public class AdvertisementFragment extends DialogFragment {
             }
         });
 
-
         return rootView;
     }
 
@@ -570,6 +568,7 @@ public class AdvertisementFragment extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
+
         Window window = Objects.requireNonNull(getDialog()).getWindow();
         if (window != null) {
             window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,

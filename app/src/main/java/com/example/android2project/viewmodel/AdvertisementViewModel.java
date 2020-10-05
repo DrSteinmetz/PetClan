@@ -93,7 +93,6 @@ public class AdvertisementViewModel extends ViewModel {
         return onAdUploadFailed;
     }
 
-
     private void attachSetOnUploadAdListener() {
         mRepository.setUploadAdListener(new Repository.RepositoryUploadAdInterface() {
             @Override
@@ -109,6 +108,7 @@ public class AdvertisementViewModel extends ViewModel {
         });
     }
 
+
     public void uploadAdPhotos(List<String> imageList) {
         final String userEmail = mAuth.getUserEmail();
         mTotalCount = numberOfImages(imageList);
@@ -117,8 +117,7 @@ public class AdvertisementViewModel extends ViewModel {
             if (str != null && !str.contains("https://firebasestorage.googleapis.com/v0/b/petclan-2fdce.appspot.com")) {
                 Uri uri = Uri.parse(str);
                 mStorageRepository.uploadPhoto(PATH, uri, userEmail, 1);
-            }
-            else if(str != null && str.contains("https://firebasestorage.googleapis.com/v0/b/petclan-2fdce.appspot.com")){
+            } else if (str != null && str.contains("https://firebasestorage.googleapis.com/v0/b/petclan-2fdce.appspot.com")) {
                 mPhotosDownloadString.add(str);
                 mIterationCount++;
             }
@@ -152,8 +151,6 @@ public class AdvertisementViewModel extends ViewModel {
         mStorageRepository.deletePhotoFromStorage(photoUri);
     }
 
-
-
     private int numberOfImages(List<String> imageList) {
         int counter = 0;
         for (String uri : imageList) {
@@ -161,7 +158,7 @@ public class AdvertisementViewModel extends ViewModel {
                 counter++;
             }
         }
-        Log.d(TAG, "numberOfImages: zxc "+ counter);
+        Log.d(TAG, "numberOfImages: zxc " + counter);
         return counter;
     }
 }

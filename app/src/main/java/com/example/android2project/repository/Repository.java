@@ -910,7 +910,6 @@ public class Repository {
                 });
     }
 
-
     public void updateUserLocation(final Address address) {
         final FirebaseUser user = mAuth.getCurrentUser();
 

@@ -8,6 +8,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.android2project.model.RotateBitmap;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -27,7 +28,6 @@ public class StorageRepository {
 
     private final int COMPRESS_PERCENTAGE = 20;
     private final String TAG = "StorageRepository";
-
 
 
     /**<-------Picture Download interface------->**/
@@ -95,9 +95,7 @@ public class StorageRepository {
         this.mDeletePicListener = storageDeletePicInterface;
     }
 
-    /**
-     * <-------Picture Deletion interface------->
-     **/
+    /**<-------Picture Deletion interface------->**/
     public interface StorageDeleteAdPicInterface {
         void onDeleteAdPicSuccess(String imagePath);
 
@@ -111,7 +109,6 @@ public class StorageRepository {
     }
 
     /**<-------Singleton------->**/
-
     public static StorageRepository getInstance(Context context) {
         if (storageRepository == null) {
             storageRepository = new StorageRepository(context);
@@ -130,7 +127,9 @@ public class StorageRepository {
         //TODO: need to rotate the picture if needed
 
         try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
+            //Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
+            RotateBitmap rotateBitmap = new RotateBitmap();
+            Bitmap bitmap = rotateBitmap.HandleSamplingAndRotationBitmap(mContext, uri);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESS_PERCENTAGE, byteArrayOutputStream);
             byte[] bytes = byteArrayOutputStream.toByteArray();
@@ -172,7 +171,9 @@ public class StorageRepository {
 
     public void uploadPhoto(final String path, final Uri uri, final String userEmail, final int iteration) {
         try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
+            //Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
+            RotateBitmap rotateBitmap = new RotateBitmap();
+            Bitmap bitmap = rotateBitmap.HandleSamplingAndRotationBitmap(mContext, uri);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESS_PERCENTAGE, byteArrayOutputStream);
             byte[] bytes = byteArrayOutputStream.toByteArray();
@@ -195,7 +196,6 @@ public class StorageRepository {
                                             Log.d(TAG, "onSuccess: qwerty " + uri.toString());
                                             mAdUploadPicListener.onAdUploadPicSuccess(uri.toString(), iteration);
                                         }
-
                                     }
                                 }
                             }));
@@ -216,7 +216,6 @@ public class StorageRepository {
             e.printStackTrace();
         }
     }
-
 
     public void downloadFile(final String imageUri) {
         StorageReference fileToDownload = mStorage.child(imageUri);
@@ -284,6 +283,4 @@ public class StorageRepository {
             }
         });
     }
-
-
 }

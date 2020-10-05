@@ -286,6 +286,11 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onAdUploadSucceed(Advertisement ad, AlertDialog loadingDialog) {
+        ((MarketPlaceFragment) fragmentList.get(2)).uploadAdSucceed(ad, loadingDialog);
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
@@ -305,12 +310,6 @@ public class MainActivity extends AppCompatActivity implements
                                 .beginTransaction(), "fragment_conversation");
             }
         }
-    }
-
-
-    @Override
-    public void onAdUploadSucceed(Advertisement ad, AlertDialog loadingDialog) {
-        ((MarketPlaceFragment) fragmentList.get(2)).uploadAdSucceed(ad, loadingDialog);
     }
 
     @Override
