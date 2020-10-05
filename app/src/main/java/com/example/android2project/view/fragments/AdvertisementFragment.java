@@ -44,6 +44,8 @@ import com.example.android2project.model.ViewModelFactory;
 import com.example.android2project.viewmodel.AdvertisementViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -129,43 +131,31 @@ public class AdvertisementFragment extends DialogFragment {
         mOnUploadingAdPhotosSucceed = new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-
+                final boolean isSell = actionRg.getCheckedRadioButtonId() == R.id.sell_rb;
+                final boolean isPet = categoryRg.getCheckedRadioButtonId() == R.id.pet_rb;
+                final boolean isMale = genderRg.getCheckedRadioButtonId() == R.id.male_rb;
+                final String itemType = typeSp.getSelectedItem().toString();
+                final String kind = kindEt.getText().toString().trim();
+                final String price = priceEt.getText().toString();
+                final String description = descriptionEt.getText().toString().trim();
                 if (mAdvertisement == null) {
-                    final boolean isSell = actionRg.getCheckedRadioButtonId() == R.id.sell_rb;
-                    final String itemType = (String) typeSp.getSelectedItem();
-                    final String kind = kindEt.getText().toString().trim();
-                    final String price = priceEt.getText().toString();
-                    final String description = descriptionEt.getText().toString().trim();
-                    final boolean isPet = categoryRg.getCheckedRadioButtonId() == R.id.pet_rb;
-                    boolean isMale = genderRg.getCheckedRadioButtonId() == R.id.male_rb;
-
                     Advertisement advertisement = new Advertisement(mViewModel.getCurrentUser(),
                             itemType, "Unknown", price, isSell, description, isPet);
-
                     advertisement.setIsMale(isMale);
                     advertisement.setPetKind(kind);
                     mViewModel.addAdvertisement(advertisement);
                     Log.d(TAG, "onChanged: add qwerty");
                 } else {
-                    final boolean isSell = actionRg.getCheckedRadioButtonId() == R.id.sell_rb;
-                    final boolean isPet = categoryRg.getCheckedRadioButtonId() == R.id.pet_rb;
-                    final boolean isMale = genderRg.getCheckedRadioButtonId() == R.id.male_rb;
-                    final String itemName = typeSp.getSelectedItem().toString();
-                    final String kind = kindEt.getText().toString().trim();
-                    final String price = priceEt.getText().toString();
-                    final String description = descriptionEt.getText().toString().trim();
-
                     mAdvertisement.setIsSell(isSell);
                     mAdvertisement.setIsPet(isPet);
                     mAdvertisement.setIsMale(isMale);
-                    mAdvertisement.setItemName(itemName);
+                    mAdvertisement.setItemName(itemType);
                     mAdvertisement.setPetKind(kind);
                     mAdvertisement.setPrice(price);
                     mAdvertisement.setDescription(description);
                     Log.d(TAG, "onChanged: edit qwerty");
                     mViewModel.addAdvertisement(mAdvertisement);
                 }
-
             }
         };
 
@@ -297,9 +287,6 @@ public class AdvertisementFragment extends DialogFragment {
                     cameraBtn.setVisibility(View.VISIBLE);
                     galleryBtn.setVisibility(View.VISIBLE);
                     publishBtn.setVisibility(View.VISIBLE);
-
-                    mImagePreviewRecycler.setAdapter(mImagePreviewAdapter);
-                    mImagePreviewRecycler.setVisibility(View.VISIBLE);
                 }
             });
         } else {
@@ -316,7 +303,6 @@ public class AdvertisementFragment extends DialogFragment {
             categoryRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
-
                     if (checkedId == R.id.pet_rb) {
                         genderLayout.setVisibility(View.VISIBLE);
                         kindLayout.setVisibility(View.VISIBLE);
@@ -324,7 +310,6 @@ public class AdvertisementFragment extends DialogFragment {
                         position[0] = list.indexOf(mAdvertisement.getItemName());
                         ArrayAdapter<String> petTypes = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, list);
                         typeSp.setAdapter(petTypes);
-                        typeSp.setVisibility(View.VISIBLE);
                     } else if (checkedId == R.id.product_rb) {
                         if (genderLayout.getVisibility() == View.VISIBLE) {
                             genderLayout.setVisibility(View.GONE);
@@ -336,8 +321,8 @@ public class AdvertisementFragment extends DialogFragment {
                         ArrayAdapter<String> products = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, list);
                         position[0] = list.indexOf(mAdvertisement.getItemName());
                         typeSp.setAdapter(products);
-                        typeSp.setVisibility(View.VISIBLE);
                     }
+                    typeSp.setVisibility(View.VISIBLE);
                 }
             });
 
@@ -349,9 +334,9 @@ public class AdvertisementFragment extends DialogFragment {
             priceEt.setText(mAdvertisement.getPrice());
             descriptionEt.setText(mAdvertisement.getDescription());
 
-            mImagePreviewRecycler.setAdapter(mImagePreviewAdapter);
-            mImagePreviewRecycler.setVisibility(View.VISIBLE);
         }
+        mImagePreviewRecycler.setAdapter(mImagePreviewAdapter);
+        mImagePreviewRecycler.setVisibility(View.VISIBLE);
 
         cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -369,13 +354,20 @@ public class AdvertisementFragment extends DialogFragment {
                         Uri uri = FileProvider.getUriForFile(requireContext(),
                                 "com.example.android2project.provider", mFile);
 
-                        mSelectedImageList.remove(mImageViewCounter);
-                        mSelectedImageList.add(mImageViewCounter, uri.toString());
-                        mImagePreviewAdapter.notifyItemChanged(mImageViewCounter);
+//                        mSelectedImageList.remove(mImageViewCounter);
+//                        mSelectedImageList.add(mImageViewCounter, uri.toString());
+//                        mImagePreviewAdapter.notifyItemChanged(mImageViewCounter);
 
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                        startActivityForResult(intent, CAMERA_REQUEST);
+//                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+//                        startActivityForResult(intent, CAMERA_REQUEST);
+
+                        CropImage.activity()
+                                .setAspectRatio(4, 3)
+                                .setCropShape(CropImageView.CropShape.RECTANGLE)
+                                .setGuidelines(CropImageView.Guidelines.ON)
+                                .setOutputUri(uri)
+                                .start(requireContext(), AdvertisementFragment.this);
                     }
                 }
             }
@@ -385,10 +377,16 @@ public class AdvertisementFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if (mImageViewCounter < 8) {
-                    Intent intent = new Intent(Intent.ACTION_PICK,
-                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(Intent.createChooser(intent,
-                            "Select Picture"), GALLERY_REQUEST);
+//                    Intent intent = new Intent(Intent.ACTION_PICK,
+//                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                    startActivityForResult(Intent.createChooser(intent,
+//                            "Select Picture"), GALLERY_REQUEST);
+
+                    CropImage.activity()
+                            .setAspectRatio(4, 3)
+                            .setCropShape(CropImageView.CropShape.RECTANGLE)
+                            .setGuidelines(CropImageView.Guidelines.ON)
+                            .start(requireContext(), AdvertisementFragment.this);
                 } else {
                     Toast.makeText(getContext(), "Woof!", Toast.LENGTH_SHORT).show();
                 }
@@ -483,13 +481,20 @@ public class AdvertisementFragment extends DialogFragment {
                 Uri uri = FileProvider.getUriForFile(requireContext(),
                         "com.example.android2project.provider", mFile);
 
-                mSelectedImageList.remove(mImageViewCounter);
-                mSelectedImageList.add(mImageViewCounter, uri.toString());
-                mImagePreviewAdapter.notifyItemChanged(mImageViewCounter++);
+//                mSelectedImageList.remove(mImageViewCounter);
+//                mSelectedImageList.add(mImageViewCounter, uri.toString());
+//                mImagePreviewAdapter.notifyItemChanged(mImageViewCounter++);
 
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                startActivityForResult(intent, CAMERA_REQUEST);
+//                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+//                startActivityForResult(intent, CAMERA_REQUEST);
+
+                CropImage.activity()
+                        .setAspectRatio(4, 3)
+                        .setCropShape(CropImageView.CropShape.RECTANGLE)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setOutputUri(uri)
+                        .start(requireContext(), this);
             }
         }
     }
@@ -498,27 +503,52 @@ public class AdvertisementFragment extends DialogFragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_CANCELED) {
-            mSelectedImageList.remove(mImageViewCounter);
-            mSelectedImageList.add(null);
-            mImagePreviewAdapter.notifyItemChanged(mImageViewCounter);
-            if (mImageViewCounter > 0) {
-                mImageViewCounter--;
-            }
+//        boolean fromCamera = false;
+////        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_CANCELED) {
+//        if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+//            mSelectedImageList.remove(mImageViewCounter);
+//            mSelectedImageList.add(null);
+//            mImagePreviewAdapter.notifyItemChanged(mImageViewCounter);
+//            if (mImageViewCounter > 0) {
+//                mImageViewCounter--;
+//            }
+//
+//        }
 
-        }
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == CAMERA_REQUEST) {
-                mImageViewCounter++;
-            }
-            if (requestCode == GALLERY_REQUEST) {
-                if (data != null) {
-                    final Uri selectedImage = data.getData();
-                    mSelectedImageList.remove(mImageViewCounter);
-                    mSelectedImageList.add(mImageViewCounter, selectedImage.toString());
-                    mImagePreviewAdapter.notifyItemChanged(mImageViewCounter++);
+//        if (resultCode == Activity.RESULT_OK) {
+//            if (requestCode == CAMERA_REQUEST) {
+//                fromCamera = true;
+//                mImageViewCounter++;
+//                CropImage.activity()
+//                        .setAspectRatio(16, 9)
+//                        .setCropShape(CropImageView.CropShape.RECTANGLE)
+//                        .setGuidelines(CropImageView.Guidelines.ON)
+//                        .start(requireContext(), this);
+//            }
+//            if (requestCode == GALLERY_REQUEST) {
+//                if (data != null) {
+//                    final Uri selectedImage = data.getData();
+//                    fromCamera = false;
+//                    CropImage.activity()
+//                            .setAspectRatio(16, 9)
+//                            .setCropShape(CropImageView.CropShape.RECTANGLE)
+//                            .setGuidelines(CropImageView.Guidelines.ON)
+//                            .start(requireContext(), this);
+//
+////                    mSelectedImageList.remove(mImageViewCounter);
+////                    mSelectedImageList.add(mImageViewCounter, selectedImage.toString());
+////                    mImagePreviewAdapter.notifyItemChanged(mImageViewCounter++);
+//
+//                }
+//            }
+//        }
 
-                }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (result!=null) {
+                mSelectedImageList.remove(mImageViewCounter);
+                mSelectedImageList.add(mImageViewCounter, result.getUri().toString());
+                mImagePreviewAdapter.notifyItemChanged(mImageViewCounter++);
             }
         }
     }

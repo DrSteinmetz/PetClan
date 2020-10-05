@@ -9,22 +9,29 @@ import com.example.android2project.model.Advertisement;
 import com.example.android2project.model.User;
 import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.repository.Repository;
+import com.example.android2project.repository.StorageRepository;
 import com.google.firebase.firestore.Query;
 
 public class MarketPlaceViewModel extends ViewModel {
     private static final String TAG = "MarketPlaceViewModel";
     private Repository mRepository;
     private AuthRepository mAuth;
+    private StorageRepository mStorageRepository;
 
     private MutableLiveData<Boolean> onAdDeletingSucceed;
 
     public MarketPlaceViewModel(final Context context) {
         this.mRepository = Repository.getInstance(context);
         this.mAuth = AuthRepository.getInstance(context);
+        this.mStorageRepository = StorageRepository.getInstance(context);
     }
 
     public Query getAds() {
         return mRepository.getAllAds();
+    }
+
+    public Query getFilteredAds(final String orderBy, final boolean isDes) {
+        return mRepository.getFilteredAds(orderBy,isDes);
     }
 
 
@@ -61,6 +68,9 @@ public class MarketPlaceViewModel extends ViewModel {
     }
 
     public void deleteAdvertisement(Advertisement ad) {
+        for (String uri:ad.getImages()) {
+            mStorageRepository.deletePhotoFromStorage(ad.getStoragePath(ad.getUser().getEmail(), uri));
+        }
         mRepository.deleteAdvertisement(ad);
     }
 }
