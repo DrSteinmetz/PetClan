@@ -29,7 +29,7 @@ public class MarketPlaceViewModel extends ViewModel {
 
 
     public MutableLiveData<Boolean> getOnAdDeletingSucceed() {
-        if(onAdDeletingSucceed == null){
+        if (onAdDeletingSucceed == null) {
             onAdDeletingSucceed = new MutableLiveData<>();
             attachSetOnDeletingAdListener();
         }
@@ -45,10 +45,10 @@ public class MarketPlaceViewModel extends ViewModel {
 
             @Override
             public void onAdDeletingFailed(String error) {
-
             }
         });
     }
+
 
     public User getCurrentUser() {
         final String email = mAuth.getUserEmail();
@@ -59,8 +59,6 @@ public class MarketPlaceViewModel extends ViewModel {
         final String token = mAuth.getUserToken();
         return new User(email, firstName, lastName, photoUri, token);
     }
-
-
 
     public void deleteAdvertisement(Advertisement ad) {
         mRepository.deleteAdvertisement(ad);

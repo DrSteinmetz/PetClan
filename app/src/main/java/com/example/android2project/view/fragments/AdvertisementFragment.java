@@ -90,8 +90,9 @@ public class AdvertisementFragment extends DialogFragment {
     private final int IMAGE_VIEW_SIZE = 8;
 
     public interface AdvertisementInterface {
-        void onAdUploadSucceed(Advertisement ad,AlertDialog loadingDialog);
+        void onAdUploadSucceed(Advertisement ad, AlertDialog loadingDialog);
     }
+
     private AdvertisementInterface listener;
 
     public AdvertisementFragment() {
@@ -104,7 +105,6 @@ public class AdvertisementFragment extends DialogFragment {
         fragment.setArguments(args);
         return fragment;
     }
-
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -180,8 +180,8 @@ public class AdvertisementFragment extends DialogFragment {
             @Override
             public void onChanged(Advertisement advertisement) {
                 Log.d(TAG, "onChanged: zxc");
-                if(listener!=null){
-                    listener.onAdUploadSucceed(advertisement,mLoadingDialog);
+                if (listener != null) {
+                    listener.onAdUploadSucceed(advertisement, mLoadingDialog);
                     Objects.requireNonNull(getDialog()).dismiss();
                 }
             }
@@ -207,12 +207,12 @@ public class AdvertisementFragment extends DialogFragment {
         mImagePreviewRecycler.setHasFixedSize(true);
         mImagePreviewRecycler.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
 
-        if(mAdvertisement==null) {
+        if (mAdvertisement == null) {
             for (int i = 0; i < IMAGE_VIEW_SIZE; i++) {
                 mSelectedImageList.add(null);
                 Log.d(TAG, "onCreateView: in new advert " + mSelectedImageList.get(i));
             }
-        }else{
+        } else {
             for (int i = 0; i < IMAGE_VIEW_SIZE; i++) {
                 if (i < mAdvertisement.getImages().size()) {
                     mSelectedImageList.add(mAdvertisement.getImages().get(i));
@@ -230,7 +230,7 @@ public class AdvertisementFragment extends DialogFragment {
             public void onDelete(int position, View view) {
                 String uri = mSelectedImageList.get(position);
                 Log.d(TAG, "onDelete: " + uri);
-                if (mAdvertisement!=null && uri.contains("https://firebasestorage.googleapis.com/v0/b/petclan-2fdce.appspot.com")) {
+                if (mAdvertisement != null && uri.contains("https://firebasestorage.googleapis.com/v0/b/petclan-2fdce.appspot.com")) {
                     mViewModel.deletePhotoFromStorage(mAdvertisement.getStoragePath(mAdvertisement.getUser().getEmail(), uri));
                 }
                 mSelectedImageList.remove(position);
@@ -259,7 +259,7 @@ public class AdvertisementFragment extends DialogFragment {
         cameraBtn = rootView.findViewById(R.id.camera_btn);
         publishBtn = rootView.findViewById(R.id.publish_btn);
 
-        if(mAdvertisement==null) {
+        if (mAdvertisement == null) {
             actionRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -302,7 +302,7 @@ public class AdvertisementFragment extends DialogFragment {
                     mImagePreviewRecycler.setVisibility(View.VISIBLE);
                 }
             });
-        }else{
+        } else {
             categoryLayout.setVisibility(View.VISIBLE);
             priceLayout.setVisibility(View.VISIBLE);
             descriptionLayout.setVisibility(View.VISIBLE);
@@ -450,7 +450,6 @@ public class AdvertisementFragment extends DialogFragment {
             }
         });
 
-
         return rootView;
     }
 
@@ -539,6 +538,7 @@ public class AdvertisementFragment extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
+
         Window window = Objects.requireNonNull(getDialog()).getWindow();
         if (window != null) {
             window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
