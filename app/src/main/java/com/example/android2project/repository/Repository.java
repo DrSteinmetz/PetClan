@@ -12,6 +12,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
+import androidx.preference.PreferenceManager;
 
 import com.example.android2project.model.Advertisement;
 import com.example.android2project.model.ChatMessage;
@@ -45,6 +46,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -488,6 +490,8 @@ public class Repository {
         final List<Post> posts = new ArrayList<>();
         final FirebaseUser user = mAuth.getCurrentUser();
 
+        final int distance=PreferenceManager.getDefaultSharedPreferences(mContext).getInt("distance_sb",500);
+
         if (user != null) {
             mCloudDB.collectionGroup(POSTS)
                     .get()
@@ -496,12 +500,18 @@ public class Repository {
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
                                 for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                                    posts.add(document.toObject(Post.class));
+//                                    posts.add(document.toObject(Post.class));
+                                    Post post=document.toObject(Post.class);
+                                    if(LocationUtils.getDistance(post.getGeoPoint())<=distance){
+                                        posts.add(post);
+
+                                    }
                                 }
 
                                 /*if (mPostDownloadListener != null) {
                                     mPostDownloadListener.onPostDownloadSucceed(posts);
                                 }*/
+
                                 if (mRepositoryPostDownloadSucceedMLD != null) {
                                     Collections.sort(posts);
                                     mRepositoryPostDownloadSucceedMLD.setValue(posts);
@@ -558,15 +568,10 @@ public class Repository {
                 });
     }
 
-    public void uploadNewPost(String postContent) {
+    public void uploadNewPost(final Post post) {
         final FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {
-            final Post post = new Post(user.getEmail(), user.getDisplayName(),
-                    Objects.requireNonNull(user.getPhotoUrl()).toString(),
-                    postContent);
-
-            post.setPostId(user.getEmail() + System.nanoTime());
 
             mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
                     .collection(POSTS)

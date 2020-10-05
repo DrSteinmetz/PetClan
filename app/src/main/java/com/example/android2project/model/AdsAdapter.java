@@ -32,7 +32,6 @@ public class AdsAdapter extends FirestorePagingAdapter<Advertisement, AdsAdapter
     private Context mContext;
 
     private String mUserEmail;
-    Geocoder geocoder;
 
     private static final String TAG = "AdsAdapter";
 
@@ -41,7 +40,6 @@ public class AdsAdapter extends FirestorePagingAdapter<Advertisement, AdsAdapter
 
         mContext = context;
         mUserEmail = AuthRepository.getInstance(context).getUserEmail();
-        geocoder=new Geocoder(mContext, Locale.getDefault());
     }
 
     public interface AdsAdapterInterface {
