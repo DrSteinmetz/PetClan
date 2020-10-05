@@ -1,9 +1,13 @@
 package com.example.android2project.repository;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Path;
 import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -13,9 +17,11 @@ import com.example.android2project.model.Advertisement;
 import com.example.android2project.model.ChatMessage;
 import com.example.android2project.model.Comment;
 import com.example.android2project.model.Conversation;
+import com.example.android2project.model.LocationUtils;
 import com.example.android2project.model.Pet;
 import com.example.android2project.model.Post;
 import com.example.android2project.model.User;
+import com.example.android2project.view.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -50,6 +57,7 @@ public class Repository {
     private Context mContext;
 
     private static Repository repository;
+
 
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference mDBChats;
@@ -1188,6 +1196,9 @@ public class Repository {
 
     public void uploadAd(final Advertisement advertisement) {
         String userEmail = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
+
+
+
         if (userEmail != null) {
             mCloudAds.document(advertisement.getAdvertisementId())
                     .set(advertisement)
@@ -1196,6 +1207,7 @@ public class Repository {
                         public void onSuccess(Void aVoid) {
                             if (mUploadAdListener != null) {
                                 mUploadAdListener.onUploadAdSucceed(advertisement);
+
                             }
                         }
                     })
@@ -1209,6 +1221,36 @@ public class Repository {
                     });
         }
     }
+
+    public void updateAdLocation(final Address address,final Advertisement advertisement) {
+
+        Log.d(TAG, "updateAdLocation: momo");
+
+        final FirebaseUser user = mAuth.getCurrentUser();
+
+        Map<String, Object> updateAdMap = new HashMap<>();
+        final GeoPoint geoPoint = new GeoPoint(address.getLatitude(), address.getLongitude());
+        updateAdMap.put("geoPoint", geoPoint);
+
+        if (user != null) {
+            mCloudAds.document(advertisement.getAdvertisementId())
+                    .update(updateAdMap)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, "onSuccess: abu enak"+geoPoint.getLongitude()+geoPoint.getLatitude());
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "onFailure: bad");
+                        }
+                    });
+        }
+
+    }
+
 
     public void deleteAdvertisement(Advertisement advertisement) {
         mCloudAds.document(advertisement.getAdvertisementId()).delete()
@@ -1230,4 +1272,6 @@ public class Repository {
         com.google.firebase.firestore.Query.Direction direction = (isDes ? com.google.firebase.firestore.Query.Direction.DESCENDING : com.google.firebase.firestore.Query.Direction.ASCENDING);
         return mCloudAds.orderBy(orderBy,direction);
     }
+
+
 }

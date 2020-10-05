@@ -17,6 +17,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
+import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -30,6 +31,7 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -47,6 +49,18 @@ public class LocationUtils extends BroadcastReceiver {
 
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
+    public interface LocationDetected{
+        void onLocationChange(Address address,Advertisement advertisement);
+    }
+    private LocationDetected locationListener;
+
+    public void setLocationListener(LocationDetected locationListener) {
+        this.locationListener = locationListener;
+    }
+
+
+
+
     private MutableLiveData<Address> mLocationLiveData;
 
     private final int LOCATION_REQUEST_CODE = 1;
@@ -63,8 +77,12 @@ public class LocationUtils extends BroadcastReceiver {
 
     private LocationUtils(final Activity activity) {
         this.mActivity = activity;
+        mHandler = new Handler();
         mGeoCoder = new Geocoder(activity, Locale.getDefault());
     }
+
+
+
 
     public MutableLiveData<Address> getLocationLiveData() {
         if (mLocationLiveData == null) {
@@ -94,7 +112,7 @@ public class LocationUtils extends BroadcastReceiver {
                 @Override
                 public void onLocationResult(final LocationResult locationResult) {
                     super.onLocationResult(locationResult);
-                    mHandler = new Handler();
+
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -171,6 +189,32 @@ public class LocationUtils extends BroadcastReceiver {
             return  (mode != Settings.Secure.LOCATION_MODE_OFF);
         }
     }
+    public void getGeoPointFromCity(final Advertisement advertisement) {
+
+        final Address[] address = new Address[1];
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    address[0] = mGeoCoder.getFromLocationName(advertisement.getLocation(), 1).get(0);
+                    if (address[0] != null) {
+
+                        if(locationListener!=null){
+
+                            locationListener.onLocationChange(address[0],advertisement);
+                        }
+                        mHandler.removeCallbacks(this);
+                    } else {
+                        mHandler.postDelayed(this, 100);
+                    }
+                } catch (IOException e) {
+                    e.getMessage();
+                }
+            }
+        });
+
+    }
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -188,4 +232,5 @@ public class LocationUtils extends BroadcastReceiver {
             }
         }
     }
+
 }

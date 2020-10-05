@@ -1,6 +1,8 @@
 package com.example.android2project.viewmodel;
 
+import android.app.Activity;
 import android.content.Context;
+import android.location.Address;
 import android.net.Uri;
 import android.util.Log;
 
@@ -8,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.android2project.model.Advertisement;
+import com.example.android2project.model.LocationUtils;
 import com.example.android2project.model.User;
 import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.repository.Repository;
@@ -16,11 +19,12 @@ import com.example.android2project.repository.StorageRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdvertisementViewModel extends ViewModel {
+public class AdvertisementViewModel extends ViewModel implements LocationUtils.LocationDetected {
     private static final String TAG = "AdvertismentViewModel";
     private Repository mRepository;
     private AuthRepository mAuth;
     private StorageRepository mStorageRepository;
+    private LocationUtils mLocationUtils;
 
     private int mTotalCount = 0;
     private int mIterationCount = 0;
@@ -38,6 +42,8 @@ public class AdvertisementViewModel extends ViewModel {
         this.mRepository = Repository.getInstance(context);
         this.mAuth = AuthRepository.getInstance(context);
         this.mStorageRepository = StorageRepository.getInstance(context);
+        this.mLocationUtils=LocationUtils.getInstance((Activity) context);
+        mLocationUtils.setLocationListener(this);
     }
 
     public MutableLiveData<Integer> getOnAdUploadPhotoSucceed() {
@@ -98,6 +104,7 @@ public class AdvertisementViewModel extends ViewModel {
             @Override
             public void onUploadAdSucceed(Advertisement advertisement) {
                 Log.d(TAG, "onUploadAdSucceed: zxc");
+                mLocationUtils.getGeoPointFromCity(advertisement);
                 onAdUploadSucceed.setValue(advertisement);
             }
 
@@ -160,5 +167,11 @@ public class AdvertisementViewModel extends ViewModel {
         }
         Log.d(TAG, "numberOfImages: zxc " + counter);
         return counter;
+    }
+
+    @Override
+    public void onLocationChange(Address address,Advertisement advertisement) {
+        Log.d(TAG, "onLocationChange: momo");
+        mRepository.updateAdLocation(address,advertisement);
     }
 }

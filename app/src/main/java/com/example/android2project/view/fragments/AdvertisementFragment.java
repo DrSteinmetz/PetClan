@@ -1,16 +1,18 @@
 package com.example.android2project.view.fragments;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -19,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -44,13 +47,16 @@ import com.example.android2project.model.ViewModelFactory;
 import com.example.android2project.viewmodel.AdvertisementViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.GeoPoint;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class AdvertisementFragment extends DialogFragment {
@@ -61,8 +67,18 @@ public class AdvertisementFragment extends DialogFragment {
     private int mImageViewCounter = 0;
     private File mFile;
     private List<String> mSelectedImageList = new ArrayList<>();
+    private List<String> mCityNames;
     private AlertDialog mLoadingDialog;
 
+
+    private Handler handler;
+    private Geocoder mGeoCoder;
+    private Address mAddress;
+
+    private  ArrayAdapter<String> cityArrayadapter;
+    private LinearLayout locationLayout;
+    private Button locationBtn;
+    private AutoCompleteTextView locationAutoCompleteTv;
     private LinearLayout categoryLayout;
     private LinearLayout genderLayout;
     private TextInputLayout kindLayout;
@@ -122,9 +138,19 @@ public class AdvertisementFragment extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+        handler=new Handler();
+
+        mGeoCoder=new Geocoder(requireContext(), Locale.getDefault());
         if (getArguments() != null) {
             mAdvertisement = (Advertisement) getArguments().getSerializable("ad");
         }
+
+        mCityNames=new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.city_names)));
+
+       cityArrayadapter = new ArrayAdapter<String>
+                (requireContext(),android.R.layout.select_dialog_item,mCityNames);
+
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Advertisment)).get(AdvertisementViewModel.class);
 
@@ -136,14 +162,17 @@ public class AdvertisementFragment extends DialogFragment {
                 final boolean isMale = genderRg.getCheckedRadioButtonId() == R.id.male_rb;
                 final String itemType = typeSp.getSelectedItem().toString();
                 final String kind = kindEt.getText().toString().trim();
-                final String price = priceEt.getText().toString();
+                final String cityName=locationAutoCompleteTv.getText().toString();
+                final int price = Integer.parseInt(priceEt.getText().toString());
                 final String description = descriptionEt.getText().toString().trim();
                 if (mAdvertisement == null) {
                     Advertisement advertisement = new Advertisement(mViewModel.getCurrentUser(),
-                            itemType, "Unknown", price, isSell, description, isPet);
+                            itemType, cityName, price, isSell, description, isPet);
+
                     advertisement.setIsMale(isMale);
                     advertisement.setPetKind(kind);
                     mViewModel.addAdvertisement(advertisement);
+
                     Log.d(TAG, "onChanged: add qwerty");
                 } else {
                     mAdvertisement.setIsSell(isSell);
@@ -231,8 +260,13 @@ public class AdvertisementFragment extends DialogFragment {
                 }
             }
         });
+        locationAutoCompleteTv=rootView.findViewById(R.id.location_auto_tv);
 
+        locationAutoCompleteTv.setThreshold(1);//will start working from first character
+        locationAutoCompleteTv.setAdapter(cityArrayadapter);//setting the adapter data into the AutoCompleteTextView
+        locationAutoCompleteTv.setTextColor(Color.RED);
 
+        locationLayout = rootView.findViewById(R.id.location_layout);
         categoryLayout = rootView.findViewById(R.id.category_layout);
         genderLayout = rootView.findViewById(R.id.gender_layout);
         actionRg = rootView.findViewById(R.id.action_rg);
@@ -245,6 +279,7 @@ public class AdvertisementFragment extends DialogFragment {
         kindEt = rootView.findViewById(R.id.pet_kind_et);
         priceEt = rootView.findViewById(R.id.pet_price_et);
         descriptionEt = rootView.findViewById(R.id.pet_description_et);
+        locationBtn=rootView.findViewById(R.id.locate_btn);
         galleryBtn = rootView.findViewById(R.id.gallery_btn);
         cameraBtn = rootView.findViewById(R.id.camera_btn);
         publishBtn = rootView.findViewById(R.id.publish_btn);
@@ -282,6 +317,7 @@ public class AdvertisementFragment extends DialogFragment {
                     }
                     typeSp.setVisibility(View.VISIBLE);
                     priceLayout.setVisibility(View.VISIBLE);
+                    locationLayout.setVisibility(View.VISIBLE);
                     descriptionLayout.setVisibility(View.VISIBLE);
                     mImagePreviewRecycler.setVisibility(View.VISIBLE);
                     cameraBtn.setVisibility(View.VISIBLE);
@@ -292,6 +328,7 @@ public class AdvertisementFragment extends DialogFragment {
         } else {
             categoryLayout.setVisibility(View.VISIBLE);
             priceLayout.setVisibility(View.VISIBLE);
+            locationLayout.setVisibility(View.VISIBLE);
             descriptionLayout.setVisibility(View.VISIBLE);
             mImagePreviewRecycler.setVisibility(View.VISIBLE);
             galleryBtn.setVisibility(View.VISIBLE);
@@ -393,6 +430,36 @@ public class AdvertisementFragment extends DialogFragment {
             }
         });
 
+
+//        locationAutoCompleteTv.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                final String cityName=editable.toString();
+//                if(mCityNames.contains(cityName)){
+//                    handler.post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            try {
+//                                mAddress =mGeoCoder.getFromLocationName(cityName,1).get(0);
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    });
+//                }
+//            }
+//        });
+
         descriptionEt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -415,6 +482,8 @@ public class AdvertisementFragment extends DialogFragment {
                 final String kind = kindEt.getText().toString().trim();
                 final String price = priceEt.getText().toString();
                 final String description = descriptionEt.getText().toString().trim();
+                final String cityName=locationAutoCompleteTv.getText().toString();
+
                 if (isPet) {
                     if (genderRg.getCheckedRadioButtonId() == -1) {
                         Toast.makeText(getContext(), "Please select gender", Toast.LENGTH_SHORT).show();
@@ -424,6 +493,12 @@ public class AdvertisementFragment extends DialogFragment {
                     } else {
                         kindEt.setError(null);
                     }
+                }
+
+                if(!mCityNames.contains(cityName)){
+                    locationAutoCompleteTv.setError("Please Enter a City from the list");
+                }else{
+                    locationAutoCompleteTv.setError(null);
                 }
 
                 if (price.isEmpty()) {
@@ -436,12 +511,11 @@ public class AdvertisementFragment extends DialogFragment {
                 } else {
                     descriptionEt.setError(null);
                 }
-
                 if (isPet && genderRg.getCheckedRadioButtonId() != -1
-                        && !kind.isEmpty() && !price.isEmpty() && !description.isEmpty()) {
+                        && !kind.isEmpty() && !price.isEmpty() && !description.isEmpty() && mCityNames.contains(cityName)) {
                     mViewModel.uploadAdPhotos(mSelectedImageList);
                     showLoadingDialog();
-                } else if (!isPet && !price.isEmpty() && !description.isEmpty()) {
+                } else if (!isPet && !price.isEmpty() && !description.isEmpty() && mCityNames.contains(cityName)) {
                     mViewModel.uploadAdPhotos(mSelectedImageList);
                     showLoadingDialog();
                 }
