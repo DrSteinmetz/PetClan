@@ -36,7 +36,9 @@ public class FCM extends FirebaseMessagingService {
     private final String COMMENT_NOTIFICATION = "comment";
     private final String LIKE_NOTIFICATION = "like";
 
-    private final int NOTIFICATION_ID = 1;
+    private final int CHAT_NOTIF_ID = 1;
+    private final int LIKE_NOTIF_ID = 2;
+    private final int COMMENT_NOTIF_ID = 3;
 
     private final String TAG = "FCM";
 
@@ -89,7 +91,7 @@ public class FCM extends FirebaseMessagingService {
 
         String channelID = null;
         CharSequence channelName = "PetClan_Channel";
-        channelID = "pet_clan_channel_id";
+        channelID = "pet_clan_chat_channel_id";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel = new NotificationChannel(channelID, channelName,
                     NotificationManager.IMPORTANCE_HIGH);
@@ -144,7 +146,7 @@ public class FCM extends FirebaseMessagingService {
                 R.id.notif_user_image,
                 mRemoteViews,
                 mNotification,
-                NOTIFICATION_ID
+                CHAT_NOTIF_ID
         );
 
         RequestOptions options = new RequestOptions()
@@ -158,7 +160,7 @@ public class FCM extends FirebaseMessagingService {
                 .apply(options)
                 .into(notificationTarget);
 
-        mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+        mNotificationManager.notify(CHAT_NOTIF_ID, mNotification);
     }
 
     private void createLikeNotification(final Map<String, String> data) {
@@ -166,7 +168,7 @@ public class FCM extends FirebaseMessagingService {
 
         String channelID = null;
         CharSequence channelName = "PetClan_Channel";
-        channelID = "pet_clan_channel_id";
+        channelID = "pet_clan_like_channel_id";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel = new NotificationChannel(channelID, channelName,
                     NotificationManager.IMPORTANCE_HIGH);
@@ -197,7 +199,7 @@ public class FCM extends FirebaseMessagingService {
         mRemoteViews.setTextViewText(R.id.details_tv, "Liked Your Post");
         mRemoteViews.setImageViewResource(R.id.notif_user_image, R.drawable.ic_like);
 
-        mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+        mNotificationManager.notify(LIKE_NOTIF_ID, mNotification);
     }
 
     private void createCommentNotification(final Map<String, String> data) {
@@ -205,7 +207,7 @@ public class FCM extends FirebaseMessagingService {
 
         String channelID = null;
         CharSequence channelName = "PetClan_Channel";
-        channelID = "pet_clan_channel_id";
+        channelID = "pet_clan_comment_channel_id";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel = new NotificationChannel(channelID, channelName,
                     NotificationManager.IMPORTANCE_HIGH);
@@ -259,6 +261,6 @@ public class FCM extends FirebaseMessagingService {
         mRemoteViews.setTextViewText(R.id.details_tv, data.get("comment"));
         mRemoteViews.setImageViewResource(R.id.notif_user_image, R.drawable.ic_comment);
 
-        mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+        mNotificationManager.notify(COMMENT_NOTIF_ID, mNotification);
     }
 }

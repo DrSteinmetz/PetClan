@@ -1,6 +1,7 @@
 package com.example.android2project.viewmodel;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -92,8 +93,7 @@ public class CommentsViewModel extends ViewModel {
         mRepository.setCommentUploadListener(new Repository.RepositoryCommentUploadInterface() {
             @Override
             public void onCommentUploadSucceed(final Comment comment) {
-                final String myEmail = AuthRepository.getInstance(mContext).getUserEmail();
-                if (!comment.getAuthorEmail().equals(myEmail)) {
+                if (!comment.getAuthorEmail().equals(mPost.getAuthorEmail())) {
                     sendCommentNotification(comment);
                 }
                 mCommentUploadSucceed.setValue(comment);
