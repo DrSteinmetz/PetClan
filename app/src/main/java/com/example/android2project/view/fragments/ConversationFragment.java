@@ -55,6 +55,8 @@ public class ConversationFragment extends DialogFragment {
 
     private User mUserRecipient;
 
+    public static String sConversationId = null;
+
     private static final String RECIPIENT = "recipient";
 
     private final String TAG = "ConversationFragment";
@@ -246,6 +248,8 @@ public class ConversationFragment extends DialogFragment {
                         ViewGroup.LayoutParams.MATCH_PARENT);
             }
         }
+
+        sConversationId = mViewModel.generateChatId();
     }
 
     @Override

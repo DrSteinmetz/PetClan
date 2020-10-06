@@ -6,4 +6,5 @@
 
     <color name="colorBlack">#000000</color>
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorNotificationGrey">#818181</color>
 </resources>
