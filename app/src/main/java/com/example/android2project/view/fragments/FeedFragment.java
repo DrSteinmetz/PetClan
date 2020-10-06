@@ -288,9 +288,7 @@ public class FeedFragment extends Fragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (mUserLocation != null) {
-                    mViewModel.refreshPosts();
-                }
+                mViewModel.refreshPosts();
             }
         });
 
