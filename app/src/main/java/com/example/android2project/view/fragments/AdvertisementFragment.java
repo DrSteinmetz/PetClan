@@ -71,7 +71,7 @@ public class AdvertisementFragment extends DialogFragment {
     private AlertDialog mLoadingDialog;
     private LocationUtils mLocationUtils;
 
-    private  ArrayAdapter<String> cityArrayadapter;
+    private ArrayAdapter<String> cityArrayadapter;
     private LinearLayout locationLayout;
     private Button locationBtn;
     private AutoCompleteTextView locationAutoCompleteTv;
@@ -141,10 +141,10 @@ public class AdvertisementFragment extends DialogFragment {
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Advertisement)).get(AdvertisementViewModel.class);
 
-        mCityNames=new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.city_names)));
+        mCityNames = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.city_names)));
 
         cityArrayadapter = new ArrayAdapter<String>
-                (requireContext(),android.R.layout.select_dialog_item,mCityNames);
+                (requireContext(), android.R.layout.select_dialog_item, mCityNames);
 
         mOnUploadingAdPhotosSucceed = new Observer<Integer>() {
             @Override
@@ -154,7 +154,7 @@ public class AdvertisementFragment extends DialogFragment {
                 final boolean isMale = genderRg.getCheckedRadioButtonId() == R.id.male_rb;
                 final String itemType = typeSp.getSelectedItem().toString();
                 final String kind = kindEt.getText().toString().trim();
-                final String cityName=locationAutoCompleteTv.getText().toString();
+                final String cityName = locationAutoCompleteTv.getText().toString();
                 final int price = Integer.parseInt(priceEt.getText().toString());
                 final String description = descriptionEt.getText().toString().trim();
                 if (mAdvertisement == null) {
@@ -224,11 +224,11 @@ public class AdvertisementFragment extends DialogFragment {
         locationLayout = rootView.findViewById(R.id.location_layout);
         priceLayout = rootView.findViewById(R.id.pet_price_et_layout);
         descriptionLayout = rootView.findViewById(R.id.pet_description_et_layout);
-        locationAutoCompleteTv=rootView.findViewById(R.id.location_auto_tv);
+        locationAutoCompleteTv = rootView.findViewById(R.id.location_auto_tv);
         kindEt = rootView.findViewById(R.id.pet_kind_et);
         priceEt = rootView.findViewById(R.id.pet_price_et);
         descriptionEt = rootView.findViewById(R.id.pet_description_et);
-        locationBtn=rootView.findViewById(R.id.locate_btn);
+        locationBtn = rootView.findViewById(R.id.locate_btn);
         galleryBtn = rootView.findViewById(R.id.gallery_btn);
         cameraBtn = rootView.findViewById(R.id.camera_btn);
         mImagePreviewRecycler = rootView.findViewById(R.id.photos_preview);
@@ -237,7 +237,7 @@ public class AdvertisementFragment extends DialogFragment {
         if (mAdvertisement == null) {
             mImagePreviewRecycler.init(IMAGE_VIEW_SIZE);
         } else {
-            mImagePreviewRecycler.initEdit(IMAGE_VIEW_SIZE,mAdvertisement);
+            mImagePreviewRecycler.initEdit(IMAGE_VIEW_SIZE, mAdvertisement);
         }
 
         locationAutoCompleteTv.setThreshold(1);//will start working from first character
@@ -328,23 +328,26 @@ public class AdvertisementFragment extends DialogFragment {
             typeSp.setSelection(position[0]);
             kindEt.setText(mAdvertisement.getPetKind());
             locationAutoCompleteTv.setText(mAdvertisement.getLocation());
-            priceEt.setText(mAdvertisement.getPrice()+"");
+            priceEt.setText(mAdvertisement.getPrice() + "");
             descriptionEt.setText(mAdvertisement.getDescription());
         }
 
         locationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mLocationUtils.isLocationEnabled()) {
+                if (mLocationUtils.isLocationEnabled() && requireActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     mOnLocationChanged = new Observer<Address>() {
                         @Override
                         public void onChanged(Address address) {
                             locationAutoCompleteTv.setText(LocationUtils.getAddress().getLocality());
                         }
                     };
-                    mLocationUtils.getLocationLiveData().observe(getViewLifecycleOwner(),mOnLocationChanged);
-                } else{
-                    Toast.makeText(requireContext(), "Please enable location", Toast.LENGTH_SHORT).show();
+                    mLocationUtils.getLocationLiveData().observe(getViewLifecycleOwner(), mOnLocationChanged);
+                } else if (requireActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && mLocationUtils.isLocationEnabled()) {
+                    Toast.makeText(requireContext(), "Please enable Permissions", Toast.LENGTH_SHORT).show();
+                    mLocationUtils.requestLocationPermissions();
+                } else {
+                    Toast.makeText(requireContext(), "Please enable Location", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -415,7 +418,7 @@ public class AdvertisementFragment extends DialogFragment {
                 final String kind = kindEt.getText().toString().trim();
                 final String price = priceEt.getText().toString();
                 final String description = descriptionEt.getText().toString().trim();
-                final String cityName=locationAutoCompleteTv.getText().toString();
+                final String cityName = locationAutoCompleteTv.getText().toString();
 
                 if (isPet) {
                     if (genderRg.getCheckedRadioButtonId() == -1) {
@@ -428,9 +431,9 @@ public class AdvertisementFragment extends DialogFragment {
                     }
                 }
 
-                if(!mCityNames.contains(cityName)){
+                if (!mCityNames.contains(cityName)) {
                     locationAutoCompleteTv.setError("Please Enter a City from the list");
-                }else{
+                } else {
                     locationAutoCompleteTv.setError(null);
                 }
 
@@ -503,7 +506,7 @@ public class AdvertisementFragment extends DialogFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (result!=null) {
+            if (result != null) {
                 mImagePreviewRecycler.addPhoto(result.getUri());
             }
         }
