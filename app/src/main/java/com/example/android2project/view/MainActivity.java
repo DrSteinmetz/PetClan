@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (getIntent().hasExtra("recipient")) {
+        if (getIntent().hasExtra("recipient") || getIntent().hasExtra("comment")) {
             onNewIntent(getIntent());
         }
 

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.android2project.model.Comment;
 import com.example.android2project.model.NotificationUtils;
 import com.example.android2project.model.Post;
+import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.repository.Repository;
 
 import org.json.JSONException;
@@ -91,7 +92,10 @@ public class CommentsViewModel extends ViewModel {
         mRepository.setCommentUploadListener(new Repository.RepositoryCommentUploadInterface() {
             @Override
             public void onCommentUploadSucceed(final Comment comment) {
-                sendCommentNotification(comment);
+                final String myEmail = AuthRepository.getInstance(mContext).getUserEmail();
+                if (!comment.getAuthorEmail().equals(myEmail)) {
+                    sendCommentNotification(comment);
+                }
                 mCommentUploadSucceed.setValue(comment);
             }
 

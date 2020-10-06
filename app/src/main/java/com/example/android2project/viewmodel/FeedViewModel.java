@@ -229,7 +229,9 @@ public class FeedViewModel extends ViewModel {
         Observer<Post> onPostLikesUpdateSucceed = new Observer<Post>() {
             @Override
             public void onChanged(Post post) {
-                sendLikeNotification(post);
+                if (!post.getAuthorEmail().equals(mUserEmail)) {
+                    sendLikeNotification(post);
+                }
                 mPostLikesUpdateSucceed.setValue(mPosition);
             }
         };
