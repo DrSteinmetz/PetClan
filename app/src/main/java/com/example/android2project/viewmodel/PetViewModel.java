@@ -35,12 +35,15 @@ public class PetViewModel extends ViewModel {
     }
 
 
-    public void uploadPetPhotos(List<Uri> imageList) {
+    public void uploadPetPhotos(List<String> imageList) {
         final String userEmail = mAuth.getUserEmail();
-        mTotalCount = imageList.size();
-        Log.d(TAG, "uploadPetPhotos: " + mTotalCount);
-        for (Uri uri : imageList) {
-            mStorageRepository.uploadPhoto(PATH, uri, userEmail, 1);
+        mTotalCount = getListSize(imageList);
+        Log.d(TAG, "uploadPetPhotos: " + imageList);
+        for (String str : imageList) {
+            if(str!=null) {
+                Uri uri = Uri.parse(str);
+                mStorageRepository.uploadPhoto(PATH, uri, userEmail, 1);
+            }
         }
     }
 
@@ -83,5 +86,15 @@ public class PetViewModel extends ViewModel {
         mTotalCount = 0;
         mPhotosDownloadString = null;
 
+    }
+
+    public int getListSize(List<String> imageList){
+        int counter = 0;
+        for(String str : imageList){
+            if (str!=null){
+                counter++;
+            }
+        }
+        return counter;
     }
 }
