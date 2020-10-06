@@ -122,7 +122,7 @@ public class ConversationViewModel extends ViewModel {
                     dataObject.put("message", message.getContent());
                     dataObject.put("token", mAuth.getUserToken());
 
-                    rootObject.put("notification", notificationObject);
+                    //rootObject.put("notification", notificationObject);
                     rootObject.put("data", dataObject);
 
                     NotificationUtils.sendNotification(mContext, rootObject);

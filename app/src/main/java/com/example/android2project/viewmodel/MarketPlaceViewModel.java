@@ -24,14 +24,11 @@ public class MarketPlaceViewModel extends ViewModel {
 
     private List<Advertisement> mAdList = new ArrayList<>();
 
-
     private MutableLiveData<List<Advertisement>> mDownloadAdsSucceed;
     private MutableLiveData<String> mDownloadAdsFailed;
-    private MutableLiveData<Integer> mAdDeleteSucceed;
-    private MutableLiveData<String> mAdDeleteFailed;
 
-
-
+    private MutableLiveData<Integer> mAdDeletionSucceed;
+    private MutableLiveData<String> mAdDeletionFailed;
 
     public MarketPlaceViewModel(final Context context) {
         this.mRepository = Repository.getInstance(context);
@@ -41,59 +38,24 @@ public class MarketPlaceViewModel extends ViewModel {
     }
 
 
-
-    public MutableLiveData<Integer> getmAdDeleteSucceed() {
-        if (mAdDeleteSucceed == null) {
-            mAdDeleteSucceed = new MutableLiveData<>();
-            attachSetOnDeletingAdListener();
-        }
-        return mAdDeleteSucceed;
-    }
-
-    private void attachSetOnDeletingAdListener() {
-        mRepository.setAdDeletingListener(new Repository.RepositoryAdDeletingInterface() {
-            @Override
-            public void onAdDeletingSucceed(String adId) {
-                if (!mAdList.isEmpty() && mAdList.get(mPosition).getAdvertisementId().equals(adId)) {
-                    mAdList.remove(mPosition);
-                    mAdDeleteSucceed.setValue(mPosition);
-                }
-            }
-
-            @Override
-            public void onAdDeletingFailed(String error) {
-                mDownloadAdsFailed.setValue(error);
-            }
-        });
-    }
-
-    public MutableLiveData<String> getmAdDeleteFailed() {
-        if (mAdDeleteFailed == null) {
-            mAdDeleteFailed = new MutableLiveData<>();
-            attachsetOnDownloadListener();
-        }
-        return mAdDeleteFailed;
-    }
-
-    public MutableLiveData<List<Advertisement>> getmDownloadAdsSucceed() {
+    public MutableLiveData<List<Advertisement>> getDownloadAdsSucceed() {
         if (mDownloadAdsSucceed == null) {
             mDownloadAdsSucceed = new MutableLiveData<>();
-            attachsetOnDownloadListener();
+            attachSetDownloadListener();
         }
         return mDownloadAdsSucceed;
     }
 
-    public MutableLiveData<String> getmDownloadAdsFailed() {
+    public MutableLiveData<String> getDownloadAdsFailed() {
         if (mDownloadAdsFailed == null) {
             mDownloadAdsFailed = new MutableLiveData<>();
-            attachsetOnDownloadListener();
+            attachSetDownloadListener();
         }
         return mDownloadAdsFailed;
     }
 
-    private void attachsetOnDownloadListener() {
+    private void attachSetDownloadListener() {
         mRepository.setDownloadAdListener(new Repository.RepositoryDownloadAdInterface() {
-
             @Override
             public void onDownloadAdSucceed(List<Advertisement> adList) {
                 if (!mAdList.isEmpty()) {
@@ -108,6 +70,39 @@ public class MarketPlaceViewModel extends ViewModel {
 
             @Override
             public void onDownloadAdFailed(String error) {
+                mDownloadAdsFailed.setValue(error);
+            }
+        });
+    }
+
+    public MutableLiveData<Integer> getAdDeletionSucceed() {
+        if (mAdDeletionSucceed == null) {
+            mAdDeletionSucceed = new MutableLiveData<>();
+            attachSetDeletionAdListener();
+        }
+        return mAdDeletionSucceed;
+    }
+
+    public MutableLiveData<String> getAdDeletionFailed() {
+        if (mAdDeletionFailed == null) {
+            mAdDeletionFailed = new MutableLiveData<>();
+            attachSetDeletionAdListener();
+        }
+        return mAdDeletionFailed;
+    }
+
+    private void attachSetDeletionAdListener() {
+        mRepository.setAdDeletingListener(new Repository.RepositoryAdDeletingInterface() {
+            @Override
+            public void onAdDeletingSucceed(String adId) {
+                if (!mAdList.isEmpty() && mAdList.get(mPosition).getAdvertisementId().equals(adId)) {
+                    mAdList.remove(mPosition);
+                    mAdDeletionSucceed.setValue(mPosition);
+                }
+            }
+
+            @Override
+            public void onAdDeletingFailed(String error) {
                 mDownloadAdsFailed.setValue(error);
             }
         });
@@ -135,17 +130,15 @@ public class MarketPlaceViewModel extends ViewModel {
         return mAdList;
     }
 
-    public void setAdList(List<Advertisement> mAdList) {
-        this.mAdList = mAdList;
-    }
-
-    public void getAllAds(){
+    public void getAllAds() {
         mRepository.downloadAllAds();
     }
+
     public void getFilteredAds(final int orderBy, final boolean isDes) {
-        final int date=0;
-        final int price=1;
-        final int distance=2;
+        final int date = 0;
+        final int price = 1;
+        final int distance = 2;
+
         switch (orderBy) {
             case date:
                 Collections.sort(mAdList);
@@ -160,13 +153,13 @@ public class MarketPlaceViewModel extends ViewModel {
                 }
                 break;
             case distance:
-                Collections.sort(mAdList,new Advertisement.LocationComperator());
+                Collections.sort(mAdList, new Advertisement.LocationComperator());
                 if (!isDes) {
                     Collections.reverse(mAdList);
                 }
                 break;
         }
-        mDownloadAdsSucceed.setValue(mAdList);
 
+        mDownloadAdsSucceed.setValue(mAdList);
     }
 }

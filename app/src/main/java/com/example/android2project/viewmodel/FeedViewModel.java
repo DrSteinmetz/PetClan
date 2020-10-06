@@ -305,8 +305,6 @@ public class FeedViewModel extends ViewModel {
         mRepository.deletePost(postId);
     }
 
-
-
     public List<Post> getPosts() {
         return mPosts;
 

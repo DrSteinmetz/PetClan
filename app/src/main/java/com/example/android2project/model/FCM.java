@@ -65,7 +65,7 @@ public class FCM extends FirebaseMessagingService {
                 switch (Objects.requireNonNull(dataMap.get("type"))) {
                     case CHAT_NOTIFICATION:
                         final String chatId = ConversationFragment.sConversationId;
-                        if (!(chatId != null && chatId.equals(dataMap.get("chat_id")))) {
+                        if (chatId != null && !chatId.equals(dataMap.get("chat_id"))) {
                             createChatNotification(dataMap);
                         }
                         break;
@@ -138,6 +138,21 @@ public class FCM extends FirebaseMessagingService {
 
         Intent activityIntent = new Intent(this, MainActivity.class)
                 .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        activityIntent.setAction("open_chat");
+
+        final String email = data.get("email");
+        final String userName = data.get("name");
+        String firstName = "";
+        String lastName = "";
+        if (userName != null) {
+            firstName = userName.split(" ")[0];
+            lastName = userName.split(" ")[1];
+        }
+        final String photoPath = data.get("photo");
+        final String token = data.get("token");
+        User recipient = new User(email, firstName, lastName, photoPath, token);
+
+        activityIntent.putExtra("recipient", recipient);
         PendingIntent activityPendingIntent = PendingIntent.getActivity(this,
                 4, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(activityPendingIntent);
@@ -145,7 +160,6 @@ public class FCM extends FirebaseMessagingService {
         builder.setCustomContentView(mRemoteViews);
 
         mNotification = builder.build();
-        //mNotification.flags |= Notification.FLAG_NO_CLEAR;
 
         mNotificationManager.notify(NOTIFICATION_ID, mNotification);
     }

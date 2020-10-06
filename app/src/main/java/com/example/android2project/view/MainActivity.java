@@ -297,9 +297,20 @@ public class MainActivity extends AppCompatActivity implements
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
+        final String action = intent.getAction();
         Bundle bundle = intent.getExtras();
-        if (bundle != null) {
-            final String userName = bundle.getString("name");
+        if (action != null && bundle != null) {
+            switch (action) {
+                case "open_chat":
+                    final User recipient = (User) bundle.getSerializable("recipient");
+                    if (recipient != null) {
+                        ConversationFragment.newInstance(recipient)
+                                .show(getSupportFragmentManager()
+                                        .beginTransaction(), "fragment_conversation");
+                    }
+                    break;
+            }
+            /*final String userName = bundle.getString("name");
             if (userName != null) {
                 final String email = bundle.getString("email");
                 final String firstName = userName.split(" ")[0];
@@ -311,7 +322,7 @@ public class MainActivity extends AppCompatActivity implements
                 ConversationFragment.newInstance(recipient)
                         .show(getSupportFragmentManager()
                                 .beginTransaction(), "fragment_conversation");
-            }
+            }*/
         }
     }
 

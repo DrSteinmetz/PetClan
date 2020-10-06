@@ -481,6 +481,4 @@ public class FeedFragment extends Fragment {
 
         stopObservation();
     }
-
-
 }

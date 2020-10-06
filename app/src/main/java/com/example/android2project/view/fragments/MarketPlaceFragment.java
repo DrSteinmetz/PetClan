@@ -16,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.paging.PagedList;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -27,7 +26,6 @@ import com.example.android2project.model.Advertisement;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.model.ViewModelFactory;
 import com.example.android2project.viewmodel.MarketPlaceViewModel;
-import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -40,14 +38,13 @@ public class MarketPlaceFragment extends Fragment {
     private Advertisement mCurrentAd;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private final String TAG = "MarketPlaceFragment";
-    private FirestorePagingOptions<Advertisement> mOptions;
-    private PagedList.Config mConfig;
-
     private Observer<List<Advertisement>> mOnDownloadAdsSucceed;
     private Observer<String> mOnDownloadAdsFailed;
-    private Observer<Integer> mOnDeletingAdSucceed;
-    private Observer<String> mOnDeletingAdFailed;
+
+    private Observer<Integer> mOnAdDeletionSucceed;
+    private Observer<String> mOnAdDeletionFailed;
+
+    private final String TAG = "MarketPlaceFragment";
 
     public MarketPlaceFragment() {
     }
@@ -63,17 +60,10 @@ public class MarketPlaceFragment extends Fragment {
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.MarketPlace)).get(MarketPlaceViewModel.class);
 
-        mOnDeletingAdSucceed=new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer position) {
-                mAdsAdapter.notifyItemRemoved(position);
-            }
-        };
-
-        mOnDownloadAdsSucceed=new Observer<List<Advertisement>>() {
+        mOnDownloadAdsSucceed = new Observer<List<Advertisement>>() {
             @Override
             public void onChanged(List<Advertisement> advertisements) {
-                if(mAdsAdapter != null) {
+                if (mAdsAdapter != null) {
                     mAdsAdapter.notifyDataSetChanged();
                     mSwipeRefreshLayout.setRefreshing(false);
 
@@ -81,19 +71,28 @@ public class MarketPlaceFragment extends Fragment {
             }
         };
 
-        mOnDeletingAdFailed=new Observer<String>() {
+        mOnDownloadAdsFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
                 Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
             }
         };
 
-        mOnDownloadAdsFailed=new Observer<String>() {
+        mOnAdDeletionSucceed = new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer position) {
+                mAdsAdapter.notifyItemRemoved(position);
+            }
+        };
+
+        mOnAdDeletionFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
                 Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
             }
         };
+
+
         startObservation();
     }
 
@@ -115,10 +114,9 @@ public class MarketPlaceFragment extends Fragment {
             }
         });
 
-
         mMarketRecycler.setLayoutManager(new GridLayoutManager(getContext(), 2));
         mMarketRecycler.setHasFixedSize(true);
-        mAdsAdapter = new AdsAdapter(getContext(),mViewModel.getCurrentUser().getEmail(),mViewModel.getAdList());
+        mAdsAdapter = new AdsAdapter(getContext(), mViewModel.getCurrentUser().getEmail(), mViewModel.getAdList());
 
 
         mAdsAdapter.setAdsAdapterListener(new AdsAdapter.AdsAdapterInterface() {
@@ -133,13 +131,13 @@ public class MarketPlaceFragment extends Fragment {
             public void onEditOptionClicked(int position, View view) {
                 mCurrentAd = mViewModel.getAdList().get(position);
                 AdvertisementFragment.newInstance(mCurrentAd)
-                        .show(getChildFragmentManager(),"advertisement_fragment");
+                        .show(getChildFragmentManager(), "advertisement_fragment");
             }
 
             @Override
             public void onDeleteOptionClicked(int position, View view) {
                 mCurrentAd = mViewModel.getAdList().get(position);
-                mViewModel.deleteAdvertisement(mCurrentAd,position);
+                mViewModel.deleteAdvertisement(mCurrentAd, position);
             }
         });
 
@@ -157,7 +155,7 @@ public class MarketPlaceFragment extends Fragment {
             public void onClick(View v) {
                 int orderBy = optionsFilter.getSelectedItemPosition();
                 final boolean isDes = radioGroup.getCheckedRadioButtonId() == R.id.filter_high_to_low_rb;
-                mViewModel.getFilteredAds(orderBy,isDes);
+                mViewModel.getFilteredAds(orderBy, isDes);
 
             }
         });
@@ -167,25 +165,15 @@ public class MarketPlaceFragment extends Fragment {
 
     private void startObservation() {
         if (mViewModel != null) {
-            mViewModel.getmDownloadAdsSucceed().observe(this,mOnDownloadAdsSucceed);
-            mViewModel.getmDownloadAdsFailed().observe(this,mOnDownloadAdsFailed);
-            mViewModel.getmAdDeleteSucceed().observe(this, mOnDeletingAdSucceed);
-            mViewModel.getmAdDeleteFailed().observe(this,mOnDeletingAdFailed);
+            mViewModel.getDownloadAdsSucceed().observe(this, mOnDownloadAdsSucceed);
+            mViewModel.getDownloadAdsFailed().observe(this, mOnDownloadAdsFailed);
+            mViewModel.getAdDeletionSucceed().observe(this, mOnAdDeletionSucceed);
+            mViewModel.getAdDeletionFailed().observe(this, mOnAdDeletionFailed);
 
         }
     }
 
     public void uploadAdSucceed(Advertisement ad, AlertDialog loadingDialog) {
-        Log.d(TAG, "uploadAdSucceed: zxc adapter " + mAdsAdapter);
         loadingDialog.dismiss();
-
-    }
-
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        Log.d(TAG, "onStop: zxc adapter " + mAdsAdapter);
     }
 }
