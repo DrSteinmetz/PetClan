@@ -343,8 +343,7 @@ public class AdvertisementFragment extends DialogFragment {
                         }
                     };
                     mLocationUtils.getLocationLiveData().observe(getViewLifecycleOwner(), mOnLocationChanged);
-                } else if (requireActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && mLocationUtils.isLocationEnabled()) {
-                    Toast.makeText(requireContext(), "Please enable Permissions", Toast.LENGTH_SHORT).show();
+                } else if (requireActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     mLocationUtils.requestLocationPermissions();
                 } else {
                     Toast.makeText(requireContext(), "Please enable Location", Toast.LENGTH_SHORT).show();
