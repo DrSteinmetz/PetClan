@@ -386,7 +386,7 @@ public class FeedFragment extends Fragment {
                 final Post post = new Post(mViewModel.getMyEmail(), mViewModel.getMyName(),
                         mViewModel.getMyPhotoUri(),postContentEt.getText().toString());
 
-                        post.setLocation(mUserLocation.getLocality());
+                        post.setLocation(mUserLocation.getLocality()==null?"Unknown":mUserLocation.getLocality());
                         post.setGeoPoint(new GeoPoint(mUserLocation.getLatitude(),mUserLocation.getLongitude()));
 
                         mViewModel.uploadNewPost(post);

@@ -230,15 +230,16 @@ public class LocationUtils extends BroadcastReceiver {
             if (gpsEnabled && networkEnabled) {
                 startLocation();
                 Log.d(TAG, "onReceive: gps enabled");
-            } else {
+            } else if (!isLocationEnabled()) {
                 Snackbar.make(mActivity.findViewById(android.R.id.content), "Location is disabled", Snackbar.LENGTH_LONG).show();
                 Log.d(TAG, "GPS is disabled");
             }
         }
     }
 
+
     public static int getDistance(GeoPoint other) {
-        if(mAddress!=null) {
+        if (mAddress != null) {
             double theDistance = (Math.sin(Math.toRadians(mAddress.getLatitude())) *
                     Math.sin(Math.toRadians(other.getLatitude())) +
                     Math.cos(Math.toRadians(mAddress.getLatitude())) *
@@ -249,7 +250,7 @@ public class LocationUtils extends BroadcastReceiver {
         return 0;
     }
 
-    public static Address getAddress(){
+    public static Address getAddress() {
         return mAddress;
     }
 }

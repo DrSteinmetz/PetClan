@@ -368,12 +368,12 @@ public class AdvertisementFragment extends DialogFragment {
             genderRg.check(mAdvertisement.getIsMale() ? R.id.male_rb : R.id.female_rb);
             typeSp.setSelection(position[0]);
             kindEt.setText(mAdvertisement.getPetKind());
-            priceEt.setText(mAdvertisement.getPrice());
+            priceEt.setText(mAdvertisement.getPrice()+"");
             descriptionEt.setText(mAdvertisement.getDescription());
 
         }
         mImagePreviewRecycler.setAdapter(mImagePreviewAdapter);
-        mImagePreviewRecycler.setVisibility(View.VISIBLE);
+        //mImagePreviewRecycler.setVisibility(View.VISIBLE);
 
         cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override

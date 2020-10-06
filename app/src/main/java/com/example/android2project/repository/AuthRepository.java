@@ -215,8 +215,6 @@ public class AuthRepository {
                                 mRegistrationListener.onRegistrationFailed(Objects
                                         .requireNonNull(task.getException()).getMessage());
                             }
-                            /*Toast.makeText(MainActivity.this, task.getException().getMessage(),
-                                    Toast.LENGTH_SHORT).show();*/
                         }
                     }
                 });
@@ -243,8 +241,6 @@ public class AuthRepository {
                                 mLoginListener.onLoginFailed(Objects.
                                         requireNonNull(task.getException()).getMessage());
                             }
-                            /*Toast.makeText(MainActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();*/
                         }
                     }
                 });
@@ -573,23 +569,7 @@ public class AuthRepository {
         }
     }
 
-    /*private void getCurrentUser() {
-        FirebaseUser firebaseUser = mAuth.getCurrentUser();
-        if (firebaseUser != null) {
-            // Name, email address, and profile photo Url
-             String name = firebaseUser.getDisplayName();
-            String email = firebaseUser.getEmail();
-            Uri photoUrl = firebaseUser.getPhotoUrl();
 
-            // Check if firebaseUser's email is verified
-            boolean emailVerified = firebaseUser.isEmailVerified();
-
-            // The firebaseUser's ID, unique to the Firebase project. Do NOT use this value to
-            // authenticate with your backend server, if you have one. Use
-            // FirebaseUser.getIdToken() instead.
-            String uid = firebaseUser.getUid();
-        }
-    }*/
 
     public String getUserEmail() {
         FirebaseUser user = mAuth.getCurrentUser();

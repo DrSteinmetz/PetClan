@@ -45,6 +45,7 @@ import com.example.android2project.view.fragments.SocialFragment;
 import com.example.android2project.view.fragments.UserProfileFragment;
 import com.example.android2project.viewmodel.MainViewModel;
 import com.example.android2project.viewmodel.UserPictureViewModel;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -251,6 +252,8 @@ public class MainActivity extends AppCompatActivity implements
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == RESULT_OK) {
             mLocationUtils.startLocation();
+        }else if(resultCode==RESULT_CANCELED){
+            Snackbar.make(findViewById(android.R.id.content), "Location is disabled", Snackbar.LENGTH_LONG).show();
         }
     }
 

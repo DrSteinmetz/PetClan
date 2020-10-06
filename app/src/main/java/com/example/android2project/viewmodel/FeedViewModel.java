@@ -87,22 +87,6 @@ public class FeedViewModel extends ViewModel {
             }
         };
         mRepository.getRepositoryPostDownloadFailedMLD().observeForever(onPostDownloadFailed);
-
-        /*mRepository.setPostDownloadListener(new Repository.RepositoryPostDownloadInterface() {
-            @Override
-            public void onPostDownloadSucceed(List<Post> posts) {
-                if (!mPosts.isEmpty()) {
-                    mPosts.clear();
-                }
-                mPosts.addAll(posts);
-                mPostDownloadSucceed.setValue(mPosts);
-            }
-
-            @Override
-            public void onPostDownloadFailed(String error) {
-                mPostDownloadFailed.setValue(error);
-            }
-        });*/
     }
 
     public MutableLiveData<List<Post>> getUserPostDownloadSucceed() {
@@ -180,18 +164,6 @@ public class FeedViewModel extends ViewModel {
             }
         };
         mRepository.getRepositoryPostUploadFailedMLD().observeForever(onPostUploadFailed);
-        /*mRepository.setPostUploadListener(new Repository.RepositoryPostUploadInterface() {
-            @Override
-            public void onPostUploadSucceed(Post post) {
-                mPosts.add(0, post);
-                mPostUploadSucceed.setValue(post);
-            }
-
-            @Override
-            public void onPostUploadFailed(String error) {
-                mPostUploadFailed.setValue(error);
-            }
-        });*/
     }
 
     public MutableLiveData<Integer> getPostUpdateSucceed() {
@@ -228,19 +200,6 @@ public class FeedViewModel extends ViewModel {
             }
         };
         mRepository.getRepositoryPostUpdateFailedMLD().observeForever(onPostUpdateFailed);
-        /*mRepository.setPostUpdatingListener(new Repository.RepositoryPostUpdatingInterface() {
-            @Override
-            public void onPostUpdatingSucceed(Post updatedPost) {
-                mPosts.get(mPosition).setAuthorContent(updatedPost.getAuthorContent());
-                mPosts.get(mPosition).setCommentsCount(updatedPost.getCommentsCount());
-                mPostUpdateSucceed.setValue(mPosition);
-            }
-
-            @Override
-            public void onPostUpdatingFailed(String error) {
-                mPostUpdatedFailed.setValue(error);
-            }
-        });*/
     }
 
     public MutableLiveData<Integer> getPostLikesUpdateSucceed() {
@@ -275,17 +234,6 @@ public class FeedViewModel extends ViewModel {
             }
         };
         mRepository.getRepositoryPostLikesUpdateFailedMLD().observeForever(onPostLikesUpdateFailed);
-        /*mRepository.setPostLikesUpdatingListener(new Repository.RepositoryPostLikesUpdatingInterface() {
-            @Override
-            public void onPostLikesUpdateSucceed(Post post) {
-                mPostLikesUpdateSucceed.setValue(mPosition);
-            }
-
-            @Override
-            public void onPostLikesUpdateFailed(String error) {
-                mPostLikesUpdateFailed.setValue(error);
-            }
-        });*/
     }
 
     public MutableLiveData<Integer> getPostDeletionSucceed() {
@@ -323,20 +271,7 @@ public class FeedViewModel extends ViewModel {
             }
         };
         mRepository.getRepositoryPostDeletionFailedMLD().observeForever(onPostDeletionFailed);
-        /*mRepository.setPostDeletingListener(new Repository.RepositoryPostDeletingInterface() {
-            @Override
-            public void onPostDeletingSucceed(String postId) {
-                if (mPosts.get(mPosition).getPostId().equals(postId)) {
-                    mPosts.remove(mPosition);
-                    mPostDeletionSucceed.setValue(mPosition);
-                }
-            }
 
-            @Override
-            public void onPostDeletingFailed(String error) {
-                mPostDeletionFailed.setValue(error);
-            }
-        });*/
     }
 
     public void setUserEmail(final String userEmail) {
@@ -371,12 +306,6 @@ public class FeedViewModel extends ViewModel {
     }
 
 
-    public void downloadPosts() {
-        mRepository.downloadPosts();
-    }
-    public void setPosts(List<Post> Posts) {
-        this.mPosts = Posts;
-    }
 
     public List<Post> getPosts() {
         return mPosts;
