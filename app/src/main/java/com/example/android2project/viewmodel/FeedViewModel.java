@@ -26,6 +26,7 @@ public class FeedViewModel extends ViewModel {
     private Repository mRepository;
     private AuthRepository mAuthRepository;
     protected String mUserEmail = null;
+    private boolean mIsLike;
 
     protected List<Post> mPosts = new ArrayList<>();
     protected int mPosition;
@@ -229,7 +230,8 @@ public class FeedViewModel extends ViewModel {
         Observer<Post> onPostLikesUpdateSucceed = new Observer<Post>() {
             @Override
             public void onChanged(Post post) {
-                if (!post.getAuthorEmail().equals(mUserEmail)) {
+                final String myEmail = mAuthRepository.getUserEmail();
+                if (!post.getAuthorEmail().equals(myEmail) && mIsLike) {
                     sendLikeNotification(post);
                 }
                 mPostLikesUpdateSucceed.setValue(mPosition);
@@ -312,6 +314,7 @@ public class FeedViewModel extends ViewModel {
 
     public void updatePostLikes(final boolean isLike, final int position) {
         mPosition = position;
+        mIsLike = isLike;
         mRepository.updatePostLikes(mPosts.get(position), isLike);
     }
 
@@ -343,7 +346,7 @@ public class FeedViewModel extends ViewModel {
             rootObject.put("to", post.getAuthorToken());
 
             dataObject.put("type", "like");
-            dataObject.put("name", post.getAuthorName());
+            dataObject.put("name", mAuthRepository.getUserName());
 
             rootObject.put("data", dataObject);
 
