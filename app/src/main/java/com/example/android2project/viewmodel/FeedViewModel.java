@@ -1,25 +1,32 @@
 package com.example.android2project.viewmodel;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Address;
-import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.example.android2project.model.NotificationUtils;
 import com.example.android2project.model.Post;
 import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.repository.Repository;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FeedViewModel extends ViewModel {
 
+    @SuppressLint("StaticFieldLeak")
+    private Context mContext;
     private Repository mRepository;
     private AuthRepository mAuthRepository;
     protected String mUserEmail = null;
+    private boolean mIsLike;
 
     protected List<Post> mPosts = new ArrayList<>();
     protected int mPosition;
@@ -45,6 +52,7 @@ public class FeedViewModel extends ViewModel {
     private final String TAG = "FeedViewModel";
 
     public FeedViewModel(final Context context) {
+        this.mContext = context;
         this.mRepository = Repository.getInstance(context);
         this.mAuthRepository = AuthRepository.getInstance(context);
     }
@@ -87,22 +95,6 @@ public class FeedViewModel extends ViewModel {
             }
         };
         mRepository.getRepositoryPostDownloadFailedMLD().observeForever(onPostDownloadFailed);
-
-        /*mRepository.setPostDownloadListener(new Repository.RepositoryPostDownloadInterface() {
-            @Override
-            public void onPostDownloadSucceed(List<Post> posts) {
-                if (!mPosts.isEmpty()) {
-                    mPosts.clear();
-                }
-                mPosts.addAll(posts);
-                mPostDownloadSucceed.setValue(mPosts);
-            }
-
-            @Override
-            public void onPostDownloadFailed(String error) {
-                mPostDownloadFailed.setValue(error);
-            }
-        });*/
     }
 
     public MutableLiveData<List<Post>> getUserPostDownloadSucceed() {
@@ -180,18 +172,6 @@ public class FeedViewModel extends ViewModel {
             }
         };
         mRepository.getRepositoryPostUploadFailedMLD().observeForever(onPostUploadFailed);
-        /*mRepository.setPostUploadListener(new Repository.RepositoryPostUploadInterface() {
-            @Override
-            public void onPostUploadSucceed(Post post) {
-                mPosts.add(0, post);
-                mPostUploadSucceed.setValue(post);
-            }
-
-            @Override
-            public void onPostUploadFailed(String error) {
-                mPostUploadFailed.setValue(error);
-            }
-        });*/
     }
 
     public MutableLiveData<Integer> getPostUpdateSucceed() {
@@ -214,9 +194,11 @@ public class FeedViewModel extends ViewModel {
         Observer<Post> onPostUpdateSucceed = new Observer<Post>() {
             @Override
             public void onChanged(Post updatedPost) {
-                mPosts.get(mPosition).setAuthorContent(updatedPost.getAuthorContent());
-                mPosts.get(mPosition).setCommentsCount(updatedPost.getCommentsCount());
-                mPostUpdateSucceed.setValue(mPosition);
+                if (!mPosts.isEmpty()) {
+                    mPosts.get(mPosition).setAuthorContent(updatedPost.getAuthorContent());
+                    mPosts.get(mPosition).setCommentsCount(updatedPost.getCommentsCount());
+                    mPostUpdateSucceed.setValue(mPosition);
+                }
             }
         };
         mRepository.getRepositoryPostUpdateSucceedMLD().observeForever(onPostUpdateSucceed);
@@ -228,19 +210,6 @@ public class FeedViewModel extends ViewModel {
             }
         };
         mRepository.getRepositoryPostUpdateFailedMLD().observeForever(onPostUpdateFailed);
-        /*mRepository.setPostUpdatingListener(new Repository.RepositoryPostUpdatingInterface() {
-            @Override
-            public void onPostUpdatingSucceed(Post updatedPost) {
-                mPosts.get(mPosition).setAuthorContent(updatedPost.getAuthorContent());
-                mPosts.get(mPosition).setCommentsCount(updatedPost.getCommentsCount());
-                mPostUpdateSucceed.setValue(mPosition);
-            }
-
-            @Override
-            public void onPostUpdatingFailed(String error) {
-                mPostUpdatedFailed.setValue(error);
-            }
-        });*/
     }
 
     public MutableLiveData<Integer> getPostLikesUpdateSucceed() {
@@ -263,6 +232,10 @@ public class FeedViewModel extends ViewModel {
         Observer<Post> onPostLikesUpdateSucceed = new Observer<Post>() {
             @Override
             public void onChanged(Post post) {
+                final String myEmail = mAuthRepository.getUserEmail();
+                if (!post.getAuthorEmail().equals(myEmail) && mIsLike) {
+                    sendLikeNotification(post);
+                }
                 mPostLikesUpdateSucceed.setValue(mPosition);
             }
         };
@@ -275,17 +248,6 @@ public class FeedViewModel extends ViewModel {
             }
         };
         mRepository.getRepositoryPostLikesUpdateFailedMLD().observeForever(onPostLikesUpdateFailed);
-        /*mRepository.setPostLikesUpdatingListener(new Repository.RepositoryPostLikesUpdatingInterface() {
-            @Override
-            public void onPostLikesUpdateSucceed(Post post) {
-                mPostLikesUpdateSucceed.setValue(mPosition);
-            }
-
-            @Override
-            public void onPostLikesUpdateFailed(String error) {
-                mPostLikesUpdateFailed.setValue(error);
-            }
-        });*/
     }
 
     public MutableLiveData<Integer> getPostDeletionSucceed() {
@@ -323,20 +285,11 @@ public class FeedViewModel extends ViewModel {
             }
         };
         mRepository.getRepositoryPostDeletionFailedMLD().observeForever(onPostDeletionFailed);
-        /*mRepository.setPostDeletingListener(new Repository.RepositoryPostDeletingInterface() {
-            @Override
-            public void onPostDeletingSucceed(String postId) {
-                if (mPosts.get(mPosition).getPostId().equals(postId)) {
-                    mPosts.remove(mPosition);
-                    mPostDeletionSucceed.setValue(mPosition);
-                }
-            }
 
-            @Override
-            public void onPostDeletingFailed(String error) {
-                mPostDeletionFailed.setValue(error);
-            }
-        });*/
+    }
+
+    public List<Post> getPosts() {
+        return mPosts;
     }
 
     public void setUserEmail(final String userEmail) {
@@ -344,6 +297,7 @@ public class FeedViewModel extends ViewModel {
     }
 
     public void uploadNewPost(final Post post) {
+        post.setAuthorToken(mAuthRepository.getUserToken());
         mRepository.uploadNewPost(post);
     }
 
@@ -362,25 +316,13 @@ public class FeedViewModel extends ViewModel {
 
     public void updatePostLikes(final boolean isLike, final int position) {
         mPosition = position;
+        mIsLike = isLike;
         mRepository.updatePostLikes(mPosts.get(position), isLike);
     }
 
     public void deletePost(String postId, final int position) {
         mPosition = position;
         mRepository.deletePost(postId);
-    }
-
-
-    public void downloadPosts() {
-        mRepository.downloadPosts();
-    }
-    public void setPosts(List<Post> Posts) {
-        this.mPosts = Posts;
-    }
-
-    public List<Post> getPosts() {
-        return mPosts;
-
     }
 
     public void updateUserLocation(Address address) {
@@ -397,5 +339,22 @@ public class FeedViewModel extends ViewModel {
 
     public String getMyPhotoUri() {
         return mAuthRepository.getUserImageUri();
+    }
+
+    private void sendLikeNotification(final Post post) {
+        final JSONObject rootObject = new JSONObject();
+        final JSONObject dataObject = new JSONObject();
+        try {
+            rootObject.put("to", post.getAuthorToken());
+
+            dataObject.put("type", "like");
+            dataObject.put("name", mAuthRepository.getUserName());
+
+            rootObject.put("data", dataObject);
+
+            NotificationUtils.sendNotification(mContext, rootObject);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

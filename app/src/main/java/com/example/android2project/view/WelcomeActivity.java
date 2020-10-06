@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.android2project.R;
+import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.view.fragments.LoginDetailsFragment;
 import com.example.android2project.view.fragments.LoginRegistrationFragment;

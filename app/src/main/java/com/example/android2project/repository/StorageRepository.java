@@ -127,7 +127,6 @@ public class StorageRepository {
         //TODO: need to rotate the picture if needed
 
         try {
-            //Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
             RotateBitmap rotateBitmap = new RotateBitmap();
             Bitmap bitmap = rotateBitmap.HandleSamplingAndRotationBitmap(mContext, uri);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -171,7 +170,6 @@ public class StorageRepository {
 
     public void uploadPhoto(final String path, final Uri uri, final String userEmail, final int iteration) {
         try {
-            //Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
             RotateBitmap rotateBitmap = new RotateBitmap();
             Bitmap bitmap = rotateBitmap.HandleSamplingAndRotationBitmap(mContext, uri);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

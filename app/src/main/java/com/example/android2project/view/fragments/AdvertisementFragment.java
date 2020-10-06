@@ -51,12 +51,10 @@ import com.example.android2project.model.ViewModelFactory;
 import com.example.android2project.viewmodel.AdvertisementViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.firestore.GeoPoint;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -147,7 +145,6 @@ public class AdvertisementFragment extends DialogFragment {
 
         cityArrayadapter = new ArrayAdapter<String>
                 (requireContext(),android.R.layout.select_dialog_item,mCityNames);
-
 
         mOnUploadingAdPhotosSucceed = new Observer<Integer>() {
             @Override

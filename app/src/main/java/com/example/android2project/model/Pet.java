@@ -1,7 +1,5 @@
 package com.example.android2project.model;
 
-import com.denzcoskun.imageslider.models.SlideModel;
-
 import java.util.ArrayList;
 
 public class Pet {

@@ -58,7 +58,6 @@ public class CommentsFragment extends DialogFragment {
     private TextView mNoCommentsTv;
 
     private int mPosition;
-    private Post mPost;
 
     private final static String POST = "post";
 
@@ -78,13 +77,15 @@ public class CommentsFragment extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            mPost = (Post) getArguments().getSerializable(POST);
-        }
-
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Comments)).get(CommentsViewModel.class);
-        mViewModel.downloadComments(mPost);
+
+        if (getArguments() != null) {
+            final Post post = (Post) getArguments().getSerializable(POST);
+            mViewModel.setPost(post);
+        }
+
+        mViewModel.downloadComments();
 
         mOnCommentsDownloadSucceed = new Observer<List<Comment>>() {
             @Override
@@ -235,7 +236,7 @@ public class CommentsFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 String commentContent = commentContentEt.getText().toString();
-                mViewModel.uploadComment(mPost, commentContent);
+                mViewModel.uploadComment(commentContent);
                 commentContentEt.setText("");
             }
         });
@@ -308,7 +309,7 @@ public class CommentsFragment extends DialogFragment {
             public void onClick(View v) {
                 final String commentId = commentToEdit.getCommentId();
                 final String commentContent = commentContentEt.getText().toString();
-                mViewModel.editComment(mPost, commentId, commentContent);
+                mViewModel.editComment(commentId, commentContent);
                 alertDialog.dismiss();
             }
         });
@@ -336,7 +337,7 @@ public class CommentsFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 final String commentId = commentToDelete.getCommentId();
-                mViewModel.deleteComment(mPost, commentId);
+                mViewModel.deleteComment(commentId);
                 alertDialog.dismiss();
             }
         });

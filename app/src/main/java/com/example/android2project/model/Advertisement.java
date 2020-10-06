@@ -4,9 +4,10 @@ import com.google.firebase.firestore.GeoPoint;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 
-public class Advertisement implements Serializable, Comparable<Object> {
+public class Advertisement implements Serializable, Comparable<Advertisement> {
     private String mAdvertisementId;
     private User mUser;
     private GeoPoint mGeoPoint;
@@ -20,7 +21,6 @@ public class Advertisement implements Serializable, Comparable<Object> {
     private boolean mIsMale;
     private boolean mIsPet;
     private Date mPublishDate;
-
 
     public Advertisement() {}
 
@@ -142,9 +142,8 @@ public class Advertisement implements Serializable, Comparable<Object> {
     }
 
     @Override
-    public int compareTo(final Object object) {
-        if (object instanceof Advertisement) {
-            Advertisement otherAd = (Advertisement) object;
+    public int compareTo(final Advertisement otherAd) {
+        if (otherAd != null) {
             return this.mPublishDate.compareTo(otherAd.getPublishDate());
         }
         return 0;
@@ -169,26 +168,31 @@ public class Advertisement implements Serializable, Comparable<Object> {
                 '}';
     }
 
-    public String getStoragePath(String myEmail, String imageUri){
+    public String getStoragePath(String myEmail, String imageUri) {
         String s1 = imageUri.split("\\.jpg\\?alt=media&token=")[0];
         int i = 2;
         char c = s1.charAt(s1.length() - 1);
         StringBuilder id = new StringBuilder();
-        while (c >= '0' && c <= '9') {
+        while (Character.isDigit(c)) {
             id.append(c);
             c = s1.charAt(s1.length() - i++);
         }
         id = id.reverse();
-        return myEmail+"/ads/"+myEmail+id+".jpg";
-    }
-    /*String s1 = s.split("\\.jpg\\?alt=media&token=")[0];
 
-        int i = 2;
-        char c = s1.charAt(s1.length() - 1);
-        StringBuilder id = new StringBuilder();
-        while (c >= '0' && c <= '9') {
-            id.append(c);
-            c = s1.charAt(s1.length() - i++);
+        return myEmail + "/ads/" + myEmail + id + ".jpg";
+    }
+
+    public static class PriceComparator implements Comparator<Advertisement> {
+        @Override
+        public int compare(Advertisement advertisement, Advertisement t1) {
+            return t1.getPrice() - advertisement.getPrice();
         }
-        id = id.reverse();*/
+    }
+
+    public static class LocationComparator implements Comparator<Advertisement> {
+        @Override
+        public int compare(Advertisement advertisement, Advertisement t1) {
+            return LocationUtils.getDistance(t1.getGeoPoint()) - LocationUtils.getDistance(advertisement.getGeoPoint());
+        }
+    }
 }

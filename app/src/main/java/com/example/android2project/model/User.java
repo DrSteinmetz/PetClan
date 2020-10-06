@@ -4,7 +4,7 @@ import com.google.firebase.firestore.GeoPoint;
 
 import java.io.Serializable;
 
-public class User implements Comparable<Object>, Serializable {
+public class User implements Comparable<User>, Serializable {
     private String mEmail;
     private String mFirstName;
     private String mLastName;
@@ -89,16 +89,14 @@ public class User implements Comparable<Object>, Serializable {
     }
 
     @Override
-    public int compareTo(Object object) {
-        if (object instanceof User) {
-            User otherUser = (User) object;
+    public int compareTo(User otherUser) {
+        if (otherUser != null) {
             if (otherUser.getFirstName().compareTo(this.mFirstName) == 0) {
                 return (otherUser.getLastName().compareTo(this.mLastName));
             } else {
                 return (otherUser.getFirstName().compareTo(this.mFirstName));
             }
         }
-
         return 0;
     }
 

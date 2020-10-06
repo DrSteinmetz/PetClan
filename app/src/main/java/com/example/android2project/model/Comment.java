@@ -2,7 +2,7 @@ package com.example.android2project.model;
 
 import java.util.Date;
 
-public class Comment implements Comparable<Object> {
+public class Comment implements Comparable<Comment> {
     private String mCommentId;
     private String mAuthorEmail;
     private String mAuthorName;
@@ -69,10 +69,9 @@ public class Comment implements Comparable<Object> {
     }
 
     @Override
-    public int compareTo(final Object object) {
-        if (object instanceof Comment) {
-            Comment otherPost = (Comment) object;
-            return this.mTime.compareTo(otherPost.getTime());
+    public int compareTo(final Comment otherComment) {
+        if (otherComment != null) {
+            return this.mTime.compareTo(otherComment.getTime());
         }
         return 0;
     }

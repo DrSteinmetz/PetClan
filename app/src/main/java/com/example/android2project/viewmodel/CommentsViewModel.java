@@ -1,18 +1,28 @@
 package com.example.android2project.viewmodel;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.android2project.model.Comment;
+import com.example.android2project.model.NotificationUtils;
 import com.example.android2project.model.Post;
+import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.repository.Repository;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
 public class CommentsViewModel extends ViewModel {
+
+    private Context mContext;
     private Repository mRepository;
+
+    private Post mPost;
 
     private MutableLiveData<List<Comment>> mCommentsDownloadSucceed;
     private MutableLiveData<String> mCommentsDownloadFailed;
@@ -29,6 +39,7 @@ public class CommentsViewModel extends ViewModel {
     private final String TAG = "FeedViewModel";
 
     public CommentsViewModel(final Context context) {
+        this.mContext = context;
         this.mRepository = Repository.getInstance(context);
     }
 
@@ -82,6 +93,9 @@ public class CommentsViewModel extends ViewModel {
         mRepository.setCommentUploadListener(new Repository.RepositoryCommentUploadInterface() {
             @Override
             public void onCommentUploadSucceed(final Comment comment) {
+                if (!comment.getAuthorEmail().equals(mPost.getAuthorEmail())) {
+                    sendCommentNotification(comment);
+                }
                 mCommentUploadSucceed.setValue(comment);
             }
 
@@ -152,19 +166,50 @@ public class CommentsViewModel extends ViewModel {
         });
     }
 
-    public void downloadComments(final Post post) {
-        mRepository.downloadComments(post);
+
+    public Post getPost() {
+        return mPost;
     }
 
-    public void uploadComment(final Post post, final String commentContent) {
-        mRepository.uploadComment(post, commentContent);
+    public void setPost(Post post) {
+        this.mPost = post;
     }
 
-    public void editComment(final Post post, final String commentId, final String commentContent) {
-        mRepository.updateComment(post, commentId, commentContent);
+    public void downloadComments() {
+        mRepository.downloadComments(mPost);
     }
 
-    public void deleteComment(final Post post, final String commentId) {
-        mRepository.deleteComment(post, commentId);
+    public void uploadComment(final String commentContent) {
+        mRepository.uploadComment(mPost, commentContent);
+    }
+
+    public void editComment(final String commentId, final String commentContent) {
+        mRepository.updateComment(mPost, commentId, commentContent);
+    }
+
+    public void deleteComment(final String commentId) {
+        mRepository.deleteComment(mPost, commentId);
+    }
+
+    private void sendCommentNotification(final Comment comment) {
+        final JSONObject rootObject = new JSONObject();
+        final JSONObject dataObject = new JSONObject();
+        try {
+            rootObject.put("to", mPost.getAuthorToken());
+
+            dataObject.put("type", "comment");
+            dataObject.put("post_id", mPost.getPostId());
+            dataObject.put("email", mPost.getAuthorEmail());
+            dataObject.put("name", comment.getAuthorName());
+            dataObject.put("photo", mPost.getAuthorImageUri());
+            dataObject.put("post_content", mPost.getAuthorContent());
+            dataObject.put("comment", comment.getAuthorContent());
+
+            rootObject.put("data", dataObject);
+
+            NotificationUtils.sendNotification(mContext, rootObject);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
