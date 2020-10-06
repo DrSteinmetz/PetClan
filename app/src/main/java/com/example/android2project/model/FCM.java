@@ -1,12 +1,12 @@
 package com.example.android2project.model;
 
-import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.RingtoneManager;
 import android.os.Build;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -25,9 +25,6 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
 import java.util.Objects;
-
-import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
-import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE;
 
 public class FCM extends FirebaseMessagingService {
 
@@ -59,15 +56,19 @@ public class FCM extends FirebaseMessagingService {
         final Map<String, String> dataMap = remoteMessage.getData();
         // Do something with Token
         if (dataMap.size() > 0) {
-            Log.d(TAG, "Message data payload: " + dataMap);
-
             if (dataMap.containsKey("type")) {
                 switch (Objects.requireNonNull(dataMap.get("type"))) {
                     case CHAT_NOTIFICATION:
                         final String chatId = ConversationFragment.sConversationId;
-                        if (chatId != null && !chatId.equals(dataMap.get("chat_id"))) {
+                        if (!(chatId != null && chatId.equals(dataMap.get("chat_id")))) {
                             createChatNotification(dataMap);
                         }
+                        break;
+                    case COMMENT_NOTIFICATION:
+                        createCommentNotification(dataMap);
+                        break;
+                    case LIKE_NOTIFICATION:
+                        createLikeNotification(dataMap);
                         break;
                 }
             }
@@ -95,7 +96,8 @@ public class FCM extends FirebaseMessagingService {
             notificationChannel.enableLights(true);
             notificationChannel.setLightColor(Color.GREEN);
             notificationChannel.enableVibration(true);
-            notificationChannel.setSound(null, null);
+            notificationChannel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+                    null);
             notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
 
             mNotificationManager.createNotificationChannel(notificationChannel);
@@ -104,11 +106,37 @@ public class FCM extends FirebaseMessagingService {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelID);
         builder.setPriority(Notification.PRIORITY_MAX).setContentTitle(getString(R.string.app_name))
                 .setSmallIcon(R.drawable.ic_petclan_logo)
-                .setOnlyAlertOnce(true)
                 .setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
         mRemoteViews = new RemoteViews(getPackageName(), R.layout.notification_layout);
+
+        Intent activityIntent = new Intent(this, MainActivity.class)
+                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        activityIntent.setAction("open_chat");
+
+        final String email = data.get("email");
+        final String userName = data.get("name");
+        String firstName = "";
+        String lastName = "";
+        if (userName != null) {
+            firstName = userName.split(" ")[0];
+            lastName = userName.split(" ")[1];
+        }
+        final String photoPath = data.get("photo");
+        final String token = data.get("token");
+        User recipient = new User(email, firstName, lastName, photoPath, token);
+
+        activityIntent.putExtra("recipient", recipient);
+        PendingIntent activityPendingIntent = PendingIntent.getActivity(this,
+                0, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(activityPendingIntent);
+
+        builder.setCustomContentView(mRemoteViews);
+
+        mNotification = builder.build();
+
         mRemoteViews.setTextViewText(R.id.user_name_tv, data.get("name"));
         mRemoteViews.setTextViewText(R.id.details_tv, data.get("message"));
         NotificationTarget notificationTarget = new NotificationTarget(
@@ -130,16 +158,81 @@ public class FCM extends FirebaseMessagingService {
                 .apply(options)
                 .into(notificationTarget);
 
-        /*Intent playIntent = new Intent(this, MusicService.class);
-        playIntent.putExtra("action", "play");
-        PendingIntent playPendingIntent = PendingIntent.getService(this,
-                0, playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        mRemoteViews.setOnClickPendingIntent(R.id.notif_play_btn, playPendingIntent);*/
+        mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+    }
+
+    private void createLikeNotification(final Map<String, String> data) {
+        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        String channelID = null;
+        CharSequence channelName = "PetClan_Channel";
+        channelID = "pet_clan_channel_id";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(channelID, channelName,
+                    NotificationManager.IMPORTANCE_HIGH);
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.GREEN);
+            notificationChannel.enableVibration(true);
+            notificationChannel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+                    null);
+            notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+
+            mNotificationManager.createNotificationChannel(notificationChannel);
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelID);
+        builder.setPriority(Notification.PRIORITY_MAX).setContentTitle(getString(R.string.app_name))
+                .setSmallIcon(R.drawable.ic_petclan_logo)
+                .setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+
+        mRemoteViews = new RemoteViews(getPackageName(), R.layout.notification_layout);
+
+        builder.setCustomContentView(mRemoteViews);
+
+        mNotification = builder.build();
+
+        mRemoteViews.setTextViewText(R.id.user_name_tv, data.get("name"));
+        mRemoteViews.setTextViewText(R.id.details_tv, "Liked Your Post");
+        mRemoteViews.setImageViewResource(R.id.notif_user_image, R.drawable.ic_like);
+
+        mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+    }
+
+    private void createCommentNotification(final Map<String, String> data) {
+        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        String channelID = null;
+        CharSequence channelName = "PetClan_Channel";
+        channelID = "pet_clan_channel_id";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(channelID, channelName,
+                    NotificationManager.IMPORTANCE_HIGH);
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.GREEN);
+            notificationChannel.enableVibration(true);
+            notificationChannel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+                    null);
+            notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+
+            mNotificationManager.createNotificationChannel(notificationChannel);
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelID);
+        builder.setPriority(Notification.PRIORITY_MAX).setContentTitle(getString(R.string.app_name))
+                .setSmallIcon(R.drawable.ic_petclan_logo)
+                .setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+
+        mRemoteViews = new RemoteViews(getPackageName(), R.layout.notification_layout);
 
         Intent activityIntent = new Intent(this, MainActivity.class)
                 .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        activityIntent.setAction("open_chat");
+        activityIntent.setAction("open_comments");
 
+        final String postId = data.get("post_id");
         final String email = data.get("email");
         final String userName = data.get("name");
         String firstName = "";
@@ -149,24 +242,23 @@ public class FCM extends FirebaseMessagingService {
             lastName = userName.split(" ")[1];
         }
         final String photoPath = data.get("photo");
-        final String token = data.get("token");
-        User recipient = new User(email, firstName, lastName, photoPath, token);
+        final String postContent = data.get("post_content");
+        Post post = new Post(email, userName, photoPath, postContent);
+        post.setPostId(postId);
 
-        activityIntent.putExtra("recipient", recipient);
+        activityIntent.putExtra("post", post);
         PendingIntent activityPendingIntent = PendingIntent.getActivity(this,
-                4, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                1, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(activityPendingIntent);
 
         builder.setCustomContentView(mRemoteViews);
 
         mNotification = builder.build();
 
-        mNotificationManager.notify(NOTIFICATION_ID, mNotification);
-    }
+        mRemoteViews.setTextViewText(R.id.user_name_tv, data.get("name"));
+        mRemoteViews.setTextViewText(R.id.details_tv, data.get("message"));
+        mRemoteViews.setImageViewResource(R.id.notif_user_image, R.drawable.ic_comment);
 
-    public boolean foregrounded() {
-        ActivityManager.RunningAppProcessInfo appProcessInfo = new ActivityManager.RunningAppProcessInfo();
-        ActivityManager.getMyMemoryState(appProcessInfo);
-        return (appProcessInfo.importance == IMPORTANCE_FOREGROUND || appProcessInfo.importance == IMPORTANCE_VISIBLE);
+        mNotificationManager.notify(NOTIFICATION_ID, mNotification);
     }
 }

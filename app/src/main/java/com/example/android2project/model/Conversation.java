@@ -1,6 +1,6 @@
 package com.example.android2project.model;
 
-public class Conversation implements Comparable<Object> {
+public class Conversation implements Comparable<Conversation> {
     private String mChatId;
     private String mSenderEmail;
     private String mRecipientEmail;
@@ -55,9 +55,8 @@ public class Conversation implements Comparable<Object> {
     }
 
     @Override
-    public int compareTo(Object object) {
-        if (object instanceof Conversation) {
-            Conversation otherConversation = (Conversation) object;
+    public int compareTo(Conversation otherConversation) {
+        if (otherConversation != null) {
             return otherConversation.getLastMessage().getTime().compareTo(this.getLastMessage().getTime());
         }
         return 0;

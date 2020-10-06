@@ -79,8 +79,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private TextView userLocationTv;
 
-
-    private final String FEED_FRAG = "feed_fragment";
     private final String COMMENTS_FRAG = "comments_fragment";
 
     private final int LOCATION_REQUEST_CODE = 1;
@@ -88,29 +86,14 @@ public class MainActivity extends AppCompatActivity implements
 
     private final String TAG = "MainActivity";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        mGpsReceiver=GpsReceiver.getInstance(new GpsReceiver.LocationCallBack() {
-//            @Override
-//            public void onLocationTriggered(boolean isLocationOn) {
-//               if(isLocationOn){
-//                   mLocationUtils.startLocation();
-//               }
-//            }
-//        });
-//        registerReceiver(mGpsReceiver,new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
-
-//        registerReceiver(new GpsReceiver(new GpsReceiver.LocationCallBack() {
-//            @Override
-//            public void onLocationTriggered() {
-//                Log.d(TAG, "onLocationTriggered: trigerred");
-//            }
-//        }), new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
-////---
+        if (getIntent().hasExtra("recipient")) {
+            onNewIntent(getIntent());
+        }
 
         mLocationUtils = LocationUtils.getInstance(this);
         registerReceiver(mLocationUtils,new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
@@ -309,20 +292,14 @@ public class MainActivity extends AppCompatActivity implements
                                         .beginTransaction(), "fragment_conversation");
                     }
                     break;
+                case "open_comments":
+                    final Post post = (Post) bundle.getSerializable("post");
+                    if (post != null) {
+                        CommentsFragment.newInstance(post)
+                                .show(getSupportFragmentManager()
+                                        .beginTransaction(), COMMENTS_FRAG);
+                    }
             }
-            /*final String userName = bundle.getString("name");
-            if (userName != null) {
-                final String email = bundle.getString("email");
-                final String firstName = userName.split(" ")[0];
-                final String lastName = userName.split(" ")[1];
-                final String photoPath = bundle.getString("photo");
-                final String token = bundle.getString("token");
-                User recipient = new User(email, firstName, lastName, photoPath, token);
-                Log.d(TAG, "onNewIntent: matan? " + recipient.toString());
-                ConversationFragment.newInstance(recipient)
-                        .show(getSupportFragmentManager()
-                                .beginTransaction(), "fragment_conversation");
-            }*/
         }
     }
 

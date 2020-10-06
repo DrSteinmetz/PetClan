@@ -7,11 +7,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Post implements Serializable, Comparable<Object> {
+public class Post implements Serializable, Comparable<Post> {
     private String mPostId;
     private String mAuthorEmail;
     private String mAuthorName;
     private String mAuthorImageUri;
+    private String mAuthorToken;
     private Date mPostTime;
     private String mAuthorContent;
     private int mCommentsCount = 0;
@@ -20,11 +21,10 @@ public class Post implements Serializable, Comparable<Object> {
     private String mLocation;
     private GeoPoint mGeoPoint;
 
-    public Post() {
-    }
+    public Post() {}
 
     public Post(String authorEmail, String authorName, String authorImageUri, String authorContent) {
-        this.mPostId=authorEmail+System.nanoTime();
+        this.mPostId = authorEmail + System.nanoTime();
         this.mAuthorEmail = authorEmail;
         this.mAuthorName = authorName;
         this.mAuthorImageUri = authorImageUri;
@@ -62,6 +62,14 @@ public class Post implements Serializable, Comparable<Object> {
 
     public void setAuthorImageUri(String authorImageUri) {
         this.mAuthorImageUri = authorImageUri;
+    }
+
+    public String getAuthorToken() {
+        return mAuthorToken;
+    }
+
+    public void setAuthorToken(String authorToken) {
+        this.mAuthorToken = authorToken;
     }
 
     public String getAuthorContent() {
@@ -127,6 +135,7 @@ public class Post implements Serializable, Comparable<Object> {
                 ", mAuthorEmail='" + mAuthorEmail + '\'' +
                 ", mAuthorName='" + mAuthorName + '\'' +
                 ", mAuthorImageUri='" + mAuthorImageUri + '\'' +
+                ", mAuthorToken='" + mAuthorToken + '\'' +
                 ", mPostTime=" + mPostTime +
                 ", mAuthorContent='" + mAuthorContent + '\'' +
                 ", mCommentsCount=" + mCommentsCount +
@@ -138,9 +147,8 @@ public class Post implements Serializable, Comparable<Object> {
     }
 
     @Override
-    public int compareTo(final Object object) {
-        if (object instanceof Post) {
-            Post otherPost = (Post) object;
+    public int compareTo(final Post otherPost) {
+        if (otherPost != null) {
             return otherPost.getPostTime().compareTo(this.mPostTime);
         }
         return 0;

@@ -79,7 +79,8 @@ public class FeedFragment extends Fragment {
 
     private FeedInterface listener;
 
-    public FeedFragment() {}
+    public FeedFragment() {
+    }
 
     public static FeedFragment newInstance(final String userEmail) {
         FeedFragment fragment = new FeedFragment();
@@ -109,7 +110,7 @@ public class FeedFragment extends Fragment {
         }
 
         mLocationUtils = LocationUtils.getInstance(requireActivity());
-      
+
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Feed)).get(FeedViewModel.class);
         mViewModel.setUserEmail(mUserEmail);
@@ -289,7 +290,7 @@ public class FeedFragment extends Fragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (mUserLocation != null ) {
+                if (mUserLocation != null) {
                     mViewModel.refreshPosts();
                 }
             }
@@ -366,8 +367,7 @@ public class FeedFragment extends Fragment {
 
         postContentEt.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -375,21 +375,21 @@ public class FeedFragment extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-            }
+            public void afterTextChanged(Editable s) {}
         });
 
         postBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 final Post post = new Post(mViewModel.getMyEmail(), mViewModel.getMyName(),
-                        mViewModel.getMyPhotoUri(),postContentEt.getText().toString());
+                        mViewModel.getMyPhotoUri(), postContentEt.getText().toString());
 
-                        post.setLocation(mUserLocation.getLocality()==null?"Unknown":mUserLocation.getLocality());
-                        post.setGeoPoint(new GeoPoint(mUserLocation.getLatitude(),mUserLocation.getLongitude()));
+                post.setLocation(mUserLocation == null ? "Unknown" :
+                        mUserLocation.getLocality());
+                post.setGeoPoint(mUserLocation == null ? null :
+                        new GeoPoint(mUserLocation.getLatitude(), mUserLocation.getLongitude()));
 
-                        mViewModel.uploadNewPost(post);
+                mViewModel.uploadNewPost(post);
                 alertDialog.dismiss();
             }
         });

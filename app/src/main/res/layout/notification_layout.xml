@@ -39,7 +39,7 @@
         android:layout_below="@id/notif_title_layout"
         android:layout_alignParentStart="true"
         android:layout_toStartOf="@id/notif_user_image"
-        android:layout_marginHorizontal="20dp">
+        android:layout_marginHorizontal="10dp">
 
         <TextView
             android:id="@+id/user_name_tv"
@@ -71,6 +71,7 @@
         android:id="@+id/notif_user_image"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_alignBottom="@id/notif_details_layout"
         android:layout_marginVertical="5dp"
         android:layout_marginEnd="20dp"
         android:layout_alignParentEnd="true"

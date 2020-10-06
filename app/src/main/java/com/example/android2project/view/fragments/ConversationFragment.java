@@ -257,5 +257,6 @@ public class ConversationFragment extends DialogFragment {
         super.onStop();
 
         mMessageAdapter.stopListening();
+        sConversationId = null;
     }
 }

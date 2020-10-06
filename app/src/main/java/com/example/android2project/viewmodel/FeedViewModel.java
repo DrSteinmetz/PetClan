@@ -1,22 +1,28 @@
 package com.example.android2project.viewmodel;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Address;
-import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.example.android2project.model.NotificationUtils;
 import com.example.android2project.model.Post;
 import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.repository.Repository;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FeedViewModel extends ViewModel {
 
+    @SuppressLint("StaticFieldLeak")
+    private Context mContext;
     private Repository mRepository;
     private AuthRepository mAuthRepository;
     protected String mUserEmail = null;
@@ -45,6 +51,7 @@ public class FeedViewModel extends ViewModel {
     private final String TAG = "FeedViewModel";
 
     public FeedViewModel(final Context context) {
+        this.mContext = context;
         this.mRepository = Repository.getInstance(context);
         this.mAuthRepository = AuthRepository.getInstance(context);
     }
@@ -222,6 +229,7 @@ public class FeedViewModel extends ViewModel {
         Observer<Post> onPostLikesUpdateSucceed = new Observer<Post>() {
             @Override
             public void onChanged(Post post) {
+                sendLikeNotification(post);
                 mPostLikesUpdateSucceed.setValue(mPosition);
             }
         };
@@ -274,11 +282,16 @@ public class FeedViewModel extends ViewModel {
 
     }
 
+    public List<Post> getPosts() {
+        return mPosts;
+    }
+
     public void setUserEmail(final String userEmail) {
         this.mUserEmail = userEmail;
     }
 
     public void uploadNewPost(final Post post) {
+        post.setAuthorToken(mAuthRepository.getUserToken());
         mRepository.uploadNewPost(post);
     }
 
@@ -305,11 +318,6 @@ public class FeedViewModel extends ViewModel {
         mRepository.deletePost(postId);
     }
 
-    public List<Post> getPosts() {
-        return mPosts;
-
-    }
-
     public void updateUserLocation(Address address) {
         mRepository.updateUserLocation(address);
     }
@@ -324,5 +332,22 @@ public class FeedViewModel extends ViewModel {
 
     public String getMyPhotoUri() {
         return mAuthRepository.getUserImageUri();
+    }
+
+    private void sendLikeNotification(final Post post) {
+        final JSONObject rootObject = new JSONObject();
+        final JSONObject dataObject = new JSONObject();
+        try {
+            rootObject.put("to", post.getAuthorToken());
+
+            dataObject.put("type", "like");
+            dataObject.put("name", post.getAuthorName());
+
+            rootObject.put("data", dataObject);
+
+            NotificationUtils.sendNotification(mContext, rootObject);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

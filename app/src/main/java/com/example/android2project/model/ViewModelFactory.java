@@ -19,7 +19,6 @@ import com.example.android2project.viewmodel.PetViewModel;
 import com.example.android2project.viewmodel.SettingsViewModel;
 import com.example.android2project.viewmodel.SocialViewModel;
 import com.example.android2project.viewmodel.UserDetailsViewModel;
-import com.example.android2project.viewmodel.UserFeedViewModel;
 import com.example.android2project.viewmodel.UserPictureViewModel;
 import com.example.android2project.viewmodel.UserProfileViewModel;
 import com.example.android2project.viewmodel.WelcomeViewModel;
@@ -121,12 +120,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     objToReturn = (T) new MarketPlaceViewModel(mContext);
                 }
                 break;
-            /*case UserFeed:
-                if (modelClass.isAssignableFrom(UserFeedViewModel.class)) {
-                    objToReturn = (T) new UserFeedViewModel(mContext);
-                }
-                break;*/
-            case Advertisment:
+            case Advertisement:
                 if (modelClass.isAssignableFrom(AdvertisementViewModel.class)) {
                     objToReturn = (T) new AdvertisementViewModel(mContext);
                 }

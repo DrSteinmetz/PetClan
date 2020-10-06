@@ -147,13 +147,13 @@ public class MarketPlaceViewModel extends ViewModel {
                 }
                 break;
             case price:
-                Collections.sort(mAdList, new Advertisement.PriceComperator());
+                Collections.sort(mAdList, new Advertisement.PriceComparator());
                 if (!isDes) {
                     Collections.reverse(mAdList);
                 }
                 break;
             case distance:
-                Collections.sort(mAdList, new Advertisement.LocationComperator());
+                Collections.sort(mAdList, new Advertisement.LocationComparator());
                 if (!isDes) {
                     Collections.reverse(mAdList);
                 }
