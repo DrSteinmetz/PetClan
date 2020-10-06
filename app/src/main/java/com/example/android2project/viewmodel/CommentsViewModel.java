@@ -196,9 +196,10 @@ public class CommentsViewModel extends ViewModel {
             dataObject.put("type", "comment");
             dataObject.put("post_id", mPost.getPostId());
             dataObject.put("email", mPost.getAuthorEmail());
-            dataObject.put("name", mPost.getAuthorName());
+            dataObject.put("name", comment.getAuthorName());
             dataObject.put("photo", mPost.getAuthorImageUri());
             dataObject.put("post_content", mPost.getAuthorContent());
+            dataObject.put("comment", comment.getAuthorContent());
 
             rootObject.put("data", dataObject);
 

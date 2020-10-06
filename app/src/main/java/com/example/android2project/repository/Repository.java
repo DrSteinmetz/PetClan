@@ -662,9 +662,7 @@ public class Repository {
         }
     }
 
-    /**
-     * <-------Comments methods------->
-     **/
+    /**<-------Comments methods------->**/
     public void uploadComment(final Post post, final String commentContent) {
         final FirebaseUser user = mAuth.getCurrentUser();
 

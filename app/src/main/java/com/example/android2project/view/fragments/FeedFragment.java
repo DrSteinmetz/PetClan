@@ -47,7 +47,6 @@ public class FeedFragment extends Fragment {
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-
     private Observer<List<Post>> mOnPostDownloadSucceed;
     private Observer<String> mOnPostDownloadFailed;
 
@@ -79,8 +78,7 @@ public class FeedFragment extends Fragment {
 
     private FeedInterface listener;
 
-    public FeedFragment() {
-    }
+    public FeedFragment() {}
 
     public static FeedFragment newInstance(final String userEmail) {
         FeedFragment fragment = new FeedFragment();

@@ -256,7 +256,7 @@ public class FCM extends FirebaseMessagingService {
         mNotification = builder.build();
 
         mRemoteViews.setTextViewText(R.id.user_name_tv, data.get("name"));
-        mRemoteViews.setTextViewText(R.id.details_tv, data.get("message"));
+        mRemoteViews.setTextViewText(R.id.details_tv, data.get("comment"));
         mRemoteViews.setImageViewResource(R.id.notif_user_image, R.drawable.ic_comment);
 
         mNotificationManager.notify(NOTIFICATION_ID, mNotification);
