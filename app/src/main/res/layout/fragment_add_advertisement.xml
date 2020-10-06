@@ -364,7 +364,7 @@
 
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.example.android2project.model.PhotosPreviewRecyclerview
             android:id="@+id/photos_preview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -373,7 +373,7 @@
             android:visibility="gone">
 
 
-        </androidx.recyclerview.widget.RecyclerView>
+        </com.example.android2project.model.PhotosPreviewRecyclerview>
 
 
         <Button

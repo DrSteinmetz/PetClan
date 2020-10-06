@@ -1,11 +1,13 @@
 package com.example.android2project.view.fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -41,6 +43,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android2project.R;
 import com.example.android2project.model.Advertisement;
+import com.example.android2project.model.LocationUtils;
+import com.example.android2project.model.PhotosPreviewRecyclerview;
 import com.example.android2project.model.PreviewImagesAdapter;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.model.ViewModelFactory;
@@ -62,16 +66,10 @@ public class AdvertisementFragment extends DialogFragment {
     private static final String TAG = "AdvertisementFragment";
     private AdvertisementViewModel mViewModel;
     private Advertisement mAdvertisement;
-    private int mImageViewCounter = 0;
     private File mFile;
-    private List<String> mSelectedImageList = new ArrayList<>();
     private List<String> mCityNames;
     private AlertDialog mLoadingDialog;
-
-
-    private Handler handler;
-    private Geocoder mGeoCoder;
-    private Address mAddress;
+    private LocationUtils mLocationUtils;
 
     private  ArrayAdapter<String> cityArrayadapter;
     private LinearLayout locationLayout;
@@ -92,16 +90,14 @@ public class AdvertisementFragment extends DialogFragment {
     private ImageButton galleryBtn;
     private ImageButton cameraBtn;
     private Button publishBtn;
-    private RecyclerView mImagePreviewRecycler;
-    private PreviewImagesAdapter mImagePreviewAdapter;
+    private PhotosPreviewRecyclerview mImagePreviewRecycler;
 
     private Observer<Integer> mOnUploadingAdPhotosSucceed;
     private Observer<String> mOnUploadingAdPhotosFailed;
     private Observer<Advertisement> mOnUploadingAdSucceed;
     private Observer<String> mOnUploadingAdFailed;
+    private Observer<Address> mOnLocationChanged;
 
-    private final int CAMERA_REQUEST = 1;
-    private final int GALLERY_REQUEST = 2;
     private final int WRITE_PERMISSION_REQUEST = 7;
     private final int IMAGE_VIEW_SIZE = 8;
 
@@ -136,21 +132,19 @@ public class AdvertisementFragment extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-        handler=new Handler();
-
-        mGeoCoder=new Geocoder(requireContext(), Locale.getDefault());
         if (getArguments() != null) {
             mAdvertisement = (Advertisement) getArguments().getSerializable("ad");
         }
 
-        mCityNames=new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.city_names)));
-
-       cityArrayadapter = new ArrayAdapter<String>
-                (requireContext(),android.R.layout.select_dialog_item,mCityNames);
+        mLocationUtils = LocationUtils.getInstance((Activity) requireContext());
 
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
-                ViewModelEnum.Advertisement)).get(AdvertisementViewModel.class);
+                ViewModelEnum.Advertisment)).get(AdvertisementViewModel.class);
+
+        mCityNames=new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.city_names)));
+
+        cityArrayadapter = new ArrayAdapter<String>
+                (requireContext(),android.R.layout.select_dialog_item,mCityNames);
 
         mOnUploadingAdPhotosSucceed = new Observer<Integer>() {
             @Override
@@ -220,51 +214,6 @@ public class AdvertisementFragment extends DialogFragment {
 
         View rootView = inflater.inflate(R.layout.fragment_add_advertisement, container, false);
 
-        mImagePreviewRecycler = rootView.findViewById(R.id.photos_preview);
-        mImagePreviewRecycler.setHasFixedSize(true);
-        mImagePreviewRecycler.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
-
-        if (mAdvertisement == null) {
-            for (int i = 0; i < IMAGE_VIEW_SIZE; i++) {
-                mSelectedImageList.add(null);
-                Log.d(TAG, "onCreateView: in new advert " + mSelectedImageList.get(i));
-            }
-        } else {
-            for (int i = 0; i < IMAGE_VIEW_SIZE; i++) {
-                if (i < mAdvertisement.getImages().size()) {
-                    mSelectedImageList.add(mAdvertisement.getImages().get(i));
-                    mImageViewCounter++;
-                } else {
-                    mSelectedImageList.add(null);
-                }
-            }
-        }
-
-        mImagePreviewAdapter = new PreviewImagesAdapter(getContext(), mSelectedImageList);
-
-        mImagePreviewAdapter.setListener(new PreviewImagesAdapter.DeletePreviewInterface() {
-            @Override
-            public void onDelete(int position, View view) {
-                String uri = mSelectedImageList.get(position);
-                Log.d(TAG, "onDelete: " + uri);
-                if (mAdvertisement != null && uri.contains("https://firebasestorage.googleapis.com/v0/b/petclan-2fdce.appspot.com")) {
-                    mViewModel.deletePhotoFromStorage(mAdvertisement.getStoragePath(mAdvertisement.getUser().getEmail(), uri));
-                }
-                mSelectedImageList.remove(position);
-                mSelectedImageList.add(null);
-                mImagePreviewAdapter.notifyItemRemoved(position);
-                if (mImageViewCounter > 0) {
-                    mImageViewCounter--;
-                }
-            }
-        });
-        locationAutoCompleteTv=rootView.findViewById(R.id.location_auto_tv);
-
-        locationAutoCompleteTv.setThreshold(1);//will start working from first character
-        locationAutoCompleteTv.setAdapter(cityArrayadapter);//setting the adapter data into the AutoCompleteTextView
-        locationAutoCompleteTv.setTextColor(Color.RED);
-
-        locationLayout = rootView.findViewById(R.id.location_layout);
         categoryLayout = rootView.findViewById(R.id.category_layout);
         genderLayout = rootView.findViewById(R.id.gender_layout);
         actionRg = rootView.findViewById(R.id.action_rg);
@@ -272,15 +221,28 @@ public class AdvertisementFragment extends DialogFragment {
         genderRg = rootView.findViewById(R.id.gender_rg);
         typeSp = rootView.findViewById(R.id.type_spinner);
         kindLayout = rootView.findViewById(R.id.pet_kind_et_layout);
+        locationLayout = rootView.findViewById(R.id.location_layout);
         priceLayout = rootView.findViewById(R.id.pet_price_et_layout);
         descriptionLayout = rootView.findViewById(R.id.pet_description_et_layout);
+        locationAutoCompleteTv=rootView.findViewById(R.id.location_auto_tv);
         kindEt = rootView.findViewById(R.id.pet_kind_et);
         priceEt = rootView.findViewById(R.id.pet_price_et);
         descriptionEt = rootView.findViewById(R.id.pet_description_et);
         locationBtn=rootView.findViewById(R.id.locate_btn);
         galleryBtn = rootView.findViewById(R.id.gallery_btn);
         cameraBtn = rootView.findViewById(R.id.camera_btn);
+        mImagePreviewRecycler = rootView.findViewById(R.id.photos_preview);
         publishBtn = rootView.findViewById(R.id.publish_btn);
+
+        if (mAdvertisement == null) {
+            mImagePreviewRecycler.init(IMAGE_VIEW_SIZE);
+        } else {
+            mImagePreviewRecycler.initEdit(IMAGE_VIEW_SIZE,mAdvertisement);
+        }
+
+        locationAutoCompleteTv.setThreshold(1);//will start working from first character
+        locationAutoCompleteTv.setAdapter(cityArrayadapter);//setting the adapter data into the AutoCompleteTextView
+        locationAutoCompleteTv.setTextColor(Color.BLACK);
 
         if (mAdvertisement == null) {
             actionRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -289,7 +251,6 @@ public class AdvertisementFragment extends DialogFragment {
                     categoryLayout.setVisibility(View.VISIBLE);
                 }
             });
-
             categoryRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -366,18 +327,33 @@ public class AdvertisementFragment extends DialogFragment {
             genderRg.check(mAdvertisement.getIsMale() ? R.id.male_rb : R.id.female_rb);
             typeSp.setSelection(position[0]);
             kindEt.setText(mAdvertisement.getPetKind());
+            locationAutoCompleteTv.setText(mAdvertisement.getLocation());
             priceEt.setText(mAdvertisement.getPrice()+"");
             descriptionEt.setText(mAdvertisement.getDescription());
-
         }
-        mImagePreviewRecycler.setAdapter(mImagePreviewAdapter);
-        //mImagePreviewRecycler.setVisibility(View.VISIBLE);
 
+        locationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mLocationUtils.isLocationEnabled()) {
+                    mOnLocationChanged = new Observer<Address>() {
+                        @Override
+                        public void onChanged(Address address) {
+                            locationAutoCompleteTv.setText(LocationUtils.getAddress().getLocality());
+                        }
+                    };
+                    mLocationUtils.getLocationLiveData().observe(getViewLifecycleOwner(),mOnLocationChanged);
+                } else{
+                    Toast.makeText(requireContext(), "Please enable location", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
         cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 /**<-------Requesting user permissions------->**/
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && mImageViewCounter < 8) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && mImagePreviewRecycler.getImageCounter() < 8) {
                     int hasWritePermission = requireContext().
                             checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
                     if (hasWritePermission != PackageManager.PERMISSION_GRANTED) {
@@ -388,14 +364,6 @@ public class AdvertisementFragment extends DialogFragment {
                                 "petclan" + System.nanoTime() + "pic.jpg");
                         Uri uri = FileProvider.getUriForFile(requireContext(),
                                 "com.example.android2project.provider", mFile);
-
-//                        mSelectedImageList.remove(mImageViewCounter);
-//                        mSelectedImageList.add(mImageViewCounter, uri.toString());
-//                        mImagePreviewAdapter.notifyItemChanged(mImageViewCounter);
-
-//                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-//                        startActivityForResult(intent, CAMERA_REQUEST);
 
                         CropImage.activity()
                                 .setAspectRatio(4, 3)
@@ -411,11 +379,7 @@ public class AdvertisementFragment extends DialogFragment {
         galleryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mImageViewCounter < 8) {
-//                    Intent intent = new Intent(Intent.ACTION_PICK,
-//                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//                    startActivityForResult(Intent.createChooser(intent,
-//                            "Select Picture"), GALLERY_REQUEST);
+                if (mImagePreviewRecycler.getImageCounter() < 8) {
 
                     CropImage.activity()
                             .setAspectRatio(4, 3)
@@ -428,35 +392,6 @@ public class AdvertisementFragment extends DialogFragment {
             }
         });
 
-
-//        locationAutoCompleteTv.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//                final String cityName=editable.toString();
-//                if(mCityNames.contains(cityName)){
-//                    handler.post(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            try {
-//                                mAddress =mGeoCoder.getFromLocationName(cityName,1).get(0);
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    });
-//                }
-//            }
-//        });
 
         descriptionEt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -511,10 +446,10 @@ public class AdvertisementFragment extends DialogFragment {
                 }
                 if (isPet && genderRg.getCheckedRadioButtonId() != -1
                         && !kind.isEmpty() && !price.isEmpty() && !description.isEmpty() && mCityNames.contains(cityName)) {
-                    mViewModel.uploadAdPhotos(mSelectedImageList);
+                    mViewModel.uploadAdPhotos(mImagePreviewRecycler.getSelectedImageList());
                     showLoadingDialog();
                 } else if (!isPet && !price.isEmpty() && !description.isEmpty() && mCityNames.contains(cityName)) {
-                    mViewModel.uploadAdPhotos(mSelectedImageList);
+                    mViewModel.uploadAdPhotos(mImagePreviewRecycler.getSelectedImageList());
                     showLoadingDialog();
                 }
             }
@@ -553,14 +488,6 @@ public class AdvertisementFragment extends DialogFragment {
                 Uri uri = FileProvider.getUriForFile(requireContext(),
                         "com.example.android2project.provider", mFile);
 
-//                mSelectedImageList.remove(mImageViewCounter);
-//                mSelectedImageList.add(mImageViewCounter, uri.toString());
-//                mImagePreviewAdapter.notifyItemChanged(mImageViewCounter++);
-
-//                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-//                startActivityForResult(intent, CAMERA_REQUEST);
-
                 CropImage.activity()
                         .setAspectRatio(4, 3)
                         .setCropShape(CropImageView.CropShape.RECTANGLE)
@@ -574,53 +501,10 @@ public class AdvertisementFragment extends DialogFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-//        boolean fromCamera = false;
-////        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_CANCELED) {
-//        if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-//            mSelectedImageList.remove(mImageViewCounter);
-//            mSelectedImageList.add(null);
-//            mImagePreviewAdapter.notifyItemChanged(mImageViewCounter);
-//            if (mImageViewCounter > 0) {
-//                mImageViewCounter--;
-//            }
-//
-//        }
-
-//        if (resultCode == Activity.RESULT_OK) {
-//            if (requestCode == CAMERA_REQUEST) {
-//                fromCamera = true;
-//                mImageViewCounter++;
-//                CropImage.activity()
-//                        .setAspectRatio(16, 9)
-//                        .setCropShape(CropImageView.CropShape.RECTANGLE)
-//                        .setGuidelines(CropImageView.Guidelines.ON)
-//                        .start(requireContext(), this);
-//            }
-//            if (requestCode == GALLERY_REQUEST) {
-//                if (data != null) {
-//                    final Uri selectedImage = data.getData();
-//                    fromCamera = false;
-//                    CropImage.activity()
-//                            .setAspectRatio(16, 9)
-//                            .setCropShape(CropImageView.CropShape.RECTANGLE)
-//                            .setGuidelines(CropImageView.Guidelines.ON)
-//                            .start(requireContext(), this);
-//
-////                    mSelectedImageList.remove(mImageViewCounter);
-////                    mSelectedImageList.add(mImageViewCounter, selectedImage.toString());
-////                    mImagePreviewAdapter.notifyItemChanged(mImageViewCounter++);
-//
-//                }
-//            }
-//        }
-
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (result!=null) {
-                mSelectedImageList.remove(mImageViewCounter);
-                mSelectedImageList.add(mImageViewCounter, result.getUri().toString());
-                mImagePreviewAdapter.notifyItemChanged(mImageViewCounter++);
+                mImagePreviewRecycler.addPhoto(result.getUri());
             }
         }
     }
@@ -635,6 +519,7 @@ public class AdvertisementFragment extends DialogFragment {
         builder.setCancelable(false);
         mLoadingDialog = builder.create();
         mLoadingDialog.show();
+        mLoadingDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
     }
 
     @Override
