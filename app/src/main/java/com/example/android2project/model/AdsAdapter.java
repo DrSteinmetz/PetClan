@@ -25,22 +25,31 @@ import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.util.List;
 import java.util.Locale;
 
-public class AdsAdapter extends FirestorePagingAdapter<Advertisement, AdsAdapter.AdViewHolder> {
+public class AdsAdapter extends RecyclerView.Adapter<AdsAdapter.AdViewHolder> {
 
     private Context mContext;
 
     private String mUserEmail;
 
+    private List<Advertisement> advertisementList;
+
     private static final String TAG = "AdsAdapter";
 
-    public AdsAdapter(final Context context, @NonNull FirestorePagingOptions<Advertisement> options) {
-        super(options);
-
-        mContext = context;
-        mUserEmail = AuthRepository.getInstance(context).getUserEmail();
+    public AdsAdapter(Context mContext, String mUserEmail, List<Advertisement> advertisementList) {
+        this.mContext = mContext;
+        this.mUserEmail = mUserEmail;
+        this.advertisementList = advertisementList;
     }
+
+    //    public AdsAdapter(final Context context, @NonNull FirestorePagingOptions<Advertisement> options) {
+//        super(options);
+//
+//        mContext = context;
+//        mUserEmail = AuthRepository.getInstance(context).getUserEmail();
+//    }
 
     public interface AdsAdapterInterface {
         void onAdClick(View view, int position);
@@ -59,6 +68,38 @@ public class AdsAdapter extends FirestorePagingAdapter<Advertisement, AdsAdapter
     public AdViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ad_cardview, parent, false);
         return new AdViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull AdViewHolder holder, int position) {
+        Advertisement ad=advertisementList.get(position);
+        RequestOptions options = new RequestOptions()
+                .placeholder(R.drawable.ic_default_user_pic)
+                .error(R.drawable.ic_default_user_pic);
+
+        if (ad.getImages().size() > 0) {
+            Glide.with(holder.adImageIv.getContext())
+                    .load(ad.getImages().get(0))
+                    .apply(options)
+                    .into(holder.adImageIv);
+        }
+
+        holder.optionsBtn.setVisibility(mUserEmail.equals(ad.getUser().getEmail()) ?
+                View.VISIBLE : View.GONE);
+
+        holder.adPriceTv.setText(ad.getPrice() + " ₪");
+
+        holder.adDescriptionTv.setText(ad.getDescription());
+
+
+        holder.adLocationTv.setText(ad.getLocation());
+
+        holder.adTypeTv.setText(ad.getIsSell() ? " | Sell" : " | Hand Over");
+    }
+
+    @Override
+    public int getItemCount() {
+        return advertisementList.size();
     }
 
     class AdViewHolder extends RecyclerView.ViewHolder {
@@ -127,39 +168,20 @@ public class AdsAdapter extends FirestorePagingAdapter<Advertisement, AdsAdapter
         }
     }
 
-    @Override
-    protected void onBindViewHolder(@NonNull AdViewHolder holder, int position, @NonNull Advertisement ad) {
-        RequestOptions options = new RequestOptions()
-                .placeholder(R.drawable.ic_default_user_pic)
-                .error(R.drawable.ic_default_user_pic);
+//    @Override
+//    protected void onBindViewHolder(@NonNull AdViewHolder holder, int position, @NonNull Advertisement ad) {
+//
+//    }
 
-        if (ad.getImages().size() > 0) {
-            Glide.with(holder.adImageIv.getContext())
-                    .load(ad.getImages().get(0))
-                    .apply(options)
-                    .into(holder.adImageIv);
-        }
-
-        holder.optionsBtn.setVisibility(mUserEmail.equals(ad.getUser().getEmail()) ?
-                View.VISIBLE : View.GONE);
-
-        holder.adPriceTv.setText(ad.getPrice() + " ₪");
-
-        holder.adDescriptionTv.setText(ad.getDescription());
+//    public Advertisement getCurrentAd(int position) {
+//        DocumentSnapshot documentSnapshot = getItem(position);
+//
+//        if (documentSnapshot != null) {
+//            return documentSnapshot.toObject(Advertisement.class);
+//        }
+//
+//        return null;
+//    }
 
 
-        holder.adLocationTv.setText(ad.getLocation());
-
-        holder.adTypeTv.setText(ad.getIsSell() ? " | Sell" : " | Hand Over");
-    }
-
-    public Advertisement getCurrentAd(int position) {
-        DocumentSnapshot documentSnapshot = getItem(position);
-
-        if (documentSnapshot != null) {
-            return documentSnapshot.toObject(Advertisement.class);
-        }
-
-        return null;
-    }
 }

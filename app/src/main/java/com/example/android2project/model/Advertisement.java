@@ -4,7 +4,12 @@ import com.google.firebase.firestore.GeoPoint;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.function.Function;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
 
 public class Advertisement implements Serializable, Comparable<Object> {
     private String mAdvertisementId;
@@ -181,6 +186,7 @@ public class Advertisement implements Serializable, Comparable<Object> {
         id = id.reverse();
         return myEmail+"/ads/"+myEmail+id+".jpg";
     }
+
     /*String s1 = s.split("\\.jpg\\?alt=media&token=")[0];
 
         int i = 2;
@@ -191,4 +197,20 @@ public class Advertisement implements Serializable, Comparable<Object> {
             c = s1.charAt(s1.length() - i++);
         }
         id = id.reverse();*/
+    public static class PriceComperator implements Comparator<Advertisement>{
+
+
+        @Override
+        public int compare(Advertisement advertisement, Advertisement t1) {
+            return t1.getPrice()-advertisement.getPrice();
+        }
+    }
+
+    public static class LocationComperator implements Comparator<Advertisement>{
+
+        @Override
+        public int compare(Advertisement advertisement, Advertisement t1) {
+            return LocationUtils.getDistance(t1.getGeoPoint())-LocationUtils.getDistance(advertisement.getGeoPoint());
+        }
+    }
 }
