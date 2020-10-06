@@ -139,7 +139,7 @@ public class AdvertisementFragment extends DialogFragment {
         mLocationUtils = LocationUtils.getInstance((Activity) requireContext());
 
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
-                ViewModelEnum.Advertisment)).get(AdvertisementViewModel.class);
+                ViewModelEnum.Advertisement)).get(AdvertisementViewModel.class);
 
         mCityNames=new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.city_names)));
 
