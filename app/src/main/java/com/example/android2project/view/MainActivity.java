@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (getIntent().hasExtra("recipient") || getIntent().hasExtra("comment")) {
+        if (getIntent().hasExtra("recipient") || getIntent().hasExtra("post")) {
             onNewIntent(getIntent());
         }
 
@@ -299,6 +299,7 @@ public class MainActivity extends AppCompatActivity implements
                                 .show(getSupportFragmentManager()
                                         .beginTransaction(), COMMENTS_FRAG);
                     }
+                    break;
             }
         }
     }

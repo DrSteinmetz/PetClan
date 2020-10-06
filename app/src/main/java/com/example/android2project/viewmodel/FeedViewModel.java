@@ -194,9 +194,11 @@ public class FeedViewModel extends ViewModel {
         Observer<Post> onPostUpdateSucceed = new Observer<Post>() {
             @Override
             public void onChanged(Post updatedPost) {
-                mPosts.get(mPosition).setAuthorContent(updatedPost.getAuthorContent());
-                mPosts.get(mPosition).setCommentsCount(updatedPost.getCommentsCount());
-                mPostUpdateSucceed.setValue(mPosition);
+                if (!mPosts.isEmpty()) {
+                    mPosts.get(mPosition).setAuthorContent(updatedPost.getAuthorContent());
+                    mPosts.get(mPosition).setCommentsCount(updatedPost.getCommentsCount());
+                    mPostUpdateSucceed.setValue(mPosition);
+                }
             }
         };
         mRepository.getRepositoryPostUpdateSucceedMLD().observeForever(onPostUpdateSucceed);

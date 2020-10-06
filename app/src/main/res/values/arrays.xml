@@ -14,6 +14,7 @@
         <item>Date</item>
         <item>Price</item>
         <item>Distance</item>
+        <item>My Ads</item>
     </string-array>
 
     <string-array name="pet_types">

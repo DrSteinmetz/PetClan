@@ -1,6 +1,7 @@
 package com.example.android2project.viewmodel;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -23,6 +24,7 @@ public class MarketPlaceViewModel extends ViewModel {
     private int mPosition;
 
     private List<Advertisement> mAdList = new ArrayList<>();
+    private List<Advertisement> mTempList = new ArrayList<>();
 
     private MutableLiveData<List<Advertisement>> mDownloadAdsSucceed;
     private MutableLiveData<String> mDownloadAdsFailed;
@@ -138,6 +140,14 @@ public class MarketPlaceViewModel extends ViewModel {
         final int date = 0;
         final int price = 1;
         final int distance = 2;
+        final int my_ads = 3;
+
+        if (!mTempList.isEmpty()) {
+            if (!mAdList.isEmpty()) {
+                mAdList.clear();
+            }
+            mAdList.addAll(mTempList);
+        }
 
         switch (orderBy) {
             case date:
@@ -157,6 +167,23 @@ public class MarketPlaceViewModel extends ViewModel {
                 if (!isDes) {
                     Collections.reverse(mAdList);
                 }
+                break;
+            case my_ads:
+                if (!mTempList.isEmpty()) {
+                    mTempList.clear();
+                }
+                mTempList.addAll(mAdList);
+
+                if (!mAdList.isEmpty()) {
+                    mAdList.clear();
+                }
+
+                for (Advertisement ad : mTempList) {
+                    if (mAuth.getUserEmail().equals(ad.getUser().getEmail())) {
+                        mAdList.add(ad);
+                    }
+                }
+                Collections.sort(mAdList);
                 break;
         }
 

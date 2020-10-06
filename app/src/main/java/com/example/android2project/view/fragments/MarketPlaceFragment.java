@@ -156,7 +156,6 @@ public class MarketPlaceFragment extends Fragment {
                 int orderBy = optionsFilter.getSelectedItemPosition();
                 final boolean isDes = radioGroup.getCheckedRadioButtonId() == R.id.filter_high_to_low_rb;
                 mViewModel.getFilteredAds(orderBy, isDes);
-
             }
         });
 
@@ -169,7 +168,6 @@ public class MarketPlaceFragment extends Fragment {
             mViewModel.getDownloadAdsFailed().observe(this, mOnDownloadAdsFailed);
             mViewModel.getAdDeletionSucceed().observe(this, mOnAdDeletionSucceed);
             mViewModel.getAdDeletionFailed().observe(this, mOnAdDeletionFailed);
-
         }
     }
 
