@@ -82,9 +82,19 @@ public class MainActivity extends AppCompatActivity implements
     private final String COMMENTS_FRAG = "comments_fragment";
 
     private final int LOCATION_REQUEST_CODE = 1;
-    private final int REQUEST_CHECK_SETTINGS = 2;
+    private final int REQUEST_CHECK_SETTINGS_CODE = 2;
 
     private final String TAG = "MainActivity";
+
+    public interface LocationBuilderDeniedInterface {
+        void onLocationDenied(boolean isDenied);
+    }
+
+    private LocationBuilderDeniedInterface mLocationListener;
+
+    public void setLocationBuilderDeniedInterface(LocationBuilderDeniedInterface locationBuilderDeniedInterface){
+        this.mLocationListener =locationBuilderDeniedInterface;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -233,9 +243,15 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CHECK_SETTINGS_CODE && resultCode == RESULT_OK) {
             mLocationUtils.startLocation();
+            if (mLocationListener!=null) {
+                mLocationListener.onLocationDenied(false);
+            }
         }else if(resultCode==RESULT_CANCELED){
+            if (mLocationListener!=null) {
+                mLocationListener.onLocationDenied(true);
+            }
             Snackbar.make(findViewById(android.R.id.content), "Location is disabled", Snackbar.LENGTH_LONG).show();
         }
     }

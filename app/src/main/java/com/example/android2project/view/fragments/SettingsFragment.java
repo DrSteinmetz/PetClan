@@ -1,9 +1,12 @@
 package com.example.android2project.view.fragments;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
+import android.location.GpsStatus;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,8 +30,11 @@ import com.example.android2project.R;
 import com.example.android2project.model.LocationUtils;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.model.ViewModelFactory;
+import com.example.android2project.view.MainActivity;
 import com.example.android2project.viewmodel.SettingsViewModel;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.Objects;
 
 public class SettingsFragment extends PreferenceFragmentCompat
         implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -46,8 +52,15 @@ public class SettingsFragment extends PreferenceFragmentCompat
     private Observer<String> mOnUpdatePasswordFailed;
 
     private Observer<Address> mOnLocationChanged;
+    private Observer<Boolean> mOnLocationTriggred;
+
     private Address mUserLocation;
     private Preference locationPref;
+
+    private boolean mIsLocationDialogClicked=false,mIsfromComponent=false;
+
+    private SwitchPreferenceCompat GPSwitch;
+
 
     private final String TAG = "SettingsFragment";
 
@@ -74,6 +87,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 ((TextView) requireActivity().findViewById(R.id.user_name_tv)).setText(newUsername);
             }
         };
+
 
         mOnUpdateUserNameInCloudFailed = new Observer<String>() {
             @Override
@@ -114,6 +128,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 }
             }
         };
+
         mLocationUtils.getLocationLiveData().observe(this, mOnLocationChanged);
 
         startObservation();
@@ -123,6 +138,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Settings)).get(SettingsViewModel.class);
+
 
         //addPreferencesFromResource(R.xml.preferences);
         setPreferencesFromResource(R.xml.preferences, rootKey);
@@ -144,9 +160,10 @@ public class SettingsFragment extends PreferenceFragmentCompat
             locationPref.setSummary(mUserLocation == null ? "Unknown" : mUserLocation.getLocality());
         }
 
-        SwitchPreferenceCompat GPSwitch = findPreference("gps_switch");
+        GPSwitch = findPreference("gps_switch");
         if (GPSwitch != null && mLocationUtils != null) {
             GPSwitch.setChecked(mLocationUtils.isLocationEnabled());
+
         }
 
         getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
@@ -164,9 +181,28 @@ public class SettingsFragment extends PreferenceFragmentCompat
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        mOnLocationTriggred=new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                GPSwitch.setChecked(aBoolean);
+                if(!aBoolean){
+                    mIsLocationDialogClicked=false;
+                }
+                Log.d(TAG, "onChanged: xpk");
+            }
+        };
+        mLocationUtils.getmSwitchLiveData().observe(getViewLifecycleOwner(),mOnLocationTriggred);
+
+    }
+
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         //Log.d(TAG, "onSharedPreferenceChanged: " + sharedPreferences.getString(key, ""));
         Preference pref = findPreference(key);
+
 
         switch (key) {
             case "username_et":
@@ -191,13 +227,43 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 break;
             case "gps_switch":
                 if (pref instanceof SwitchPreferenceCompat) {
-                    SwitchPreferenceCompat GPSwitch = (SwitchPreferenceCompat) pref;
+                    final SwitchPreferenceCompat GPSwitch = (SwitchPreferenceCompat) pref;
 
-                    if (GPSwitch.isChecked()) {
+                    ((MainActivity) requireActivity()).setLocationBuilderDeniedInterface(new MainActivity.LocationBuilderDeniedInterface() {
+                        @Override
+                        public void onLocationDenied(boolean isDenied) {
+                            mIsLocationDialogClicked= isDenied;
+                            GPSwitch.setChecked(!isDenied);
+//                            GPSwitch.setChecked(false);
+                            //if dialog was clicked with no thanks
+                            Log.d(TAG, "onLocationDenied:"+mIsLocationDialogClicked);
+                        }
+                    });
+
+
+
+
+                    if (GPSwitch.isChecked() && !mLocationUtils.isLocationEnabled()) {
+                        Log.d(TAG, "onSharedPreferenceChanged: ");
+//                        GPSwitch.setChecked(true);
                         mLocationUtils.requestLocationPermissions();
-                    } else {
+
+                    }
+                    else if (mIsLocationDialogClicked) {
+                        Log.d(TAG, "onSharedPreferenceChanged: xpk");
+                        if (GPSwitch.isChecked()) {//if was manually not with dialog
+                            Log.d(TAG, "onSharedPreferenceChanged: xpk");
+                            mLocationUtils.turnGPSOff();
+//                            GPSwitch.setChecked(false);
+//                            mIsLocationDialogClicked=false;
+                        }
+                    }
+                    else if(!GPSwitch.isChecked()){
                         mLocationUtils.turnGPSOff();
                     }
+
+
+
                 }
                 break;
             case "distance_sb":
@@ -229,6 +295,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
             mViewModel.getUpdateUserNameInAuthFailed().observe(this, mOnUpdateUserNameInAuthFailed);
             mViewModel.getUpdatePasswordSucceed().observe(this, mOnUpdatePasswordSucceed);
             mViewModel.getUpdatePasswordFailed().observe(this, mOnUpdatePasswordFailed);
+
         }
     }
 
@@ -238,4 +305,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
         getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
+
+
 }
