@@ -23,6 +23,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.android2project.R;
 import com.example.android2project.model.AdsAdapter;
 import com.example.android2project.model.Advertisement;
+import com.example.android2project.model.DeleteDialog;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.model.ViewModelFactory;
 import com.example.android2project.viewmodel.MarketPlaceViewModel;
@@ -135,9 +136,24 @@ public class MarketPlaceFragment extends Fragment {
             }
 
             @Override
-            public void onDeleteOptionClicked(int position, View view) {
+            public void onDeleteOptionClicked(final int position, View view) {
                 mCurrentAd = mViewModel.getAdList().get(position);
-                mViewModel.deleteAdvertisement(mCurrentAd, position);
+                final DeleteDialog deleteDialog = new DeleteDialog(getContext());
+                deleteDialog.setPromptText("Are You Sure You Want To Delete Your Advertisement?");
+                deleteDialog.setOnActionListener(new DeleteDialog.DeleteDialogActionListener() {
+                    @Override
+                    public void onYesBtnClicked() {
+                        mViewModel.deleteAdvertisement(mCurrentAd, position);
+                        deleteDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onNoBtnClicked() {
+                        deleteDialog.dismiss();
+                    }
+                });
+                deleteDialog.show();
+
             }
         });
 
