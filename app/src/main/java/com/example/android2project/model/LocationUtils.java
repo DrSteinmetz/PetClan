@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
@@ -19,9 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
-import androidx.recyclerview.widget.RecyclerView.Adapter;
 
-import com.example.android2project.view.MainActivity;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -40,7 +37,7 @@ import com.google.firebase.firestore.GeoPoint;
 import java.io.IOException;
 import java.util.Locale;
 
-public class LocationUtils extends BroadcastReceiver {
+public class LocationUtils extends BroadcastReceiver  {
     private static LocationUtils locationUtils;
 
     private Activity mActivity;
@@ -49,14 +46,16 @@ public class LocationUtils extends BroadcastReceiver {
     private Geocoder mGeoCoder;
     private LocationCallback mLocationCallback;
 
+
     private static Address mAddress;
 
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
     private MutableLiveData<Address> mLocationLiveData;
+    private MutableLiveData<Boolean> mSwitchLiveData;
 
     private final int LOCATION_REQUEST_CODE = 1;
-    private final int REQUEST_CHECK_SETTINGS = 2;
+    private final int REQUEST_CHECK_SETTINGS_CODE = 2;
 
     private final String TAG = "LocationUtils";
 
@@ -90,6 +89,13 @@ public class LocationUtils extends BroadcastReceiver {
             mLocationLiveData = new MutableLiveData<>();
         }
         return mLocationLiveData;
+    }
+
+    public MutableLiveData<Boolean> getmSwitchLiveData() {
+        if (mSwitchLiveData == null) {
+            mSwitchLiveData = new MutableLiveData<>();
+        }
+        return mSwitchLiveData;
     }
 
     public void requestLocationPermissions() {
@@ -145,8 +151,11 @@ public class LocationUtils extends BroadcastReceiver {
 
             builder.setAlwaysShow(true);
 
+
             SettingsClient client = LocationServices.getSettingsClient(mActivity);
             Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
+
+
 
             task.addOnSuccessListener(mActivity, new OnSuccessListener<LocationSettingsResponse>() {
                 @Override
@@ -164,12 +173,13 @@ public class LocationUtils extends BroadcastReceiver {
                         // Location preferences are not satisfied, but this can be fixed
                         // by showing the user a dialog.
                         try {
+
                             //TODO:make a custom window.
                             // Show the dialog by calling startResolutionForResult(),
                             // and check the result in onActivityResult().
                             ResolvableApiException resolvable = (ResolvableApiException) e;
                             resolvable.startResolutionForResult(mActivity,
-                                    REQUEST_CHECK_SETTINGS);
+                                    REQUEST_CHECK_SETTINGS_CODE);
                         } catch (IntentSender.SendIntentException sendEx) {
                             // Ignore the error.
                         }
@@ -190,6 +200,7 @@ public class LocationUtils extends BroadcastReceiver {
             int mode = Settings.Secure.getInt(mActivity.getContentResolver(), Settings.Secure.LOCATION_MODE,
                     Settings.Secure.LOCATION_MODE_OFF);
             Log.d(TAG, "isLocationEnabled: " + mode);
+
             return (mode != Settings.Secure.LOCATION_MODE_OFF);
         }
     }
@@ -220,18 +231,24 @@ public class LocationUtils extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-
+        Log.d(TAG, "onReceive: ");
         if (intent.getAction().matches("android.location.PROVIDERS_CHANGED")) {
             boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             boolean networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
             if (gpsEnabled && networkEnabled) {
                 startLocation();
                 Log.d(TAG, "onReceive: gps enabled");
+                if(mSwitchLiveData!=null) {
+                    mSwitchLiveData.setValue(true);
+                }
             } else if (!networkEnabled && gpsEnabled) {
                 Toast.makeText(context, "Network not found", Toast.LENGTH_SHORT).show();
             } else if (!isLocationEnabled()) {
                 Log.d(TAG, "GPS is disabled");
                 Snackbar.make(mActivity.findViewById(android.R.id.content), "Location is Disabled", Snackbar.LENGTH_LONG).show();
+                if(mSwitchLiveData!=null) {
+                    mSwitchLiveData.setValue(false);
+                }
             }
         }
     }
@@ -255,4 +272,5 @@ public class LocationUtils extends BroadcastReceiver {
     public static Address getAddress() {
         return mAddress;
     }
+
 }
