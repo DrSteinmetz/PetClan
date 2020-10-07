@@ -211,159 +211,311 @@
         <item>תל השומר</item>
         <item>תל מונד</item>
         <item>תלמי מנשה</item>
+
         <item>Avigdor</item>
+
         <item>Avihail</item>
+
         <item>Even Yehuda</item>
+
         <item>Udim</item>
+
         <item>Umm al-Fahm</item>
-        <item>Horizons</item>
+
         <item>Or Yehuda</item>
+
         <item>Or Akiva</item>
+
         <item>Area</item>
+
         <item>Ahiezer</item>
+
         <item>Eyal</item>
+
         <item>Eilat</item>
+
         <item>Elishama</item>
+
         <item>Ashdod</item>
+
         <item>Ashkelon</item>
-        <item>Be'er Ya'akov</item>
+
+        <item>Beer Yaakov</item>
+
         <item>Beer Sheva</item>
+
         <item>Wells of Isaac</item>
+
         <item>Beit Dagan</item>
+
         <item>House of Liberty</item>
+
         <item>Beit Yehoshua</item>
+
         <item>Beit Shean</item>
+
         <item>Beit Shemesh</item>
-        <item>Aaron's Pavilion</item>
+
+        <item>Aarons Pavilion</item>
+
         <item>Bnei Brak</item>
+
         <item>Bnei Atarot</item>
+
         <item>Bnei Zion</item>
+
         <item>Binyamina-Givat Ada</item>
+
         <item>in trouble</item>
+
         <item>Bat Chen</item>
+
         <item>Bat Yam</item>
-        <item>Ze'ev hill</item>
+
+        <item>Zeev hill</item>
+
         <item>Givat Hen</item>
+
         <item>Givat Shmuel</item>
+
         <item>Givat Shapira</item>
+
         <item>Givatayim</item>
+
         <item>Garden of Life</item>
+
         <item>Gan Yavne</item>
+
         <item>Folk gardens</item>
+
         <item>Ganei Tikva</item>
+
         <item>Pomegranate winepress</item>
+
         <item>Dimona</item>
+
         <item>Hod Hasharon</item>
+
         <item>Herzliya</item>
+
         <item>Olive</item>
+
         <item>Zichron Yaakov</item>
+
         <item>Havatzelet Hasharon</item>
+
         <item>belt</item>
+
         <item>Hadera</item>
+
         <item>Holon</item>
+
         <item>Coastal</item>
+
         <item>Haifa</item>
+
         <item>Hemed</item>
+
         <item>Hatzor HaGlilit</item>
+
         <item>Diligent</item>
+
         <item>engraved</item>
+
         <item>Tiberias</item>
+
         <item>Tirat Carmel</item>
+
         <item>Yavne</item>
+
         <item>Yehud</item>
+
         <item>Yokneam Illith</item>
+
         <item>Yeruham</item>
+
         <item>Jerusalem</item>
+
         <item>Yarkona</item>
+
         <item>Kochav Yair</item>
+
         <item>Kfar Azar</item>
+
         <item>Kfar Bialik</item>
+
         <item>Kfar Hess</item>
+
         <item>Kfar Vitkin</item>
+
         <item>Kfar Habad</item>
+
         <item>Kfar Yona</item>
+
         <item>Kfar Malal</item>
+
         <item>Kfar Maas</item>
+
         <item>Kfar Netter</item>
+
         <item>Kfar Saba</item>
+
         <item>Sirkin Village</item>
+
         <item>Pines Village</item>
+
         <item>Kfar Shmaryahu</item>
+
         <item>Carmiel</item>
+
         <item>Lod</item>
+
         <item>Lod Airport</item>
+
         <item>Mevaseret Zion</item>
+
         <item>Migdal Haemek</item>
-        <item>Modi'in Maccabim-Reut</item>
+
+        <item>Modiin Maccabim-Reut</item>
+
         <item>Souvenir Batya</item>
+
         <item>Mishor Adumim</item>
+
         <item>Maccabees</item>
+
         <item>trawl</item>
-        <item>Ma'ale Adumim</item>
+
+        <item>Maale Adumim</item>
+
         <item>Shiva Guard</item>
+
         <item>Nahariya</item>
+
         <item>Neve Monson (Ephraim)</item>
+
         <item>Neve Yemin</item>
+
         <item>Neve Yarak</item>
+
         <item>Nir Eliyahu</item>
+
         <item>Nir Zvi</item>
+
         <item>Ness Ziona</item>
+
         <item>Net Sereni</item>
+
         <item>Nazareth</item>
+
         <item>Nazareth Illit</item>
+
         <item>Nesher</item>
+
         <item>Netivot</item>
+
         <item>Netanya</item>
+
         <item>Heavens</item>
+
         <item>Omar</item>
+
         <item>Rose eye</item>
+
         <item>Ein Sarid</item>
+
         <item>Acre</item>
+
         <item>Hefer Valley</item>
+
         <item>Afula</item>
+
         <item>Pardes Hana</item>
+
         <item>Pardesiya</item>
+
         <item>Petah Tiqwa</item>
+
         <item>Tzur Yigal</item>
+
         <item>Birdwatching</item>
+
         <item>Zefat</item>
+
         <item>Zrifin</item>
+
         <item>Kadima-Zoran</item>
+
         <item>Caesarea</item>
+
         <item>Katzrin</item>
+
         <item>Kiryat Ono</item>
+
         <item>Kiryat Ata</item>
+
         <item>Kiryat Bialik</item>
+
         <item>Kiryat Gat</item>
+
         <item>Kiryat Haim</item>
-        <item>Kiryat Tiv'on</item>
+
+        <item>Kiryat Tivon</item>
+
         <item>Kiryat Yam</item>
+
         <item>Kiryat Motzkin</item>
+
         <item>Kiryat Malachi</item>
+
         <item>Kiryat Ekron</item>
+
         <item>Kiryat Shmuel</item>
+
         <item>Kiryat Shmona</item>
+
         <item>Rosh HaAyin</item>
+
         <item>Rosh Pina</item>
+
         <item>Rishon Lezion</item>
+
         <item>trough</item>
+
         <item>Ramla</item>
+
         <item>Ramat Efal</item>
+
         <item>Ramat Gan</item>
+
         <item>Conqueror level</item>
+
         <item>Ramat Hasharon</item>
+
         <item>Notepad level</item>
+
         <item>evil</item>
+
         <item>Raanana</item>
+
         <item>Rishpon</item>
+
         <item>Warburg Field</item>
+
         <item>Sderot</item>
+
         <item>onyx</item>
+
         <item>Shefayim</item>
+
         <item>Tel Aviv Jaffa</item>
+
         <item>Tel ha shomer</item>
+
         <item>Tel Mond</item>
+
         <item>Ptolemy Menashe</item>
+
     </string-array>
 
 </resources>
