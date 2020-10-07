@@ -231,7 +231,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
                     ((MainActivity) requireActivity()).setLocationBuilderDeniedInterface(new MainActivity.LocationBuilderDeniedInterface() {
                         @Override
-                        public void onLocationDialogClicked(boolean isDenied) {
+                        public void onLocationDenied(boolean isDenied) {
                             mIsLocationDialogClicked= isDenied;
                             GPSwitch.setChecked(!isDenied);
 //                            GPSwitch.setChecked(false);
