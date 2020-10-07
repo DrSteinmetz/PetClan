@@ -31,6 +31,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 
 public class MarketPlaceFragment extends Fragment {
+
     private MarketPlaceViewModel mViewModel;
     private AdsAdapter mAdsAdapter;
     private RecyclerView mMarketRecycler;
@@ -66,7 +67,6 @@ public class MarketPlaceFragment extends Fragment {
                 if (mAdsAdapter != null) {
                     mAdsAdapter.notifyDataSetChanged();
                     mSwipeRefreshLayout.setRefreshing(false);
-
                 }
             }
         };
@@ -91,7 +91,6 @@ public class MarketPlaceFragment extends Fragment {
                 Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
             }
         };
-
 
         startObservation();
     }
@@ -171,7 +170,9 @@ public class MarketPlaceFragment extends Fragment {
         }
     }
 
-    public void uploadAdSucceed(Advertisement ad, AlertDialog loadingDialog) {
+    public void onUploadAdSucceed(Advertisement ad, AlertDialog loadingDialog) {
+        mViewModel.getAdList().add(0, ad);
+        mAdsAdapter.notifyItemInserted(0);
         loadingDialog.dismiss();
     }
 }
