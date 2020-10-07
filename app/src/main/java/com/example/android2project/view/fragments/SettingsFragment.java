@@ -1,5 +1,6 @@
 package com.example.android2project.view.fragments;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Address;
@@ -55,10 +56,15 @@ public class SettingsFragment extends PreferenceFragmentCompat
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
 
         mLocationUtils = LocationUtils.getInstance(requireActivity());
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         mOnUpdateUserNameInCloudSucceed = new Observer<String>() {
             @Override
@@ -121,8 +127,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
         //addPreferencesFromResource(R.xml.preferences);
         setPreferencesFromResource(R.xml.preferences, rootKey);
 
-        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
 
         SeekBarPreference sbp = findPreference("distance_sb");
@@ -144,6 +148,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
         if (GPSwitch != null && mLocationUtils != null) {
             GPSwitch.setChecked(mLocationUtils.isLocationEnabled());
         }
+
+        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -190,7 +196,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     if (GPSwitch.isChecked()) {
                         mLocationUtils.requestLocationPermissions();
                     } else {
-                        //TODO: mLocationUtils.turnOffLocation
+                        mLocationUtils.turnGPSOff();
                     }
                 }
                 break;
@@ -226,11 +232,9 @@ public class SettingsFragment extends PreferenceFragmentCompat
         }
     }
 
-
-
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onDestroy() {
+        super.onDestroy();
 
         getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }

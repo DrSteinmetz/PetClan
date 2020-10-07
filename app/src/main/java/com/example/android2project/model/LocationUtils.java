@@ -43,9 +43,7 @@ import java.util.Locale;
 public class LocationUtils extends BroadcastReceiver {
     private static LocationUtils locationUtils;
 
-
     private Activity mActivity;
-
 
     private Handler mHandler;
     private Geocoder mGeoCoder;
@@ -55,8 +53,16 @@ public class LocationUtils extends BroadcastReceiver {
 
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
+    private MutableLiveData<Address> mLocationLiveData;
+
+    private final int LOCATION_REQUEST_CODE = 1;
+    private final int REQUEST_CHECK_SETTINGS = 2;
+
+    private final String TAG = "LocationUtils";
+
     public interface LocationDetected {
         void onLocationChange(Address address, Advertisement advertisement);
+
     }
 
     private LocationDetected locationListener;
@@ -64,14 +70,6 @@ public class LocationUtils extends BroadcastReceiver {
     public void setLocationListener(LocationDetected locationListener) {
         this.locationListener = locationListener;
     }
-
-
-    private MutableLiveData<Address> mLocationLiveData;
-
-    private final int LOCATION_REQUEST_CODE = 1;
-    private final int REQUEST_CHECK_SETTINGS = 2;
-
-    private final String TAG = "LocationUtils";
 
     public static LocationUtils getInstance(final Activity activity) {
         if (locationUtils == null) {
@@ -137,6 +135,7 @@ public class LocationUtils extends BroadcastReceiver {
                     });
                 }
             };
+
             final LocationRequest locationRequest = LocationRequest.create();
             locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
             locationRequest.setInterval(500);
@@ -182,12 +181,12 @@ public class LocationUtils extends BroadcastReceiver {
 
     public boolean isLocationEnabled() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-// This is new method provided in API 28
+            // This is new method provided in API 28
             LocationManager lm = (LocationManager) mActivity.getSystemService(mActivity.LOCATION_SERVICE);
             Log.d(TAG, "isLocationEnabled: " + lm.isLocationEnabled());
             return lm.isLocationEnabled();
         } else {
-// This is Deprecated in API 28
+            // This is Deprecated in API 28
             int mode = Settings.Secure.getInt(mActivity.getContentResolver(), Settings.Secure.LOCATION_MODE,
                     Settings.Secure.LOCATION_MODE_OFF);
             Log.d(TAG, "isLocationEnabled: " + mode);
@@ -196,17 +195,15 @@ public class LocationUtils extends BroadcastReceiver {
     }
 
     public void getGeoPointFromCity(final Advertisement advertisement) {
-
         final Address[] address = new Address[1];
+
         mHandler.post(new Runnable() {
             @Override
             public void run() {
                 try {
                     address[0] = mGeoCoder.getFromLocationName(advertisement.getLocation(), 1).get(0);
                     if (address[0] != null) {
-
                         if (locationListener != null) {
-
                             locationListener.onLocationChange(address[0], advertisement);
                         }
                         mHandler.removeCallbacks(this);
@@ -218,9 +215,7 @@ public class LocationUtils extends BroadcastReceiver {
                 }
             }
         });
-
     }
-
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -232,30 +227,18 @@ public class LocationUtils extends BroadcastReceiver {
             if (gpsEnabled && networkEnabled) {
                 startLocation();
                 Log.d(TAG, "onReceive: gps enabled");
-            }else if(!networkEnabled){
+            } else if (!networkEnabled && gpsEnabled) {
                 Toast.makeText(context, "Network not found", Toast.LENGTH_SHORT).show();
-            }
-            else if (!isLocationEnabled()) {
-                Snackbar.make(mActivity.findViewById(android.R.id.content), "Location is disabled", Snackbar.LENGTH_LONG).show();
+            } else if (!isLocationEnabled()) {
                 Log.d(TAG, "GPS is disabled");
+                Snackbar.make(mActivity.findViewById(android.R.id.content), "Location is Disabled", Snackbar.LENGTH_LONG).show();
             }
         }
     }
 
-    private void turnGPSOff() {
-        String provider = Settings.Secure.getString(mActivity.getContentResolver(), Settings.Secure.LOCATION_MODE);
-
-        if (provider.contains("gps")) { //if gps is enabled
-            final Intent poke = new Intent();
-            poke.setClassName("com.android.settings", "com.android.settings.widget.SettingsAppWidgetProvider");
-            poke.addCategory(Intent.CATEGORY_ALTERNATIVE);
-            poke.setData(Uri.parse("3"));
-            mActivity.sendBroadcast(poke);
-        }
+    public void turnGPSOff() {
+        mActivity.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
     }
-
-
-
 
     public static int getDistance(GeoPoint other) {
         if (mAddress != null) {
