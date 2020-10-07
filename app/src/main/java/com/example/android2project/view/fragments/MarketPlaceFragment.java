@@ -2,7 +2,6 @@ package com.example.android2project.view.fragments;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,7 +99,7 @@ public class MarketPlaceFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_market_place, container, false);
         mMarketRecycler = rootView.findViewById(R.id.ads_recycler);
-        final ImageButton searchBtn = rootView.findViewById(R.id.search_btn);
+        final ImageButton searchBtn = rootView.findViewById(R.id.filter_btn);
         final Spinner optionsFilter = rootView.findViewById(R.id.filter_option_spinner);
         final RadioGroup radioGroup = rootView.findViewById(R.id.radio_group_rg);
         final FloatingActionButton addAdBtn = rootView.findViewById(R.id.add_ad_btn);
