@@ -10,10 +10,12 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -230,12 +232,29 @@ public class LocationUtils extends BroadcastReceiver {
             if (gpsEnabled && networkEnabled) {
                 startLocation();
                 Log.d(TAG, "onReceive: gps enabled");
-            } else if (!isLocationEnabled()) {
+            }else if(!networkEnabled){
+                Toast.makeText(context, "Network not found", Toast.LENGTH_SHORT).show();
+            }
+            else if (!isLocationEnabled()) {
                 Snackbar.make(mActivity.findViewById(android.R.id.content), "Location is disabled", Snackbar.LENGTH_LONG).show();
                 Log.d(TAG, "GPS is disabled");
             }
         }
     }
+
+    private void turnGPSOff() {
+        String provider = Settings.Secure.getString(mActivity.getContentResolver(), Settings.Secure.LOCATION_MODE);
+
+        if (provider.contains("gps")) { //if gps is enabled
+            final Intent poke = new Intent();
+            poke.setClassName("com.android.settings", "com.android.settings.widget.SettingsAppWidgetProvider");
+            poke.addCategory(Intent.CATEGORY_ALTERNATIVE);
+            poke.setData(Uri.parse("3"));
+            mActivity.sendBroadcast(poke);
+        }
+    }
+
+
 
 
     public static int getDistance(GeoPoint other) {
