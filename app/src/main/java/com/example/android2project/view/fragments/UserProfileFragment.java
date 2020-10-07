@@ -126,6 +126,7 @@ public class UserProfileFragment extends DialogFragment {
 
         final CoordinatorLayout coordinatorLayout = rootView.findViewById(R.id.coordinator_layout);
         final FloatingActionButton messageEditBtn = rootView.findViewById(R.id.message_edit_btn);
+        final FloatingActionButton addPetBtn = rootView.findViewById(R.id.add_pet_btn);
         mUserNameTv = rootView.findViewById(R.id.user_name_tv);
         mProfilePicIv = rootView.findViewById(R.id.profile_image_iv);
         mPetsRecyclerView = rootView.findViewById(R.id.pets_recyclerview);

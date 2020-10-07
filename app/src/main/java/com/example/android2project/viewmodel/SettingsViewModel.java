@@ -1,6 +1,7 @@
 package com.example.android2project.viewmodel;
 
 import android.content.Context;
+import android.location.Address;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -127,5 +128,14 @@ public class SettingsViewModel extends ViewModel {
 
     public void updatePassword(final String password) {
         mAuthRepository.updateUserPassword(password);
+    }
+
+    public void updateUserLocation(Address address) {
+        mRepository.updateUserLocation(address);
+    }
+
+    public void deleteUser() {
+        mRepository.deleteUserFromCloud();
+        mAuthRepository.deleteUserFromAuth();
     }
 }

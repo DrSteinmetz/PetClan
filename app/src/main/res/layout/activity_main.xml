@@ -36,8 +36,9 @@
                 android:layout_toEndOf="@id/user_pic_iv"
                 android:layout_margin="10dp"
                 android:layout_centerVertical="true"
-                android:textSize="20sp"
+                android:textSize="25sp"
                 android:textColor="@color/colorWhite"
+                android:textStyle="bold"
                 android:textAllCaps="false" />
 
         </RelativeLayout>
@@ -53,11 +54,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.Button"
+                android:layout_margin="10dp"
                 android:padding="15dp"
                 android:text="Log Out"
-                android:textSize="30sp"
+                android:textSize="25sp"
                 android:textColor="@color/colorWhite"
-                android:background="@drawable/rounded_shape"
+                android:background="@null"
+                android:drawableEnd="@drawable/ic_round_settings_24"
+                android:drawableStart="@drawable/ic_round_settings_24"
+                android:drawableTop="@drawable/ic_round_settings_24"
+                android:drawableBottom="@drawable/ic_round_settings_24"
                 android:textAllCaps="false" />
 
         </RelativeLayout>

@@ -258,8 +258,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/pet_kind_et_layout"
             android:visibility="gone"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
-
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -272,23 +272,21 @@
                 app:endIconMode="clear_text"
                 app:startIconDrawable="@drawable/ic_baseline_location_black_24">
 
-
                 <AutoCompleteTextView
                     android:id="@+id/location_auto_tv"
                     android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                  />
+                    android:layout_height="wrap_content" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
                 android:id="@+id/locate_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="locate me" />
-
+                android:text="locate me"
+                android:textAllCaps="true" />
 
         </LinearLayout>
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/pet_price_et_layout"

@@ -68,6 +68,15 @@
         android:layout_marginEnd="15dp"
         android:src="@drawable/ic_send_comment_btn" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_pet_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@id/app_bar_layout"
+        app:layout_anchorGravity="bottom|start"
+        android:layout_marginStart="15dp"
+        android:src="@drawable/ic_send_comment_btn" />
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/profile_details_layout"
         android:layout_width="match_parent"

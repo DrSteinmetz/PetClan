@@ -87,7 +87,6 @@ public class Repository {
     }
 
     /**<-------User's Posts Downloading interface------->**/
-
     private MutableLiveData<List<Post>> mRepositoryUserPostDownloadSucceedMLD;
     private MutableLiveData<String> mRepositoryUserPostDownloadFailedMLD;
 
@@ -107,7 +106,6 @@ public class Repository {
 
 
     /**<-------Post Uploading interface------->**/
-
     private MutableLiveData<Post> mRepositoryPostUploadSucceedMLD;
     private MutableLiveData<String> mRepositoryPostUploadFailedMLD;
 
@@ -126,7 +124,6 @@ public class Repository {
     }
 
     /**<-------Post Updating interface------->**/
-
     private MutableLiveData<Post> mRepositoryPostUpdateSucceedMLD;
     private MutableLiveData<String> mRepositoryPostUpdateFailedMLD;
 
@@ -145,7 +142,6 @@ public class Repository {
     }
 
     /**<-------Post Likes Updating interface------->**/
-
     private MutableLiveData<Post> mRepositoryPostLikesUpdateSucceedMLD;
     private MutableLiveData<String> mRepositoryPostLikesUpdateFailedMLD;
 
@@ -164,7 +160,6 @@ public class Repository {
     }
 
     /**<-------Post Deleting interface------->**/
-
     private MutableLiveData<String> mRepositoryPostDeletionSucceedMLD;
     private MutableLiveData<String> mRepositoryPostDeletionFailedMLD;
 
@@ -803,9 +798,7 @@ public class Repository {
         }
     }
 
-    /**
-     * <-------Profile methods------->
-     **/
+    /**<-------Profile methods------->**/
     public void downloadUser(final String userEmail) {
         mCloudUsers.document(userEmail)
                 .get()
@@ -936,7 +929,7 @@ public class Repository {
         }
     }
 
-    public void deleteUser() {
+    public void deleteUserFromCloud() {
         final FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {
@@ -961,9 +954,7 @@ public class Repository {
         }
     }
 
-    /**
-     * <-------Chat methods------->
-     **/
+    /**<-------Chat methods------->**/
     public void downloadAllUsers() {
         final ArrayList<User> users = new ArrayList<>();
         mCloudUsers.get()

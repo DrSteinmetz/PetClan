@@ -569,8 +569,6 @@ public class AuthRepository {
         }
     }
 
-
-
     public String getUserEmail() {
         FirebaseUser user = mAuth.getCurrentUser();
         String userEmail = null;

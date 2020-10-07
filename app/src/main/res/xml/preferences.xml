@@ -25,10 +25,10 @@
 
     <PreferenceCategory
         android:title="Location"
-        android:icon="@drawable/ic_baseline_location_black_24">
+        android:icon="@drawable/ic_baseline_location_accent_24">
 
         <Preference
-            android:key="location"
+            android:key="location_pref"
             android:title="Where are you?"
             android:summary="Unknown"
             android:textAllCaps="false"
@@ -55,18 +55,17 @@
         android:title="Others">
 
         <Preference
-            android:key="help"
+            android:key="help_pref"
             android:title="Help"
             android:textAllCaps="false" />
 
         <EditTextPreference
-            android:key="account_deletion"
+            android:key="account_deletion_pref"
             android:title="Delete Your Account"
             android:textAllCaps="false"
             android:dialogTitle="Delete Your Account"
             android:dialogMessage="Enter your password:" />
 
     </PreferenceCategory>
-
 
 </PreferenceScreen>

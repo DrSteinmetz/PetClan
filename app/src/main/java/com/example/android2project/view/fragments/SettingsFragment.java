@@ -2,6 +2,7 @@ package com.example.android2project.view.fragments;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.location.Address;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import androidx.preference.SeekBarPreference;
 import androidx.preference.SwitchPreferenceCompat;
 
 import com.example.android2project.R;
+import com.example.android2project.model.LocationUtils;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.model.ViewModelFactory;
 import com.example.android2project.viewmodel.SettingsViewModel;
@@ -32,6 +34,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
     private SettingsViewModel mViewModel;
 
+    private LocationUtils mLocationUtils;
+
     private Observer<String> mOnUpdateUserNameInCloudSucceed;
     private Observer<String> mOnUpdateUserNameInCloudFailed;
 
@@ -40,6 +44,10 @@ public class SettingsFragment extends PreferenceFragmentCompat
     private Observer<String> mOnUpdatePasswordSucceed;
     private Observer<String> mOnUpdatePasswordFailed;
 
+    private Observer<Address> mOnLocationChanged;
+    private Address mUserLocation;
+    private Preference locationPref;
+
     private final String TAG = "SettingsFragment";
 
     public static SettingsFragment newInstance() {
@@ -47,31 +55,10 @@ public class SettingsFragment extends PreferenceFragmentCompat
     }
 
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
-                ViewModelEnum.Settings)).get(SettingsViewModel.class);
-
-        //addPreferencesFromResource(R.xml.preferences);
-        setPreferencesFromResource(R.xml.preferences, rootKey);
-
-        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
-
-        SeekBarPreference sbp = findPreference("distance_sb");
-        if (sbp != null) {
-            sbp.setSummary(sbp.getValue() + " Km");
-        }
-
-        EditTextPreference usernameEt = findPreference("username_et");
-        if (usernameEt != null) {
-            usernameEt.setText(mViewModel.getUsername());
-        }
-    }
-
-    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mLocationUtils = LocationUtils.getInstance(requireActivity());
 
         mOnUpdateUserNameInCloudSucceed = new Observer<String>() {
             @Override
@@ -111,7 +98,52 @@ public class SettingsFragment extends PreferenceFragmentCompat
             }
         };
 
+        mOnLocationChanged = new Observer<Address>() {
+            @Override
+            public void onChanged(Address address) {
+                mUserLocation = address;
+                mViewModel.updateUserLocation(address);
+                if (locationPref != null) {
+                    locationPref.setSummary(address.getLocality());
+                }
+            }
+        };
+        mLocationUtils.getLocationLiveData().observe(this, mOnLocationChanged);
+
         startObservation();
+    }
+
+    @Override
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
+                ViewModelEnum.Settings)).get(SettingsViewModel.class);
+
+        //addPreferencesFromResource(R.xml.preferences);
+        setPreferencesFromResource(R.xml.preferences, rootKey);
+
+        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+
+        SeekBarPreference sbp = findPreference("distance_sb");
+        if (sbp != null) {
+            sbp.setSummary(sbp.getValue() + " Km");
+        }
+
+        EditTextPreference usernameEt = findPreference("username_et");
+        if (usernameEt != null) {
+            usernameEt.setText(mViewModel.getUsername());
+        }
+
+        locationPref = findPreference("location_pref");
+        if (locationPref != null) {
+            locationPref.setSummary(mUserLocation == null ? "Unknown" : mUserLocation.getLocality());
+        }
+
+        SwitchPreferenceCompat GPSwitch = findPreference("gps_switch");
+        if (GPSwitch != null && mLocationUtils != null) {
+            GPSwitch.setChecked(mLocationUtils.isLocationEnabled());
+        }
     }
 
     @Override
@@ -154,6 +186,12 @@ public class SettingsFragment extends PreferenceFragmentCompat
             case "gps_switch":
                 if (pref instanceof SwitchPreferenceCompat) {
                     SwitchPreferenceCompat GPSwitch = (SwitchPreferenceCompat) pref;
+
+                    if (GPSwitch.isChecked()) {
+                        mLocationUtils.requestLocationPermissions();
+                    } else {
+                        //TODO: mLocationUtils.turnOffLocation
+                    }
                 }
                 break;
             case "distance_sb":
@@ -172,7 +210,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 break;
             case "account_deletion":
                 if (pref != null) {
-                    Log.d(TAG, "onSharedPreferenceChanged: " + pref.getSummary());
+                    //TODO: make a dialog for mViewModel.deleteUser();
                 }
                 break;
         }
@@ -187,6 +225,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
             mViewModel.getUpdatePasswordFailed().observe(this, mOnUpdatePasswordFailed);
         }
     }
+
+
 
     @Override
     public void onStop() {
