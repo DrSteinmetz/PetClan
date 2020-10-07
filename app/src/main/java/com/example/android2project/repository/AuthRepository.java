@@ -548,6 +548,29 @@ public class AuthRepository {
         }
     }
 
+    public void updateUserImage(final Uri imageUri) {
+        FirebaseUser user = mAuth.getCurrentUser();
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setPhotoUri(imageUri)
+                .build();
+
+        if (user != null) {
+            user.updateProfile(profileUpdates)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, "onSuccess: User image update succeed: " + imageUri);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d(TAG, "onFailure: Failed to update user picture in Auth");
+                    Log.d(TAG, "onFailure: " + e.getMessage());
+                }
+            });
+        }
+    }
+
     public void deleteUserFromAuth() {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {

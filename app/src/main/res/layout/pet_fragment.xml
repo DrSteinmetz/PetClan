@@ -17,7 +17,10 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:text="Add A Pet"
-            android:textSize="30sp" />
+            android:textSize="30sp"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold"
+            android:textAllCaps="false" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/pet_name_et_layout"
@@ -27,8 +30,7 @@
             android:layout_below="@id/title"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="5dp"
-            android:hint="Pet Name"
-            android:textColorHint="@color/colorPrimaryDark">
+            android:hint="Pet Name">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/pet_name_et"
@@ -50,8 +52,7 @@
             android:layout_below="@id/pet_name_et_layout"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="10dp"
-            android:hint="Type"
-            android:textColorHint="@color/colorPrimaryDark">
+            android:hint="Type">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/item_name_et"
@@ -73,8 +74,7 @@
             android:layout_below="@id/pet_type_et_layout"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="10dp"
-            android:hint="Description"
-            android:textColorHint="@color/colorPrimaryDark">
+            android:hint="Description">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/pet_description_et"

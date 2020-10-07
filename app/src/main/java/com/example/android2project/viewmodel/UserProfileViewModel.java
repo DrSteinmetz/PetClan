@@ -2,6 +2,8 @@ package com.example.android2project.viewmodel;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -19,9 +21,6 @@ public class UserProfileViewModel extends ViewModel {
 
     private StorageRepository mStorageRepository;
 
-    //private MutableLiveData<String> mUploadPicSucceed;
-    //private MutableLiveData<String> mUploadPicFailed;
-
     private MutableLiveData<User> mDownloadUserSucceed;
     private MutableLiveData<String> mDownloadUserFailed;
 
@@ -36,34 +35,16 @@ public class UserProfileViewModel extends ViewModel {
         this.mStorageRepository = StorageRepository.getInstance(context);
     }
 
-    /**<-------Upload Image to Storage------->**/
-    /*public MutableLiveData<String> getUploadPicSucceed() {
-        if (mUploadPicSucceed == null) {
-            mUploadPicSucceed = new MutableLiveData<>();
-            attachUploadPicListener();
-        }
-        return mUploadPicSucceed;
-    }
-
-    public MutableLiveData<String> getUploadPicFailed() {
-        if (mUploadPicFailed == null) {
-            mUploadPicFailed = new MutableLiveData<>();
-            attachUploadPicListener();
-        }
-        return mUploadPicFailed;
-    }*/
-
     private void attachUploadPicListener () {
         mStorageRepository.setUploadPicListener(new StorageRepository.StorageUploadPicInterface() {
             @Override
             public void onUploadPicSuccess(String selectedImage) {
                 mRepository.updateUserProfileImage(selectedImage);
-                //mUploadPicSucceed.setValue(selectedImage);
             }
 
             @Override
             public void onUploadPicFailed(String error) {
-                //mUploadPicFailed.setValue(error);
+                Log.d(TAG, "onUploadPicFailed: UPLOAD FAILED");
             }
         });
     }
@@ -138,7 +119,7 @@ public class UserProfileViewModel extends ViewModel {
         final String userId = mAuthRepository.getUserId();
         attachUploadPicListener();
         mStorageRepository.uploadFile(imageUri, userId);
-        mAuthRepository.deleteUserFromAuth();
+        mAuthRepository.updateUserImage(imageUri);
     }
 
     public User getMyDetails() {
