@@ -124,8 +124,6 @@ public class StorageRepository {
     public void uploadFile(final Uri uri, final String userId) {
         StorageReference fileToUpload = mStorage.child("users_profile_picture/" + userId + ".jpg");
 
-        //TODO: need to rotate the picture if needed
-
         try {
             RotateBitmap rotateBitmap = new RotateBitmap();
             Bitmap bitmap = rotateBitmap.HandleSamplingAndRotationBitmap(mContext, uri);

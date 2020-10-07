@@ -174,27 +174,6 @@ public class UserPictureFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-//        if (resultCode == Activity.RESULT_OK) {
-//            if (requestCode == CAMERA_REQUEST) {
-//                if (mUserPictureIv != null) {
-//                    Glide.with(this)
-//                            .load(mSelectedImage)
-//                            .error(R.drawable.ic_petclan_logo)
-//                            .into(mUserPictureIv);
-//                }
-//            } else if (requestCode == GALLERY_REQUEST) {
-//                if (data != null) {
-//                    mSelectedImage = data.getData();
-//
-//                    if (mUserPictureIv != null) {
-//                        Glide.with(this)
-//                                .load(mSelectedImage)
-//                                .error(R.drawable.ic_petclan_logo)
-//                                .into(mUserPictureIv);
-//                    }
-//                }
-//            }
-//        }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (result != null) {
