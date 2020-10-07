@@ -347,17 +347,12 @@
             android:layout_marginTop="10dp">
 
             <ImageButton
-                android:id="@+id/camera_btn"
+                android:id="@+id/add_image_btn"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:src="@drawable/ic_round_add_photo_camera_50"
-                android:visibility="gone" />
-
-            <ImageButton
-                android:id="@+id/gallery_btn"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@drawable/ic_round_add_photo_gallery_50"
+                android:src="@drawable/ic_add_image"
+                android:scaleType="fitCenter"
+                android:background="@null"
                 android:visibility="gone" />
 
         </LinearLayout>

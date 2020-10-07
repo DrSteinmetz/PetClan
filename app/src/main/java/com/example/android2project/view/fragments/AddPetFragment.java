@@ -1,11 +1,9 @@
 package com.example.android2project.view.fragments;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.LayoutInflater;
@@ -15,7 +13,6 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -70,8 +67,7 @@ public class AddPetFragment extends DialogFragment {
         final TextInputEditText petNameEt = rootView.findViewById(R.id.pet_name_et);
         final TextInputEditText petTypeEt = rootView.findViewById(R.id.item_name_et);
         final TextInputEditText petDescriptionEt = rootView.findViewById(R.id.pet_description_et);
-        final ImageButton cameraBtn = rootView.findViewById(R.id.camera_btn);
-        final ImageButton galleryBtn = rootView.findViewById(R.id.gallery_btn);
+        final ImageButton addImageBtn = rootView.findViewById(R.id.add_image_btn);
         final Button addBtn = rootView.findViewById(R.id.add_pet_btn);
         photosPreviewRecyclerview.init(8);
 
@@ -82,7 +78,6 @@ public class AddPetFragment extends DialogFragment {
                 final String petType = petTypeEt.getText().toString().trim();
                 final String description = petDescriptionEt.getText().toString().trim();
                 Pet pet = new Pet(petName, petType, description);
-                Toast.makeText(getContext(), "Done Uploading", Toast.LENGTH_SHORT).show();
                 mViewModel.addPetToUser(pet);
                 mLoadingDialog.dismiss();
                 dismiss();
@@ -91,44 +86,19 @@ public class AddPetFragment extends DialogFragment {
 
         mViewModel.getOnPetUploadPhotoLiveData().observe(getViewLifecycleOwner(), mDoneUploadingObserver);
 
-
-        galleryBtn.setOnClickListener(new View.OnClickListener() {
+        addImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (photosPreviewRecyclerview.getImageCounter() < 8) {
-                    CropImage.activity()
-                            .setAspectRatio(4, 3)
-                            .setCropShape(CropImageView.CropShape.RECTANGLE)
-                            .setGuidelines(CropImageView.Guidelines.ON)
-                            .start(requireContext(), AddPetFragment.this);
-                }
-
-            }
-        });
-
-        cameraBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /**<-------Requesting user permissions------->**/
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && photosPreviewRecyclerview.getImageCounter() < 8) {
-                    int hasWritePermission = requireContext().
-                            checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                    if (hasWritePermission != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                WRITE_PERMISSION_REQUEST);
-                    } else {
-                        mFile = new File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                                "petclan" + System.nanoTime() + "pic.jpg");
-                        Uri uri = FileProvider.getUriForFile(requireContext(),
-                                "com.example.android2project.provider", mFile);
-                        CropImage.activity()
-                                .setAspectRatio(4, 3)
-                                .setCropShape(CropImageView.CropShape.RECTANGLE)
-                                .setGuidelines(CropImageView.Guidelines.ON)
-                                .setOutputUri(uri)
-                                .start(requireContext(), AddPetFragment.this);
-                    }
-                }
+                mFile = new File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                        "petclan" + System.nanoTime() + "pic.jpg");
+                Uri uri = FileProvider.getUriForFile(requireContext(),
+                        "com.example.android2project.provider", mFile);
+                CropImage.activity()
+                        .setAspectRatio(4, 3)
+                        .setCropShape(CropImageView.CropShape.RECTANGLE)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setOutputUri(uri)
+                        .start(requireContext(), AddPetFragment.this);
             }
         });
 

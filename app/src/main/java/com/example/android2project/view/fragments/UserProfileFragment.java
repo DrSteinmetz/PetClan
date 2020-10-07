@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -25,8 +24,8 @@ import com.example.android2project.model.Pet;
 import com.example.android2project.model.PetsAdapter;
 import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
-import com.example.android2project.viewmodel.UserProfileViewModel;
 import com.example.android2project.model.ViewModelFactory;
+import com.example.android2project.viewmodel.UserProfileViewModel;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -52,9 +51,6 @@ public class UserProfileFragment extends DialogFragment {
 
     private Observer<String> mOnUserImageUpdateSucceed;
     private Observer<String> mOnUserImageUpdateFailed;
-
-    private Observer<String> mOnUserDeletionSucceed;
-    private Observer<String> mOnUserDeletionFailed;
 
     private final String TAG = "UserProfileFragment";
 
@@ -124,7 +120,6 @@ public class UserProfileFragment extends DialogFragment {
         View rootView = inflater.inflate(R.layout.fragment_user_profile,
                 container,false);
 
-        final CoordinatorLayout coordinatorLayout = rootView.findViewById(R.id.coordinator_layout);
         final FloatingActionButton messageEditBtn = rootView.findViewById(R.id.message_edit_btn);
         final FloatingActionButton addPetBtn = rootView.findViewById(R.id.add_pet_btn);
         mUserNameTv = rootView.findViewById(R.id.user_name_tv);
@@ -136,14 +131,16 @@ public class UserProfileFragment extends DialogFragment {
         if (mUserEmail == null) {
             mUser = mViewModel.getMyDetails();
             loadProfilePictureWithGlide(mUser.getPhotoUri(), mProfilePicIv);
-            final String userName = mUser.getFirstName() + "\n" + mUser.getLastName();
+            final String userName = mUser.getFirstName() + ' ' + mUser.getLastName();
             mUserNameTv.setText(userName);
-            messageEditBtn.setImageResource(R.drawable.ic_round_settings_24);
+            addPetBtn.setVisibility(View.VISIBLE);
+            messageEditBtn.setImageResource(R.drawable.ic_round_photo_library_24);
             showUserFeed(mUser.getEmail());
 
             mRecyclerviewOptions = new FirestoreRecyclerOptions.Builder<Pet>()
                     .setQuery(mViewModel.getUserPets(mUser.getEmail()), Pet.class).build();
         } else {
+            addPetBtn.setVisibility(View.GONE);
             messageEditBtn.setImageResource(R.drawable.ic_send_comment_btn);
             mRecyclerviewOptions = new FirestoreRecyclerOptions.Builder<Pet>()
                     .setQuery(mViewModel.getUserPets(mUserEmail), Pet.class).build();
@@ -156,6 +153,7 @@ public class UserProfileFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if (mUserEmail == null) {
+                    //TODO: Update user profile image
                 } else {
                     ConversationFragment.newInstance(mUser)
                             .show(getChildFragmentManager().beginTransaction(), "fragment_conversation");
@@ -163,13 +161,14 @@ public class UserProfileFragment extends DialogFragment {
             }
         });
 
-        mUserNameTv.setOnClickListener(new View.OnClickListener() {
+        addPetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AddPetFragment.newInstance()
                         .show(getChildFragmentManager().beginTransaction(), "add_pet_fragment");
             }
         });
+
         return rootView;
     }
 

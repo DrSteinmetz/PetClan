@@ -1,8 +1,13 @@
 package com.example.android2project.model;
 
+import android.annotation.SuppressLint;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+
+import com.example.android2project.R;
 
 import java.util.ArrayList;
 
@@ -44,6 +49,7 @@ public class MenuAdapter extends BaseAdapter {
         return position;
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final String option = mOptions.get(position);
@@ -57,7 +63,25 @@ public class MenuAdapter extends BaseAdapter {
         }
 
         // Using the DuoOptionView's default selectors
-        optionView.bind(option, null, null);
+        Drawable drawable = null;
+        switch (option) {
+            case "Feed":
+                 drawable = parent.getResources().getDrawable(R.drawable.ic_petclan_logo_24, null);
+                break;
+            case "Chats":
+                drawable = parent.getResources().getDrawable(R.drawable.ic_chat_24, null);
+                break;
+            case "MarketPlace":
+                drawable = parent.getResources().getDrawable(R.drawable.ic_marketplace_24, null);
+                break;
+            case "Profile":
+                drawable = parent.getResources().getDrawable(R.drawable.ic_default_user_pic_24, null);
+                break;
+            case "Settings":
+                drawable = parent.getResources().getDrawable(R.drawable.ic_round_settings_24, null);
+                break;
+        }
+        optionView.bind(option, drawable, null);
 
         // Adding the views to an array list to handle view selection
         mOptionViews.add(optionView);

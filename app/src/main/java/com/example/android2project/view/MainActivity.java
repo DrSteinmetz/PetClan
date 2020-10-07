@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements
 
         mMenuOptions.add("Feed");
         mMenuOptions.add("Chats");
-        mMenuOptions.add("Market Place");
+        mMenuOptions.add("MarketPlace");
         mMenuOptions.add("Profile");
         mMenuOptions.add("Settings");
 
@@ -273,7 +273,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onAdUploadSucceed(Advertisement ad, AlertDialog loadingDialog) {
-        ((MarketPlaceFragment) fragmentList.get(2)).uploadAdSucceed(ad, loadingDialog);
+        ((MarketPlaceFragment) fragmentList.get(2)).onUploadAdSucceed(ad, loadingDialog);
     }
 
     @Override

@@ -1,15 +1,11 @@
 package com.example.android2project.view.fragments;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,8 +45,6 @@ public class UserPictureFragment extends Fragment {
     private File mFile;
     private Uri mSelectedImage = Uri.parse("/users_profile_picture/default_user_pic.png");
 
-    private final int CAMERA_REQUEST = 1;
-    private final int GALLERY_REQUEST = 2;
     private final int WRITE_PERMISSION_REQUEST = 7;
 
     private final String TAG = "UserPictureFragment";
@@ -122,54 +116,25 @@ public class UserPictureFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_user_picture, container, false);
 
         mUserPictureIv = rootView.findViewById(R.id.user_pic);
-        ImageButton galleryBtn = rootView.findViewById(R.id.gallery_btn);
-        ImageButton cameraBtn = rootView.findViewById(R.id.camera_btn);
+        ImageButton addImageBtn = rootView.findViewById(R.id.add_image_btn);
         Button finishBtn = rootView.findViewById(R.id.finish_btn);
 
         mUserPictureIv.setClipToOutline(true);
 
-        galleryBtn.setOnClickListener(new View.OnClickListener() {
+        addImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(Intent.ACTION_PICK,
-//                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//                startActivityForResult(Intent.createChooser(intent,
-//                        "Choose your profile picture"), GALLERY_REQUEST);
+                mFile = new File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                        "petclan" + System.nanoTime() + "pic.jpg");
+                mSelectedImage = FileProvider.getUriForFile(requireContext(),
+                        "com.example.android2project.provider", mFile);
+
                 CropImage.activity()
                         .setAspectRatio(1, 1)
                         .setCropShape(CropImageView.CropShape.RECTANGLE)
                         .setGuidelines(CropImageView.Guidelines.ON)
+                        .setOutputUri(mSelectedImage)
                         .start(requireContext(), UserPictureFragment.this);
-            }
-        });
-
-        cameraBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /**<-------Requesting user permissions------->**/
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    int hasWritePermission = requireContext().
-                            checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                    if (hasWritePermission != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                WRITE_PERMISSION_REQUEST);
-                    } else {
-                        mFile = new File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                                "petclan" + System.nanoTime() + "pic.jpg");
-                        mSelectedImage = FileProvider.getUriForFile(requireContext(),
-                                "com.example.android2project.provider", mFile);
-//                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                        intent.putExtra(MediaStore.EXTRA_OUTPUT, mSelectedImage);
-//                        startActivityForResult(intent, CAMERA_REQUEST);
-
-                        CropImage.activity()
-                                .setAspectRatio(1, 1)
-                                .setCropShape(CropImageView.CropShape.RECTANGLE)
-                                .setGuidelines(CropImageView.Guidelines.ON)
-                                .setOutputUri(mSelectedImage)
-                                .start(requireContext(), UserPictureFragment.this);
-                    }
-                }
             }
         });
 
@@ -195,9 +160,6 @@ public class UserPictureFragment extends Fragment {
                         "petclan" + System.nanoTime() + "pic.jpg");
                 mSelectedImage = FileProvider.getUriForFile(requireContext(),
                         "com.example.android2project.provider", mFile);
-//                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                intent.putExtra(MediaStore.EXTRA_OUTPUT, mSelectedImage);
-//                startActivityForResult(intent, CAMERA_REQUEST);
                 CropImage.activity()
                         .setAspectRatio(1, 1)
                         .setCropShape(CropImageView.CropShape.RECTANGLE)
