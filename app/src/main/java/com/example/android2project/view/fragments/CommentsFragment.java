@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.android2project.R;
 import com.example.android2project.model.Comment;
 import com.example.android2project.model.CommentsAdapter;
+import com.example.android2project.model.DeleteDialog;
 import com.example.android2project.model.Post;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.viewmodel.CommentsViewModel;
@@ -195,9 +196,24 @@ public class CommentsFragment extends DialogFragment {
             }
 
             @Override
-            public void onDeleteOptionClicked(int position, View view) {
+            public void onDeleteOptionClicked(final int position, View view) {
                 mPosition = position;
-                showDeleteCommentDialog(mComments.get(position));
+                //showDeleteCommentDialog(mComments.get(position));
+                final DeleteDialog deleteDialog = new DeleteDialog(getContext());
+                deleteDialog.setPromptText("Are You Sure You Want To Delete Your Comment?");
+                deleteDialog.setOnActionListener(new DeleteDialog.DeleteDialogActionListener() {
+                    @Override
+                    public void onYesBtnClicked() {
+                        mViewModel.deleteComment(mComments.get(position).getCommentId());
+                        deleteDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onNoBtnClicked() {
+                        deleteDialog.dismiss();
+                    }
+                });
+                deleteDialog.show();
             }
         });
 
@@ -252,9 +268,6 @@ public class CommentsFragment extends DialogFragment {
 
         Window window = Objects.requireNonNull(getDialog()).getWindow();
         if (window != null) {
-            /*WindowManager.LayoutParams params = window.getAttributes();
-            params.y = 300;
-            window.setAttributes(params);*/
             window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);
         }
@@ -317,31 +330,31 @@ public class CommentsFragment extends DialogFragment {
         alertDialog.show();
     }
 
-    private void showDeleteCommentDialog(final Comment commentToDelete) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
-        ViewGroup root;
-        View view = LayoutInflater.from(getContext())
-                .inflate(R.layout.add_post_dialog,
-                        (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));
-
-        builder.setView(view);
-        builder.setCancelable(true);
-
-        final EditText commentContentEt = view.findViewById(R.id.new_post_content_et);
-        commentContentEt.setText(commentToDelete.getAuthorContent());
-        final Button updateBtn = view.findViewById(R.id.post_btn);
-
-        final AlertDialog alertDialog = builder.create();
-
-        updateBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String commentId = commentToDelete.getCommentId();
-                mViewModel.deleteComment(commentId);
-                alertDialog.dismiss();
-            }
-        });
-
-        alertDialog.show();
-    }
+//    private void showDeleteCommentDialog(final Comment commentToDelete) {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+//        ViewGroup root;
+//        View view = LayoutInflater.from(getContext())
+//                .inflate(R.layout.add_post_dialog,
+//                        (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));
+//
+//        builder.setView(view);
+//        builder.setCancelable(true);
+//
+//        final EditText commentContentEt = view.findViewById(R.id.new_post_content_et);
+//        commentContentEt.setText(commentToDelete.getAuthorContent());
+//        final Button updateBtn = view.findViewById(R.id.post_btn);
+//
+//        final AlertDialog alertDialog = builder.create();
+//
+//        updateBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                final String commentId = commentToDelete.getCommentId();
+//                mViewModel.deleteComment(commentId);
+//                alertDialog.dismiss();
+//            }
+//        });
+//
+//        alertDialog.show();
+//    }
 }
