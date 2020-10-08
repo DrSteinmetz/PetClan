@@ -2,7 +2,6 @@ package com.example.android2project.view.fragments;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +22,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.android2project.R;
 import com.example.android2project.model.AdsAdapter;
 import com.example.android2project.model.Advertisement;
+import com.example.android2project.model.DeleteDialog;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.model.ViewModelFactory;
 import com.example.android2project.viewmodel.MarketPlaceViewModel;
@@ -31,6 +31,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 
 public class MarketPlaceFragment extends Fragment {
+
     private MarketPlaceViewModel mViewModel;
     private AdsAdapter mAdsAdapter;
     private RecyclerView mMarketRecycler;
@@ -66,7 +67,6 @@ public class MarketPlaceFragment extends Fragment {
                 if (mAdsAdapter != null) {
                     mAdsAdapter.notifyDataSetChanged();
                     mSwipeRefreshLayout.setRefreshing(false);
-
                 }
             }
         };
@@ -92,7 +92,6 @@ public class MarketPlaceFragment extends Fragment {
             }
         };
 
-
         startObservation();
     }
 
@@ -101,7 +100,7 @@ public class MarketPlaceFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_market_place, container, false);
         mMarketRecycler = rootView.findViewById(R.id.ads_recycler);
-        final ImageButton searchBtn = rootView.findViewById(R.id.search_btn);
+        final ImageButton searchBtn = rootView.findViewById(R.id.filter_btn);
         final Spinner optionsFilter = rootView.findViewById(R.id.filter_option_spinner);
         final RadioGroup radioGroup = rootView.findViewById(R.id.radio_group_rg);
         final FloatingActionButton addAdBtn = rootView.findViewById(R.id.add_ad_btn);
@@ -135,9 +134,24 @@ public class MarketPlaceFragment extends Fragment {
             }
 
             @Override
-            public void onDeleteOptionClicked(int position, View view) {
+            public void onDeleteOptionClicked(final int position, View view) {
                 mCurrentAd = mViewModel.getAdList().get(position);
-                mViewModel.deleteAdvertisement(mCurrentAd, position);
+                final DeleteDialog deleteDialog = new DeleteDialog(getContext());
+                deleteDialog.setPromptText("Are You Sure You Want To Delete Your Advertisement?");
+                deleteDialog.setOnActionListener(new DeleteDialog.DeleteDialogActionListener() {
+                    @Override
+                    public void onYesBtnClicked() {
+                        mViewModel.deleteAdvertisement(mCurrentAd, position);
+                        deleteDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onNoBtnClicked() {
+                        deleteDialog.dismiss();
+                    }
+                });
+                deleteDialog.show();
+
             }
         });
 
@@ -171,7 +185,9 @@ public class MarketPlaceFragment extends Fragment {
         }
     }
 
-    public void uploadAdSucceed(Advertisement ad, AlertDialog loadingDialog) {
+    public void onUploadAdSucceed(Advertisement ad, AlertDialog loadingDialog) {
+        mViewModel.getAdList().add(0, ad);
+        mAdsAdapter.notifyItemInserted(0);
         loadingDialog.dismiss();
     }
 }

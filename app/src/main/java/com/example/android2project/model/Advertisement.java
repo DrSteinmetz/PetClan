@@ -138,13 +138,12 @@ public class Advertisement implements Serializable, Comparable<Advertisement> {
 
     public void setLocation(String location) {
         this.mLocation = location;
-
     }
 
     @Override
     public int compareTo(final Advertisement otherAd) {
         if (otherAd != null) {
-            return this.mPublishDate.compareTo(otherAd.getPublishDate());
+            return otherAd.getPublishDate().compareTo(this.mPublishDate);
         }
         return 0;
     }

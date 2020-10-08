@@ -1,6 +1,10 @@
 package com.example.android2project.view.fragments;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -25,11 +29,14 @@ import com.example.android2project.model.Pet;
 import com.example.android2project.model.PetsAdapter;
 import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
-import com.example.android2project.viewmodel.UserProfileViewModel;
 import com.example.android2project.model.ViewModelFactory;
+import com.example.android2project.viewmodel.UserProfileViewModel;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.File;
 import java.util.Objects;
 
 public class UserProfileFragment extends DialogFragment {
@@ -44,17 +51,16 @@ public class UserProfileFragment extends DialogFragment {
     private PetsAdapter mPetsAdapter;
     private FirestoreRecyclerOptions<Pet> mRecyclerviewOptions;
 
+    private File mFile;
+    private Uri mSelectedImage = Uri.parse("/users_profile_picture/default_user_pic.png");
+
     private Observer<User> mOnDownloadUserSucceed;
     private Observer<String> mOnDownloadUserFailed;
-
-    private Observer<String> mOnUserNameUpdateSucceed;
-    private Observer<String> mOnUserNameUpdateFailed;
 
     private Observer<String> mOnUserImageUpdateSucceed;
     private Observer<String> mOnUserImageUpdateFailed;
 
-    private Observer<String> mOnUserDeletionSucceed;
-    private Observer<String> mOnUserDeletionFailed;
+    private final int WRITE_PERMISSION_REQUEST = 7;
 
     private final String TAG = "UserProfileFragment";
 
@@ -89,7 +95,7 @@ public class UserProfileFragment extends DialogFragment {
                 mUser = user;
 
                 loadProfilePictureWithGlide(user.getPhotoUri(), mProfilePicIv);
-                final String userName = user.getFirstName() + "\n" + user.getLastName();
+                final String userName = user.getFirstName() + " " + user.getLastName();
                 mUserNameTv.setText(userName);
                 showUserFeed(user.getEmail());
             }
@@ -105,6 +111,18 @@ public class UserProfileFragment extends DialogFragment {
         mOnUserImageUpdateSucceed = new Observer<String>() {
             @Override
             public void onChanged(String updatedUserProfilePicUri) {
+                loadProfilePictureWithGlide(updatedUserProfilePicUri, mProfilePicIv);
+                
+                final ImageView mainUserIv =  ((ImageView) requireActivity().findViewById(R.id.user_pic_iv));
+                RequestOptions options = new RequestOptions()
+                        .circleCrop()
+                        .placeholder(R.drawable.ic_default_user_pic)
+                        .error(R.drawable.ic_default_user_pic);
+
+                Glide.with(requireContext())
+                        .load(updatedUserProfilePicUri)
+                        .apply(options)
+                        .into(mainUserIv);
             }
         };
 
@@ -124,7 +142,6 @@ public class UserProfileFragment extends DialogFragment {
         View rootView = inflater.inflate(R.layout.fragment_user_profile,
                 container,false);
 
-        final CoordinatorLayout coordinatorLayout = rootView.findViewById(R.id.coordinator_layout);
         final FloatingActionButton messageEditBtn = rootView.findViewById(R.id.message_edit_btn);
         final FloatingActionButton addPetBtn = rootView.findViewById(R.id.add_pet_btn);
         mUserNameTv = rootView.findViewById(R.id.user_name_tv);
@@ -136,14 +153,16 @@ public class UserProfileFragment extends DialogFragment {
         if (mUserEmail == null) {
             mUser = mViewModel.getMyDetails();
             loadProfilePictureWithGlide(mUser.getPhotoUri(), mProfilePicIv);
-            final String userName = mUser.getFirstName() + "\n" + mUser.getLastName();
+            final String userName = mUser.getFirstName() + " " + mUser.getLastName();
             mUserNameTv.setText(userName);
-            messageEditBtn.setImageResource(R.drawable.ic_round_settings_24);
+            addPetBtn.setVisibility(View.VISIBLE);
+            messageEditBtn.setImageResource(R.drawable.ic_round_photo_library_24);
             showUserFeed(mUser.getEmail());
 
             mRecyclerviewOptions = new FirestoreRecyclerOptions.Builder<Pet>()
                     .setQuery(mViewModel.getUserPets(mUser.getEmail()), Pet.class).build();
         } else {
+            addPetBtn.setVisibility(View.GONE);
             messageEditBtn.setImageResource(R.drawable.ic_send_comment_btn);
             mRecyclerviewOptions = new FirestoreRecyclerOptions.Builder<Pet>()
                     .setQuery(mViewModel.getUserPets(mUserEmail), Pet.class).build();
@@ -156,6 +175,17 @@ public class UserProfileFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if (mUserEmail == null) {
+                    mFile = new File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                            "petclan" + System.nanoTime() + "pic.jpg");
+                    mSelectedImage = FileProvider.getUriForFile(requireContext(),
+                            "com.example.android2project.provider", mFile);
+
+                    CropImage.activity()
+                            .setAspectRatio(1, 1)
+                            .setCropShape(CropImageView.CropShape.RECTANGLE)
+                            .setGuidelines(CropImageView.Guidelines.ON)
+                            .setOutputUri(mSelectedImage)
+                            .start(requireContext(), UserProfileFragment.this);
                 } else {
                     ConversationFragment.newInstance(mUser)
                             .show(getChildFragmentManager().beginTransaction(), "fragment_conversation");
@@ -163,13 +193,14 @@ public class UserProfileFragment extends DialogFragment {
             }
         });
 
-        mUserNameTv.setOnClickListener(new View.OnClickListener() {
+        addPetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AddPetFragment.newInstance()
                         .show(getChildFragmentManager().beginTransaction(), "add_pet_fragment");
             }
         });
+
         return rootView;
     }
 
@@ -179,6 +210,42 @@ public class UserProfileFragment extends DialogFragment {
             mViewModel.getDownloadUserFailed().observe(this, mOnDownloadUserFailed);
             mViewModel.getUpdateUserImageSucceed().observe(this, mOnUserImageUpdateSucceed);
             mViewModel.getUpdateUserImageFailed().observe(this, mOnUserImageUpdateFailed);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == WRITE_PERMISSION_REQUEST) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                mFile = new File(requireContext().
+                        getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                        "petclan" + System.nanoTime() + "pic.jpg");
+                Uri uri = FileProvider.getUriForFile(requireContext(),
+                        "com.example.android2project.provider", mFile);
+
+                CropImage.activity()
+                        .setAspectRatio(1, 1)
+                        .setCropShape(CropImageView.CropShape.RECTANGLE)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setOutputUri(mSelectedImage)
+                        .start(requireContext(), this);
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (result != null) {
+                mSelectedImage = result.getUri();
+                if (mViewModel != null) {
+                    mViewModel.updateUserProfileImage(mSelectedImage);
+                }
+            }
         }
     }
 

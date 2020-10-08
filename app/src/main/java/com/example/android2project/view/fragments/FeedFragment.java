@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.android2project.R;
+import com.example.android2project.model.DeleteDialog;
 import com.example.android2project.model.LocationUtils;
 import com.example.android2project.model.Post;
 import com.example.android2project.model.PostsAdapter;
@@ -279,9 +281,23 @@ public class FeedFragment extends Fragment {
             }
 
             @Override
-            public void onDeleteOptionClicked(int position, View view) {
-                final Post post = mViewModel.getPosts().get(position);
-                showDeletePostDialog(post, position);
+            public void onDeleteOptionClicked(final int position, View view) {
+                final Post postToDelete = mViewModel.getPosts().get(position);
+                final DeleteDialog deleteDialog = new DeleteDialog(getContext());
+                deleteDialog.setPromptText("Are You Sure You Want To Delete Your Post?");
+                deleteDialog.setOnActionListener(new DeleteDialog.DeleteDialogActionListener() {
+                    @Override
+                    public void onYesBtnClicked() {
+                        mViewModel.deletePost(postToDelete.getPostId(), position);
+                        deleteDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onNoBtnClicked() {
+                        deleteDialog.dismiss();
+                    }
+                });
+                deleteDialog.show();
             }
         });
 
@@ -437,32 +453,32 @@ public class FeedFragment extends Fragment {
         alertDialog.show();
     }
 
-    private void showDeletePostDialog(final Post postToDelete, final int position) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
-
-        View view = LayoutInflater.from(getContext())
-                .inflate(R.layout.add_post_dialog,
-                        (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));
-
-        builder.setView(view);
-        builder.setCancelable(true);
-
-        final EditText postContentEt = view.findViewById(R.id.new_post_content_et);
-        postContentEt.setText(postToDelete.getAuthorContent());
-        final Button updateBtn = view.findViewById(R.id.post_btn);
-
-        final AlertDialog alertDialog = builder.create();
-
-        updateBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mViewModel.deletePost(postToDelete.getPostId(), position);
-                alertDialog.dismiss();
-            }
-        });
-
-        alertDialog.show();
-    }
+//    private void showDeletePostDialog(final Post postToDelete, final int position) {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+//
+//        View view = LayoutInflater.from(getContext())
+//                .inflate(R.layout.add_post_dialog,
+//                        (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));
+//
+//        builder.setView(view);
+//        builder.setCancelable(true);
+//
+//        final EditText postContentEt = view.findViewById(R.id.new_post_content_et);
+//        postContentEt.setText(postToDelete.getAuthorContent());
+//        final Button updateBtn = view.findViewById(R.id.post_btn);
+//
+//        final AlertDialog alertDialog = builder.create();
+//
+//        updateBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mViewModel.deletePost(postToDelete.getPostId(), position);
+//                alertDialog.dismiss();
+//            }
+//        });
+//
+//        alertDialog.show();
+//    }
 
     @Override
     public void onResume() {

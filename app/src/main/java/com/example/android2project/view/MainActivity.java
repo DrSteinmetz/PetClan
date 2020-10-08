@@ -57,7 +57,8 @@ import nl.psdcompany.duonavigationdrawer.views.DuoMenuView;
 import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
 public class MainActivity extends AppCompatActivity implements
-        FeedFragment.FeedInterface , AdvertisementFragment.AdvertisementInterface {
+        FeedFragment.FeedInterface,
+        AdvertisementFragment.AdvertisementInterface {
   
     private DuoDrawerLayout mDrawerLayout;
 
@@ -127,13 +128,20 @@ public class MainActivity extends AppCompatActivity implements
 
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(this,
                 ViewModelEnum.Main)).get(MainViewModel.class);
+
         mUserPictureViewModel = new ViewModelProvider(this, new ViewModelFactory(this,
                 ViewModelEnum.Picture)).get(UserPictureViewModel.class);
+
+        mDrawerLayout = findViewById(R.id.main_drawer_layout);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        final DuoMenuView duoMenuView = (DuoMenuView) findViewById(R.id.menu);
+        final MenuAdapter menuAdapter = new MenuAdapter(mMenuOptions);
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 mBottomBar.setItemActiveIndex(position);
+                menuAdapter.setViewSelected(position, true);
             }
 
             @Override
@@ -174,19 +182,15 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        mDrawerLayout = findViewById(R.id.main_drawer_layout);
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final DuoMenuView duoMenuView = (DuoMenuView) findViewById(R.id.menu);
         final DuoDrawerToggle drawerToggle = new DuoDrawerToggle(this, mDrawerLayout, toolbar,
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
 
         mMenuOptions.add("Feed");
         mMenuOptions.add("Chats");
-        mMenuOptions.add("Market Place");
+        mMenuOptions.add("MarketPlace");
         mMenuOptions.add("Profile");
         mMenuOptions.add("Settings");
 
@@ -202,6 +206,7 @@ public class MainActivity extends AppCompatActivity implements
                 if (position < 4) {
                     mViewPager.setCurrentItem(position);
                     mDrawerLayout.closeDrawer();
+                    menuAdapter.setViewSelected(position, true);
                 } else if (position == 4) {
                     mDrawerLayout.closeDrawer();
                     getSupportFragmentManager().beginTransaction()
@@ -212,7 +217,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        final MenuAdapter menuAdapter = new MenuAdapter(mMenuOptions);
         duoMenuView.setAdapter(menuAdapter);
 
         mDrawerLayout.setDrawerListener(drawerToggle);
@@ -289,7 +293,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onAdUploadSucceed(Advertisement ad, AlertDialog loadingDialog) {
-        ((MarketPlaceFragment) fragmentList.get(2)).uploadAdSucceed(ad, loadingDialog);
+        ((MarketPlaceFragment) fragmentList.get(2)).onUploadAdSucceed(ad, loadingDialog);
     }
 
     @Override

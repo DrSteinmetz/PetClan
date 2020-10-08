@@ -9,15 +9,11 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,14 +34,11 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android2project.R;
 import com.example.android2project.model.Advertisement;
 import com.example.android2project.model.LocationUtils;
 import com.example.android2project.model.PhotosPreviewRecyclerview;
-import com.example.android2project.model.PreviewImagesAdapter;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.model.ViewModelFactory;
 import com.example.android2project.viewmodel.AdvertisementViewModel;
@@ -58,7 +51,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 public class AdvertisementFragment extends DialogFragment {
@@ -71,7 +63,7 @@ public class AdvertisementFragment extends DialogFragment {
     private AlertDialog mLoadingDialog;
     private LocationUtils mLocationUtils;
 
-    private ArrayAdapter<String> cityArrayadapter;
+    private ArrayAdapter<String> cityArrayAdapter;
     private LinearLayout locationLayout;
     private Button locationBtn;
     private AutoCompleteTextView locationAutoCompleteTv;
@@ -83,12 +75,12 @@ public class AdvertisementFragment extends DialogFragment {
     private RadioGroup actionRg;
     private RadioGroup categoryRg;
     private RadioGroup genderRg;
+    private LinearLayout spinnerLayout;
     private Spinner typeSp;
     private TextInputEditText kindEt;
     private TextInputEditText priceEt;
     private TextInputEditText descriptionEt;
-    private ImageButton galleryBtn;
-    private ImageButton cameraBtn;
+    private ImageButton addImageBtn;
     private Button publishBtn;
     private PhotosPreviewRecyclerview mImagePreviewRecycler;
 
@@ -143,7 +135,7 @@ public class AdvertisementFragment extends DialogFragment {
 
         mCityNames = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.city_names)));
 
-        cityArrayadapter = new ArrayAdapter<String>
+        cityArrayAdapter = new ArrayAdapter<String>
                 (requireContext(), android.R.layout.select_dialog_item, mCityNames);
 
         mOnUploadingAdPhotosSucceed = new Observer<Integer>() {
@@ -157,15 +149,15 @@ public class AdvertisementFragment extends DialogFragment {
                 final String cityName = locationAutoCompleteTv.getText().toString();
                 final int price = Integer.parseInt(priceEt.getText().toString());
                 final String description = descriptionEt.getText().toString().trim();
+
                 if (mAdvertisement == null) {
                     Advertisement advertisement = new Advertisement(mViewModel.getCurrentUser(),
                             itemType, cityName, price, isSell, description, isPet);
 
                     advertisement.setIsMale(isMale);
                     advertisement.setPetKind(kind);
-                    mViewModel.addAdvertisement(advertisement);
 
-                    Log.d(TAG, "onChanged: add qwerty");
+                    mViewModel.addAdvertisement(advertisement);
                 } else {
                     mAdvertisement.setIsSell(isSell);
                     mAdvertisement.setIsPet(isPet);
@@ -174,7 +166,7 @@ public class AdvertisementFragment extends DialogFragment {
                     mAdvertisement.setPetKind(kind);
                     mAdvertisement.setPrice(price);
                     mAdvertisement.setDescription(description);
-                    Log.d(TAG, "onChanged: edit qwerty");
+
                     mViewModel.addAdvertisement(mAdvertisement);
                 }
             }
@@ -190,7 +182,6 @@ public class AdvertisementFragment extends DialogFragment {
         mOnUploadingAdSucceed = new Observer<Advertisement>() {
             @Override
             public void onChanged(Advertisement advertisement) {
-                Log.d(TAG, "onChanged: zxc");
                 if (listener != null) {
                     listener.onAdUploadSucceed(advertisement, mLoadingDialog);
                     Objects.requireNonNull(getDialog()).dismiss();
@@ -219,6 +210,7 @@ public class AdvertisementFragment extends DialogFragment {
         actionRg = rootView.findViewById(R.id.action_rg);
         categoryRg = rootView.findViewById(R.id.category_rg);
         genderRg = rootView.findViewById(R.id.gender_rg);
+        spinnerLayout = rootView.findViewById(R.id.spinner_layout);
         typeSp = rootView.findViewById(R.id.type_spinner);
         kindLayout = rootView.findViewById(R.id.pet_kind_et_layout);
         locationLayout = rootView.findViewById(R.id.location_layout);
@@ -229,8 +221,7 @@ public class AdvertisementFragment extends DialogFragment {
         priceEt = rootView.findViewById(R.id.pet_price_et);
         descriptionEt = rootView.findViewById(R.id.pet_description_et);
         locationBtn = rootView.findViewById(R.id.locate_btn);
-        galleryBtn = rootView.findViewById(R.id.gallery_btn);
-        cameraBtn = rootView.findViewById(R.id.camera_btn);
+        addImageBtn = rootView.findViewById(R.id.add_image_btn);
         mImagePreviewRecycler = rootView.findViewById(R.id.photos_preview);
         publishBtn = rootView.findViewById(R.id.publish_btn);
 
@@ -240,8 +231,8 @@ public class AdvertisementFragment extends DialogFragment {
             mImagePreviewRecycler.initEdit(IMAGE_VIEW_SIZE, mAdvertisement);
         }
 
-        locationAutoCompleteTv.setThreshold(1);//will start working from first character
-        locationAutoCompleteTv.setAdapter(cityArrayadapter);//setting the adapter data into the AutoCompleteTextView
+        locationAutoCompleteTv.setThreshold(1); // will start working from first character
+        locationAutoCompleteTv.setAdapter(cityArrayAdapter); // setting the adapter data into the AutoCompleteTextView
         locationAutoCompleteTv.setTextColor(Color.BLACK);
 
         if (mAdvertisement == null) {
@@ -257,7 +248,7 @@ public class AdvertisementFragment extends DialogFragment {
                     if (checkedId == R.id.pet_rb) {
                         genderLayout.setVisibility(View.VISIBLE);
                         kindLayout.setVisibility(View.VISIBLE);
-                        typeSp.setVisibility(View.VISIBLE);
+                        spinnerLayout.setVisibility(View.VISIBLE);
                         List<String> list = Arrays.asList(getResources().getStringArray(R.array.pet_types));
                         ArrayAdapter<String> petTypes = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, list);
                         typeSp.setAdapter(petTypes);
@@ -269,18 +260,17 @@ public class AdvertisementFragment extends DialogFragment {
                         if (kindLayout.getVisibility() == View.VISIBLE) {
                             kindLayout.setVisibility(View.GONE);
                         }
-                        typeSp.setVisibility(View.VISIBLE);
+                        spinnerLayout.setVisibility(View.VISIBLE);
                         List<String> list = Arrays.asList(getResources().getStringArray(R.array.product_types));
                         ArrayAdapter<String> productTypes = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, list);
                         typeSp.setAdapter(productTypes);
                     }
-                    typeSp.setVisibility(View.VISIBLE);
+                    spinnerLayout.setVisibility(View.VISIBLE);
                     priceLayout.setVisibility(View.VISIBLE);
                     locationLayout.setVisibility(View.VISIBLE);
                     descriptionLayout.setVisibility(View.VISIBLE);
                     mImagePreviewRecycler.setVisibility(View.VISIBLE);
-                    cameraBtn.setVisibility(View.VISIBLE);
-                    galleryBtn.setVisibility(View.VISIBLE);
+                    addImageBtn.setVisibility(View.VISIBLE);
                     publishBtn.setVisibility(View.VISIBLE);
                 }
             });
@@ -290,10 +280,9 @@ public class AdvertisementFragment extends DialogFragment {
             locationLayout.setVisibility(View.VISIBLE);
             descriptionLayout.setVisibility(View.VISIBLE);
             mImagePreviewRecycler.setVisibility(View.VISIBLE);
-            galleryBtn.setVisibility(View.VISIBLE);
-            cameraBtn.setVisibility(View.VISIBLE);
+            addImageBtn.setVisibility(View.VISIBLE);
             publishBtn.setVisibility(View.VISIBLE);
-            typeSp.setVisibility(View.VISIBLE);
+            spinnerLayout.setVisibility(View.VISIBLE);
 
             final int[] position = new int[1];
             categoryRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -318,7 +307,7 @@ public class AdvertisementFragment extends DialogFragment {
                         position[0] = list.indexOf(mAdvertisement.getItemName());
                         typeSp.setAdapter(products);
                     }
-                    typeSp.setVisibility(View.VISIBLE);
+                    spinnerLayout.setVisibility(View.VISIBLE);
                 }
             });
 
@@ -351,49 +340,23 @@ public class AdvertisementFragment extends DialogFragment {
 
             }
         });
-        cameraBtn.setOnClickListener(new View.OnClickListener() {
+
+        addImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /**<-------Requesting user permissions------->**/
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && mImagePreviewRecycler.getImageCounter() < 8) {
-                    int hasWritePermission = requireContext().
-                            checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                    if (hasWritePermission != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                WRITE_PERMISSION_REQUEST);
-                    } else {
-                        mFile = new File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                                "petclan" + System.nanoTime() + "pic.jpg");
-                        Uri uri = FileProvider.getUriForFile(requireContext(),
-                                "com.example.android2project.provider", mFile);
+                mFile = new File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                        "petclan" + System.nanoTime() + "pic.jpg");
+                Uri uri = FileProvider.getUriForFile(requireContext(),
+                        "com.example.android2project.provider", mFile);
 
-                        CropImage.activity()
-                                .setAspectRatio(4, 3)
-                                .setCropShape(CropImageView.CropShape.RECTANGLE)
-                                .setGuidelines(CropImageView.Guidelines.ON)
-                                .setOutputUri(uri)
-                                .start(requireContext(), AdvertisementFragment.this);
-                    }
-                }
+                CropImage.activity()
+                        .setAspectRatio(4, 3)
+                        .setCropShape(CropImageView.CropShape.RECTANGLE)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setOutputUri(uri)
+                        .start(requireContext(), AdvertisementFragment.this);
             }
         });
-
-        galleryBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mImagePreviewRecycler.getImageCounter() < 8) {
-
-                    CropImage.activity()
-                            .setAspectRatio(4, 3)
-                            .setCropShape(CropImageView.CropShape.RECTANGLE)
-                            .setGuidelines(CropImageView.Guidelines.ON)
-                            .start(requireContext(), AdvertisementFragment.this);
-                } else {
-                    Toast.makeText(getContext(), "Woof!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
 
         descriptionEt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -441,11 +404,13 @@ public class AdvertisementFragment extends DialogFragment {
                 } else {
                     priceEt.setError(null);
                 }
+
                 if (description.isEmpty()) {
                     descriptionEt.setError(getContext().getString(R.string.description));
                 } else {
                     descriptionEt.setError(null);
                 }
+
                 if (isPet && genderRg.getCheckedRadioButtonId() != -1
                         && !kind.isEmpty() && !price.isEmpty() && !description.isEmpty() && mCityNames.contains(cityName)) {
                     mViewModel.uploadAdPhotos(mImagePreviewRecycler.getSelectedImageList());
