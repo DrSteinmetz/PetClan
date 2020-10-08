@@ -91,10 +91,10 @@ public class User implements Comparable<User>, Serializable {
     @Override
     public int compareTo(User otherUser) {
         if (otherUser != null) {
-            if (otherUser.getFirstName().compareTo(this.mFirstName) == 0) {
-                return (otherUser.getLastName().compareTo(this.mLastName));
+            if (this.getFirstName().compareTo(otherUser.mFirstName) == 0) {
+                return (this.getLastName().compareTo(otherUser.mLastName));
             } else {
-                return (otherUser.getFirstName().compareTo(this.mFirstName));
+                return (this.getFirstName().compareTo(otherUser.mFirstName));
             }
         }
         return 0;

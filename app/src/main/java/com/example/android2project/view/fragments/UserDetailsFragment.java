@@ -86,9 +86,9 @@ public class UserDetailsFragment extends Fragment {
         final Button nextBtn = rootView.findViewById(R.id.next_btn);
         final EditText firstNameEt = rootView.findViewById(R.id.first_name_et);
         final EditText lastNameEt = rootView.findViewById(R.id.last_name_et);
-        final EditText businessNameEt = rootView.findViewById(R.id.business_name_et);
-        final CheckBox businessCb = rootView.findViewById(R.id.is_business_cb);
-        final TextInputLayout businessLayout = rootView.findViewById(R.id.business_name_layout);
+//        final EditText businessNameEt = rootView.findViewById(R.id.business_name_et);
+//        final CheckBox businessCb = rootView.findViewById(R.id.is_business_cb);
+//        final TextInputLayout businessLayout = rootView.findViewById(R.id.business_name_layout);
 
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,15 +99,15 @@ public class UserDetailsFragment extends Fragment {
                     String lastName = lastNameEt.getText().toString().trim();
                     String businessName = null;
                     boolean business = true;
-                    if (businessCb.isChecked()) {
-                        business = false;
-                        businessName = businessNameEt.getText().toString().trim();
-                        if (businessName.length() > 0) {
-                            business = true;
-                        }
-                    }
+//                    if (businessCb.isChecked()) {
+//                        business = false;
+//                        businessName = businessNameEt.getText().toString().trim();
+//                        if (businessName.length() > 0) {
+//                            business = true;
+//                        }
+//                    }
 
-                    if (firstName.length() > 0 && lastName.length() > 0 && business) {
+                    if (firstName.length() > 0 && lastName.length() > 0 ) {
                         firstNameEt.setError(null);
                         lastNameEt.setError(null);
 
@@ -123,26 +123,26 @@ public class UserDetailsFragment extends Fragment {
                         } else {
                             lastNameEt.setError(null);
                         }
-                        if (businessName.length() < 1) {
-                            businessNameEt.setError("You must enter you business name!");
-                        } else {
-                            businessNameEt.setError(null);
-                        }
+//                        if (businessName.length() < 1) {
+//                            businessNameEt.setError("You must enter you business name!");
+//                        } else {
+//                            businessNameEt.setError(null);
+//                        }
                     }
                 }
             }
         });
 
-        businessCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    businessLayout.setVisibility(View.VISIBLE);
-                } else {
-                    businessLayout.setVisibility(View.GONE);
-                }
-            }
-        });
+//        businessCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked) {
+//                    businessLayout.setVisibility(View.VISIBLE);
+//                } else {
+//                    businessLayout.setVisibility(View.GONE);
+//                }
+//            }
+//        });
 
         return rootView;
     }
