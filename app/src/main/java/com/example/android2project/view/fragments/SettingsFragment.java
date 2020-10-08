@@ -258,29 +258,33 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
 
                     if (GPSwitch.isChecked() && !mLocationUtils.isLocationEnabled()) {
-                        Log.d(TAG, "onSharedPreferenceChanged: ");
+                        Log.d(TAG, "onSharedPreferenceChanged: xxx");
 //                        GPSwitch.setChecked(true);
                         mLocationUtils.requestLocationPermissions();
 
                     }
+
                     else if(mLocationMode!=null && mLocationMode.equals("Off")){
                         GPSwitch.setChecked(false);
                     }
 
-                    else if (mIsLocationDialogClicked) {
+                    else if (mIsLocationDialogClicked && (mLocationMode!=null&&!mLocationMode.equals("On"))){
                         Log.d(TAG, "onSharedPreferenceChanged: xpk");
                         if (GPSwitch.isChecked()) {//if was manually not with dialog
                             Log.d(TAG, "onSharedPreferenceChanged: xpk");
                             mLocationUtils.turnGPSOff();
 //                            GPSwitch.setChecked(false);
 //                            mIsLocationDialogClicked=false;
+                        }else{
+                            GPSwitch.setChecked(false);
+                            mIsLocationDialogClicked=false;
                         }
                     }
 
 //                    else if(mLocationMode!=null &&mLocationMode.equals("On")){
 //                        mLocationUtils.turnGPSOff();
 //                    }
-                    else if(!GPSwitch.isChecked()){
+                    else if(!GPSwitch.isChecked() && !mIsLocationDialogClicked){
                         mLocationUtils.turnGPSOff();
                     }
                 }
