@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:text="Add A Pet"
+            android:text="@string/add_a_pet"
             android:textSize="30sp"
             android:textColor="@color/colorPrimaryDark"
             android:textStyle="bold"
@@ -104,12 +104,6 @@
                 android:scaleType="fitCenter"
                 android:background="@null" />
 
-            <!--<ImageButton
-                android:id="@+id/gallery_btn"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@drawable/ic_round_add_photo_gallery_50" />-->
-
         </LinearLayout>
 
         <com.example.android2project.model.PhotosPreviewRecyclerview
@@ -128,7 +122,7 @@
             android:layout_below="@id/photos_preview_recycler"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:text="Add"
+            android:text="@string/add"
             android:textAllCaps="false" />
 
 

@@ -148,10 +148,10 @@ public class SignUpDetailsFragment extends Fragment {
                     if (email.trim().length() > 0 && password.trim().length() > 0) {
                         if (!email.matches(mEmailRegex) || password.trim().length() < 8) {
                             if (!email.matches(mEmailRegex)) {
-                                emailEt.setError("You must enter a valid email!");
+                                emailEt.setError(getContext().getString(R.string.valid_email));
                             }
                             if (password.trim().length() < 8) {
-                                passwordEt.setError("You must enter at least 8 characters!");
+                                passwordEt.setError(getContext().getString(R.string.valid_password));
                             }
                             return;
                         }
@@ -164,12 +164,12 @@ public class SignUpDetailsFragment extends Fragment {
                         }
                     } else {
                         if (email.trim().length() < 1) {
-                            emailEt.setError("You must enter email!");
+                            emailEt.setError(getContext().getString(R.string.email));
                         } else {
                             emailEt.setError(null);
                         }
                         if (password.trim().length() < 1) {
-                            passwordEt.setError("You must enter a password!");
+                            passwordEt.setError(getContext().getString(R.string.password));
                         } else {
                             passwordEt.setError(null);
                         }

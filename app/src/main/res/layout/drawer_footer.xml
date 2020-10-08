@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         style="@style/Widget.MaterialComponents.Button"
         android:padding="15dp"
-        android:text="Log Out"
+        android:text="@string/log_out"
         android:textSize="30sp"
         android:textColor="@color/colorWhite"
         android:background="@drawable/rounded_image_shape"

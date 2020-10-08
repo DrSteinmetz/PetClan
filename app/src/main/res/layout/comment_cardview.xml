@@ -36,7 +36,7 @@
                     android:id="@+id/author_name_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Author Name"
+                    android:text="@string/author_name"
                     android:textSize="15sp"
                     android:textColor="@color/colorBlack"
                     android:textStyle="bold"
@@ -50,7 +50,7 @@
                     android:layout_alignBottom="@id/author_name_tv"
                     android:layout_toEndOf="@id/author_name_tv"
                     android:layout_marginStart="10dp"
-                    android:text="moments ago"
+                    android:text="@string/moments_ago"
                     android:textSize="13sp"
                     android:textAllCaps="false" />
 

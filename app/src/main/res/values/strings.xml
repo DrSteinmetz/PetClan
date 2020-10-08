@@ -4,6 +4,103 @@
     <!--Facebook strings-->
     <string name="facebook_app_id">1167243230312525</string>
     <string name="fb_login_protocol_scheme">fb1167243230312525</string>
+    <string name="login_cancel" >Login Canceled</string>
+    <string name="network_not_found">Network not found</string>
+    <string name="locatio_disabled">Location is Disabled</string>
+    <string name="provide_location">In order to have functionality you must provide location</string>
+    <string name="done_uploading">Done Uploading</string>
+    <string name="enable_location">Please enable Location</string>
+    <string name="woof">Woof!</string>
+    <string name="select_gender">Please select gender</string>
+    <string name="enter_kind">Please enter a pet kind</string>
+    <string name="enter_first_name">You must enter your first name!</string>
+    <string name="enter_last_name">You must enter your last name!</string>
+    <string name="pet_name">You must enter a pet name</string>
+    <string name="pet_type">You must enter a pet type</string>
+    <string name="city_location">Please Enter a City from the list</string>
+    <string name="price">Please enter price</string>
+    <string name="description">Please enter description</string>
+    <string name="email">You must enter email!</string>
+    <string name="valid_email">You must enter a valid email!</string>
+    <string name="password">You must enter a password!</string>
+    <string name="valid_password">You must enter at least 8 characters!</string>
+    <string name="author_name">Author Name</string>
+
+
+    <string name="log_out">Log Out</string>
+    <string name="Unknown">Unknown</string>
+    <string name="Price">Price</string>
+    <string name="Description">Description</string>
+    <string name="Location">Location</string>
+    <string name="Sell_Adopt">| Sell/Adopt</string>
+    <string name="Post">Post</string>
+    <string name="Friend_Name">Friend Name</string>
+    <string name="moments_ago">moments ago</string>
+    <string name="last_message">last message</string>
+    <string name="Add_An_Ad">Add An Ad</string>
+    <string name="Choose_Action">Choose Action:</string>
+    <string name="Sell">Sell</string>
+    <string name="Hand_Over">Hand Over</string>
+    <string name="Choose_Category">Choose Category:</string>
+    <string name="Pet">Pet</string>
+    <string name="Product">Product</string>
+    <string name="Gender">Gender:</string>
+    <string name="Male">Male</string>
+    <string name="Female">Female</string>
+    <string name="locate_me">locate me</string>
+    <string name="Publish">Publish</string>
+    <string name="Write_the_First_Comment">Write the First Comment!</string>
+    <string name="Username">Username</string>
+    <string name="Unread_Messages">Unread Messages</string>
+    <string name="Contact_me">Contact me</string>
+    <string name="Item">Item:</string>
+    <string name="Kind">Kind:</string>
+    <string name="Publish_date">Publish date:</string>
+    <string name="Welcome">Welcome!</string>
+    <string name="Or_sign_in_with">Or sign in with</string>
+    <string name="Sign_In">Sign In</string>
+    <string name="about_to_start">You\'re about to start your adventure...</string>
+    <string name="Join_Our_Clan">Join Our Clan</string>
+    <string name="Hightolow">High->Low</string>
+    <string name="Lowtohigh">Low->High</string>
+    <string name="About_You">About You</string>
+    <string name="Who_are_you">Welcome!\nWho are you?</string>
+    <string name="Or_register_with">Or register with</string>
+    <string name="Next">Next</string>
+    <string name="Chat">Chat</string>
+    <string name="Friends">Friends</string>
+    <string name="Choose_how_people_see_you">Welcome!\nChoose how people see you</string>
+    <string name="your_profile_picture">Choose your profile picture</string>
+    <string name="Finish">Finish</string>
+    <string name="New_Message">New Message</string>
+    <string name="Name">Name</string>
+    <string name="at">at</string>
+    <string name="Likes">Likes</string>
+    <string name="Comments">Comments</string>
+    <string name="Like">Like</string>
+    <string name="Comment">Comment</string>
+    <string name="Hello">Hello</string>
+    <string name="add_a_pet">Add A Pet</string>
+    <string name="add">Add</string>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     <string name="large_text">
         "Material is the metaphor.\n\n"
@@ -113,5 +210,6 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="search">Search</string>
 
 </resources>
