@@ -188,11 +188,11 @@ public class MainActivity extends AppCompatActivity implements
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
 
-        mMenuOptions.add("Feed");
-        mMenuOptions.add("Chats");
-        mMenuOptions.add("MarketPlace");
-        mMenuOptions.add("Profile");
-        mMenuOptions.add("Settings");
+        mMenuOptions.add(getResources().getString(R.string.Feed));
+        mMenuOptions.add(getResources().getString(R.string.Chats));
+        mMenuOptions.add(getResources().getString(R.string.MarketPlace));
+        mMenuOptions.add(getResources().getString(R.string.Profile));
+        mMenuOptions.add(getResources().getString(R.string.Settings));
 
         duoMenuView.setOnMenuClickListener(new DuoMenuView.OnMenuClickListener() {
             @Override

@@ -222,6 +222,7 @@ public class ConversationFragment extends DialogFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
+
             }
         });
 
