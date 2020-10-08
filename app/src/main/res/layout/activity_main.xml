@@ -56,7 +56,7 @@
                 style="@style/Widget.MaterialComponents.Button"
                 android:layout_margin="10dp"
                 android:padding="15dp"
-                android:text="Log Out"
+                android:text="@string/log_out"
                 android:textSize="25sp"
                 android:textColor="@color/colorWhite"
                 android:background="@null"
@@ -106,7 +106,7 @@
                         android:textSize="18sp"
                         android:layout_gravity="center"
                         android:textAllCaps="false"
-                        android:text="Unknown">
+                        android:text="@string/Unknown">
 
                     </TextView>
                 </androidx.appcompat.widget.Toolbar>

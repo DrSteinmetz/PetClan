@@ -144,12 +144,12 @@ public class AddPetFragment extends DialogFragment {
                     showLoadingDialog();
                 } else {
                     if (petName.length() < 1) {
-                        petNameEt.setError("You must enter a name");
+                        petNameEt.setError(getContext().getString(R.string.pet_name));
                     } else {
                         petNameEt.setError(null);
                     }
                     if (petType.length() < 1) {
-                        petTypeEt.setError("You must enter a type");
+                        petTypeEt.setError(getContext().getString(R.string.pet_type));
                     } else {
                         petTypeEt.setError(null);
                     }

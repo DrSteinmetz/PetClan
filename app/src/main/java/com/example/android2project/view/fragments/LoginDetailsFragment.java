@@ -170,12 +170,12 @@ public class LoginDetailsFragment extends Fragment {
                         mViewModel.loginWithDetails(email, password);
                     } else {
                         if (email.trim().length() < 1) {
-                            emailEt.setError("You must enter email!");
+                            emailEt.setError(getContext().getString(R.string.email));
                         } else {
                             emailEt.setError(null);
                         }
                         if (password.trim().length() < 1) {
-                            passwordEt.setError("You must enter a password!");
+                            passwordEt.setError(getContext().getString(R.string.password));
                         } else {
                             passwordEt.setError(null);
                         }

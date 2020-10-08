@@ -39,7 +39,7 @@
                     android:id="@+id/friend_name_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Friend Name"
+                    android:text="@string/Friend_Name"
                     android:textSize="15sp"
                     android:textColor="@color/colorBlack"
                     android:textStyle="bold"
@@ -52,7 +52,7 @@
                     android:layout_toEndOf="@id/friend_name_tv"
                     android:layout_alignParentEnd="true"
                     android:gravity="end"
-                    android:text="moments ago"
+                    android:text="@string/moments_ago"
                     android:textSize="13sp"
                     android:textAllCaps="false" />
 
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:ellipsize="marquee"
-                android:text="last message"
+                android:text="@string/last_message"
                 android:textAllCaps="false"
                 android:textSize="13sp" />
 

@@ -89,7 +89,7 @@
                     android:gravity="center"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="3dp"
-                    android:text="High->Low"
+                    android:text="@string/Hightolow"
                     android:textColor="@drawable/radio_button_text_selector" />
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
@@ -102,7 +102,7 @@
                     android:gravity="center"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="3dp"
-                    android:text="Low->High"
+                    android:text="@string/Lowtohigh"
                     android:textColor="@drawable/radio_button_text_selector" />
             </RadioGroup>
         </RelativeLayout>

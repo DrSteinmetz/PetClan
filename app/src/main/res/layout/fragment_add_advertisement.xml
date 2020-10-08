@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:text="Add An Ad"
+            android:text="@string/Add_An_Ad"
             android:textSize="30sp" />
 
         <LinearLayout
@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Choose Action: "
+                android:text="@string/Choose_Action"
                 android:textColor="@color/colorBlack" />
 
             <RadioGroup
@@ -57,7 +57,7 @@
                     android:gravity="center"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="3dp"
-                    android:text="Sell"
+                    android:text="@string/Sell"
                     android:textColor="@drawable/radio_button_text_selector" />
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
@@ -70,7 +70,7 @@
                     android:gravity="center"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="3dp"
-                    android:text="Hand Over"
+                    android:text="@string/Hand_Over"
                     android:textColor="@drawable/radio_button_text_selector" />
 
             </RadioGroup>
@@ -93,7 +93,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Choose Category: "
+                android:text="@string/Choose_Category"
                 android:textColor="@color/colorBlack" />
 
             <RadioGroup
@@ -114,7 +114,7 @@
                     android:gravity="center"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="3dp"
-                    android:text="Pet"
+                    android:text="@string/Pet"
                     android:textColor="@drawable/radio_button_text_selector" />
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
@@ -127,7 +127,7 @@
                     android:gravity="center"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="3dp"
-                    android:text="Product"
+                    android:text="@string/Product"
                     android:textColor="@drawable/radio_button_text_selector" />
 
             </RadioGroup>
@@ -150,7 +150,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Gender:"
+                android:text="@string/Gender"
                 android:textColor="@color/colorBlack" />
 
             <RadioGroup
@@ -171,7 +171,7 @@
                     android:gravity="center"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="3dp"
-                    android:text="Male"
+                    android:text="@string/Male"
                     android:textColor="@drawable/radio_button_text_selector" />
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
@@ -184,7 +184,7 @@
                     android:gravity="center"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="3dp"
-                    android:text="Female"
+                    android:text="@string/Female"
                     android:textColor="@drawable/radio_button_text_selector" />
 
             </RadioGroup>
@@ -283,7 +283,7 @@
                 android:id="@+id/locate_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="locate me"
+                android:text="@string/locate_me"
                 android:textAllCaps="true" />
 
         </LinearLayout>
@@ -382,7 +382,7 @@
             android:layout_below="@id/photos_preview"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:text="Publish"
+            android:text="@string/Publish"
             android:textAllCaps="false"
             android:visibility="gone" />
 

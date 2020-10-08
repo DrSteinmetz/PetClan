@@ -38,7 +38,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@null"
-                    android:text="Author Name"
+                    android:text="@string/author_name"
                     android:textAllCaps="false"
                     android:textColor="@color/colorBlack"
                     android:textSize="15sp"
@@ -55,7 +55,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="5dp"
-                        android:text="moments ago"
+                        android:text="@string/moments_ago"
                         android:textAllCaps="false"
                         android:textSize="13sp" />
 
@@ -63,7 +63,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="5dp"
-                        android:text="at"
+                        android:text="@string/at"
                         android:textAllCaps="false"
                         android:textSize="13sp" />
 
@@ -71,7 +71,6 @@
                         android:id="@+id/location_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tel-Aviv"
                         android:textAllCaps="false"
                         android:textSize="13sp" />
                 </LinearLayout>
@@ -128,7 +127,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/like_amount_iv"
-                android:text="Likes"
+                android:text="@string/Likes"
                 android:textAllCaps="false"
                 android:textSize="12sp" />
 
@@ -138,7 +137,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginHorizontal="10dp"
-                android:text="Comments"
+                android:text="@string/Comments"
                 android:textAllCaps="false"
                 android:textSize="12sp" />
 
@@ -164,7 +163,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:text="Like"
+                    android:text="@string/Like"
                     android:textAllCaps="false"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="13sp" />
@@ -191,7 +190,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:text="Comment"
+                    android:text="@string/Comment"
                     android:textAllCaps="false"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="13sp" />

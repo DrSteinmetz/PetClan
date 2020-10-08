@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.android2project.R;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -242,7 +243,7 @@ public class LocationUtils extends BroadcastReceiver  {
                     mSwitchLiveData.setValue(true);
                 }
             } else if (!networkEnabled && gpsEnabled) {
-                Toast.makeText(context, "Network not found", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,context.getResources().getString(R.string.network_not_found), Toast.LENGTH_SHORT).show();
             } else if (!isLocationEnabled()) {
                 Log.d(TAG, "GPS is disabled");
                 Snackbar.make(mActivity.findViewById(android.R.id.content), "Location is Disabled", Snackbar.LENGTH_LONG).show();
