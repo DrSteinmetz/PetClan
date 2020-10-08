@@ -53,7 +53,7 @@ public class LocationUtils extends BroadcastReceiver  {
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
     private MutableLiveData<Address> mLocationLiveData;
-    private MutableLiveData<Boolean> mSwitchLiveData;
+    private MutableLiveData<String> mSwitchLiveData;
 
     private final int LOCATION_REQUEST_CODE = 1;
     private final int REQUEST_CHECK_SETTINGS_CODE = 2;
@@ -92,7 +92,7 @@ public class LocationUtils extends BroadcastReceiver  {
         return mLocationLiveData;
     }
 
-    public MutableLiveData<Boolean> getmSwitchLiveData() {
+    public MutableLiveData<String> getSwitchLiveData() {
         if (mSwitchLiveData == null) {
             mSwitchLiveData = new MutableLiveData<>();
         }
@@ -240,7 +240,7 @@ public class LocationUtils extends BroadcastReceiver  {
                 startLocation();
                 Log.d(TAG, "onReceive: gps enabled");
                 if(mSwitchLiveData!=null) {
-                    mSwitchLiveData.setValue(true);
+                    mSwitchLiveData.setValue("On");
                 }
             } else if (!networkEnabled && gpsEnabled) {
                 Toast.makeText(context,context.getResources().getString(R.string.network_not_found), Toast.LENGTH_SHORT).show();
@@ -248,7 +248,7 @@ public class LocationUtils extends BroadcastReceiver  {
                 Log.d(TAG, "GPS is disabled");
                 Snackbar.make(mActivity.findViewById(android.R.id.content), "Location is Disabled", Snackbar.LENGTH_LONG).show();
                 if(mSwitchLiveData!=null) {
-                    mSwitchLiveData.setValue(false);
+                    mSwitchLiveData.setValue("Off");
                 }
             }
         }
