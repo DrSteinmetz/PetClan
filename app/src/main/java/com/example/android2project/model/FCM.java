@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.os.Build;
+import android.os.Parcelable;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -248,7 +249,7 @@ public class FCM extends FirebaseMessagingService {
         Post post = new Post(email, userName, photoPath, postContent);
         post.setPostId(postId);
 
-        activityIntent.putExtra("post", post);
+        activityIntent.putExtra("post", (Parcelable) post);
         PendingIntent activityPendingIntent = PendingIntent.getActivity(this,
                 1, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(activityPendingIntent);

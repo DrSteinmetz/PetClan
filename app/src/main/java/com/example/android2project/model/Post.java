@@ -1,5 +1,8 @@
 package com.example.android2project.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.firestore.GeoPoint;
 
 import java.io.Serializable;
@@ -7,13 +10,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Post implements Serializable, Comparable<Post> {
+public class Post implements Serializable, Comparable<Post>, Parcelable {
     private String mPostId;
     private String mAuthorEmail;
     private String mAuthorName;
     private String mAuthorImageUri;
     private String mAuthorToken;
     private Date mPostTime;
+    private String mPostImageUri;
     private String mAuthorContent;
     private int mCommentsCount = 0;
     private Map<String, Boolean> mLikesMap = new HashMap<>();
@@ -30,6 +34,35 @@ public class Post implements Serializable, Comparable<Post> {
         this.mAuthorImageUri = authorImageUri;
         this.mAuthorContent = authorContent;
         this.mPostTime = new Date();
+    }
+
+    public static final Creator<Post> CREATOR = new Creator<Post>() {
+        @Override
+        public Post createFromParcel(Parcel in) {
+            return new Post(in);
+        }
+
+        @Override
+        public Post[] newArray(int size) {
+            return new Post[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeDouble(mGeoPoint.getLatitude());
+        dest.writeDouble(mGeoPoint.getLongitude());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public Post(Parcel in){
+        double latitude = in.readDouble();
+        double longitude = in.readDouble();
+        this.mGeoPoint = new GeoPoint(latitude,longitude);
     }
 
     public String getPostId() {
@@ -88,6 +121,14 @@ public class Post implements Serializable, Comparable<Post> {
         this.mPostTime = postTime;
     }
 
+    public String getPostImageUri() {
+        return mPostImageUri;
+    }
+
+    public void setPostImageUri(String postImageUri) {
+        this.mPostImageUri = postImageUri;
+    }
+
     public int getCommentsCount() {
         return mCommentsCount;
     }
@@ -144,6 +185,20 @@ public class Post implements Serializable, Comparable<Post> {
                 ", mLocation='" + mLocation + '\'' +
                 ", mGeoPoint=" + mGeoPoint +
                 '}';
+    }
+
+    public String getStoragePath(String myEmail, String imageUri) {
+        String s1 = imageUri.split("\\.jpg\\?alt=media&token=")[0];
+        int i = 2;
+        char c = s1.charAt(s1.length() - 1);
+        StringBuilder id = new StringBuilder();
+        while (Character.isDigit(c)) {
+            id.append(c);
+            c = s1.charAt(s1.length() - i++);
+        }
+        id = id.reverse();
+
+        return myEmail + "/posts/" + myEmail + id + ".jpg";
     }
 
     @Override

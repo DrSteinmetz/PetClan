@@ -9,8 +9,6 @@ public class User implements Comparable<User>, Serializable {
     private String mFirstName;
     private String mLastName;
     private String mPhotoUri;
-    private boolean mIsBusiness = false;
-    private String mBusinessName = null;
     private GeoPoint mGeoPoint;
     private String mToken;
 
@@ -56,22 +54,6 @@ public class User implements Comparable<User>, Serializable {
         this.mPhotoUri = photoUri;
     }
 
-    public boolean isBusiness() {
-        return mIsBusiness;
-    }
-
-    public void setBusiness(boolean business) {
-        mIsBusiness = business;
-    }
-
-    public String getBusinessName() {
-        return mBusinessName;
-    }
-
-    public void setBusinessName(String businessName) {
-        this.mBusinessName = businessName;
-    }
-
     public String getToken() {
         return mToken;
     }
@@ -107,9 +89,6 @@ public class User implements Comparable<User>, Serializable {
                 ", mFirstName='" + mFirstName + '\'' +
                 ", mLastName='" + mLastName + '\'' +
                 ", mPhotoUri='" + mPhotoUri + '\'' +
-                ", mIsBusiness=" + mIsBusiness +
-                ", mBusinessName='" + mBusinessName + '\'' +
-
                 ", mToken='" + mToken + '\'' +
                 '}';
     }

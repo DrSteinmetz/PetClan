@@ -524,9 +524,11 @@ public class Repository {
         if (user != null) {
             final String postId = updatedPost.getPostId();
             final String updatedPostContent = updatedPost.getAuthorContent();
+            final String updatesPostImage = updatedPost.getPostImageUri();
 
             Map<String, Object> updatePostMap = new HashMap<>();
             updatePostMap.put("authorContent", updatedPostContent);
+            updatePostMap.put("postImageUri",updatesPostImage);
 
             mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
                     .collection(POSTS)

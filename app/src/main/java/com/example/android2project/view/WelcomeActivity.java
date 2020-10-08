@@ -167,11 +167,17 @@ public class WelcomeActivity extends AppCompatActivity implements
 
     @Override
     public void onFinish() {
-        startMainActivity();
+        startIntroActivity();
     }
 
     private void startMainActivity() {
         Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void startIntroActivity(){
+        Intent intent = new Intent(WelcomeActivity.this, IntroActivity.class);
         startActivity(intent);
         finish();
     }

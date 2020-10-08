@@ -7,6 +7,7 @@ public enum ViewModelEnum {
     Picture,
     Main,
     Feed,
+    Post,
     Comments,
     UserProfile,
     Social,
