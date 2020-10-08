@@ -60,8 +60,11 @@ dependencies {
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.github.denzcoskun:ImageSlideshow:0.0.7'
     implementation 'com.airbnb.android:lottie:3.4.2'
+    implementation 'com.github.stfalcon:stfalcon-imageviewer:1.0.0'
 
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+
+    implementation 'io.github.dreierf:material-intro-screen:0.0.6'
 
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     testImplementation 'junit:junit:4.13'

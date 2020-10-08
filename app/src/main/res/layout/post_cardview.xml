@@ -108,11 +108,20 @@
 
         </RelativeLayout>
 
+        <ImageView
+            android:id="@+id/post_pic_iv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/post_content_layout"
+            android:visibility="gone"
+            android:layout_marginTop="10dp" />
+
         <RelativeLayout
             android:id="@+id/likes_comments_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/post_content_layout">
+            android:layout_marginTop="5dp"
+            android:layout_below="@id/post_pic_iv">
 
             <ImageView
                 android:id="@+id/like_amount_iv"

@@ -77,52 +77,11 @@
                 android:textCursorDrawable="@color/colorPrimary" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <RelativeLayout
-            android:id="@+id/business_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/last_name_layout">
-
-            <CheckBox
-                android:id="@+id/is_business_cb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="30dp"
-                android:text="Are you a business?"
-                android:textSize="20sp"
-                android:textColor="@color/colorPrimary"
-                android:textAllCaps="false" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/business_name_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/is_business_cb"
-                android:layout_marginVertical="5dp"
-                android:layout_marginHorizontal="30dp"
-                app:errorEnabled="true"
-                android:visibility="gone">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/business_name_et"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:hint="Business Name"
-                    android:textSize="20sp"
-                    android:textColor="@color/colorPrimary"
-                    android:textAllCaps="false"
-                    android:inputType="text"
-                    android:textCursorDrawable="@color/colorPrimary" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-        </RelativeLayout>
-
-
         <Button
             android:id="@+id/next_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/business_layout"
+            android:layout_below="@id/last_name_layout"
             android:layout_marginTop="50dp"
             android:layout_marginBottom="30dp"
             android:layout_marginHorizontal="30dp"

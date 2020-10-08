@@ -3,6 +3,7 @@ package com.example.android2project.viewmodel;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Address;
+import android.net.Uri;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -12,6 +13,7 @@ import com.example.android2project.model.NotificationUtils;
 import com.example.android2project.model.Post;
 import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.repository.Repository;
+import com.example.android2project.repository.StorageRepository;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,6 +27,7 @@ public class FeedViewModel extends ViewModel {
     private Context mContext;
     private Repository mRepository;
     private AuthRepository mAuthRepository;
+    private StorageRepository mStorageRepository;
     protected String mUserEmail = null;
     private boolean mIsLike;
 
@@ -49,12 +52,15 @@ public class FeedViewModel extends ViewModel {
     private MutableLiveData<Integer> mPostDeletionSucceed;
     private MutableLiveData<String> mPostDeletionFailed;
 
+    private final String PATH = "posts";
+
     private final String TAG = "FeedViewModel";
 
     public FeedViewModel(final Context context) {
         this.mContext = context;
         this.mRepository = Repository.getInstance(context);
         this.mAuthRepository = AuthRepository.getInstance(context);
+        this.mStorageRepository = StorageRepository.getInstance(context);
     }
 
     public MutableLiveData<List<Post>> getPostDownloadSucceed() {
@@ -197,6 +203,9 @@ public class FeedViewModel extends ViewModel {
                 if (!mPosts.isEmpty()) {
                     mPosts.get(mPosition).setAuthorContent(updatedPost.getAuthorContent());
                     mPosts.get(mPosition).setCommentsCount(updatedPost.getCommentsCount());
+                    if(mPosts.get(mPosition).getPostImageUri()!=null){
+                        mPosts.get(mPosition).setPostImageUri(updatedPost.getPostImageUri());
+                    }
                     mPostUpdateSucceed.setValue(mPosition);
                 }
             }
@@ -322,7 +331,12 @@ public class FeedViewModel extends ViewModel {
 
     public void deletePost(String postId, final int position) {
         mPosition = position;
+        Post postToDelete = mPosts.get(mPosition);
         mRepository.deletePost(postId);
+        if(postToDelete.getPostImageUri()!=null) {
+            String pathToDelete = postToDelete.getStoragePath(postToDelete.getAuthorEmail(),postToDelete.getPostImageUri());
+            mStorageRepository.deletePhotoFromStorage(pathToDelete);
+        }
     }
 
     public void updateUserLocation(Address address) {
