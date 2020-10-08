@@ -10,9 +10,7 @@
   <androidx.cardview.widget.CardView
       android:id="@+id/search_view_card"
       app:cardElevation="5dp"
-      android:padding="100dp"
       app:cardBackgroundColor="@color/colorPrimary"
-      app:cardUseCompatPadding="true"
       android:layout_width="match_parent"
       app:cardCornerRadius="5dp"
       android:layout_height="wrap_content">
