@@ -16,7 +16,6 @@
         android:backgroundTint="@color/colorAccent"
         android:maxWidth="240dp"
         android:padding="8dp"
-        android:text="hi man, how are you?"
         android:textColor="#ffffff"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -28,7 +27,6 @@
         android:layout_marginStart="4dp"
         android:paddingTop="11dp"
         app:layout_goneMarginStart="10dp"
-        android:text="11:40 | 25.09"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="@+id/message_body_tv"
         app:layout_constraintStart_toStartOf="@+id/message_body_tv"

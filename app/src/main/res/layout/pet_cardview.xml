@@ -26,7 +26,7 @@
             android:layout_below="@id/images_slider"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:text="Name"
+            android:text="@string/Name"
             android:textColor="@color/colorBlack"
             android:textSize="30sp" />
 
@@ -34,7 +34,7 @@
             android:id="@+id/pet_description_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Description"
+            android:text="@string/Description"
             android:textSize="25sp"
             android:textColor="@color/colorBlack"
             android:layout_centerHorizontal="true"

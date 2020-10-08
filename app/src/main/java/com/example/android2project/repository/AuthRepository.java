@@ -184,7 +184,7 @@ public class AuthRepository {
 
                     @Override
                     public void onCancel() {
-                        Toast.makeText(context, "Login Canceled",
+                        Toast.makeText(context, context.getResources().getString(R.string.login_cancel),
                                 Toast.LENGTH_LONG).show();
                     }
 

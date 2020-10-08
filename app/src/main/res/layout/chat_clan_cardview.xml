@@ -32,7 +32,7 @@
             android:layout_toEndOf="@id/friend_pic_iv"
             android:layout_marginStart="10dp"
             android:layout_centerVertical="true"
-            android:text="Friend Name"
+            android:text="@string/Friend_Name"
             android:textAllCaps="false"
             android:textColor="@color/colorBlack"
             android:textSize="15sp"

@@ -384,29 +384,29 @@ public class AdvertisementFragment extends DialogFragment {
 
                 if (isPet) {
                     if (genderRg.getCheckedRadioButtonId() == -1) {
-                        Toast.makeText(getContext(), "Please select gender", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), getContext().getResources().getString(R.string.select_gender), Toast.LENGTH_SHORT).show();
                     }
                     if (kind.isEmpty()) {
-                        kindEt.setError("Please enter kind");
+                        kindEt.setError(getContext().getString(R.string.enter_kind));
                     } else {
                         kindEt.setError(null);
                     }
                 }
 
                 if (!mCityNames.contains(cityName)) {
-                    locationAutoCompleteTv.setError("Please Enter a City from the list");
+                    locationAutoCompleteTv.setError(getContext().getString(R.string.city_location));
                 } else {
                     locationAutoCompleteTv.setError(null);
                 }
 
                 if (price.isEmpty()) {
-                    priceEt.setError("Please enter price");
+                    priceEt.setError(getContext().getString(R.string.price));
                 } else {
                     priceEt.setError(null);
                 }
 
                 if (description.isEmpty()) {
-                    descriptionEt.setError("Please enter description");
+                    descriptionEt.setError(getContext().getString(R.string.description));
                 } else {
                     descriptionEt.setError(null);
                 }
