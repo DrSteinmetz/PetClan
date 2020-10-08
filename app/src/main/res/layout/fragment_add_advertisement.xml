@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:scrollbarAlwaysDrawVerticalTrack="true">
 
-
     <RelativeLayout
         android:id="@+id/add_ad_container"
         android:layout_width="match_parent"
@@ -19,7 +18,10 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:text="@string/Add_An_Ad"
-            android:textSize="30sp" />
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            android:textAllCaps="false" />
 
         <LinearLayout
             android:id="@+id/action_layout"
@@ -37,7 +39,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/Choose_Action"
-                android:textColor="@color/colorBlack" />
+                android:textSize="15sp"
+                android:textColor="@color/colorBlack"
+                android:textAllCaps="false" />
 
             <RadioGroup
                 android:id="@+id/action_rg"
@@ -94,7 +98,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/Choose_Category"
-                android:textColor="@color/colorBlack" />
+                android:textSize="15sp"
+                android:textColor="@color/colorBlack"
+                android:textAllCaps="false" />
 
             <RadioGroup
                 android:id="@+id/category_rg"
@@ -151,7 +157,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/Gender"
-                android:textColor="@color/colorBlack" />
+                android:textSize="15sp"
+                android:textColor="@color/colorBlack"
+                android:textAllCaps="false" />
 
             <RadioGroup
                 android:id="@+id/gender_rg"
@@ -191,47 +199,41 @@
 
         </LinearLayout>
 
-        <Spinner
-            android:id="@+id/type_spinner"
-            android:layout_width="200dp"
+        <LinearLayout
+            android:id="@+id/spinner_layout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/gender_layout"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/spinner_bg"
-            android:paddingHorizontal="20dp"
-            android:visibility="gone" />
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="gone">
 
-        <!--        <com.google.android.material.textfield.TextInputLayout-->
-        <!--            android:id="@+id/item_name_et_layout"-->
-        <!--            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
-        <!--            android:layout_width="100dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_below="@id/gender_layout"-->
-        <!--            android:layout_marginHorizontal="20dp"-->
-        <!--            android:layout_marginTop="5dp"-->
-        <!--            android:hint="Type"-->
-        <!--            android:visibility="gone"-->
-        <!--            android:textColorHint="@color/colorPrimaryDark">-->
+            <TextView
+                android:id="@+id/spinner_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choose Category:"
+                android:textSize="15sp"
+                android:textColor="@color/colorBlack"
+                android:textAllCaps="false" />
 
-        <!--            <com.google.android.material.textfield.TextInputEditText-->
-        <!--                android:id="@+id/item_name_et"-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:inputType="text"-->
-        <!--                android:maxLines="1"-->
-        <!--                android:textColor="@color/colorPrimaryDark"-->
-        <!--                android:textCursorDrawable="@null"-->
-        <!--                android:textSize="18sp" />-->
+            <Spinner
+                android:id="@+id/type_spinner"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/spinner_bg"
+                android:paddingHorizontal="20dp"
+                android:layout_marginVertical="10dp" />
 
-        <!--        </com.google.android.material.textfield.TextInputLayout>-->
-
+        </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/pet_kind_et_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/type_spinner"
+            android:layout_below="@id/spinner_layout"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="5dp"
             android:hint="Kind"
@@ -251,22 +253,22 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-
         <LinearLayout
             android:id="@+id/location_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/pet_kind_et_layout"
-            android:visibility="gone"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_centerHorizontal="true"
+            android:layout_marginHorizontal="10dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginVertical="10dp"
+                android:layout_gravity="center_vertical"
                 android:hint="Location"
                 android:textColorHint="@color/colorPrimaryDark"
                 app:endIconMode="clear_text"
@@ -283,6 +285,8 @@
                 android:id="@+id/locate_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="10dp"
                 android:text="@string/locate_me"
                 android:textAllCaps="true" />
 
@@ -345,21 +349,14 @@
             android:layout_below="@id/pet_description_et_layout"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp">
-
             <ImageButton
-                android:id="@+id/camera_btn"
+                android:id="@+id/add_image_btn"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:src="@drawable/ic_round_add_photo_camera_50"
+                android:src="@drawable/ic_add_image"
+                android:scaleType="fitCenter"
+                android:background="@null"
                 android:visibility="gone" />
-
-            <ImageButton
-                android:id="@+id/gallery_btn"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@drawable/ic_round_add_photo_gallery_50"
-                android:visibility="gone" />
-
         </LinearLayout>
 
         <com.example.android2project.model.PhotosPreviewRecyclerview
@@ -368,11 +365,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/photos_btns"
             android:orientation="horizontal"
-            android:visibility="gone">
-
-
-        </com.example.android2project.model.PhotosPreviewRecyclerview>
-
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/publish_btn"

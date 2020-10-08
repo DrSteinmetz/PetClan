@@ -14,7 +14,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/menu"
-        android:tag="menu">
+        android:tag="menu"
+        app:background="@color/colorPrimary">
         <!--app:header="@layout/drawer_header"-->
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -79,7 +80,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorWhite">
-
 
             <com.google.android.material.appbar.AppBarLayout
 

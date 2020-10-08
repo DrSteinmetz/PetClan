@@ -1,12 +1,9 @@
 package com.example.android2project.view.fragments;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
-import android.location.GpsStatus;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,8 +31,6 @@ import com.example.android2project.view.MainActivity;
 import com.example.android2project.viewmodel.SettingsViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.Objects;
-
 public class SettingsFragment extends PreferenceFragmentCompat
         implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -61,7 +56,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
     private String mLocationMode=null;
 
     private SwitchPreferenceCompat GPSwitch;
-
 
     private final String TAG = "SettingsFragment";
 
@@ -248,6 +242,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     });
 
 
+
                     Log.d(TAG, "onSharedPreferenceChanged:"+mLocationMode);
 //                    if(mLocationMode!=null && mLocationMode.equals("Off")){
 //                        GPSwitch.setChecked(false);
@@ -259,6 +254,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
 //                        GPSwitch.setChecked(true);
 //                        mLocationUtils.requestLocationPermissions();
 //                    }
+
 
 
                     if (GPSwitch.isChecked() && !mLocationUtils.isLocationEnabled()) {
@@ -287,9 +283,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     else if(!GPSwitch.isChecked()){
                         mLocationUtils.turnGPSOff();
                     }
-
-
-
                 }
                 break;
             case "distance_sb":
