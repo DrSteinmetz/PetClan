@@ -1,7 +1,6 @@
 package com.example.android2project.model;
 
 import android.annotation.SuppressLint;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,8 +30,7 @@ public class MenuAdapter extends BaseAdapter {
         return mOptions.get(position);
     }
 
-    void setViewSelected(int position, boolean selected) {
-
+    public void setViewSelected(int position, boolean selected) {
         // Looping through the options in the menu
         // Selecting the chosen option
         for (int i = 0; i < mOptionViews.size(); i++) {
@@ -66,22 +64,28 @@ public class MenuAdapter extends BaseAdapter {
         Drawable drawable = null;
         switch (option) {
             case "Feed":
-                 drawable = parent.getResources().getDrawable(R.drawable.ic_petclan_logo_24, null);
+                 drawable = parent.getResources()
+                         .getDrawable(R.drawable.ic_petclan_logo_24, null);
                 break;
             case "Chats":
-                drawable = parent.getResources().getDrawable(R.drawable.ic_chat_24, null);
+                drawable = parent.getResources()
+                        .getDrawable(R.drawable.ic_chat_24, null);
                 break;
             case "MarketPlace":
-                drawable = parent.getResources().getDrawable(R.drawable.ic_marketplace_24, null);
+                drawable = parent.getResources()
+                        .getDrawable(R.drawable.ic_marketplace_24, null);
                 break;
             case "Profile":
-                drawable = parent.getResources().getDrawable(R.drawable.ic_default_user_pic_24, null);
+                drawable = parent.getResources()
+                        .getDrawable(R.drawable.ic_default_user_pic_24, null);
                 break;
             case "Settings":
-                drawable = parent.getResources().getDrawable(R.drawable.ic_round_settings_24, null);
+                drawable = parent.getResources().
+                        getDrawable(R.drawable.ic_round_settings_24, null);
                 break;
         }
-        optionView.bind(option, drawable, null);
+        optionView.bind(option, drawable,
+                parent.getResources().getDrawable(R.color.colorWhite, null));
 
         // Adding the views to an array list to handle view selection
         mOptionViews.add(optionView);

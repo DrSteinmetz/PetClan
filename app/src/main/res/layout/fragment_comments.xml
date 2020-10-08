@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="Write the First Comment!"
+        android:text="@string/Write_the_First_Comment"
         android:textSize="50sp"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold"
@@ -50,9 +50,10 @@
 
         <ImageButton
             android:id="@+id/send_comment_ib"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
             android:src="@drawable/ic_send_comment_btn"
             android:background="?attr/selectableItemBackground"

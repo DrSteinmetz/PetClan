@@ -1,12 +1,9 @@
 package com.example.android2project.view.fragments;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
-import android.location.GpsStatus;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,8 +31,6 @@ import com.example.android2project.view.MainActivity;
 import com.example.android2project.viewmodel.SettingsViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.Objects;
-
 public class SettingsFragment extends PreferenceFragmentCompat
         implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -52,15 +47,15 @@ public class SettingsFragment extends PreferenceFragmentCompat
     private Observer<String> mOnUpdatePasswordFailed;
 
     private Observer<Address> mOnLocationChanged;
-    private Observer<Boolean> mOnLocationTriggred;
+    private Observer<String> mOnLocationTriggred;
 
     private Address mUserLocation;
     private Preference locationPref;
 
-    private boolean mIsLocationDialogClicked=false,mIsfromComponent=false;
+    private boolean mIsLocationDialogClicked=false;
+    private String mLocationMode=null;
 
     private SwitchPreferenceCompat GPSwitch;
-
 
     private final String TAG = "SettingsFragment";
 
@@ -166,6 +161,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
         }
 
+
         getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -184,25 +180,31 @@ public class SettingsFragment extends PreferenceFragmentCompat
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mOnLocationTriggred=new Observer<Boolean>() {
+        mOnLocationTriggred=new Observer<String>() {
             @Override
-            public void onChanged(Boolean aBoolean) {
-                GPSwitch.setChecked(aBoolean);
-                if(!aBoolean){
-                    mIsLocationDialogClicked=false;
+            public void onChanged(String value) {
+                mLocationMode=value;
+//                GPSwitch.setChecked(aBoolean);
+//                if(!aBoolean){
+//                    mIsLocationDialogClicked=false;
+//                }
+                if(mLocationMode.equals("On")) {
+                    GPSwitch.setChecked(true);
+                }
+                else{
+                    GPSwitch.setChecked(false);
                 }
                 Log.d(TAG, "onChanged: xpk");
             }
         };
-        mLocationUtils.getmSwitchLiveData().observe(getViewLifecycleOwner(),mOnLocationTriggred);
+        mLocationUtils.getSwitchLiveData().observe(getViewLifecycleOwner(),mOnLocationTriggred);
 
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        //Log.d(TAG, "onSharedPreferenceChanged: " + sharedPreferences.getString(key, ""));
         Preference pref = findPreference(key);
-
+        Log.d(TAG, "onSharedPreferenceChanged: "+key);
 
         switch (key) {
             case "username_et":
@@ -227,7 +229,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 break;
             case "gps_switch":
                 if (pref instanceof SwitchPreferenceCompat) {
-                    final SwitchPreferenceCompat GPSwitch = (SwitchPreferenceCompat) pref;
+//                    final SwitchPreferenceCompat GPSwitch = (SwitchPreferenceCompat) pref;
 
                     ((MainActivity) requireActivity()).setLocationBuilderDeniedInterface(new MainActivity.LocationBuilderDeniedInterface() {
                         @Override
@@ -236,10 +238,22 @@ public class SettingsFragment extends PreferenceFragmentCompat
                             GPSwitch.setChecked(!isDenied);
 //                            GPSwitch.setChecked(false);
                             //if dialog was clicked with no thanks
-                            Log.d(TAG, "onLocationDenied:"+mIsLocationDialogClicked);
                         }
                     });
 
+
+
+                    Log.d(TAG, "onSharedPreferenceChanged:"+mLocationMode);
+//                    if(mLocationMode!=null && mLocationMode.equals("Off")){
+//                        GPSwitch.setChecked(false);
+//                    }
+//                    else if(mLocationMode!=null&&mLocationMode.equals("On")){
+//                        GPSwitch.setChecked(true);
+//                    }
+//                    else if(mLocationMode!=null && mLocationMode.equals("On")){
+//                        GPSwitch.setChecked(true);
+//                        mLocationUtils.requestLocationPermissions();
+//                    }
 
 
 
@@ -249,6 +263,10 @@ public class SettingsFragment extends PreferenceFragmentCompat
                         mLocationUtils.requestLocationPermissions();
 
                     }
+                    else if(mLocationMode!=null && mLocationMode.equals("Off")){
+                        GPSwitch.setChecked(false);
+                    }
+
                     else if (mIsLocationDialogClicked) {
                         Log.d(TAG, "onSharedPreferenceChanged: xpk");
                         if (GPSwitch.isChecked()) {//if was manually not with dialog
@@ -258,12 +276,13 @@ public class SettingsFragment extends PreferenceFragmentCompat
 //                            mIsLocationDialogClicked=false;
                         }
                     }
+
+//                    else if(mLocationMode!=null &&mLocationMode.equals("On")){
+//                        mLocationUtils.turnGPSOff();
+//                    }
                     else if(!GPSwitch.isChecked()){
                         mLocationUtils.turnGPSOff();
                     }
-
-
-
                 }
                 break;
             case "distance_sb":

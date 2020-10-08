@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:layout_centerHorizontal="true"
-            android:text="About You"
+            android:text="@string/About_You"
             android:textSize="20sp"
             android:textColor="@color/colorPrimary"
             android:textAllCaps="false" />
@@ -29,7 +29,7 @@
             android:layout_centerHorizontal="true"
             android:layout_margin="50dp"
             android:gravity="center"
-            android:text="Welcome!\nWho are you?"
+            android:text="@string/Who_are_you"
             android:textSize="30sp"
             android:textColor="@color/colorPrimary"
             android:textAllCaps="false" />
@@ -86,7 +86,7 @@
             android:layout_marginBottom="30dp"
             android:layout_marginHorizontal="30dp"
             style="@style/Widget.MaterialComponents.Button"
-            android:text="Next"
+            android:text="@string/Next"
             android:textSize="20sp"
             android:textAllCaps="false" />
 

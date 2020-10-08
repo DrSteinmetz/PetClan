@@ -11,6 +11,8 @@ import com.example.android2project.repository.AuthRepository;
 
 import com.example.android2project.repository.Repository;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class SocialViewModel extends ViewModel {
@@ -35,6 +37,7 @@ public class SocialViewModel extends ViewModel {
         mRepository.setDownloadAllUsersListener(new Repository.RepositoryDownloadAllUsersInterface() {
             @Override
             public void onDownloadAllUsersSucceed(List<User> users) {
+                Collections.sort(users);
                 mUsersList.setValue(users);
             }
 

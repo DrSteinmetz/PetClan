@@ -17,7 +17,7 @@
             android:layout_centerHorizontal="true"
             android:layout_margin="50dp"
             android:gravity="center"
-            android:text="Welcome!"
+            android:text="@string/Welcome"
             android:textSize="30sp"
             android:textColor="@color/colorPrimary"
             android:textAllCaps="false" />
@@ -72,7 +72,7 @@
             android:layout_marginTop="30dp"
             android:layout_marginBottom="20dp"
             android:gravity="center"
-            android:text="Or sign in with"
+            android:text="@string/Or_sign_in_with"
             android:textSize="20sp"
             android:textColor="@color/colorPrimary"
             android:textAllCaps="false" />
@@ -110,7 +110,7 @@
             android:layout_marginBottom="30dp"
             android:layout_marginHorizontal="30dp"
             style="@style/Widget.MaterialComponents.Button"
-            android:text="Sign In"
+            android:text="@string/Sign_In"
             android:textSize="20sp"
             android:textAllCaps="false" />
 

@@ -75,6 +75,7 @@ public class AdvertisementFragment extends DialogFragment {
     private RadioGroup actionRg;
     private RadioGroup categoryRg;
     private RadioGroup genderRg;
+    private LinearLayout spinnerLayout;
     private Spinner typeSp;
     private TextInputEditText kindEt;
     private TextInputEditText priceEt;
@@ -209,6 +210,7 @@ public class AdvertisementFragment extends DialogFragment {
         actionRg = rootView.findViewById(R.id.action_rg);
         categoryRg = rootView.findViewById(R.id.category_rg);
         genderRg = rootView.findViewById(R.id.gender_rg);
+        spinnerLayout = rootView.findViewById(R.id.spinner_layout);
         typeSp = rootView.findViewById(R.id.type_spinner);
         kindLayout = rootView.findViewById(R.id.pet_kind_et_layout);
         locationLayout = rootView.findViewById(R.id.location_layout);
@@ -246,7 +248,7 @@ public class AdvertisementFragment extends DialogFragment {
                     if (checkedId == R.id.pet_rb) {
                         genderLayout.setVisibility(View.VISIBLE);
                         kindLayout.setVisibility(View.VISIBLE);
-                        typeSp.setVisibility(View.VISIBLE);
+                        spinnerLayout.setVisibility(View.VISIBLE);
                         List<String> list = Arrays.asList(getResources().getStringArray(R.array.pet_types));
                         ArrayAdapter<String> petTypes = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, list);
                         typeSp.setAdapter(petTypes);
@@ -258,12 +260,12 @@ public class AdvertisementFragment extends DialogFragment {
                         if (kindLayout.getVisibility() == View.VISIBLE) {
                             kindLayout.setVisibility(View.GONE);
                         }
-                        typeSp.setVisibility(View.VISIBLE);
+                        spinnerLayout.setVisibility(View.VISIBLE);
                         List<String> list = Arrays.asList(getResources().getStringArray(R.array.product_types));
                         ArrayAdapter<String> productTypes = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, list);
                         typeSp.setAdapter(productTypes);
                     }
-                    typeSp.setVisibility(View.VISIBLE);
+                    spinnerLayout.setVisibility(View.VISIBLE);
                     priceLayout.setVisibility(View.VISIBLE);
                     locationLayout.setVisibility(View.VISIBLE);
                     descriptionLayout.setVisibility(View.VISIBLE);
@@ -280,7 +282,7 @@ public class AdvertisementFragment extends DialogFragment {
             mImagePreviewRecycler.setVisibility(View.VISIBLE);
             addImageBtn.setVisibility(View.VISIBLE);
             publishBtn.setVisibility(View.VISIBLE);
-            typeSp.setVisibility(View.VISIBLE);
+            spinnerLayout.setVisibility(View.VISIBLE);
 
             final int[] position = new int[1];
             categoryRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -305,7 +307,7 @@ public class AdvertisementFragment extends DialogFragment {
                         position[0] = list.indexOf(mAdvertisement.getItemName());
                         typeSp.setAdapter(products);
                     }
-                    typeSp.setVisibility(View.VISIBLE);
+                    spinnerLayout.setVisibility(View.VISIBLE);
                 }
             });
 
@@ -382,29 +384,29 @@ public class AdvertisementFragment extends DialogFragment {
 
                 if (isPet) {
                     if (genderRg.getCheckedRadioButtonId() == -1) {
-                        Toast.makeText(getContext(), "Please select gender", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), getContext().getResources().getString(R.string.select_gender), Toast.LENGTH_SHORT).show();
                     }
                     if (kind.isEmpty()) {
-                        kindEt.setError("Please enter kind");
+                        kindEt.setError(getContext().getString(R.string.enter_kind));
                     } else {
                         kindEt.setError(null);
                     }
                 }
 
                 if (!mCityNames.contains(cityName)) {
-                    locationAutoCompleteTv.setError("Please Enter a City from the list");
+                    locationAutoCompleteTv.setError(getContext().getString(R.string.city_location));
                 } else {
                     locationAutoCompleteTv.setError(null);
                 }
 
                 if (price.isEmpty()) {
-                    priceEt.setError("Please enter price");
+                    priceEt.setError(getContext().getString(R.string.price));
                 } else {
                     priceEt.setError(null);
                 }
 
                 if (description.isEmpty()) {
-                    descriptionEt.setError("Please enter description");
+                    descriptionEt.setError(getContext().getString(R.string.description));
                 } else {
                     descriptionEt.setError(null);
                 }

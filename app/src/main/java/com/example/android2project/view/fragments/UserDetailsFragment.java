@@ -102,12 +102,12 @@ public class UserDetailsFragment extends Fragment {
                         mViewModel.onUserDetailsInsertion(firstName, lastName);
                     } else {
                         if (firstName.length() < 1) {
-                            firstNameEt.setError("You must enter your first name!");
+                            firstNameEt.setError(getContext().getString(R.string.enter_first_name));
                         } else {
                             firstNameEt.setError(null);
                         }
                         if (lastName.length() < 1) {
-                            lastNameEt.setError("You must enter your last name!");
+                            lastNameEt.setError(getContext().getString(R.string.enter_last_name));
                         } else {
                             lastNameEt.setError(null);
                         }
@@ -115,7 +115,7 @@ public class UserDetailsFragment extends Fragment {
                 }
             }
         });
-
+      
         return rootView;
     }
 

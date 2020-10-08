@@ -5,17 +5,13 @@
     android:layout_height="match_parent"
     tools:context=".view.fragments.LoginRegistrationFragment">
 
-    <TextView
-        android:id="@+id/app_logo_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:padding="10dp"
-        android:text="@string/app_name"
-        android:textSize="20sp"
-        android:textColor="@color/colorPrimary"
-        android:textStyle="bold"
-        android:textAllCaps="false" />
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="28dp"
+        android:src="@drawable/ic_petclan_text_logo"
+        android:background="@null" />
 
     <Button
         android:id="@+id/sign_in_btn"
@@ -23,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:layout_alignParentEnd="true"
-        android:text="Sign In"
+        android:text="@string/Sign_In"
         android:textSize="20sp"
         android:textColor="@color/colorPrimary"
         style="@style/Widget.MaterialComponents.Button.TextButton" />
@@ -36,7 +32,7 @@
         android:layout_marginHorizontal="30dp"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:text="You're about to start your adventure..."
+        android:text="@string/about_to_start"
         android:textSize="30sp"
         android:textColor="@color/colorPrimaryDark"
         android:textStyle="bold"
@@ -63,7 +59,7 @@
         android:layout_marginHorizontal="30dp"
         android:layout_marginBottom="50dp"
         style="@style/Widget.MaterialComponents.Button"
-        android:text="Join Our Clan"
+        android:text="@string/Join_Our_Clan"
         android:textSize="20sp"
         android:textAllCaps="false" />
 

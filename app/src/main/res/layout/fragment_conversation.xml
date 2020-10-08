@@ -29,7 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="username"
+                android:text="@string/Username"
                 android:textSize="15sp"
                 android:textColor="@color/colorBlack"
                 android:textAllCaps="false" />
@@ -54,7 +54,7 @@
             android:id="@+id/scroll_down_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Unread Messages"
+            android:text="@string/Unread_Messages"
             android:layout_centerHorizontal="true"
             android:layout_alignBottom="@id/line_divider"
             android:layout_marginBottom="10dp"
@@ -64,7 +64,7 @@
         <View
             android:id="@+id/line_divider"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="0dp"
             android:background="@color/colorAccent"
             android:layout_above="@id/layout_chatbox"
             android:layout_marginBottom="2dp"/>
@@ -73,7 +73,7 @@
             android:id="@+id/layout_chatbox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/browser_actions_bg_grey"
+            android:background="@android:color/transparent"
             android:minHeight="48dp"
             android:orientation="horizontal"
             android:layout_alignParentBottom="true">
@@ -83,24 +83,23 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginHorizontal="15dp"
                 android:layout_weight="1"
-                android:background="@android:color/transparent"
+                android:maxLines="6"
                 android:hint="Enter message"
-                android:maxLines="6" />
+                android:padding="10dp"
+                android:background="@drawable/chat_et_shape" />
 
             <ImageButton
                 android:id="@+id/send_btn"
                 android:layout_width="64dp"
                 android:layout_height="48dp"
-                android:layout_gravity="bottom"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="-15dp"
                 android:padding="5dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_send_comment_btn"
+                android:background="?attr/selectableItemBackground"
                 android:visibility="gone" />
 
         </LinearLayout>
@@ -108,4 +107,3 @@
     </RelativeLayout>
 
 </RelativeLayout>
-

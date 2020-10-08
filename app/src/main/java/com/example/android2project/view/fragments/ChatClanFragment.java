@@ -1,9 +1,13 @@
 package com.example.android2project.view.fragments;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +23,7 @@ import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.viewmodel.ChatClanViewModel;
 import com.example.android2project.model.ViewModelFactory;
+import com.google.android.material.textfield.TextInputEditText;
 
 
 import java.util.ArrayList;
@@ -30,12 +35,13 @@ public class ChatClanFragment extends Fragment {
     private RecyclerView mRecyclerview;
     private ChatClanAdapter mAdapter;
 
-
+    private final String TAG = "ChatClanFragment";
 
 
     private Observer<List<User>> usersObserver;
 
-    public ChatClanFragment() {}
+    public ChatClanFragment() {
+    }
 
     public static ChatClanFragment newInstance() {
         return new ChatClanFragment();
@@ -54,7 +60,7 @@ public class ChatClanFragment extends Fragment {
         usersObserver = new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
-                mAdapter = new ChatClanAdapter(getContext(),users);
+                mAdapter = new ChatClanAdapter(getContext(), users);
                 mRecyclerview.setAdapter(mAdapter);
 
                 mAdapter.setFriendItemListener(new ChatClanAdapter.FriendItemListener() {
@@ -73,7 +79,7 @@ public class ChatClanFragment extends Fragment {
 
         mViewModel.getUsersLiveData().observe(this, usersObserver);
 
-        mViewModel.getUsersLiveData().observe(this,usersObserver);
+        mViewModel.getUsersLiveData().observe(this, usersObserver);
 
     }
 
@@ -84,10 +90,24 @@ public class ChatClanFragment extends Fragment {
         mRecyclerview = rootView.findViewById(R.id.chatclan_recyclerview);
         mRecyclerview.setHasFixedSize(true);
         mRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+        final SearchView searchView = rootView.findViewById(R.id.searchView);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                mAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+
 
         return rootView;
     }
-
 
 
     @Override
