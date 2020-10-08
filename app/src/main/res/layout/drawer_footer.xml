@@ -12,7 +12,7 @@
         android:text="Log Out"
         android:textSize="30sp"
         android:textColor="@color/colorWhite"
-        android:background="@drawable/rounded_shape"
+        android:background="@drawable/rounded_image_shape"
         android:textAllCaps="false" />
 
 </RelativeLayout>

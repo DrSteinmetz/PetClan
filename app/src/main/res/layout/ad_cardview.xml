@@ -19,7 +19,7 @@
             android:id="@+id/ad_image"
             android:layout_width="200dp"
             android:layout_height="150dp"
-            android:background="@drawable/rounded_shape"
+            android:background="@drawable/rounded_image_shape"
             android:scaleType="centerCrop"
             android:src="@mipmap/ic_launcher" />
         <com.google.android.material.floatingactionbutton.FloatingActionButton

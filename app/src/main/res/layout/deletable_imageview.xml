@@ -18,7 +18,7 @@
                 android:layout_height="80dp"
                 android:layout_margin="5dp"
                 android:scaleType="centerCrop"
-                android:background="@drawable/rounded_shape"
+                android:background="@drawable/rounded_image_shape"
                 android:src="@mipmap/ic_launcher_round" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton

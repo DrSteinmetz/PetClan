@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/author_pic_iv"
                 android:layout_marginEnd="10dp"
-                android:background="@drawable/rounded_shape">
+                android:background="@drawable/rounded_image_shape">
 
                 <TextView
                     android:id="@+id/author_name_tv"

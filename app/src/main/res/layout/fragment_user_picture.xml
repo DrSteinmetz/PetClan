@@ -39,7 +39,7 @@
             android:layout_height="100dp"
             android:layout_below="@id/title_2_tv"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/rounded_shape"
+            android:background="@drawable/rounded_image_shape"
             android:src="@drawable/ic_default_user_pic"
             android:scaleType="centerCrop" />
 
