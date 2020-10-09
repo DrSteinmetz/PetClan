@@ -12,7 +12,9 @@ import com.example.android2project.repository.Repository;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ChatsViewModel extends ViewModel {
     private static ChatsViewModel chatsViewModel;
@@ -102,13 +104,22 @@ public class ChatsViewModel extends ViewModel {
     private List<User> getRelevantUsers() {
         final String myEmail = mAuth.getUserEmail();
         final List<User> relevantUsers = new ArrayList<>();
+
+        Map<String, Object> usersMap = new HashMap<>();
+        for(User user:mAllUsers) {
+            usersMap.put(user.getEmail(),user);
+        }
+
         for (Conversation conversation : mConversations) {
-            for (User user : mAllUsers) {
-                if ((conversation.getRecipientEmail().equals(user.getEmail()) && !myEmail.equals(user.getEmail())) ||
-                        (conversation.getSenderEmail().equals(user.getEmail()) && !myEmail.equals(user.getEmail()))) {
-                    relevantUsers.add(user);
-                }
-            }
+        if(usersMap.containsKey(conversation.getRecipientEmail())&&!usersMap.containsKey(myEmail)){
+            relevantUsers.add((User) usersMap.get(conversation.getRecipientEmail()));
+        }
+//            for (User user : mAllUsers) {
+//                if ((conversation.getRecipientEmail().equals(user.getEmail()) && !myEmail.equals(user.getEmail())) ||
+//                        (conversation.getSenderEmail().equals(user.getEmail()) && !myEmail.equals(user.getEmail()))) {
+//                    relevantUsers.add(user);
+//                }
+
         }
 
         if (!this.mActiveUsers.isEmpty()) {
