@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.android2project.R;
 import com.example.android2project.model.Comment;
 import com.example.android2project.model.CommentsAdapter;
-import com.example.android2project.model.DeleteDialog;
+import com.example.android2project.view.DeleteDialog;
 import com.example.android2project.model.Post;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.viewmodel.CommentsViewModel;

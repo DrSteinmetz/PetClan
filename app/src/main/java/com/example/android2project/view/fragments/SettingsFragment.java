@@ -1,6 +1,7 @@
 package com.example.android2project.view.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Address;
@@ -27,7 +28,9 @@ import com.example.android2project.R;
 import com.example.android2project.model.LocationUtils;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.model.ViewModelFactory;
+import com.example.android2project.view.DeleteDialog;
 import com.example.android2project.view.MainActivity;
+import com.example.android2project.view.WelcomeActivity;
 import com.example.android2project.viewmodel.SettingsViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -46,14 +49,16 @@ public class SettingsFragment extends PreferenceFragmentCompat
     private Observer<String> mOnUpdatePasswordSucceed;
     private Observer<String> mOnUpdatePasswordFailed;
 
+    private Observer<String> mOnUserDeletionSucceed;
+
     private Observer<Address> mOnLocationChanged;
     private Observer<String> mOnLocationTriggred;
 
     private Address mUserLocation;
     private Preference locationPref;
 
-    private boolean mIsLocationDialogClicked=false;
-    private String mLocationMode=null;
+    private boolean mIsLocationDialogClicked = false;
+    private String mLocationMode = null;
 
     private SwitchPreferenceCompat GPSwitch;
 
@@ -113,6 +118,15 @@ public class SettingsFragment extends PreferenceFragmentCompat
             }
         };
 
+        mOnUserDeletionSucceed = new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                startActivity(new Intent(getActivity(), WelcomeActivity.class));
+                requireActivity().finish();
+                //SettingsFragment.this.onDestroy();
+            }
+        };
+
         mOnLocationChanged = new Observer<Address>() {
             @Override
             public void onChanged(Address address) {
@@ -160,6 +174,39 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
         }
 
+        Preference helpPref = findPreference("help_pref");
+        if (helpPref != null) {
+            //TODO: show help dialog
+        }
+
+        Preference accountDeletionPref = findPreference("account_deletion_pref");
+        if (accountDeletionPref != null) {
+            accountDeletionPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    final DeleteDialog deleteDialog = new DeleteDialog(requireContext());
+                    deleteDialog.setPromptText(getString(R.string.account_deletion_dialog));
+
+                    deleteDialog.setOnActionListener(new DeleteDialog.DeleteDialogActionListener() {
+                        @Override
+                        public void onYesBtnClicked() {
+                            mViewModel.deleteUser();
+                            deleteDialog.dismiss();
+                        }
+
+                        @Override
+                        public void onNoBtnClicked() {
+                            deleteDialog.dismiss();
+                        }
+                    });
+
+                    deleteDialog.show();
+
+                    return false;
+                }
+            });
+        }
+
         getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -178,31 +225,27 @@ public class SettingsFragment extends PreferenceFragmentCompat
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mOnLocationTriggred=new Observer<String>() {
+        mOnLocationTriggred = new Observer<String>() {
             @Override
             public void onChanged(String value) {
-                mLocationMode=value;
-//                GPSwitch.setChecked(aBoolean);
-//                if(!aBoolean){
-//                    mIsLocationDialogClicked=false;
-//                }
-                if(mLocationMode.equals("On")) {
+                mLocationMode = value;
+
+                if (mLocationMode.equals("On")) {
                     GPSwitch.setChecked(true);
-                }
-                else{
+                } else {
                     GPSwitch.setChecked(false);
                 }
                 Log.d(TAG, "onChanged: xpk");
             }
         };
 
-        mLocationUtils.getSwitchLiveData().observe(getViewLifecycleOwner(),mOnLocationTriggred);
+        mLocationUtils.getSwitchLiveData().observe(getViewLifecycleOwner(), mOnLocationTriggred);
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Preference pref = findPreference(key);
-        Log.d(TAG, "onSharedPreferenceChanged: "+key);
+        Log.d(TAG, "onSharedPreferenceChanged: " + key);
 
         switch (key) {
             case "username_et":
@@ -227,58 +270,31 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 break;
             case "gps_switch":
                 if (pref instanceof SwitchPreferenceCompat) {
-//                    final SwitchPreferenceCompat GPSwitch = (SwitchPreferenceCompat) pref;
-
                     ((MainActivity) requireActivity()).setLocationBuilderDeniedInterface(new MainActivity.LocationBuilderDeniedInterface() {
                         @Override
                         public void onLocationDenied(boolean isDenied) {
-                            mIsLocationDialogClicked= isDenied;
+                            mIsLocationDialogClicked = isDenied;
                             GPSwitch.setChecked(!isDenied);
-//                            GPSwitch.setChecked(false);
-                            //if dialog was clicked with no thanks
                         }
                     });
 
-                    Log.d(TAG, "onSharedPreferenceChanged:"+mLocationMode);
-//                    if(mLocationMode!=null && mLocationMode.equals("Off")){
-//                        GPSwitch.setChecked(false);
-//                    }
-//                    else if(mLocationMode!=null&&mLocationMode.equals("On")){
-//                        GPSwitch.setChecked(true);
-//                    }
-//                    else if(mLocationMode!=null && mLocationMode.equals("On")){
-//                        GPSwitch.setChecked(true);
-//                        mLocationUtils.requestLocationPermissions();
-//                    }
+                    Log.d(TAG, "onSharedPreferenceChanged:" + mLocationMode);
 
                     if (GPSwitch.isChecked() && !mLocationUtils.isLocationEnabled()) {
                         Log.d(TAG, "onSharedPreferenceChanged: xxx");
-//                        GPSwitch.setChecked(true);
                         mLocationUtils.requestLocationPermissions();
-
-                    }
-
-                    else if(mLocationMode!=null && mLocationMode.equals("Off")){
+                    } else if (mLocationMode != null && mLocationMode.equals("Off")) {
                         GPSwitch.setChecked(false);
-                    }
-
-                    else if (mIsLocationDialogClicked && (mLocationMode!=null&&!mLocationMode.equals("On"))){
+                    } else if (mIsLocationDialogClicked && (mLocationMode != null && !mLocationMode.equals("On"))) {
                         Log.d(TAG, "onSharedPreferenceChanged: xpk");
-                        if (GPSwitch.isChecked()) {//if was manually not with dialog
+                        if (GPSwitch.isChecked()) { // if was manually - not with dialog
                             Log.d(TAG, "onSharedPreferenceChanged: xpk");
                             mLocationUtils.turnGPSOff();
-//                            GPSwitch.setChecked(false);
-//                            mIsLocationDialogClicked=false;
-                        }else{
+                        } else {
                             GPSwitch.setChecked(false);
-                            mIsLocationDialogClicked=false;
+                            mIsLocationDialogClicked = false;
                         }
-                    }
-
-//                    else if(mLocationMode!=null &&mLocationMode.equals("On")){
-//                        mLocationUtils.turnGPSOff();
-//                    }
-                    else if(!GPSwitch.isChecked() && !mIsLocationDialogClicked){
+                    } else if (!GPSwitch.isChecked() && !mIsLocationDialogClicked) {
                         mLocationUtils.turnGPSOff();
                     }
                 }
@@ -292,16 +308,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     sbp.setSummary(progress + " Km");
                 }
                 break;
-            case "help":
-                if (pref != null) {
-                    Log.d(TAG, "onSharedPreferenceChanged: " + pref.getSummary());
-                }
-                break;
-            case "account_deletion":
-                if (pref != null) {
-                    //TODO: make a dialog for mViewModel.deleteUser();
-                }
-                break;
         }
     }
 
@@ -312,7 +318,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
             mViewModel.getUpdateUserNameInAuthFailed().observe(this, mOnUpdateUserNameInAuthFailed);
             mViewModel.getUpdatePasswordSucceed().observe(this, mOnUpdatePasswordSucceed);
             mViewModel.getUpdatePasswordFailed().observe(this, mOnUpdatePasswordFailed);
-
+            mViewModel.getUserDeletionSucceed().observe(this, mOnUserDeletionSucceed);
         }
     }
 

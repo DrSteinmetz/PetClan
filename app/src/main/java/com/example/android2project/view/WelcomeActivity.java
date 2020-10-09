@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.android2project.R;
 import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
+import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.view.fragments.LoginDetailsFragment;
 import com.example.android2project.view.fragments.LoginRegistrationFragment;
 import com.example.android2project.view.fragments.SignUpDetailsFragment;
@@ -57,7 +58,6 @@ public class WelcomeActivity extends AppCompatActivity implements
 
     private final String TAG = "WelcomeActivity";
 
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private AlertDialog mLoadingDialog;
 
     @Override

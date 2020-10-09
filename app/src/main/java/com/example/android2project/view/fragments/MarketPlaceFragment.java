@@ -25,7 +25,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.android2project.R;
 import com.example.android2project.model.AdsAdapter;
 import com.example.android2project.model.Advertisement;
-import com.example.android2project.model.DeleteDialog;
+import com.example.android2project.view.DeleteDialog;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.model.ViewModelFactory;
 import com.example.android2project.viewmodel.MarketPlaceViewModel;

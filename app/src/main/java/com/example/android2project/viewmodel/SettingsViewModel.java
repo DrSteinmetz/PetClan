@@ -2,6 +2,8 @@ package com.example.android2project.viewmodel;
 
 import android.content.Context;
 import android.location.Address;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -21,6 +23,11 @@ public class SettingsViewModel extends ViewModel {
 
     private MutableLiveData<String> mUpdatePasswordSucceed;
     private MutableLiveData<String> mUpdatePasswordFailed;
+
+    private MutableLiveData<String> mUserDeletionSucceed;
+
+    private final String TAG = "SettingsViewModel";
+
 
     public SettingsViewModel(final Context context) {
         mRepository = Repository.getInstance(context);
@@ -117,6 +124,27 @@ public class SettingsViewModel extends ViewModel {
         });
     }
 
+    public MutableLiveData<String> getUserDeletionSucceed() {
+        if (mUserDeletionSucceed == null) {
+            mUserDeletionSucceed = new MutableLiveData<>();
+            attachSetOnUserDeletionListener();
+        }
+        return mUserDeletionSucceed;
+    }
+
+    private void attachSetOnUserDeletionListener() {
+        mRepository.setUserDeletionListener(new Repository.RepositoryUserDeletionInterface() {
+            @Override
+            public void onUserDeletionSucceed(String userId) {
+                mAuthRepository.deleteUserFromAuth();
+            }
+
+            @Override
+            public void onUserDeletionFailed(String error) {
+                Log.d(TAG, "onUserDeletionFailed: ");
+            }
+        });
+    }
 
     public String getUsername() {
         return mAuthRepository.getUserName();
@@ -134,8 +162,8 @@ public class SettingsViewModel extends ViewModel {
         mRepository.updateUserLocation(address);
     }
 
+
     public void deleteUser() {
         mRepository.deleteUserFromCloud();
-        mAuthRepository.deleteUserFromAuth();
     }
 }

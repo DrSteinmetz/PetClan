@@ -110,18 +110,18 @@
         <ImageView
             android:id="@+id/post_pic_iv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="150dp"
             android:layout_below="@id/post_content_layout"
+            android:layout_marginTop="10dp"
             android:scaleType="centerCrop"
-            android:visibility="gone"
-            android:layout_marginTop="10dp" />
+            android:visibility="gone" />
 
         <RelativeLayout
             android:id="@+id/likes_comments_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_below="@id/post_pic_iv">
+            android:layout_below="@id/post_pic_iv"
+            android:layout_marginTop="5dp">
 
             <ImageView
                 android:id="@+id/like_amount_iv"
@@ -138,8 +138,8 @@
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/like_amount_iv"
                 android:text="@string/Likes"
-                android:textAllCaps="false"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:textAllCaps="false" />
 
             <TextView
                 android:id="@+id/comments_amount_tv"
@@ -148,8 +148,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginHorizontal="10dp"
                 android:text="@string/Comments"
-                android:textAllCaps="false"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:textAllCaps="false" />
 
         </RelativeLayout>
 

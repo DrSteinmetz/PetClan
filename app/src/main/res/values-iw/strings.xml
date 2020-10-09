@@ -54,7 +54,7 @@
     <string name="Welcome">ברוך הבא!</string>
     <string name="Or_sign_in_with">או היכנס באמצעות</string>
     <string name="Sign_In">התחבר</string>
-    <string name="about_to_start">זוהי התחלה של הרתפקאה חדשה</string>
+    <string name="about_to_start">זוהי התחלה של הרתפקאה חדשה…</string>
     <string name="Join_Our_Clan">הצטרפו לשבט שלנו</string>
     <string name="Hightolow">גבוה->נמוך</string>
     <string name="Lowtohigh">נמוך->גבוה</string>
@@ -104,4 +104,18 @@
     <string name="password_changed">הסיסמא שונתה בהצלחה</string>
     <string name="please_enable_location">אנא הפעילו מיקום</string>
     <string name="Unlike">הסירו לייק</string>
+    <string name="no_need_to_be_shy">אין צורך להיות ביישנים…</string>
+    <string name="account_deletion_dialog">האם אתם בטוחים שברצונכם למחוק חשבון זה לצמיתות?</string>
+    <string name="change_your_username">שנו את שם המשתמש שלכם</string>
+    <string name="enter_username">הזינו שם משתמש:</string>
+    <string name="change_your_password">שנו את סיסמתכם</string>
+    <string name="enter_password">הזינו סיסמא:</string>
+    <string name="where_r_u">היכן אתם?</string>
+    <string name="enter_location">הזינו את מיקומכם:</string>
+    <string name="on">דלוק</string>
+    <string name="off">כבוי</string>
+    <string name="how_far_do_u_want_to_see">כמה רחוק אתם רוצים לראות?</string>
+    <string name="others">אחרים</string>
+    <string name="help">עזרה</string>
+    <string name="delete_your_account">מחקו את חשבונכם</string>
 </resources>

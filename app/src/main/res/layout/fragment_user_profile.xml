@@ -92,7 +92,7 @@
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/user_posts_fragment"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="400dp"
                 android:minHeight="200dp" />
 
             <androidx.recyclerview.widget.RecyclerView

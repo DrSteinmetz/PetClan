@@ -1,4 +1,4 @@
-package com.example.android2project.model;
+package com.example.android2project.view;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -38,6 +38,7 @@ public class DeleteDialog extends Dialog {
 
     public DeleteDialog(Context context) {
         super(context);
+
         initialize();
     }
 
@@ -75,7 +76,6 @@ public class DeleteDialog extends Dialog {
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         getWindow().setGravity(Gravity.CENTER);
-
     }
 
     public void setPromptText(String prompt) {
@@ -87,5 +87,4 @@ public class DeleteDialog extends Dialog {
         int i = ran.nextInt(4);
         mPetIv.setImageResource(photos[i]);
     }
-
 }
