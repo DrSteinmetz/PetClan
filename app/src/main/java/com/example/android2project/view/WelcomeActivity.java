@@ -89,7 +89,7 @@ public class WelcomeActivity extends AppCompatActivity implements
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
-                    Snackbar.make(findViewById(R.id.root_layout), "Your Registration has been Canceled",
+                    Snackbar.make(findViewById(R.id.root_layout),getResources().getString(R.string.registration_aborted),
                             BaseTransientBottomBar.LENGTH_SHORT).show();
                 }
             }
@@ -188,16 +188,7 @@ public class WelcomeActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
 
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            Toast.makeText(this, currentUser.getEmail(), Toast.LENGTH_SHORT).show();
-        }
-    }
 
     @Override
     protected void onDestroy() {

@@ -236,7 +236,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         }
 
         boolean isUserLikedPost = post.getLikesMap().containsKey(mMyEmail);
-        holder.likeBtnTv.setText(isUserLikedPost ? "Unlike" : "Like");
+        holder.likeBtnTv.setText(isUserLikedPost ? mContext.getString(R.string.Unlike) : mContext.getResources().getString(R.string.Like));
         holder.likeBtnIv.setRotation(isUserLikedPost ? 180 : 0);
         if (post.getLikesCount() > 0) {
             String likeString = post.getLikesCount() + " Likes";

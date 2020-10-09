@@ -2,9 +2,9 @@
     <string name="app_name">PetClan</string>
 
     <!--Facebook strings-->
-    <string name="facebook_app_id">1167243230312525</string>
-    <string name="fb_login_protocol_scheme">fb1167243230312525</string>
-    <string name="login_cancel" >Login Canceled</string>
+    <string name="facebook_app_id" translatable="false">1167243230312525</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb1167243230312525</string>
+    <string name="login_cancel">Login Canceled</string>
     <string name="network_not_found">Network not found</string>
     <string name="locatio_disabled">Location is Disabled</string>
     <string name="provide_location">In order to have functionality you must provide location</string>
@@ -20,9 +20,9 @@
     <string name="city_location">Please Enter a City from the list</string>
     <string name="price">Please enter price</string>
     <string name="description">Please enter description</string>
-    <string name="email">You must enter email!</string>
+    <string name="email">Email</string>
     <string name="valid_email">You must enter a valid email!</string>
-    <string name="password">You must enter a password!</string>
+    <string name="password">Password</string>
     <string name="valid_password">You must enter at least 8 characters!</string>
     <string name="author_name">Author Name</string>
 
@@ -90,6 +90,10 @@
     <string name="Profile">Profile</string>
     <string name="Settings">Settings</string>
     <string name="Search_Here">Search Here</string>
+    <string name="On_Your_Mind">What\'s On Your Mind?</string>
+    <string name="Type_your_comment_here">Type your comment here</string>
+    <string name="Enter_message">Enter Message</string>
+    <string name="First_name">First Name</string>
 
 
 
@@ -97,11 +101,7 @@
 
 
 
-
-
-
-
-    <string name="large_text">
+    <string name="large_text" translatable="false">
         "Material is the metaphor.\n\n"
 
         "A material metaphor is the unifying theory of a rationalized space and a system of motion."
@@ -194,21 +194,29 @@
     <string name="show_more">Show More</string>
     <string name="show_less">Show Less</string>
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
+    <string name="messages_header" translatable="false">Messages</string>
+    <string name="sync_header" translatable="false">Sync</string>
 
     <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
+    <string name="signature_title" translatable="false">Your signature</string>
+    <string name="reply_title" translatable="false">Default reply action</string>
 
     <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    <string name="sync_title" translatable="false">Sync email periodically</string>
+    <string name="attachment_title" translatable="false">Download incoming attachments</string>
+    <string name="attachment_summary_on" translatable="false">Automatically download attachments for incoming emails
     </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="attachment_summary_off" translatable="false">Only download attachments when manually requested</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="search">Search</string>
+    <string name="last_name">Last Name</string>
+    <string name="type">Type</string>
+    <string name="registration_aborted">Your Registration has been Canceled</string>
+    <string name="location_disabled">Location is Disabled</string>
+    <string name="user_name_change">Your username has changed to</string>
+    <string name="password_changed">Password changed successfully</string>
+    <string name="please_enable_location">Please enable Location</string>
+    <string name="Unlike">Unlike</string>
 
 </resources>
