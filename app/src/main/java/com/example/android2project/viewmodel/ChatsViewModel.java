@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ChatsViewModel extends ViewModel {
     private static ChatsViewModel chatsViewModel;
@@ -105,13 +106,14 @@ public class ChatsViewModel extends ViewModel {
         final String myEmail = mAuth.getUserEmail();
         final List<User> relevantUsers = new ArrayList<>();
 
-        Map<String, Object> usersMap = new HashMap<>();
+        Map<String, User> usersMap = new HashMap<>();
         for(User user:mAllUsers) {
             usersMap.put(user.getEmail(),user);
         }
 
         for (Conversation conversation : mConversations) {
-        if(usersMap.containsKey(conversation.getRecipientEmail())&&!usersMap.containsKey(myEmail)){
+        if(usersMap.containsKey(conversation.getRecipientEmail()) && !Objects.requireNonNull(usersMap.get(conversation.getRecipientEmail())).getEmail().equals(myEmail)||
+            usersMap.containsKey(conversation.getSenderEmail()) && !Objects.requireNonNull(usersMap.get(conversation.getRecipientEmail())).getEmail().equals(myEmail)){
             relevantUsers.add((User) usersMap.get(conversation.getRecipientEmail()));
         }
 //            for (User user : mAllUsers) {
