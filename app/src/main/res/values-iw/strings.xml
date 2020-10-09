@@ -56,8 +56,8 @@
     <string name="Sign_In">התחבר</string>
     <string name="about_to_start">זוהי התחלה של הרתפקאה חדשה…</string>
     <string name="Join_Our_Clan">הצטרפו לשבט שלנו</string>
-    <string name="Hightolow">גבוה->נמוך</string>
-    <string name="Lowtohigh">נמוך->גבוה</string>
+    <string name="Hightolow">גבוה ◄ נמוך</string>
+    <string name="Lowtohigh">נמוך ◄ גבוה</string>
     <string name="About_You">קצת עליכם</string>
     <string name="Or_register_with">או הירשמו באמצעות</string>
     <string name="Next">הבא</string>

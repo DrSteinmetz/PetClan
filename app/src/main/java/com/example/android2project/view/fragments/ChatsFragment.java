@@ -62,7 +62,21 @@ public class ChatsFragment extends Fragment {
         usersObserver = new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
-                mChatsAdapter.notifyDataSetChanged();
+                mChatsAdapter = new ChatsAdapter(getContext(),
+                        mViewModel.getConversations(),
+                        mViewModel.getActiveUsers());
+
+                mChatsAdapter.setChatAdapterListener(new ChatsAdapter.ChatAdapterInterface() {
+                    @Override
+                    public void onClicked(int position, View view) {
+                        User recipient = mViewModel.getActiveUsers().get(position);
+                        ConversationFragment.newInstance(recipient)
+                                .show(getParentFragmentManager()
+                                        .beginTransaction(), CONVERSATION_FRAG);
+                    }
+                });
+
+                mRecyclerView.setAdapter(mChatsAdapter);
             }
         };
 
@@ -97,21 +111,6 @@ public class ChatsFragment extends Fragment {
         mRecyclerView = rootView.findViewById(R.id.chats_recyclerview);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        mChatsAdapter = new ChatsAdapter(getContext(), mViewModel.getConversations(),
-                mViewModel.getActiveUsers());
-
-        mChatsAdapter.setChatAdapterListener(new ChatsAdapter.ChatAdapterInterface() {
-            @Override
-            public void onClicked(int position, View view) {
-                User recipient = mViewModel.getActiveUsers().get(position);
-                ConversationFragment.newInstance(recipient)
-                        .show(getParentFragmentManager()
-                                .beginTransaction(), CONVERSATION_FRAG);
-            }
-        });
-
-        mRecyclerView.setAdapter(mChatsAdapter);
 
         return rootView;
     }

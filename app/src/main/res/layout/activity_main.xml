@@ -87,7 +87,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
@@ -98,7 +97,6 @@
                     app:layout_collapseMode="pin">
 
                     <TextView
-                        android:drawableStart="@drawable/ic_baseline_location_on_24"
                         android:id="@+id/location_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -106,17 +104,13 @@
                         android:textSize="18sp"
                         android:layout_gravity="center"
                         android:textAllCaps="false"
-                        android:text="@string/Unknown">
+                        android:text="@string/Unknown"
+                        app:drawableStartCompat="@drawable/ic_baseline_location_on_24">
 
                     </TextView>
                 </androidx.appcompat.widget.Toolbar>
 
-
-
             </com.google.android.material.appbar.AppBarLayout>
-
-
-
 
             <FrameLayout
                 android:id="@+id/main_content_layout"
@@ -130,11 +124,10 @@
                     android:layout_height="wrap_content"/>
             </FrameLayout>
 
-
             <me.ibrahimsn.lib.SmoothBottomBar
                 android:id="@+id/bottomBar"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="60dp"
                 app:backgroundColor="@color/colorPrimary"
                 app:menu="@menu/navigation_bar_menu"
                 android:layout_alignParentBottom="true" />
@@ -142,7 +135,5 @@
         </RelativeLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
 
 </nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout>

@@ -61,8 +61,8 @@
     <string name="Sign_In">Sign In</string>
     <string name="about_to_start">You\'re about to start your adventure…</string>
     <string name="Join_Our_Clan">Join Our Clan</string>
-    <string name="Hightolow">High->Low</string>
-    <string name="Lowtohigh">Low->High</string>
+    <string name="Hightolow">High ► Low</string>
+    <string name="Lowtohigh">Low ► High</string>
     <string name="About_You">About You</string>
     <string name="Who_are_you">Welcome!\nWho are you?</string>
     <string name="Or_register_with">Or register with</string>
