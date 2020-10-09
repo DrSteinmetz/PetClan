@@ -189,4 +189,8 @@ public class MarketPlaceViewModel extends ViewModel {
 
         mDownloadAdsSucceed.setValue(mAdList);
     }
+
+    public void signOutFromGuest() {
+        mAuth.signOutUser();
+    }
 }

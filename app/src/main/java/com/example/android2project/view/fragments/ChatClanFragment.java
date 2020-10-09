@@ -1,5 +1,7 @@
 package com.example.android2project.view.fragments;
 
+import android.app.AlertDialog;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -7,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
@@ -34,6 +38,7 @@ public class ChatClanFragment extends Fragment {
     private ChatClanViewModel mViewModel;
     private RecyclerView mRecyclerview;
     private ChatClanAdapter mAdapter;
+    private String mCurrentUser;
 
     private final String TAG = "ChatClanFragment";
 
@@ -53,6 +58,7 @@ public class ChatClanFragment extends Fragment {
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.ChatClan)).get(ChatClanViewModel.class);
 
+        mCurrentUser = mViewModel.getUserEmail();
 
 //        mViewModel.getAllUsers();
 
@@ -66,10 +72,14 @@ public class ChatClanFragment extends Fragment {
                 mAdapter.setFriendItemListener(new ChatClanAdapter.FriendItemListener() {
                     @Override
                     public void onClicked(int position, View view) {
-                        User recipient = mViewModel.getUsers().get(position);
-                        ConversationFragment.newInstance(recipient)
-                                .show(getParentFragmentManager()
-                                        .beginTransaction(), "fragment_conversation");
+                        if(!mCurrentUser.equals("a@gmail.com")) {
+                            User recipient = mViewModel.getUsers().get(position);
+                            ConversationFragment.newInstance(recipient)
+                                    .show(getParentFragmentManager()
+                                            .beginTransaction(), "fragment_conversation");
+                        } else {
+                            showGuestDialog();
+                        }
                     }
                 });
                 mRecyclerview.setAdapter(mAdapter);
@@ -107,6 +117,34 @@ public class ChatClanFragment extends Fragment {
 
 
         return rootView;
+    }
+
+    private void showGuestDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(getContext())
+                .inflate(R.layout.guest_dialog,
+                        (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));
+
+        builder.setView(view);
+        builder.setCancelable(false);
+        final AlertDialog guestDialog = builder.create();
+
+        Button cancelBtn = view.findViewById(R.id.cancel_btn);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                guestDialog.dismiss();
+            }
+        });
+        Button joinBtn = view.findViewById(R.id.join_btn);
+        joinBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mViewModel.signOutFromGuest();
+            }
+        });
+        guestDialog.show();
+        guestDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
     }
 
 

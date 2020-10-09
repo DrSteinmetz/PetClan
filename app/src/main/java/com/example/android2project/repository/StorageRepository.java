@@ -26,7 +26,7 @@ public class StorageRepository {
 
     private Context mContext;
 
-    private final int COMPRESS_PERCENTAGE = 20;
+    private final int COMPRESS_PERCENTAGE = 50;
     private final String TAG = "StorageRepository";
 
 

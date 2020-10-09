@@ -1,18 +1,12 @@
 package com.example.android2project.view.fragments;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
-import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,7 +19,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.android2project.R;
@@ -33,7 +35,6 @@ import com.example.android2project.model.Post;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.model.ViewModelFactory;
 import com.example.android2project.viewmodel.AddPostViewModel;
-import com.example.android2project.viewmodel.FeedViewModel;
 import com.google.firebase.firestore.GeoPoint;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -57,6 +58,7 @@ public class AddPostFragment extends DialogFragment {
     private Post mCurrentPost;
 
     private File mFile;
+    private AlertDialog mLoadingDialog;
 
     private boolean mIsEdit;
 
@@ -96,6 +98,7 @@ public class AddPostFragment extends DialogFragment {
                 }else{
                     mViewModel.updatePost(mCurrentPost);
                 }
+                mLoadingDialog.dismiss();
                 dismiss();
             }
         };
@@ -115,7 +118,6 @@ public class AddPostFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.add_post_dialog, container, false);
 
         postContentEt = view.findViewById(R.id.new_post_content_et);
@@ -162,7 +164,6 @@ public class AddPostFragment extends DialogFragment {
                         "com.example.android2project.provider", mFile);
 
                 CropImage.activity()
-                        .setAspectRatio(16, 9)
                         .setCropShape(CropImageView.CropShape.RECTANGLE)
                         .setGuidelines(CropImageView.Guidelines.ON)
                         .setOutputUri(uri)
@@ -182,6 +183,7 @@ public class AddPostFragment extends DialogFragment {
                             new GeoPoint(mUserLocation.getLatitude(), mUserLocation.getLongitude()));
 
                     if (mPicUri != null) {
+                        showLoadingDialog();
                         mViewModel.uploadPostPhoto(mCurrentPost, mPicUri);
                     } else {
                         mViewModel.uploadNewPost(mCurrentPost);
@@ -190,6 +192,7 @@ public class AddPostFragment extends DialogFragment {
                 } else {
                     mCurrentPost.setAuthorContent(postContentEt.getText().toString());
                     if (mPicUri != null) {
+                        showLoadingDialog();
                         mViewModel.uploadPostPhoto(mCurrentPost,mPicUri);
                         mIsEdit = true;
                     }else{
@@ -222,7 +225,7 @@ public class AddPostFragment extends DialogFragment {
                         "com.example.android2project.provider", mFile);
 
                 CropImage.activity()
-                        .setAspectRatio(4, 3)
+
                         .setCropShape(CropImageView.CropShape.RECTANGLE)
                         .setGuidelines(CropImageView.Guidelines.ON)
                         .setOutputUri(uri)
@@ -237,6 +240,7 @@ public class AddPostFragment extends DialogFragment {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (result != null) {
+                picPreview.setVisibility(View.VISIBLE);
                 mPicUri = result.getUri();
                 Glide.with(requireContext())
                         .load(mPicUri)
@@ -244,6 +248,19 @@ public class AddPostFragment extends DialogFragment {
                         .into(picPreview);
             }
         }
+    }
+
+    private void showLoadingDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(getContext())
+                .inflate(R.layout.loading_dog_dialog,
+                        (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));
+
+        builder.setView(view);
+        builder.setCancelable(false);
+        mLoadingDialog = builder.create();
+        mLoadingDialog.show();
+        mLoadingDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
     }
 
     @Override

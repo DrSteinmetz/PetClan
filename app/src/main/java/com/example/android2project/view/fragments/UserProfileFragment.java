@@ -1,7 +1,9 @@
 package com.example.android2project.view.fragments;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -9,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +57,7 @@ public class UserProfileFragment extends DialogFragment {
 
     private File mFile;
     private Uri mSelectedImage = Uri.parse("/users_profile_picture/default_user_pic.png");
+    private String mCurrentUser;
 
     private Observer<User> mOnDownloadUserSucceed;
     private Observer<String> mOnDownloadUserFailed;
@@ -64,10 +69,11 @@ public class UserProfileFragment extends DialogFragment {
 
     private final String TAG = "UserProfileFragment";
 
-    public UserProfileFragment() {}
+    public UserProfileFragment() {
+    }
 
     public static UserProfileFragment newInstance(final String userEmail) {
-        UserProfileFragment fragment =  new UserProfileFragment();
+        UserProfileFragment fragment = new UserProfileFragment();
         Bundle args = new Bundle();
         args.putString("user", userEmail);
         fragment.setArguments(args);
@@ -84,6 +90,8 @@ public class UserProfileFragment extends DialogFragment {
 
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.UserProfile)).get(UserProfileViewModel.class);
+
+        mCurrentUser = mViewModel.getMyDetails().getEmail();
 
         if (mUserEmail != null) {
             mViewModel.downloadUser(mUserEmail);
@@ -112,8 +120,8 @@ public class UserProfileFragment extends DialogFragment {
             @Override
             public void onChanged(String updatedUserProfilePicUri) {
                 loadProfilePictureWithGlide(updatedUserProfilePicUri, mProfilePicIv);
-                
-                final ImageView mainUserIv =  ((ImageView) requireActivity().findViewById(R.id.user_pic_iv));
+
+                final ImageView mainUserIv = ((ImageView) requireActivity().findViewById(R.id.user_pic_iv));
                 RequestOptions options = new RequestOptions()
                         .circleCrop()
                         .placeholder(R.drawable.ic_default_user_pic)
@@ -140,7 +148,7 @@ public class UserProfileFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_user_profile,
-                container,false);
+                container, false);
 
         final FloatingActionButton messageEditBtn = rootView.findViewById(R.id.message_edit_btn);
         final FloatingActionButton addPetBtn = rootView.findViewById(R.id.add_pet_btn);
@@ -169,26 +177,45 @@ public class UserProfileFragment extends DialogFragment {
         }
 
         mPetsAdapter = new PetsAdapter(mRecyclerviewOptions);
+        mPetsAdapter.setPetsAdapterListener(new PetsAdapter.PetsAdapterInterface() {
+            @Override
+            public void onEditOptionClicked(int position, View view) {
+                Pet pet = mPetsAdapter.getItem(position);
+                AddPetFragment.newInstance(pet)
+                        .show(getChildFragmentManager().beginTransaction(), "edit_pet_fragment");
+            }
+
+            @Override
+            public void onDeleteOptionClicked(int position, View view) {
+                Pet pet = mPetsAdapter.getItem(position);
+                mViewModel.deletePet(pet);
+
+            }
+        });
         mPetsRecyclerView.setAdapter(mPetsAdapter);
 
         messageEditBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mUserEmail == null) {
-                    mFile = new File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                            "petclan" + System.nanoTime() + "pic.jpg");
-                    mSelectedImage = FileProvider.getUriForFile(requireContext(),
-                            "com.example.android2project.provider", mFile);
+                if (!mCurrentUser.equals("a@gmail.com")) {
+                    if (mUserEmail == null) {
+                        mFile = new File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                                "petclan" + System.nanoTime() + "pic.jpg");
+                        mSelectedImage = FileProvider.getUriForFile(requireContext(),
+                                "com.example.android2project.provider", mFile);
 
-                    CropImage.activity()
-                            .setAspectRatio(1, 1)
-                            .setCropShape(CropImageView.CropShape.RECTANGLE)
-                            .setGuidelines(CropImageView.Guidelines.ON)
-                            .setOutputUri(mSelectedImage)
-                            .start(requireContext(), UserProfileFragment.this);
+                        CropImage.activity()
+                                .setAspectRatio(1, 1)
+                                .setCropShape(CropImageView.CropShape.RECTANGLE)
+                                .setGuidelines(CropImageView.Guidelines.ON)
+                                .setOutputUri(mSelectedImage)
+                                .start(requireContext(), UserProfileFragment.this);
+                    } else {
+                        ConversationFragment.newInstance(mUser)
+                                .show(getChildFragmentManager().beginTransaction(), "fragment_conversation");
+                    }
                 } else {
-                    ConversationFragment.newInstance(mUser)
-                            .show(getChildFragmentManager().beginTransaction(), "fragment_conversation");
+                    showGuestDialog();
                 }
             }
         });
@@ -196,8 +223,12 @@ public class UserProfileFragment extends DialogFragment {
         addPetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddPetFragment.newInstance()
-                        .show(getChildFragmentManager().beginTransaction(), "add_pet_fragment");
+                if (!mCurrentUser.equals("a@gmail.com")) {
+                    AddPetFragment.newInstance(null)
+                            .show(getChildFragmentManager().beginTransaction(), "add_pet_fragment");
+                } else {
+                    showGuestDialog();
+                }
             }
         });
 
@@ -264,6 +295,34 @@ public class UserProfileFragment extends DialogFragment {
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.user_posts_fragment, FeedFragment.newInstance(userEmail), "fragment_user_feed")
                 .commit();
+    }
+
+    private void showGuestDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(getContext())
+                .inflate(R.layout.guest_dialog,
+                        (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));
+
+        builder.setView(view);
+        builder.setCancelable(false);
+        final AlertDialog guestDialog = builder.create();
+
+        Button cancelBtn = view.findViewById(R.id.cancel_btn);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                guestDialog.dismiss();
+            }
+        });
+        Button joinBtn = view.findViewById(R.id.join_btn);
+        joinBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mViewModel.signOutFromGuest();
+            }
+        });
+        guestDialog.show();
+        guestDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
     }
 
     @Override

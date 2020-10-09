@@ -1,8 +1,10 @@
 package com.example.android2project.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Pet {
+public class Pet implements Serializable {
+    private String mPetId;
     private String mPetName;
     private String mAnimalType;
     private ArrayList<String> mPhotoUri;
@@ -11,9 +13,18 @@ public class Pet {
     public Pet() {}
 
     public Pet(String mPetName, String mAnimalType, String petDescription) {
+        this.mPetId = String.valueOf(System.nanoTime());
         this.mPetName = mPetName;
         this.mAnimalType = mAnimalType;
         this.mPetDescription = petDescription;
+    }
+
+    public String getPetId() {
+        return mPetId;
+    }
+
+    public void setPetId(String petId) {
+        this.mPetId = petId;
     }
 
     public String getPetName() {
@@ -46,5 +57,19 @@ public class Pet {
 
     public void setPetDescription(String petDescription) {
         this.mPetDescription = petDescription;
+    }
+
+    public String getStoragePath(String myEmail, String imageUri) {
+        String s1 = imageUri.split("\\.jpg\\?alt=media&token=")[0];
+        int i = 2;
+        char c = s1.charAt(s1.length() - 1);
+        StringBuilder id = new StringBuilder();
+        while (Character.isDigit(c)) {
+            id.append(c);
+            c = s1.charAt(s1.length() - i++);
+        }
+        id = id.reverse();
+
+        return myEmail + "/pets/" + myEmail + id + ".jpg";
     }
 }

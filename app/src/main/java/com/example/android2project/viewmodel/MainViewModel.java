@@ -50,4 +50,8 @@ public class MainViewModel extends ViewModel {
     public String downloadUserProfilePicture() {
         return mAuthRepository.getUserImageUri();
     }
+
+    public String getUserEmail() {
+        return mAuthRepository.getUserEmail();
+    }
 }
