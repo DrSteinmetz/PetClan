@@ -7,43 +7,43 @@
 
         <EditTextPreference
             android:key="username_et"
-            android:title="Username"
-            android:summary="Change your username"
+            android:title="@string/Username"
+            android:summary="@string/change_your_username"
             android:textAllCaps="false"
-            android:dialogTitle="Username"
-            android:dialogMessage="Enter a Username:" />
+            android:dialogTitle="@string/Username"
+            android:dialogMessage="@string/enter_username" />
 
         <EditTextPreference
             android:key="password_et"
-            android:title="Password"
-            android:summary="Change your password"
+            android:title="@string/password"
+            android:summary="@string/change_your_password"
             android:textAllCaps="false"
-            android:dialogTitle="Password"
-            android:dialogMessage="Enter your Password:" />
+            android:dialogTitle="@string/password"
+            android:dialogMessage="@string/enter_password" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Location"
+        android:title="@string/Location"
         android:icon="@drawable/ic_baseline_location_accent_24">
 
         <Preference
             android:key="location_pref"
             android:title="Where are you?"
-            android:summary="Unknown"
+            android:summary="@string/Unknown"
             android:textAllCaps="false"
-            android:dialogTitle="Location"
+            android:dialogTitle="@string/Location"
             android:dialogMessage="Enter your Location:" />
 
         <SwitchPreferenceCompat
             android:key="gps_switch"
             android:title="GPS"
-            android:summaryOn="On"
-            android:summaryOff="Off" />
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off" />
 
         <SeekBarPreference
             android:key="distance_sb"
-            android:title="How far do you want to see?"
+            android:title="@string/how_far_do_u_want_to_see"
             android:max="500"
             android:defaultValue="500"
 
@@ -52,19 +52,17 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Others">
+        android:title="@string/others">
 
         <Preference
             android:key="help_pref"
-            android:title="Help"
+            android:title="@string/help"
             android:textAllCaps="false" />
 
-        <EditTextPreference
+        <Preference
             android:key="account_deletion_pref"
-            android:title="Delete Your Account"
-            android:textAllCaps="false"
-            android:dialogTitle="Delete Your Account"
-            android:dialogMessage="Enter your password:" />
+            android:title="@string/delete_your_account"
+            android:textAllCaps="false" />
 
     </PreferenceCategory>
 

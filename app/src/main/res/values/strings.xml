@@ -59,7 +59,7 @@
     <string name="Welcome">Welcome!</string>
     <string name="Or_sign_in_with">Or sign in with</string>
     <string name="Sign_In">Sign In</string>
-    <string name="about_to_start">You\'re about to start your adventure...</string>
+    <string name="about_to_start">You\'re about to start your adventure…</string>
     <string name="Join_Our_Clan">Join Our Clan</string>
     <string name="Hightolow">High->Low</string>
     <string name="Lowtohigh">Low->High</string>
@@ -94,12 +94,6 @@
     <string name="Type_your_comment_here">Type your comment here</string>
     <string name="Enter_message">Enter Message</string>
     <string name="First_name">First Name</string>
-
-
-
-
-
-
 
     <string name="large_text" translatable="false">
         "Material is the metaphor.\n\n"
@@ -207,7 +201,6 @@
     <string name="attachment_summary_on" translatable="false">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off" translatable="false">Only download attachments when manually requested</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="search">Search</string>
     <string name="update">Update</string>
@@ -218,8 +211,22 @@
     <string name="type">Type</string>
     <string name="registration_aborted">Your Registration has been Canceled</string>
     <string name="location_disabled">Location is Disabled</string>
-    <string name="user_name_change">Your username has changed to</string>
+    <string name="user_name_change">Your username has changed to </string>
     <string name="password_changed">Password changed successfully</string>
     <string name="please_enable_location">Please enable Location</string>
     <string name="Unlike">Unlike</string>
+    <string name="no_need_to_be_shy">No Need To Be Shy…</string>
+    <string name="account_deletion_dialog">Are You Sure You Want To Permanently Delete Your Account?</string>
+    <string name="change_your_username">Change your username</string>
+    <string name="enter_username">Enter a Username:</string>
+    <string name="change_your_password">Change your password</string>
+    <string name="enter_password">Enter a Password:</string>
+    <string name="where_r_u">Where are you?</string>
+    <string name="enter_location">Enter your Location:</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
+    <string name="how_far_do_u_want_to_see">How far do you want to see?</string>
+    <string name="others">Others</string>
+    <string name="help">Help</string>
+    <string name="delete_your_account">Delete Your Account</string>
 </resources>

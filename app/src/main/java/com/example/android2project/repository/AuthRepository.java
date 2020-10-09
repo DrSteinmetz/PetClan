@@ -579,6 +579,7 @@ public class AuthRepository {
                 public void onSuccess(Void aVoid) {
                     if (mDeleteUserListener != null) {
                         mDeleteUserListener.onDeleteUserSucceed(true);
+                        signOutUser();
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -639,5 +640,4 @@ public class AuthRepository {
 
         return imageUri;
     }
-
 }

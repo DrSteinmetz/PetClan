@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import com.example.android2project.model.ChatsAdapter;
 import com.example.android2project.model.Conversation;
 import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
+import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.viewmodel.ChatsViewModel;
 import com.example.android2project.model.ViewModelFactory;
 
@@ -35,6 +37,8 @@ public class ChatsFragment extends Fragment {
 
     private Observer<List<Conversation>> mOnDownloadActiveConversationsSucceed;
     private Observer<String> mOnDownloadActiveConversationsFailed;
+
+    private TextView mNoChatsTv;
 
     private final String CONVERSATION_FRAG = "fragment_conversation";
 
@@ -58,19 +62,7 @@ public class ChatsFragment extends Fragment {
         usersObserver = new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
-                mChatsAdapter = new ChatsAdapter(getContext(),
-                        mViewModel.getConversations(),
-                        mViewModel.getActiveUsers());
-                mChatsAdapter.setChatAdapterListener(new ChatsAdapter.ChatAdapterInterface() {
-                    @Override
-                    public void onClicked(int position, View view) {
-                        User recipient = mViewModel.getActiveUsers().get(position);
-                        ConversationFragment.newInstance(recipient)
-                                .show(getParentFragmentManager()
-                                        .beginTransaction(), CONVERSATION_FRAG);
-                    }
-                });
-                mRecyclerView.setAdapter(mChatsAdapter);
+                mChatsAdapter.notifyDataSetChanged();
             }
         };
 
@@ -81,6 +73,8 @@ public class ChatsFragment extends Fragment {
                     mChatsAdapter.setUserMap(mViewModel.getActiveUsers());
                     mChatsAdapter.notifyDataSetChanged();
                 }
+
+                mNoChatsTv.setVisibility(conversations.size() > 0 ? View.GONE : View.VISIBLE);
             }
         };
 
@@ -99,9 +93,25 @@ public class ChatsFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_chats, container, false);
 
+        mNoChatsTv = rootView.findViewById(R.id.no_chats_tv);
         mRecyclerView = rootView.findViewById(R.id.chats_recyclerview);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        mChatsAdapter = new ChatsAdapter(getContext(), mViewModel.getConversations(),
+                mViewModel.getActiveUsers());
+
+        mChatsAdapter.setChatAdapterListener(new ChatsAdapter.ChatAdapterInterface() {
+            @Override
+            public void onClicked(int position, View view) {
+                User recipient = mViewModel.getActiveUsers().get(position);
+                ConversationFragment.newInstance(recipient)
+                        .show(getParentFragmentManager()
+                                .beginTransaction(), CONVERSATION_FRAG);
+            }
+        });
+
+        mRecyclerView.setAdapter(mChatsAdapter);
 
         return rootView;
     }
