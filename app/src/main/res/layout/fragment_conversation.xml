@@ -84,11 +84,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginHorizontal="15dp"
-                android:layout_weight="1"
+                android:layout_weight="1"    
+                android:hint="@string/Enter_message"
                 android:maxLines="6"
-                android:hint="Enter message"
                 android:padding="10dp"
                 android:background="@drawable/chat_et_shape" />
+
 
             <ImageButton
                 android:id="@+id/send_btn"

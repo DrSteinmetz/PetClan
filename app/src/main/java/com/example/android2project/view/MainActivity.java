@@ -35,6 +35,7 @@ import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.model.ViewModelFactory;
 import com.example.android2project.model.ViewPagerAdapter;
+import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.view.fragments.AdvertisementFragment;
 import com.example.android2project.view.fragments.CommentsFragment;
 import com.example.android2project.view.fragments.ConversationFragment;
@@ -101,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         if (getIntent().hasExtra("recipient") || getIntent().hasExtra("post")) {
             onNewIntent(getIntent());
@@ -256,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements
             if (mLocationListener!=null) {
                 mLocationListener.onLocationDenied(true);
             }
-            Snackbar.make(findViewById(android.R.id.content), "Location is disabled", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(findViewById(android.R.id.content), R.string.locatio_disabled, Snackbar.LENGTH_LONG).show();
         }
     }
 

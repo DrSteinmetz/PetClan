@@ -335,7 +335,7 @@ public class AdvertisementFragment extends DialogFragment {
                 } else if (requireActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     mLocationUtils.requestLocationPermissions();
                 } else {
-                    Toast.makeText(requireContext(), "Please enable Location", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(),getResources().getString( R.string.please_enable_location), Toast.LENGTH_SHORT).show();
                 }
 
             }

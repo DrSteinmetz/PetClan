@@ -236,7 +236,7 @@
             android:layout_below="@+id/spinner_layout"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="5dp"
-            android:hint="Kind"
+            android:hint="@string/Kind"
             android:textColorHint="@color/colorPrimaryDark"
             android:visibility="gone"
             app:endIconMode="clear_text">
@@ -269,7 +269,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp"
                 android:layout_gravity="center_vertical"
-                android:hint="Location"
+                android:hint="@string/Location"
                 android:textColorHint="@color/colorPrimaryDark"
                 app:endIconMode="clear_text"
                 app:startIconDrawable="@drawable/ic_baseline_location_black_24">
@@ -300,7 +300,7 @@
             android:layout_below="@id/location_layout"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="10dp"
-            android:hint="Price"
+            android:hint="@string/price"
             android:textColorHint="@color/colorPrimaryDark"
             android:visibility="gone"
             app:endIconMode="clear_text">
@@ -325,7 +325,7 @@
             android:layout_below="@id/pet_price_et_layout"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="10dp"
-            android:hint="Description"
+            android:hint="@string/Description"
             android:textColorHint="@color/colorPrimaryDark"
             android:visibility="gone"
             app:endIconMode="clear_text">

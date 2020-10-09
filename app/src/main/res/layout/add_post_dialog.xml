@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="start|top"
-        android:hint="What's On Your Mind?"
+        android:hint="@string/On_Your_Mind"
         android:inputType="textMultiLine"
         android:maxHeight="400dp"
         android:minHeight="150dp"

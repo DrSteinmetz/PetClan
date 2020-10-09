@@ -77,7 +77,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         mOnUpdateUserNameInCloudSucceed = new Observer<String>() {
             @Override
             public void onChanged(String newUsername) {
-                Snackbar.make(requireView(), "Your username has changed to " + newUsername,
+                Snackbar.make(requireView(), getResources().getString(R.string.user_name_change) + newUsername,
                         Snackbar.LENGTH_LONG).show();
                 ((TextView) requireActivity().findViewById(R.id.user_name_tv)).setText(newUsername);
             }
@@ -101,7 +101,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         mOnUpdatePasswordSucceed = new Observer<String>() {
             @Override
             public void onChanged(String newPassword) {
-                Snackbar.make(requireView(), "Password changed successfully",
+                Snackbar.make(requireView(), R.string.password_changed,
                         Snackbar.LENGTH_SHORT).show();
             }
         };

@@ -20,7 +20,7 @@
          android:id="@+id/searchView"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:queryHint="Search Here"
+         android:queryHint="@string/Search_Here"
          android:iconifiedByDefault="false"
          android:layout_alignParentTop="true"
          android:queryBackground="@android:color/transparent"

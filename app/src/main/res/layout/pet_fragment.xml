@@ -30,7 +30,7 @@
             android:layout_below="@id/title"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="5dp"
-            android:hint="Pet Name">
+            android:hint="@string/pet_name">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/pet_name_et"
@@ -52,7 +52,7 @@
             android:layout_below="@id/pet_name_et_layout"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="10dp"
-            android:hint="Type">
+            android:hint="@string/type">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/item_name_et"
@@ -74,7 +74,7 @@
             android:layout_below="@id/pet_type_et_layout"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="10dp"
-            android:hint="Description">
+            android:hint="@string/Description">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/pet_description_et"
