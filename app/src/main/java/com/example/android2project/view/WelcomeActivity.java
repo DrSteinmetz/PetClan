@@ -1,8 +1,13 @@
 package com.example.android2project.view;
 
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -42,6 +47,7 @@ public class WelcomeActivity extends AppCompatActivity implements
 
     private WelcomeViewModel mViewModel;
     Observer<Boolean> mUserDeletedObserver;
+    Observer<String> mUserSignInObserver;
 
     private final String SIGN_REG_FRAG = "sign_registration_fragment";
     private final String SIGN_UP_FRAG = "sign_up_fragment";
@@ -52,6 +58,7 @@ public class WelcomeActivity extends AppCompatActivity implements
     private final String TAG = "WelcomeActivity";
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private AlertDialog mLoadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +102,16 @@ public class WelcomeActivity extends AppCompatActivity implements
             }
         };
 
+        mUserSignInObserver = new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                mLoadingDialog.dismiss();
+                startMainActivity();
+            }
+        };
+
+        mViewModel.getUserSignInSucceed().observe(this, mUserSignInObserver);
+
         mViewModel.getUserDeletionSucceed().observe(this, mUserDeletedObserver);
 
         getSupportFragmentManager().beginTransaction()
@@ -116,10 +133,13 @@ public class WelcomeActivity extends AppCompatActivity implements
         }
     }
 
-    /**<-------Sets LoginRegistrationFragment buttons------->**/
+    /**
+     * <-------Sets LoginRegistrationFragment buttons------->
+     **/
     @Override
     public void onJoin() {
         getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
                 .replace(R.id.root_layout, SignUpDetailsFragment.newInstance(), SIGN_UP_FRAG)
                 .addToBackStack(null)
                 .commit();
@@ -129,6 +149,7 @@ public class WelcomeActivity extends AppCompatActivity implements
     public void onSignIn(String screenName) {
         if (screenName.equals("LoginRegistration")) {
             getSupportFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
                     .replace(R.id.root_layout, LoginDetailsFragment.newInstance(), LOGIN_DETAILS_FRAG)
                     .addToBackStack(null)
                     .commit();
@@ -137,23 +158,35 @@ public class WelcomeActivity extends AppCompatActivity implements
         }
     }
 
-    /**<-------Sets SignUpDetailsFragment buttons------->**/
+    @Override
+    public void onSignInAsGuest(AlertDialog loadingDialog) {
+        mLoadingDialog = loadingDialog;
+        mViewModel.signInAsGuest();
+    }
+
+    /**
+     * <-------Sets SignUpDetailsFragment buttons------->
+     **/
     @Override
     public void onNext(String screenName) {
         if (screenName.equals("SignUpDetails")) {
             getSupportFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
                     .replace(R.id.root_layout, UserDetailsFragment.newInstance(), USER_DETAILS_FRAG)
                     .addToBackStack(null)
                     .commit();
         } else if (screenName.equals("UserDetails")) {
             getSupportFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
                     .replace(R.id.root_layout, UserPictureFragment.newInstance(), USER_PIC_FRAG)
                     .addToBackStack(null)
                     .commit();
         }
     }
 
-    /**<-------Sets UserDetailsFragment buttons------->**/
+    /**
+     * <-------Sets UserDetailsFragment buttons------->
+     **/
     @Override
     public void onFacebook(String screenName) {
         Log.d(TAG, "onFacebook");
@@ -176,7 +209,7 @@ public class WelcomeActivity extends AppCompatActivity implements
         finish();
     }
 
-    private void startIntroActivity(){
+    private void startIntroActivity() {
         Intent intent = new Intent(WelcomeActivity.this, IntroActivity.class);
         startActivity(intent);
         finish();
@@ -193,8 +226,6 @@ public class WelcomeActivity extends AppCompatActivity implements
             mViewModel.deleteUserFromAuth();
         }
     }
-
-
 
     @Override
     protected void onDestroy() {

@@ -3,9 +3,11 @@ package com.example.android2project.view.fragments;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,19 +39,28 @@ import java.util.Objects;
 
 public class AddPetFragment extends DialogFragment {
 
+    private static final String TAG = "AddPetFragment";
     private PetViewModel mViewModel;
     private File mFile;
-    private Observer<Integer> mDoneUploadingObserver;
     private AlertDialog mLoadingDialog;
     private PhotosPreviewRecyclerview photosPreviewRecyclerview;
+
+    private Pet mCurrentPet;
+
+    private Observer<Integer> mDoneUploadingObserver;
+    private Observer<String> mDeletePetFailedObserver;
 
     private final int WRITE_PERMISSION_REQUEST = 7;
 
     public AddPetFragment() {
     }
 
-    public static AddPetFragment newInstance() {
-        return new AddPetFragment();
+    public static AddPetFragment newInstance(Pet pet) {
+        AddPetFragment fragment = new AddPetFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("pet", pet);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -56,6 +68,10 @@ public class AddPetFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Pet)).get(PetViewModel.class);
+
+        if (getArguments() != null) {
+            mCurrentPet = (Pet) getArguments().getSerializable("pet");
+        }
     }
 
     @Override
@@ -69,7 +85,17 @@ public class AddPetFragment extends DialogFragment {
         final TextInputEditText petDescriptionEt = rootView.findViewById(R.id.pet_description_et);
         final ImageButton addImageBtn = rootView.findViewById(R.id.add_image_btn);
         final Button addBtn = rootView.findViewById(R.id.add_pet_btn);
-        photosPreviewRecyclerview.init(8);
+
+
+        if (mCurrentPet != null) {
+            petNameEt.setText(mCurrentPet.getPetName());
+            petTypeEt.setText(mCurrentPet.getAnimalType());
+            petDescriptionEt.setText(mCurrentPet.getPetDescription());
+            photosPreviewRecyclerview.initEdit(8, mCurrentPet);
+            addBtn.setText(R.string.update);
+        } else {
+            photosPreviewRecyclerview.init(8);
+        }
 
         mDoneUploadingObserver = new Observer<Integer>() {
             @Override
@@ -77,14 +103,31 @@ public class AddPetFragment extends DialogFragment {
                 final String petName = petNameEt.getText().toString().trim();
                 final String petType = petTypeEt.getText().toString().trim();
                 final String description = petDescriptionEt.getText().toString().trim();
-                Pet pet = new Pet(petName, petType, description);
-                mViewModel.addPetToUser(pet);
-                mLoadingDialog.dismiss();
-                dismiss();
+                if (mCurrentPet != null) {
+                    mCurrentPet.setPetName(petName);
+                    mCurrentPet.setAnimalType(petType);
+                    mCurrentPet.setPetDescription(description);
+                    mViewModel.addPetToUser(mCurrentPet);
+                } else {
+                    mCurrentPet = new Pet(petName, petType, description);
+                    mViewModel.addPetToUser(mCurrentPet);
+                }
+                if (mLoadingDialog!=null) {
+                    mLoadingDialog.dismiss();
+                    dismiss();
+                }
+            }
+        };
+
+        mDeletePetFailedObserver = new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
             }
         };
 
         mViewModel.getOnPetUploadPhotoLiveData().observe(getViewLifecycleOwner(), mDoneUploadingObserver);
+        mViewModel.getOnDeletePetFailedLiveData().observe(getViewLifecycleOwner(),mDeletePetFailedObserver);
 
         addImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,8 +153,8 @@ public class AddPetFragment extends DialogFragment {
                 final String petType = petTypeEt.getText().toString().trim();
 
                 if (petName.length() > 0 && petType.length() > 0) {
-                    mViewModel.uploadPetPhotos(photosPreviewRecyclerview.getSelectedImageList());
                     showLoadingDialog();
+                    mViewModel.uploadPetPhotos(photosPreviewRecyclerview.getSelectedImageList());
                 } else {
                     if (petName.length() < 1) {
                         petNameEt.setError(getContext().getString(R.string.pet_name));
@@ -170,7 +213,6 @@ public class AddPetFragment extends DialogFragment {
                     ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
-
     private void showLoadingDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
         View view = LayoutInflater.from(getContext())
@@ -181,5 +223,7 @@ public class AddPetFragment extends DialogFragment {
         builder.setCancelable(false);
         mLoadingDialog = builder.create();
         mLoadingDialog.show();
+        mLoadingDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
     }
+
 }

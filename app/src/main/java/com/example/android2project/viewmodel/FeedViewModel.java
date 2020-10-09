@@ -371,4 +371,8 @@ public class FeedViewModel extends ViewModel {
             e.printStackTrace();
         }
     }
+
+    public void signOutFromGuest() {
+        mAuthRepository.signOutUser();
+    }
 }

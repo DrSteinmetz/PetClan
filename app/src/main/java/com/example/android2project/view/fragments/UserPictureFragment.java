@@ -1,8 +1,10 @@
 package com.example.android2project.view.fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -12,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -44,6 +47,7 @@ public class UserPictureFragment extends Fragment {
 
     private File mFile;
     private Uri mSelectedImage = Uri.parse("/users_profile_picture/default_user_pic.png");
+    private AlertDialog mLoadingDialog;
 
     private final int WRITE_PERMISSION_REQUEST = 7;
 
@@ -83,6 +87,7 @@ public class UserPictureFragment extends Fragment {
         mCreateUserSucceedObserver = new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean isDefaultPic) {
+                mLoadingDialog.dismiss();
                 MoveToApp();
             }
         };
@@ -141,6 +146,7 @@ public class UserPictureFragment extends Fragment {
         finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showLoadingDialog();
                 mViewModel.createNewUser(mSelectedImage);
                 //TODO: Start loading animation
             }
@@ -205,6 +211,19 @@ public class UserPictureFragment extends Fragment {
     private void MoveToApp() {
         //TODO: Finish loading animation
         listener.onFinish();
+    }
+
+    private void showLoadingDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(getContext())
+                .inflate(R.layout.loading_dog_dialog,
+                        (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));
+
+        builder.setView(view);
+        builder.setCancelable(false);
+        mLoadingDialog = builder.create();
+        mLoadingDialog.show();
+        mLoadingDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
     }
 
     @Override

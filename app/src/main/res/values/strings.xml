@@ -210,6 +210,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="search">Search</string>
+    <string name="update">Update</string>
+    <string name="guest_prompt_btn">Sniff Around As a Guest</string>
+    <string name="cancel">Cancel</string>
+    <string name="prompt_guest_tv">In order to proceed please Join Our Clan</string>
     <string name="last_name">Last Name</string>
     <string name="type">Type</string>
     <string name="registration_aborted">Your Registration has been Canceled</string>
@@ -218,5 +222,4 @@
     <string name="password_changed">Password changed successfully</string>
     <string name="please_enable_location">Please enable Location</string>
     <string name="Unlike">Unlike</string>
-
 </resources>
