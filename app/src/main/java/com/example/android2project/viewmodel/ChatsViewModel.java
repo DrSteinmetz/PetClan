@@ -106,22 +106,13 @@ public class ChatsViewModel extends ViewModel {
         final String myEmail = mAuth.getUserEmail();
         final List<User> relevantUsers = new ArrayList<>();
 
-        Map<String, User> usersMap = new HashMap<>();
-        for(User user:mAllUsers) {
-            usersMap.put(user.getEmail(),user);
-        }
-
         for (Conversation conversation : mConversations) {
-        if(usersMap.containsKey(conversation.getRecipientEmail()) && !Objects.requireNonNull(usersMap.get(conversation.getRecipientEmail())).getEmail().equals(myEmail)||
-            usersMap.containsKey(conversation.getSenderEmail()) && !Objects.requireNonNull(usersMap.get(conversation.getRecipientEmail())).getEmail().equals(myEmail)){
-            relevantUsers.add((User) usersMap.get(conversation.getRecipientEmail()));
-        }
-//            for (User user : mAllUsers) {
-//                if ((conversation.getRecipientEmail().equals(user.getEmail()) && !myEmail.equals(user.getEmail())) ||
-//                        (conversation.getSenderEmail().equals(user.getEmail()) && !myEmail.equals(user.getEmail()))) {
-//                    relevantUsers.add(user);
-//                }
-
+            for (User user : mAllUsers) {
+                if ((conversation.getRecipientEmail().equals(user.getEmail()) && !myEmail.equals(user.getEmail())) ||
+                        (conversation.getSenderEmail().equals(user.getEmail()) && !myEmail.equals(user.getEmail()))) {
+                    relevantUsers.add(user);
+                }
+            }
         }
 
         if (!this.mActiveUsers.isEmpty()) {
