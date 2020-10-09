@@ -46,11 +46,18 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
     public interface PostListener {
         void onAuthorImageClicked(int position, View view);
+
         void onCommentsTvClicked(int position, View view);
+
         void onLikeBtnClicked(int position, View view, boolean isLike);
+
         void onCommentBtnClicked(int position, View view);
+
         void onEditOptionClicked(int position, View view);
+
         void onDeleteOptionClicked(int position, View view);
+
+        void onPostImageClicked(int position, View view);
     }
 
     private PostListener listener;
@@ -66,6 +73,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         private TextView postTimeAgo;
         private TextView locationTv;
         private ShowMoreTextView contentTv;
+        private ImageView postPicIv;
         private ImageView likesAmountIv;
         private TextView likesAmountTv;
         private TextView commentsAmountTv;
@@ -82,8 +90,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             authorPicIv = itemView.findViewById(R.id.author_pic_iv);
             authorNameTv = itemView.findViewById(R.id.author_name_tv);
             postTimeAgo = itemView.findViewById(R.id.time_ago_tv);
-            locationTv=itemView.findViewById(R.id.location_tv);
+            locationTv = itemView.findViewById(R.id.location_tv);
             contentTv = itemView.findViewById(R.id.post_content_tv);
+            postPicIv = itemView.findViewById(R.id.post_pic_iv);
             likesAmountIv = itemView.findViewById(R.id.like_amount_iv);
             likesAmountTv = itemView.findViewById(R.id.likes_amount_tv);
             commentsAmountTv = itemView.findViewById(R.id.comments_amount_tv);
@@ -110,6 +119,15 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                 public void onClick(View v) {
                     if (listener != null) {
                         listener.onAuthorImageClicked(getAdapterPosition(), v);
+                    }
+                }
+            });
+
+            postPicIv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        listener.onPostImageClicked(getAdapterPosition(),v);
                     }
                 }
             });
@@ -221,7 +239,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
         holder.postTimeAgo.setText(timestampToTimeAgo(post.getPostTime()));
 
-        holder.locationTv.setText(post.getLocation()==null?"Unknown":post.getLocation());
+        holder.locationTv.setText(post.getLocation() == null ? "Unknown" : post.getLocation());
 
         if (post.getAuthorEmail().equals(mMyEmail)) {
             holder.optionsBtn.setVisibility(View.VISIBLE);
@@ -258,6 +276,15 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
         holder.contentTv.setText(post.getAuthorContent());
         holder.setContentTvProperties();
+
+        if (post.getPostImageUri() != null) {
+            holder.postPicIv.setVisibility(View.VISIBLE);
+            Glide.with(mContext)
+                    .load(post.getPostImageUri())
+                    .placeholder(R.drawable.ic_default_user_pic)
+                    .error(R.drawable.ic_default_user_pic)
+                    .into(holder.postPicIv);
+        }
 
         /**<-------In order to prevent double click------->**/
         holder.likeBtn.setEnabled(true);

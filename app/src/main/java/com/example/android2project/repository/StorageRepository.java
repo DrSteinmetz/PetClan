@@ -82,6 +82,19 @@ public class StorageRepository {
         this.mAdUploadPicListener = storageAdUploadPicInterface;
     }
 
+    /**<-------Post Picture Upload interface------->**/
+    public interface StoragePostUploadPicInterface {
+        void onPostUploadPicSuccess(String imagePath);
+
+        void onPostUploadPicFailed(String error);
+    }
+
+    StoragePostUploadPicInterface mPostUploadPicListener;
+
+    public void setPostUploadPicListener(StoragePostUploadPicInterface storagePostUploadPicInterface) {
+        this.mPostUploadPicListener = storagePostUploadPicInterface;
+    }
+
     /**<-------Picture Deletion interface------->**/
     public interface StorageDeletePicInterface {
         void onDeletePicSuccess(String imagePath);
@@ -208,6 +221,50 @@ public class StorageRepository {
         } catch (IOException e) {
             if (mPetUploadPicListener != null) {
                 mPetUploadPicListener.onPetUploadPicFailed(e.getMessage());
+            }
+            e.printStackTrace();
+        }
+    }
+
+    public void uploadPostFile(final Uri uri, final String userEmail, final String postId) {
+        StorageReference fileToUpload = mStorage.child(userEmail+"/posts/" + postId + ".jpg");
+        try {
+            RotateBitmap rotateBitmap = new RotateBitmap();
+            Bitmap bitmap = rotateBitmap.HandleSamplingAndRotationBitmap(mContext, uri);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESS_PERCENTAGE, byteArrayOutputStream);
+            byte[] bytes = byteArrayOutputStream.toByteArray();
+            fileToUpload.putBytes(bytes)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Objects.requireNonNull(Objects.requireNonNull(
+                                    Objects.requireNonNull(taskSnapshot.getMetadata())
+                                            .getReference())
+                                    .getDownloadUrl()
+                                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            if (mPostUploadPicListener != null) {
+                                                mPostUploadPicListener.onPostUploadPicSuccess(uri.toString());
+                                            }
+                                            Log.d(TAG, "onSuccess: " + uri.toString());
+                                        }
+                                    }));
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            if (mPostUploadPicListener != null) {
+                                mPostUploadPicListener.onPostUploadPicFailed(e.getMessage());
+                            }
+                        }
+                    });
+            byteArrayOutputStream.close();
+        } catch (IOException e) {
+            if (mPostUploadPicListener != null) {
+                mPostUploadPicListener.onPostUploadPicFailed(e.getMessage());
             }
             e.printStackTrace();
         }

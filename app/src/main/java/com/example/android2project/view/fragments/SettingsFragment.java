@@ -131,11 +131,10 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Settings)).get(SettingsViewModel.class);
 
-
-        //addPreferencesFromResource(R.xml.preferences);
         setPreferencesFromResource(R.xml.preferences, rootKey);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
@@ -160,7 +159,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
             GPSwitch.setChecked(mLocationUtils.isLocationEnabled());
 
         }
-
 
         getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
@@ -197,8 +195,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 Log.d(TAG, "onChanged: xpk");
             }
         };
-        mLocationUtils.getSwitchLiveData().observe(getViewLifecycleOwner(),mOnLocationTriggred);
 
+        mLocationUtils.getSwitchLiveData().observe(getViewLifecycleOwner(),mOnLocationTriggred);
     }
 
     @Override
@@ -241,8 +239,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
                         }
                     });
 
-
-
                     Log.d(TAG, "onSharedPreferenceChanged:"+mLocationMode);
 //                    if(mLocationMode!=null && mLocationMode.equals("Off")){
 //                        GPSwitch.setChecked(false);
@@ -254,8 +250,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
 //                        GPSwitch.setChecked(true);
 //                        mLocationUtils.requestLocationPermissions();
 //                    }
-
-
 
                     if (GPSwitch.isChecked() && !mLocationUtils.isLocationEnabled()) {
                         Log.d(TAG, "onSharedPreferenceChanged: xxx");
@@ -328,6 +322,4 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
         getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
-
-
 }

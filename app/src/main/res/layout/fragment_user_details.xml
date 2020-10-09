@@ -77,9 +77,6 @@
                 android:textCursorDrawable="@color/colorPrimary" />
         </com.google.android.material.textfield.TextInputLayout>
 
-
-
-
         <Button
             android:id="@+id/next_btn"
             android:layout_width="match_parent"

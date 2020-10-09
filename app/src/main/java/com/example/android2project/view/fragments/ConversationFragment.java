@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -217,7 +219,45 @@ public class ConversationFragment extends DialogFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mSendBtn.setVisibility(s.length() > 0 ? View.VISIBLE : View.GONE);
+                Animation animShow = new ScaleAnimation(0f, 1f, 0f, 1f,
+                        Animation.RELATIVE_TO_SELF, 0.5f,
+                        Animation.RELATIVE_TO_SELF, 0.5f);
+                animShow.setDuration(200);
+                animShow.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                        mSendBtn.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {}
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {}
+                });
+
+                Animation animBegone = new ScaleAnimation(1f, 0f, 1f, 0f,
+                        Animation.RELATIVE_TO_SELF, 0.5f,
+                        Animation.RELATIVE_TO_SELF, 0.5f);
+                animBegone.setDuration(200);
+                animBegone.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {}
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        mSendBtn.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {}
+                });
+
+                if (s.length() > 0 && before < 1) {
+                    mSendBtn.startAnimation(animShow);
+                } else if (s.length() < 1){
+                    mSendBtn.startAnimation(animBegone);
+                }
             }
 
             @Override

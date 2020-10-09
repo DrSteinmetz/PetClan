@@ -3,9 +3,10 @@
     <color name="colorPrimary">#669E37</color>
     <color name="colorPrimaryDark">#366F00</color>
     <color name="colorAccent">#97CF65</color>
-    <color name="colorSecondary">#FDD835</color><!--82E9DE 4DB6AC CDDC39 FDD835-->
+    <color name="colorSecondary">#FDD835</color>
 
     <color name="colorBlack">#000000</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorNotificationGrey">#818181</color>
+    <color name="colorLightYellowish">#FFFDF2</color>
 </resources>

@@ -74,7 +74,7 @@ public class SignUpDetailsFragment extends Fragment {
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.LoginRegistration)).get(LoginRegistrationViewModel.class);
 
-        removeViewModelObservers();
+        stopObservation();
 
         mRegisterSucceedObserver = new Observer<String>() {
             @Override
@@ -148,10 +148,10 @@ public class SignUpDetailsFragment extends Fragment {
                     if (email.trim().length() > 0 && password.trim().length() > 0) {
                         if (!email.matches(mEmailRegex) || password.trim().length() < 8) {
                             if (!email.matches(mEmailRegex)) {
-                                emailEt.setError(getContext().getString(R.string.valid_email));
+                                emailEt.setError(requireContext().getString(R.string.valid_email));
                             }
                             if (password.trim().length() < 8) {
-                                passwordEt.setError(getContext().getString(R.string.valid_password));
+                                passwordEt.setError(requireContext().getString(R.string.valid_password));
                             }
                             return;
                         }
@@ -164,12 +164,12 @@ public class SignUpDetailsFragment extends Fragment {
                         }
                     } else {
                         if (email.trim().length() < 1) {
-                            emailEt.setError(getContext().getString(R.string.email));
+                            emailEt.setError(requireContext().getString(R.string.email));
                         } else {
                             emailEt.setError(null);
                         }
                         if (password.trim().length() < 1) {
-                            passwordEt.setError(getContext().getString(R.string.password));
+                            passwordEt.setError(requireContext().getString(R.string.password));
                         } else {
                             passwordEt.setError(null);
                         }
@@ -186,7 +186,7 @@ public class SignUpDetailsFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (resultCode == getActivity().RESULT_OK && requestCode == AuthRepository.RC_SIGN_IN) {
+        if (resultCode == requireActivity().RESULT_OK && requestCode == AuthRepository.RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 // Google Sign In was successful, authenticate with Firebase
@@ -209,21 +209,10 @@ public class SignUpDetailsFragment extends Fragment {
         }
     }
 
-    private void removeViewModelObservers() {
+    private void stopObservation() {
         if (mViewModel != null) {
             mViewModel.getRegisterSucceed().removeObservers(this);
             mViewModel.getRegisterFailed().removeObservers(this);
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.d(TAG, "onDestroyView");
-
-        // For some reason, if the below code is being enabled, there's a bug which makes
-        // a press on the Facebook/Google button bring you straight to the MainActivity
-        // after pressing the Next button and returning to the SignUpDetails Fragment...
-        // removeAllViewModelObservers();
     }
 }

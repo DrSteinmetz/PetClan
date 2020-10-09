@@ -1,33 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutDialogContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/layoutDialogContainer"
     android:layout_margin="20dp"
-    android:padding="20dp">
+    android:padding="20dp"
+    android:layoutDirection="ltr">
 
     <EditText
         android:id="@+id/new_post_content_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="start|top"
-        android:maxHeight="400dp"
         android:hint="@string/On_Your_Mind"
-        android:textSize="20sp"
         android:inputType="textMultiLine"
-        android:minHeight="200dp" />
+        android:maxHeight="400dp"
+        android:minHeight="150dp"
+        android:textSize="20sp" />
 
-    <Button
-        android:id="@+id/post_btn"
+    <ImageView
+        android:id="@+id/image_preview_iv"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/new_post_content_et"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/rounded_shape" />
+
+    <ImageButton
+        android:id="@+id/add_image_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/new_post_content_et"
+        android:layout_below="@id/image_preview_iv"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:text="@string/Post"
-        android:textSize="20sp"
-        android:textColor="@color/colorBlack"
-        android:textStyle="bold"
-        android:textAllCaps="false" />
+        android:background="@null"
+        android:src="@drawable/ic_add_image" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/add_image_btn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp">
+
+        <Button
+            android:id="@+id/cancel_btn"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/colorBlack"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/post_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_weight="1"
+            android:text="Post"
+            android:textAllCaps="false"
+            android:textColor="@color/colorBlack"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
 </RelativeLayout>
