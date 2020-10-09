@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:title="Feed"
+    <item android:title="@string/Feed"
         android:id="@+id/item0"
         android:icon="@drawable/ic_petclan_logo_24" />
 
-    <item android:title="Chats"
+    <item android:title="@string/Chats"
         android:id="@+id/item1"
         android:icon="@drawable/ic_chat_24" />
 
-    <item android:title="MarketPlace"
+    <item android:title="@string/MarketPlace"
         android:id="@+id/item2"
         android:icon="@drawable/ic_marketplace_24" />
 
-    <item android:title="Profile"
+    <item android:title="@string/Profile"
         android:id="@+id/item3"
         android:icon="@drawable/ic_default_user_pic_24" />
 </menu>

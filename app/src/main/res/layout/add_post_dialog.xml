@@ -25,7 +25,7 @@
         android:layout_below="@id/new_post_content_et"
         android:layout_marginTop="10dp"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/rounded_shape" />
+        android:background="@drawable/rounded_image_shape" />
 
     <ImageButton
         android:id="@+id/add_image_btn"
