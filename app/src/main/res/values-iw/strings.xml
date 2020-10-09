@@ -28,7 +28,7 @@
     <string name="Description">תיאור</string>
     <string name="Location">מיקום</string>
     <string name="Sell_Adopt">מכירה\\מסירה</string>
-    <string name="Post">פרסם</string>
+    <string name="Post">פרסמו</string>
     <string name="Friend_Name">שם החבר</string>
     <string name="moments_ago">מספר רגעים</string>
     <string name="last_message">הודעה אחרונה</string>
@@ -85,6 +85,7 @@
     <string name="No">לא</string>
     <string name="Yes">כן</string>
     <string name="search">חיפוש</string>
+    <string name="update">עדכנו</string>
     <string name="Chats">צ\'אטים</string>
     <string name="MarketPlace">חנות</string>
     <string name="Profile">פרופיל</string>

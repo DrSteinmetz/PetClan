@@ -95,12 +95,6 @@
     <string name="Enter_message">Enter Message</string>
     <string name="First_name">First Name</string>
 
-
-
-
-
-
-
     <string name="large_text" translatable="false">
         "Material is the metaphor.\n\n"
 
@@ -207,7 +201,6 @@
     <string name="attachment_summary_on" translatable="false">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off" translatable="false">Only download attachments when manually requested</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="search">Search</string>
     <string name="update">Update</string>
