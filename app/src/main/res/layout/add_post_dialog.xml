@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-        android:hint="What's On Your Mind?"
+        android:hint="@string/On_Your_Mind"
         android:gravity="start|top">
 
         <com.google.android.material.textfield.TextInputEditText

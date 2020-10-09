@@ -14,9 +14,6 @@
         android:theme="@style/AppTheme"
         android:windowSoftInputMode="stateHidden|adjustResize">
 
-        <activity android:name=".view.IntroActivity"
-            android:theme="@style/Theme.Intro" />
-
         <activity
             android:name=".view.SplashActivity"
             android:screenOrientation="portrait"
@@ -32,6 +29,9 @@
             android:name=".view.WelcomeActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
+
+        <activity android:name=".view.IntroActivity"
+            android:theme="@style/Theme.Intro" />
 
         <activity
             android:name=".view.MainActivity"

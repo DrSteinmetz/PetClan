@@ -246,7 +246,7 @@ public class LocationUtils extends BroadcastReceiver  {
                 Toast.makeText(context,context.getResources().getString(R.string.network_not_found), Toast.LENGTH_SHORT).show();
             } else if (!isLocationEnabled()) {
                 Log.d(TAG, "GPS is disabled");
-                Snackbar.make(mActivity.findViewById(android.R.id.content), "Location is Disabled", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(mActivity.findViewById(android.R.id.content), R.string.location_disabled, Snackbar.LENGTH_LONG).show();
                 if(mSwitchLiveData!=null) {
                     mSwitchLiveData.setValue("Off");
                 }

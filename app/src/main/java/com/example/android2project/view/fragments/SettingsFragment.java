@@ -77,7 +77,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         mOnUpdateUserNameInCloudSucceed = new Observer<String>() {
             @Override
             public void onChanged(String newUsername) {
-                Snackbar.make(requireView(), "Your username has changed to " + newUsername,
+                Snackbar.make(requireView(), getResources().getString(R.string.user_name_change) + newUsername,
                         Snackbar.LENGTH_LONG).show();
                 ((TextView) requireActivity().findViewById(R.id.user_name_tv)).setText(newUsername);
             }
@@ -101,7 +101,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         mOnUpdatePasswordSucceed = new Observer<String>() {
             @Override
             public void onChanged(String newPassword) {
-                Snackbar.make(requireView(), "Password changed successfully",
+                Snackbar.make(requireView(), R.string.password_changed,
                         Snackbar.LENGTH_SHORT).show();
             }
         };
@@ -131,11 +131,10 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Settings)).get(SettingsViewModel.class);
 
-
-        //addPreferencesFromResource(R.xml.preferences);
         setPreferencesFromResource(R.xml.preferences, rootKey);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
@@ -160,7 +159,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
             GPSwitch.setChecked(mLocationUtils.isLocationEnabled());
 
         }
-
 
         getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
@@ -197,8 +195,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 Log.d(TAG, "onChanged: xpk");
             }
         };
-        mLocationUtils.getSwitchLiveData().observe(getViewLifecycleOwner(),mOnLocationTriggred);
 
+        mLocationUtils.getSwitchLiveData().observe(getViewLifecycleOwner(),mOnLocationTriggred);
     }
 
     @Override
@@ -241,8 +239,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
                         }
                     });
 
-
-
                     Log.d(TAG, "onSharedPreferenceChanged:"+mLocationMode);
 //                    if(mLocationMode!=null && mLocationMode.equals("Off")){
 //                        GPSwitch.setChecked(false);
@@ -255,32 +251,34 @@ public class SettingsFragment extends PreferenceFragmentCompat
 //                        mLocationUtils.requestLocationPermissions();
 //                    }
 
-
-
                     if (GPSwitch.isChecked() && !mLocationUtils.isLocationEnabled()) {
-                        Log.d(TAG, "onSharedPreferenceChanged: ");
+                        Log.d(TAG, "onSharedPreferenceChanged: xxx");
 //                        GPSwitch.setChecked(true);
                         mLocationUtils.requestLocationPermissions();
 
                     }
+
                     else if(mLocationMode!=null && mLocationMode.equals("Off")){
                         GPSwitch.setChecked(false);
                     }
 
-                    else if (mIsLocationDialogClicked) {
+                    else if (mIsLocationDialogClicked && (mLocationMode!=null&&!mLocationMode.equals("On"))){
                         Log.d(TAG, "onSharedPreferenceChanged: xpk");
                         if (GPSwitch.isChecked()) {//if was manually not with dialog
                             Log.d(TAG, "onSharedPreferenceChanged: xpk");
                             mLocationUtils.turnGPSOff();
 //                            GPSwitch.setChecked(false);
 //                            mIsLocationDialogClicked=false;
+                        }else{
+                            GPSwitch.setChecked(false);
+                            mIsLocationDialogClicked=false;
                         }
                     }
 
 //                    else if(mLocationMode!=null &&mLocationMode.equals("On")){
 //                        mLocationUtils.turnGPSOff();
 //                    }
-                    else if(!GPSwitch.isChecked()){
+                    else if(!GPSwitch.isChecked() && !mIsLocationDialogClicked){
                         mLocationUtils.turnGPSOff();
                     }
                 }
@@ -324,6 +322,4 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
         getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
-
-
 }
