@@ -91,4 +91,12 @@
     <string name="Hello">שלום</string>
     <string name="add_a_pet">הוסף חיית מחמד</string>
     <string name="add">הוסף</string>
+    <string name="No">לא</string>
+    <string name="Yes">כן</string>
+    <string name="search">חיפוש</string>
+    <string name="Chats">צ\'אטים</string>
+    <string name="MarketPlace">חנות</string>
+    <string name="Profile">פרופיל</string>
+    <string name="Feed">לוח מודעות</string>
+    <string name="Settings">הגדרות</string>
 </resources>

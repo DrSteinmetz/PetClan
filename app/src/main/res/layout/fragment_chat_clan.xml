@@ -6,19 +6,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.fragments.ChatClanFragment">
 
-   <SearchView
-       android:id="@+id/searchView"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:queryHint="Search Here"
-       android:iconifiedByDefault="false"
-       android:layout_alignParentTop="true"
-       />
+
+  <androidx.cardview.widget.CardView
+      android:id="@+id/search_view_card"
+      app:cardElevation="5dp"
+      app:cardBackgroundColor="@color/colorPrimary"
+      android:layout_width="match_parent"
+      app:cardCornerRadius="5dp"
+      android:layout_height="wrap_content">
+     <SearchView
+         android:layout_margin="10dp"
+         android:background="@color/colorWhite"
+         android:id="@+id/searchView"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:queryHint="Search Here"
+         android:iconifiedByDefault="false"
+         android:layout_alignParentTop="true"
+         android:queryBackground="@android:color/transparent"
+         />
+  </androidx.cardview.widget.CardView>
+
 
    <androidx.recyclerview.widget.RecyclerView
        android:id="@+id/chatclan_recyclerview"
        android:layout_width="match_parent"
        android:layout_height="match_parent"
-       android:layout_below="@+id/searchView"/>
+       android:layout_below="@+id/search_view_card"/>
 
 </RelativeLayout>
