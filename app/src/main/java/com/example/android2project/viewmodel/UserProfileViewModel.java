@@ -8,11 +8,14 @@ import android.widget.Toast;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.android2project.model.Pet;
 import com.example.android2project.model.User;
 import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.repository.Repository;
 import com.example.android2project.repository.StorageRepository;
 import com.google.firebase.firestore.Query;
+
+import java.util.List;
 
 public class UserProfileViewModel extends ViewModel {
     private Repository mRepository;
@@ -135,5 +138,16 @@ public class UserProfileViewModel extends ViewModel {
 
     public Query getUserPets(String email) {
         return mRepository.PetsQuery(email);
+    }
+
+    public void deletePet(Pet pet) {
+        mRepository.deletePet(pet.getPetId());
+        for(String uri : pet.getPhotoUri()) {
+            mStorageRepository.deletePhotoFromStorage(pet.getStoragePath(mAuthRepository.getUserEmail(),uri));
+        }
+    }
+
+    public void signOutFromGuest() {
+        mAuthRepository.signOutUser();
     }
 }

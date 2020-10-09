@@ -91,4 +91,7 @@
     <string name="Hello">שלום</string>
     <string name="add_a_pet">הוסף חיית מחמד</string>
     <string name="add">הוסף</string>
+    <string name="guest_prompt_btn">הכנס כאורח</string>
+    <string name="cancel">ביטול</string>
+    <string name="prompt_guest_tv">על מנת להמשיך אנא הצטרפו לשבט שלנו</string>
 </resources>

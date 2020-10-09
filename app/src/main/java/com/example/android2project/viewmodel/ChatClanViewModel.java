@@ -8,8 +8,9 @@ import androidx.lifecycle.ViewModel;
 import com.example.android2project.model.User;
 
 
-
+import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.repository.Repository;
+import com.google.android.gms.auth.api.Auth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.List;
 public class ChatClanViewModel extends ViewModel {
     private static ChatClanViewModel chatClanViewModel;
     private Repository mRepository;
+    private AuthRepository mAuth;
     private List<User> mUsers = new ArrayList<>();
 
     private MutableLiveData<List<User>> mUsersLiveData;
@@ -33,6 +35,7 @@ public class ChatClanViewModel extends ViewModel {
 
     private ChatClanViewModel(Context context) {
         mRepository = Repository.getInstance(context);
+        mAuth = AuthRepository.getInstance(context);
     }
 
     public MutableLiveData<List<User>> getUsersLiveData() {
@@ -56,5 +59,11 @@ public class ChatClanViewModel extends ViewModel {
         mUsersLiveData.setValue(users);
     }
 
+    public String getUserEmail(){
+        return mAuth.getUserEmail();
+    }
 
+    public void signOutFromGuest() {
+        mAuth.signOutUser();
+    }
 }

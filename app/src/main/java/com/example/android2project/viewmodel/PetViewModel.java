@@ -23,6 +23,7 @@ public class PetViewModel extends ViewModel {
     private int mTotalCount = 0;
 
     private MutableLiveData<Integer> onPetUploadPhotoLiveData;
+    private MutableLiveData<String> onDeletePetFailedLiveData;
     private List<String> mPhotosDownloadString = new ArrayList<>();
 
     final String TAG = "PetViewModel";
@@ -34,18 +35,6 @@ public class PetViewModel extends ViewModel {
         this.mStorageRepository = StorageRepository.getInstance(context);
     }
 
-
-    public void uploadPetPhotos(List<String> imageList) {
-        final String userEmail = mAuth.getUserEmail();
-        mTotalCount = getListSize(imageList);
-        Log.d(TAG, "uploadPetPhotos: " + imageList);
-        for (String str : imageList) {
-            if(str!=null) {
-                Uri uri = Uri.parse(str);
-                mStorageRepository.uploadPhoto(PATH, uri, userEmail, 1);
-            }
-        }
-    }
 
     public MutableLiveData<Integer> getOnPetUploadPhotoLiveData() {
         if (onPetUploadPhotoLiveData == null) {
@@ -75,8 +64,43 @@ public class PetViewModel extends ViewModel {
 
     }
 
+    public MutableLiveData<String> getOnDeletePetFailedLiveData() {
+        if (onDeletePetFailedLiveData == null) {
+            onDeletePetFailedLiveData = new MutableLiveData<>();
+            attachDeletePetListener();
+        }
+        return onDeletePetFailedLiveData;
+    }
+
+    private void attachDeletePetListener() {
+        mRepository.setDeletePetListener(new Repository.RepositoryDeletePetInterface() {
+            @Override
+            public void onDeletePetFailed(String error) {
+                onDeletePetFailedLiveData.setValue(error);
+            }
+        });
+    }
+
     public List<String> getPhotosDownloadString() {
         return mPhotosDownloadString;
+    }
+
+    public void uploadPetPhotos(List<String> imageList) {
+        final String userEmail = mAuth.getUserEmail();
+        mTotalCount = getListSize(imageList);
+        Log.d(TAG, "uploadPetPhotos: " + imageList);
+        for (String str : imageList) {
+            if (str != null && !str.contains("https://firebasestorage.googleapis.com/v0/b/petclan-2fdce.appspot.com")) {
+                Uri uri = Uri.parse(str);
+                mStorageRepository.uploadPhoto(PATH, uri, userEmail, 1);
+            } else if (str != null && str.contains("https://firebasestorage.googleapis.com/v0/b/petclan-2fdce.appspot.com")) {
+                mPhotosDownloadString.add(str);
+                mIterationCount++;
+            }
+            if (mIterationCount == mTotalCount) {
+                onPetUploadPhotoLiveData.setValue(mIterationCount);
+            }
+        }
     }
 
     public void addPetToUser(Pet pet) {
@@ -84,17 +108,16 @@ public class PetViewModel extends ViewModel {
         mRepository.uploadPetToUser(pet);
         mIterationCount = 0;
         mTotalCount = 0;
-        mPhotosDownloadString = null;
-
     }
 
-    public int getListSize(List<String> imageList){
+    public int getListSize(List<String> imageList) {
         int counter = 0;
-        for(String str : imageList){
-            if (str!=null){
+        for (String str : imageList) {
+            if (str != null) {
                 counter++;
             }
         }
         return counter;
     }
+
 }

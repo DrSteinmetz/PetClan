@@ -1,12 +1,15 @@
 package com.example.android2project.view.fragments;
 
 import android.app.AlertDialog;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -36,6 +39,8 @@ public class MarketPlaceFragment extends Fragment {
     private AdsAdapter mAdsAdapter;
     private RecyclerView mMarketRecycler;
 
+    private String mCurrentUser;
+
     private Advertisement mCurrentAd;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -60,6 +65,8 @@ public class MarketPlaceFragment extends Fragment {
 
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.MarketPlace)).get(MarketPlaceViewModel.class);
+
+        mCurrentUser = mViewModel.getCurrentUser().getEmail();
 
         mOnDownloadAdsSucceed = new Observer<List<Advertisement>>() {
             @Override
@@ -121,9 +128,13 @@ public class MarketPlaceFragment extends Fragment {
         mAdsAdapter.setAdsAdapterListener(new AdsAdapter.AdsAdapterInterface() {
             @Override
             public void onAdClick(View view, int position) {
-                mCurrentAd = mViewModel.getAdList().get(position);
-                DisplayAdFragment.newInstance(mCurrentAd, mViewModel.getCurrentUser().getEmail())
-                        .show(getChildFragmentManager(), "");
+                if(!mCurrentUser.equals("a@gmail.com")) {
+                    mCurrentAd = mViewModel.getAdList().get(position);
+                    DisplayAdFragment.newInstance(mCurrentAd, mViewModel.getCurrentUser().getEmail())
+                            .show(getChildFragmentManager(), "");
+                } else {
+                    showGuestDialog();
+                }
             }
 
             @Override
@@ -160,7 +171,11 @@ public class MarketPlaceFragment extends Fragment {
         addAdBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AdvertisementFragment.newInstance(null).show(getChildFragmentManager(), "advertisement_fragment");
+                if(!mCurrentUser.equals("a@gmail.com")) {
+                    AdvertisementFragment.newInstance(null).show(getChildFragmentManager(), "advertisement_fragment");
+                } else {
+                    showGuestDialog();
+                }
             }
         });
 
@@ -189,5 +204,33 @@ public class MarketPlaceFragment extends Fragment {
         mViewModel.getAdList().add(0, ad);
         mAdsAdapter.notifyItemInserted(0);
         loadingDialog.dismiss();
+    }
+
+    private void showGuestDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(getContext())
+                .inflate(R.layout.guest_dialog,
+                        (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));
+
+        builder.setView(view);
+        builder.setCancelable(false);
+        final AlertDialog guestDialog = builder.create();
+
+        Button cancelBtn = view.findViewById(R.id.cancel_btn);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                guestDialog.dismiss();
+            }
+        });
+        Button joinBtn = view.findViewById(R.id.join_btn);
+        joinBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mViewModel.signOutFromGuest();
+            }
+        });
+        guestDialog.show();
+        guestDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
     }
 }

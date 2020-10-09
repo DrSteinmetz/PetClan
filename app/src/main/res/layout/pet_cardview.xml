@@ -19,6 +19,16 @@
             android:layout_margin="10dp"
             app:iss_corner_radius="10" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/pet_options_menu_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/images_slider"
+            android:layout_alignBottom="@id/images_slider"
+            android:layout_margin="5dp"
+            android:src="@drawable/ic_round_more_vert_24"
+            app:fabCustomSize="30dp" />
+
         <TextView
             android:id="@+id/pet_name_tv"
             android:layout_width="wrap_content"

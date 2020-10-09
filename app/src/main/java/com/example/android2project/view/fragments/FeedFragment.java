@@ -2,6 +2,7 @@ package com.example.android2project.view.fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.net.Uri;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.model.ViewModelFactory;
 import com.example.android2project.viewmodel.FeedViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.GeoPoint;
 import com.stfalcon.imageviewer.StfalconImageViewer;
 import com.stfalcon.imageviewer.loader.ImageLoader;
@@ -56,6 +58,8 @@ public class FeedFragment extends Fragment {
     private FeedViewModel mViewModel;
 
     private String mUserEmail;
+
+    private String mCurrentUser;
 
     private RecyclerView mRecyclerView;
     private PostsAdapter mPostsAdapter;
@@ -127,6 +131,8 @@ public class FeedFragment extends Fragment {
         mViewModel = new ViewModelProvider(this, new ViewModelFactory(getContext(),
                 ViewModelEnum.Feed)).get(FeedViewModel.class);
         mViewModel.setUserEmail(mUserEmail);
+
+        mCurrentUser = mViewModel.getMyEmail();
 
         mViewModel.refreshPosts();
 
@@ -246,9 +252,13 @@ public class FeedFragment extends Fragment {
         addPostBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddPostFragment.newInstance(mUserLocation,null)
-                        .show(getParentFragmentManager()
-                                .beginTransaction(), "fragment_add_post");
+                if(!mCurrentUser.equals("a@gmail.com")) {
+                    AddPostFragment.newInstance(mUserLocation, null)
+                            .show(getParentFragmentManager()
+                                    .beginTransaction(), "fragment_add_post");
+                } else {
+                    showGuestDialog();
+                }
             }
         });
 
@@ -258,7 +268,6 @@ public class FeedFragment extends Fragment {
                 false));
 
         mPostsAdapter = new PostsAdapter(mViewModel.getPosts(), getContext(), mUserEmail);
-
 
         mPostsAdapter.setPostListener(new PostsAdapter.PostListener() {
             @Override
@@ -271,22 +280,34 @@ public class FeedFragment extends Fragment {
             @Override
             public void onCommentsTvClicked(int position, View view) {
                 if (listener != null) {
-                    final Post post = mViewModel.getPosts().get(position);
-                    listener.onComment(post);
+                    if(!mCurrentUser.equals("a@gmail.com")) {
+                        final Post post = mViewModel.getPosts().get(position);
+                        listener.onComment(post);
+                    }else{
+                        showGuestDialog();
+                    }
                 }
             }
 
 
             @Override
             public void onLikeBtnClicked(int position, View view, boolean isLike) {
-                mViewModel.updatePostLikes(isLike, position);
+                if(!mCurrentUser.equals("a@gmail.com")) {
+                    mViewModel.updatePostLikes(isLike, position);
+                }else{
+                    showGuestDialog();
+                }
             }
 
             @Override
             public void onCommentBtnClicked(int position, View view) {
                 if (listener != null) {
-                    final Post post = mViewModel.getPosts().get(position);
-                    listener.onComment(post);
+                    if(!mCurrentUser.equals("a@gmail.com")) {
+                        final Post post = mViewModel.getPosts().get(position);
+                        listener.onComment(post);
+                    }else{
+                        showGuestDialog();
+                    }
                 }
             }
 
@@ -321,12 +342,15 @@ public class FeedFragment extends Fragment {
             @Override
             public void onPostImageClicked(int position, View view) {
                 final String postImage = mViewModel.getPosts().get(position).getPostImageUri();
-                new StfalconImageViewer.Builder<>(getContext(), Collections.singletonList(postImage), new ImageLoader<String>() {
+                new StfalconImageViewer.Builder<>(getContext(), Collections.singletonList(postImage),
+                        new ImageLoader<String>() {
                     @Override
                     public void loadImage(ImageView imageView, String image) {
                         Glide.with(requireContext()).load(image).into(imageView);
                     }
-                }).show();
+                }).withBackgroundColor(getResources().getColor(R.color.colorBlack,null))
+                        .withTransitionFrom((ImageView) view)
+                        .show();
             }
         });
 
@@ -388,153 +412,33 @@ public class FeedFragment extends Fragment {
         }
     }
 
-//    private void showPostAddingDialog() {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
-//        View view = LayoutInflater.from(getContext())
-//                .inflate(R.layout.add_post_dialog,
-//                        (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));
-//
-//        builder.setView(view);
-//        builder.setCancelable(true);
-//
-//        final EditText postContentEt = view.findViewById(R.id.new_post_content_et);
-//        final ImageButton imagePicker = view.findViewById(R.id.add_image_btn);
-//        final Button postBtn = view.findViewById(R.id.post_btn);
-//        final Button cancelBtn = view.findViewById(R.id.cancel_btn);
-//        final ImageView picPreview = view.findViewById(R.id.image_preview_iv);
-//        postBtn.setText("Post");
-//
-//        postBtn.setEnabled(false);
-//
-//        final AlertDialog alertDialog = builder.create();
-//
-//
-//        postContentEt.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                postBtn.setEnabled(s.toString().trim().length() > 0);
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {}
-//        });
-//
-//        imagePicker.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                File file = new File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-//                        "petclan" + System.nanoTime() + "pic.jpg");
-//                Uri uri = FileProvider.getUriForFile(requireContext(),
-//                        "com.example.android2project.provider", file);
-//
-//                CropImage.activity()
-//                        .setAspectRatio(4, 3)
-//                        .setCropShape(CropImageView.CropShape.RECTANGLE)
-//                        .setGuidelines(CropImageView.Guidelines.ON)
-//                        .setOutputUri(uri)
-//                        .start(requireContext(), FeedFragment.this);
-//            }
-//        });
-//
-//        postBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                final Post post = new Post(mViewModel.getMyEmail(), mViewModel.getMyName(),
-//                        mViewModel.getMyPhotoUri(), postContentEt.getText().toString());
-//
-//                post.setLocation(mUserLocation == null ? "Unknown" :
-//                        mUserLocation.getLocality());
-//                post.setGeoPoint(mUserLocation == null ? null :
-//                        new GeoPoint(mUserLocation.getLatitude(), mUserLocation.getLongitude()));
-//
-//                mViewModel.uploadNewPost(post);
-//                alertDialog.dismiss();
-//            }
-//        });
-//
-//        cancelBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                alertDialog.dismiss();
-//            }
-//        });
-//        alertDialog.show();
-//    }
+    private void showGuestDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(getContext())
+                .inflate(R.layout.guest_dialog,
+                        (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));
 
+        builder.setView(view);
+        builder.setCancelable(false);
+        final AlertDialog guestDialog = builder.create();
 
-//    private void showPostEditingDialog(final Post postToEdit, final int position) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
-//        View view = LayoutInflater.from(getContext())
-//                .inflate(R.layout.add_post_dialog,
-//                        (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));
-//
-//        builder.setView(view);
-//        builder.setCancelable(true);
-//
-//        final EditText postContentEt = view.findViewById(R.id.new_post_content_et);
-//        postContentEt.setText(postToEdit.getAuthorContent());
-//        final Button updateBtn = view.findViewById(R.id.post_btn);
-//        updateBtn.setText("Update");
-//        updateBtn.setEnabled(false);
-//
-//        final AlertDialog alertDialog = builder.create();
-//
-//        postContentEt.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                updateBtn.setEnabled(s.toString().trim().length() > 0);
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//            }
-//        });
-//
-//        updateBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                postToEdit.setAuthorContent(postContentEt.getText().toString());
-//                mViewModel.updatePost(postToEdit, position);
-//                alertDialog.dismiss();
-//            }
-//        });
-//
-//        alertDialog.show();
-//    }
-
-//    private void showDeletePostDialog(final Post postToDelete, final int position) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
-//
-//        View view = LayoutInflater.from(getContext())
-//                .inflate(R.layout.add_post_dialog,
-//                        (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));
-//
-//        builder.setView(view);
-//        builder.setCancelable(true);
-//
-//        final EditText postContentEt = view.findViewById(R.id.new_post_content_et);
-//        postContentEt.setText(postToDelete.getAuthorContent());
-//        final Button updateBtn = view.findViewById(R.id.post_btn);
-//
-//        final AlertDialog alertDialog = builder.create();
-//
-//        updateBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mViewModel.deletePost(postToDelete.getPostId(), position);
-//                alertDialog.dismiss();
-//            }
-//        });
-//
-//        alertDialog.show();
-//    }
+        Button cancelBtn = view.findViewById(R.id.cancel_btn);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                guestDialog.dismiss();
+            }
+        });
+        Button joinBtn = view.findViewById(R.id.join_btn);
+        joinBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mViewModel.signOutFromGuest();
+            }
+        });
+        guestDialog.show();
+        guestDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+    }
 
     @Override
     public void onResume() {

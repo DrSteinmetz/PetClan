@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private Observer<Boolean> mSignOutUserObserver;
 
+    private String mCurrentUser;
+
     private ArrayList<String> mMenuOptions = new ArrayList<>();
 
     private ViewPager mViewPager;
@@ -106,6 +108,14 @@ public class MainActivity extends AppCompatActivity implements
             onNewIntent(getIntent());
         }
 
+        mViewModel = new ViewModelProvider(this, new ViewModelFactory(this,
+                ViewModelEnum.Main)).get(MainViewModel.class);
+
+        mCurrentUser = mViewModel.getUserEmail();
+
+        mUserPictureViewModel = new ViewModelProvider(this, new ViewModelFactory(this,
+                ViewModelEnum.Picture)).get(UserPictureViewModel.class);
+
         mLocationUtils = LocationUtils.getInstance(this);
         registerReceiver(mLocationUtils,new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
         mOnLocationChanged = new Observer<Address>() {
@@ -126,11 +136,6 @@ public class MainActivity extends AppCompatActivity implements
         mBottomBar = findViewById(R.id.bottomBar);
         mPageAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getFragments());
 
-        mViewModel = new ViewModelProvider(this, new ViewModelFactory(this,
-                ViewModelEnum.Main)).get(MainViewModel.class);
-
-        mUserPictureViewModel = new ViewModelProvider(this, new ViewModelFactory(this,
-                ViewModelEnum.Picture)).get(UserPictureViewModel.class);
 
         mDrawerLayout = findViewById(R.id.main_drawer_layout);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -208,11 +213,15 @@ public class MainActivity extends AppCompatActivity implements
                     mDrawerLayout.closeDrawer();
                     menuAdapter.setViewSelected(position, true);
                 } else if (position == 4) {
-                    mDrawerLayout.closeDrawer();
-                    getSupportFragmentManager().beginTransaction()
-                            .add(android.R.id.content, SettingsFragment.newInstance())
-                            .addToBackStack(null)
-                            .commit();
+                    if (!mCurrentUser.equals("a@gmail.com")) {
+                        mDrawerLayout.closeDrawer();
+                        getSupportFragmentManager().beginTransaction()
+                                .add(android.R.id.content, SettingsFragment.newInstance())
+                                .addToBackStack(null)
+                                .commit();
+                    } else {
+                        Toast.makeText(MainActivity.this,getString(R.string.prompt_guest_tv) , Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -255,8 +264,8 @@ public class MainActivity extends AppCompatActivity implements
         }else if(resultCode==RESULT_CANCELED){
             if (mLocationListener!=null) {
                 mLocationListener.onLocationDenied(true);
+                Snackbar.make(findViewById(android.R.id.content), "Location is disabled", Snackbar.LENGTH_LONG).show();
             }
-            Snackbar.make(findViewById(android.R.id.content), "Location is disabled", Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -284,6 +293,7 @@ public class MainActivity extends AppCompatActivity implements
 
         return fragmentList;
     }
+
 
     @Override
     public void onComment(Post post) {
