@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        android:title="Personal Details">
+        android:title="@string/personal_details">
 
         <EditTextPreference
             android:key="username_et"
@@ -29,7 +29,7 @@
 
         <Preference
             android:key="location_pref"
-            android:title="Where are you?"
+            android:title="@string/where_r_u"
             android:summary="@string/unknown"
             android:textAllCaps="false"
             android:dialogTitle="@string/location"

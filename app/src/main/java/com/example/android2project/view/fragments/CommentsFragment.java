@@ -266,7 +266,7 @@ public class CommentsFragment extends DialogFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getDialog().getWindow()
+        requireDialog().getWindow()
                 .getAttributes().windowAnimations = R.style.ConversationDialogAnimation;
     }
 
@@ -296,18 +296,19 @@ public class CommentsFragment extends DialogFragment {
 
     private void showCommentEditingDialog(final Comment commentToEdit) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
-        ViewGroup root;
+
         View view = LayoutInflater.from(getContext())
-                .inflate(R.layout.add_post_dialog,
+                .inflate(R.layout.edit_comment_dialog,
                         (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));
 
         builder.setView(view);
         builder.setCancelable(true);
 
         final EditText commentContentEt = view.findViewById(R.id.new_post_content_et);
-        commentContentEt.setText(commentToEdit.getAuthorContent());
         final Button updateBtn = view.findViewById(R.id.post_btn);
-        updateBtn.setText("Update");
+        final Button cancelBtn = view.findViewById(R.id.cancel_btn);
+
+        commentContentEt.setText(commentToEdit.getAuthorContent());
         updateBtn.setEnabled(false);
 
         final AlertDialog alertDialog = builder.create();
@@ -325,6 +326,13 @@ public class CommentsFragment extends DialogFragment {
             public void afterTextChanged(Editable s) {}
         });
 
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
         updateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -337,5 +345,4 @@ public class CommentsFragment extends DialogFragment {
 
         alertDialog.show();
     }
-
 }

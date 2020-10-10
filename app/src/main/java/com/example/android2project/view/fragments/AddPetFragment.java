@@ -155,12 +155,12 @@ public class AddPetFragment extends DialogFragment {
                     mViewModel.uploadPetPhotos(photosPreviewRecyclerview.getSelectedImageList());
                 } else {
                     if (petName.length() < 1) {
-                        petNameEt.setError(getContext().getString(R.string.enter_pet_name));
+                        petNameEt.setError(requireContext().getString(R.string.enter_pet_name));
                     } else {
                         petNameEt.setError(null);
                     }
                     if (petType.length() < 1) {
-                        petTypeEt.setError(getContext().getString(R.string.enter_pet_type));
+                        petTypeEt.setError(requireContext().getString(R.string.enter_pet_type));
                     } else {
                         petTypeEt.setError(null);
                     }
@@ -223,5 +223,4 @@ public class AddPetFragment extends DialogFragment {
         mLoadingDialog.show();
         mLoadingDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
     }
-
 }

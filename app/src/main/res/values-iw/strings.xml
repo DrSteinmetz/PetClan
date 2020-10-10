@@ -101,7 +101,7 @@
     <string name="type_your_comment_here">כתבו את תגובתכם כאן</string>
     <string name="on_your_mind">על מה אתם חושבים?</string>
     <string name="enter_message">הקלידו הודעה</string>
-    <string name="first_name">שם  פרטי</string>
+    <string name="first_name">שם פרטי</string>
     <string name="pet_name">שם חיית המחמד</string>
     <string name="type">סוג</string>
     <string name="last_name">שם משפחה</string>
@@ -112,6 +112,8 @@
     <string name="please_enable_location">אנא הפעילו מיקום</string>
     <string name="Unlike">הסירו לייק</string>
     <string name="no_need_to_be_shy">אין צורך להיות ביישנים…</string>
+    <string name="personal_details">פרטים אישיים</string>
+    <string name="km">ק"מ</string>
     <string name="account_deletion_dialog">האם אתם בטוחים שברצונכם למחוק חשבון זה לצמיתות?</string>
     <string name="change_your_username">שנו את שם המשתמש שלכם</string>
     <string name="enter_username">הזינו שם משתמש:</string>

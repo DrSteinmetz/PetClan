@@ -151,7 +151,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
         SeekBarPreference sbp = findPreference("distance_sb");
         if (sbp != null) {
-            sbp.setSummary(sbp.getValue() + " Km");
+            sbp.setSummary(sbp.getValue() + " " + getString(R.string.km));
         }
 
         EditTextPreference usernameEt = findPreference("username_et");
@@ -161,7 +161,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
         locationPref = findPreference("location_pref");
         if (locationPref != null) {
-            locationPref.setSummary(mUserLocation == null ? getContext().getResources().getString(R.string.unknown) :
+            locationPref.setSummary(mUserLocation == null ? requireContext().getResources().getString(R.string.unknown) :
                     mUserLocation.getLocality());
         }
 
@@ -288,7 +288,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     final int value = ((sbp.getValue() / 25) * 25) == 0 ? 1 : ((sbp.getValue() / 25) * 25);
                     final String progress = Integer.toString(value);
                     sbp.setValue(value);
-                    sbp.setSummary(progress + " Km");
+                    sbp.setSummary(progress + " " + getString(R.string.km));
                 }
                 break;
         }

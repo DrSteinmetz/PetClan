@@ -213,7 +213,7 @@
                 android:id="@+id/spinner_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Choose Category:"
+                android:text="@string/choose_category"
                 android:textSize="15sp"
                 android:textColor="@color/colorBlack"
                 android:textAllCaps="false" />

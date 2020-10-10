@@ -90,6 +90,7 @@ public class ChatsViewModel extends ViewModel {
         });
     }
 
+
     public List<User> getActiveUsers() {
         return mActiveUsers;
     }

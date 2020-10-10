@@ -222,6 +222,8 @@
     <string name="please_enable_location">Please enable Location</string>
     <string name="Unlike">Unlike</string>
     <string name="no_need_to_be_shy">No Need To Be Shy…</string>
+    <string name="personal_details">Personal Details</string>
+    <string name="km">Km</string>
     <string name="account_deletion_dialog">Are You Sure You Want To Permanently Delete Your Account?</string>
     <string name="change_your_username">Change your username</string>
     <string name="enter_username">Enter a Username:</string>

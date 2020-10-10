@@ -129,10 +129,10 @@ public class AddPostFragment extends DialogFragment {
         picPreview.setClipToOutline(true);
 
         if (mCurrentPost == null) {
-            postBtn.setText("Post");
+            postBtn.setText(getString(R.string.post));
             postBtn.setEnabled(false);
         } else {
-            postBtn.setText("Update");
+            postBtn.setText(getString(R.string.update));
             postContentEt.setText(mCurrentPost.getAuthorContent());
             if (mCurrentPost.getPostImageUri() != null) {
                 Glide.with(requireContext()).load(mCurrentPost.getPostImageUri()).into(picPreview);
@@ -177,7 +177,7 @@ public class AddPostFragment extends DialogFragment {
                 if (mCurrentPost == null) {
                     mCurrentPost = new Post(mViewModel.getMyEmail(), mViewModel.getMyName(),
                             mViewModel.getMyPhotoUri(), postContentEt.getText().toString());
-                    mCurrentPost.setLocation(mUserLocation == null ? getContext().getResources().getString(R.string.unknown) :
+                    mCurrentPost.setLocation(mUserLocation == null ? requireContext().getResources().getString(R.string.unknown) :
                             mUserLocation.getLocality());
                     mCurrentPost.setGeoPoint(mUserLocation == null ? null :
                             new GeoPoint(mUserLocation.getLatitude(), mUserLocation.getLongitude()));

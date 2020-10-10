@@ -1,6 +1,7 @@
 package com.example.android2project.view.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,6 +78,9 @@ public class ChatsFragment extends Fragment {
                 });
 
                 mRecyclerView.setAdapter(mChatsAdapter);
+
+                Log.d(TAG, "onChanged: " + users.size());
+                mNoChatsTv.setVisibility(users.size() > 0 ? View.GONE : View.VISIBLE);
             }
         };
 
@@ -88,6 +92,7 @@ public class ChatsFragment extends Fragment {
                     mChatsAdapter.notifyDataSetChanged();
                 }
 
+                Log.d(TAG, "onChanged: " + conversations.size());
                 mNoChatsTv.setVisibility(conversations.size() > 0 ? View.GONE : View.VISIBLE);
             }
         };
