@@ -637,7 +637,6 @@ public class Repository {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-
                         if (mRepositoryPostLikesUpdateSucceedMLD != null) {
                             mRepositoryPostLikesUpdateSucceedMLD.setValue(post);
                         }
@@ -646,7 +645,6 @@ public class Repository {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-
                         if (mRepositoryPostLikesUpdateFailedMLD != null) {
                             mRepositoryPostLikesUpdateFailedMLD.setValue(e.getMessage());
                         }
@@ -1121,6 +1119,7 @@ public class Repository {
                             }
                         }
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
                         if (mDownloadActiveChatsListener != null) {
@@ -1151,14 +1150,14 @@ public class Repository {
         if (userEmail != null) {
             mCloudUsers.document(userEmail).collection("pets")
                     .document(petId).delete()
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    if(mDeletePetListener!=null){
-                        mDeletePetListener.onDeletePetFailed(e.getMessage());
-                    }
-                }
-            });
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            if (mDeletePetListener != null) {
+                                mDeletePetListener.onDeletePetFailed(e.getMessage());
+                            }
+                        }
+                    });
         }
     }
 

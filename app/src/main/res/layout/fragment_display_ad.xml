@@ -22,7 +22,8 @@
             android:id="@+id/contact_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/images_slider"
+            android:layout_below="@id/author_layout"
+            android:layout_marginTop="10dp"
             android:layout_centerHorizontal="true"
             android:text="@string/Contact_me"
             android:textAlignment="center"
@@ -33,8 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/images_slider"
-            android:layout_alignStart="@id/images_slider"
-            android:layout_alignBottom="@id/contact_btn"
+            android:layout_centerHorizontal="true"
             android:gravity="center">
 
             <ImageView
@@ -52,7 +52,6 @@
                 android:text="author" />
 
         </LinearLayout>
-
 
         <com.google.android.material.chip.Chip
             android:id="@+id/item_name_tv"
@@ -74,19 +73,6 @@
             android:layout_toEndOf="@id/item_name_tv"
             android:textSize="20sp"
             app:chipStrokeColor="@color/colorPrimary" />
-
-        <!--        <TextView-->
-        <!--            android:id="@+id/item_name_tv"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_below="@id/contact_btn"-->
-        <!--            android:layout_marginTop="10dp"-->
-        <!--            android:layout_marginStart="20dp"-->
-        <!--            android:text="@string/Item"-->
-        <!--            android:textSize="20sp"-->
-        <!--            android:textColor="@color/colorBlack"-->
-        <!--            android:textStyle="bold"-->
-        <!--            android:textAllCaps="false" />-->
 
         <LinearLayout
             android:id="@+id/is_pet_layout"
@@ -121,7 +107,6 @@
                 app:drawableStartCompat="@drawable/ic_gender" />
 
         </LinearLayout>
-
 
         <TextView
             android:id="@+id/price_tv"
@@ -171,24 +156,13 @@
             android:textStyle="bold"
             app:drawableStartCompat="@drawable/ic_baseline_location_black_24" />
 
-        <!--        <TextView-->
-        <!--            android:id="@+id/description_title_tv"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_below="@id/item_name_tv"-->
-        <!--            android:layout_marginTop="15dp"-->
-        <!--            android:layout_marginStart="20dp"-->
-        <!--            android:text="@string/Description"-->
-        <!--            android:textSize="20sp"-->
-        <!--            android:textColor="@color/colorBlack"-->
-        <!--            android:textStyle="bold"-->
-        <!--            android:textAllCaps="false" />-->
         <TextView
             android:id="@+id/description_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/is_pet_layout"
             android:layout_alignStart="@id/images_slider"
+            android:layout_alignEnd="@id/images_slider"
             android:layout_marginTop="15dp"
             android:text="@string/Description"
             android:textAllCaps="false"

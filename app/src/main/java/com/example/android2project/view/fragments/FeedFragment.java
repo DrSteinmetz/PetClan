@@ -81,7 +81,8 @@ public class FeedFragment extends Fragment {
 
     private FeedInterface listener;
 
-    public FeedFragment() {}
+    public FeedFragment() {
+    }
 
     public static FeedFragment newInstance(final String userEmail) {
         FeedFragment fragment = new FeedFragment();
@@ -160,6 +161,13 @@ public class FeedFragment extends Fragment {
             }
         };
 
+        mOnPostUploadFailed = new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+            }
+        };
+
         mOnPostUpdateSucceed = new Observer<Integer>() {
             @Override
             public void onChanged(Integer position) {
@@ -174,17 +182,10 @@ public class FeedFragment extends Fragment {
             }
         };
 
-        mOnPostUploadFailed = new Observer<String>() {
-            @Override
-            public void onChanged(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
-            }
-        };
-
         mOnPostLikesUpdateSucceed = new Observer<Integer>() {
             @Override
             public void onChanged(Integer position) {
-                mPostsAdapter.notifyItemChanged(position);
+                mPostsAdapter.notifyDataSetChanged();
             }
         };
 
@@ -236,7 +237,7 @@ public class FeedFragment extends Fragment {
         addPostBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!mCurrentUser.equals("a@gmail.com")) {
+                if (!mCurrentUser.equals("a@gmail.com")) {
                     AddPostFragment.newInstance(mUserLocation, null)
                             .show(getParentFragmentManager()
                                     .beginTransaction(), "fragment_add_post");
@@ -264,21 +265,20 @@ public class FeedFragment extends Fragment {
             @Override
             public void onCommentsTvClicked(int position, View view) {
                 if (listener != null) {
-                    if(!mCurrentUser.equals("a@gmail.com")) {
+                    if (!mCurrentUser.equals("a@gmail.com")) {
                         final Post post = mViewModel.getPosts().get(position);
                         listener.onComment(post);
-                    }else{
+                    } else {
                         showGuestDialog();
                     }
                 }
             }
 
-
             @Override
             public void onLikeBtnClicked(int position, View view, boolean isLike) {
-                if(!mCurrentUser.equals("a@gmail.com")) {
+                if (!mCurrentUser.equals("a@gmail.com")) {
                     mViewModel.updatePostLikes(isLike, position);
-                }else{
+                } else {
                     showGuestDialog();
                 }
             }
@@ -286,10 +286,10 @@ public class FeedFragment extends Fragment {
             @Override
             public void onCommentBtnClicked(int position, View view) {
                 if (listener != null) {
-                    if(!mCurrentUser.equals("a@gmail.com")) {
+                    if (!mCurrentUser.equals("a@gmail.com")) {
                         final Post post = mViewModel.getPosts().get(position);
                         listener.onComment(post);
-                    }else{
+                    } else {
                         showGuestDialog();
                     }
                 }
@@ -298,7 +298,7 @@ public class FeedFragment extends Fragment {
             @Override
             public void onEditOptionClicked(int position, View view) {
                 final Post post = mViewModel.getPosts().get(position);
-                AddPostFragment.newInstance(null,post)
+                AddPostFragment.newInstance(null, post)
                         .show(getParentFragmentManager()
                                 .beginTransaction(), "fragment_edit_post");
             }
@@ -328,11 +328,11 @@ public class FeedFragment extends Fragment {
                 final String postImage = mViewModel.getPosts().get(position).getPostImageUri();
                 new StfalconImageViewer.Builder<>(getContext(), Collections.singletonList(postImage),
                         new ImageLoader<String>() {
-                    @Override
-                    public void loadImage(ImageView imageView, String image) {
-                        Glide.with(requireContext()).load(image).into(imageView);
-                    }
-                }).withBackgroundColor(getResources().getColor(R.color.colorBlack,null))
+                            @Override
+                            public void loadImage(ImageView imageView, String image) {
+                                Glide.with(requireContext()).load(image).into(imageView);
+                            }
+                        }).withBackgroundColor(getResources().getColor(R.color.colorBlack, null))
                         .withTransitionFrom((ImageView) view)
                         .show();
             }

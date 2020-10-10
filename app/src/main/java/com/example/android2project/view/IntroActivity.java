@@ -1,9 +1,5 @@
 package com.example.android2project.view;
 
-import androidx.annotation.FloatRange;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -13,7 +9,6 @@ import com.example.android2project.R;
 import io.github.dreierf.materialintroscreen.MaterialIntroActivity;
 import io.github.dreierf.materialintroscreen.MessageButtonBehaviour;
 import io.github.dreierf.materialintroscreen.SlideFragmentBuilder;
-import io.github.dreierf.materialintroscreen.animations.IViewTranslation;
 
 public class IntroActivity extends MaterialIntroActivity {
 
@@ -69,7 +64,7 @@ public class IntroActivity extends MaterialIntroActivity {
                 startActivity(intent);
                 finish();
             }
-        }, getString(R.string.continur_to_app)));
+        }, getString(R.string.continue_to_app)));
 
     }
 

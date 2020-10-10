@@ -127,7 +127,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
-                        listener.onPostImageClicked(getAdapterPosition(),v);
+                        listener.onPostImageClicked(getAdapterPosition(), v);
                     }
                 }
             });
@@ -148,7 +148,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                     boolean isLike;
 
                     if (listener != null) {
-                        if (likeBtnTv.getText().toString().equals("Like")) {
+                        if (likeBtnTv.getText().toString()
+                                .equals(mContext.getString(R.string.Like))) {
                             post.getLikesMap().put(mMyEmail, true);
                             isLike = true;
                         } else {
@@ -257,7 +258,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         holder.likeBtnTv.setText(isUserLikedPost ? mContext.getString(R.string.Unlike) : mContext.getResources().getString(R.string.Like));
         holder.likeBtnIv.setRotation(isUserLikedPost ? 180 : 0);
         if (post.getLikesCount() > 0) {
-            String likeString = post.getLikesCount() + " Likes";
+            String likeString = post.getLikesCount() + " " + mContext.getString(R.string.Likes);
             holder.likesAmountTv.setText(likeString);
             holder.likesAmountIv.setVisibility(View.VISIBLE);
             holder.likesAmountTv.setVisibility(View.VISIBLE);
@@ -267,7 +268,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         }
 
         if (post.getCommentsCount() > 0) {
-            String commentString = post.getCommentsCount() + " Comments";
+            String commentString = post.getCommentsCount() + " " + mContext.getString(R.string.Comments);
             holder.commentsAmountTv.setText(commentString);
             holder.commentsAmountTv.setVisibility(View.VISIBLE);
         } else {

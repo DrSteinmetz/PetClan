@@ -203,7 +203,7 @@ public class FeedViewModel extends ViewModel {
                 if (!mPosts.isEmpty()) {
                     mPosts.get(mPosition).setAuthorContent(updatedPost.getAuthorContent());
                     mPosts.get(mPosition).setCommentsCount(updatedPost.getCommentsCount());
-                    if(mPosts.get(mPosition).getPostImageUri()!=null){
+                    if (mPosts.get(mPosition).getPostImageUri() != null) {
                         mPosts.get(mPosition).setPostImageUri(updatedPost.getPostImageUri());
                     }
                     mPostUpdateSucceed.setValue(mPosition);
@@ -305,16 +305,6 @@ public class FeedViewModel extends ViewModel {
         this.mUserEmail = userEmail;
     }
 
-    public void uploadNewPost(final Post post) {
-        post.setAuthorToken(mAuthRepository.getUserToken());
-        mRepository.uploadNewPost(post);
-    }
-
-    public void updatePost(Post post, final int position) {
-        mPosition = position;
-        mRepository.updatePost(post);
-    }
-
     public void refreshPosts() {
         if (mUserEmail != null) {
             mRepository.downloadUserPosts(mUserEmail);
@@ -333,8 +323,8 @@ public class FeedViewModel extends ViewModel {
         mPosition = position;
         Post postToDelete = mPosts.get(mPosition);
         mRepository.deletePost(postId);
-        if(postToDelete.getPostImageUri()!=null) {
-            String pathToDelete = postToDelete.getStoragePath(postToDelete.getAuthorEmail(),postToDelete.getPostImageUri());
+        if (postToDelete.getPostImageUri() != null) {
+            String pathToDelete = postToDelete.getStoragePath(postToDelete.getAuthorEmail(), postToDelete.getPostImageUri());
             mStorageRepository.deletePhotoFromStorage(pathToDelete);
         }
     }
@@ -348,7 +338,7 @@ public class FeedViewModel extends ViewModel {
     }
 
     public String getMyName() {
-       return mAuthRepository.getUserName();
+        return mAuthRepository.getUserName();
     }
 
     public String getMyPhotoUri() {
