@@ -1,5 +1,8 @@
 package com.example.android2project.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.firestore.GeoPoint;
 
 import java.io.Serializable;
@@ -7,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 
-public class Advertisement implements Serializable, Comparable<Advertisement> {
+public class Advertisement implements Serializable, Parcelable, Comparable<Advertisement> {
     private String mAdvertisementId;
     private User mUser;
     private GeoPoint mGeoPoint;
@@ -34,6 +37,35 @@ public class Advertisement implements Serializable, Comparable<Advertisement> {
         this.mDescription = description;
         this.mIsPet = isPet;
         this.mPublishDate = new Date();
+    }
+
+    protected Advertisement(Parcel in) {
+        double latitude = in.readDouble();
+        double longitude = in.readDouble();
+        this.mGeoPoint = new GeoPoint(latitude,longitude);
+    }
+
+    public static final Creator<Advertisement> CREATOR = new Creator<Advertisement>() {
+        @Override
+        public Advertisement createFromParcel(Parcel in) {
+            return new Advertisement(in);
+        }
+
+        @Override
+        public Advertisement[] newArray(int size) {
+            return new Advertisement[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeDouble(mGeoPoint.getLatitude());
+        dest.writeDouble(mGeoPoint.getLongitude());
     }
 
     public String getAdvertisementId() {
