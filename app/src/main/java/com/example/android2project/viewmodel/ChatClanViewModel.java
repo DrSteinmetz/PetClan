@@ -6,17 +6,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.android2project.model.User;
-
-
 import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.repository.Repository;
-import com.google.android.gms.auth.api.Auth;
 
 import java.util.ArrayList;
 import java.util.List;
-
-
-
 
 public class ChatClanViewModel extends ViewModel {
     private static ChatClanViewModel chatClanViewModel;
@@ -55,8 +49,13 @@ public class ChatClanViewModel extends ViewModel {
             this.mUsers.clear();
         }
 
-        this.mUsers.addAll(users);
-        mUsersLiveData.setValue(users);
+        for (User user : users) {
+            if (!user.getEmail().equals("a@gmail.com")) {
+                this.mUsers.add(user);
+            }
+        }
+
+        mUsersLiveData.setValue(this.mUsers);
     }
 
     public String getUserEmail(){
