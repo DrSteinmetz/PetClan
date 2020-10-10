@@ -32,7 +32,7 @@ public class ChatClanAdapter extends RecyclerView.Adapter<ChatClanAdapter.ChatCl
 
 
     public interface FriendItemListener {
-        void onClicked(int position, View view);
+        void onClicked(User user);
     }
 
     private FriendItemListener listener;
@@ -50,7 +50,7 @@ public class ChatClanAdapter extends RecyclerView.Adapter<ChatClanAdapter.ChatCl
 
     @Override
     public void onBindViewHolder(@NonNull ChatClanViewHolder holder, int position) {
-        User user = mFriends.get(position);
+        User user = mFilteredFriends.get(position);
 
         RequestOptions options = new RequestOptions()
                 .circleCrop()
@@ -68,7 +68,7 @@ public class ChatClanAdapter extends RecyclerView.Adapter<ChatClanAdapter.ChatCl
 
     @Override
     public int getItemCount() {
-        return mFriends.size();
+        return mFilteredFriends.size();
     }
 
     public class ChatClanViewHolder extends RecyclerView.ViewHolder {
@@ -83,7 +83,7 @@ public class ChatClanAdapter extends RecyclerView.Adapter<ChatClanAdapter.ChatCl
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
-                        listener.onClicked(getAdapterPosition(), v);
+                        listener.onClicked(mFilteredFriends.get(getAdapterPosition()));
                     }
                 }
             });
@@ -100,10 +100,10 @@ public class ChatClanAdapter extends RecyclerView.Adapter<ChatClanAdapter.ChatCl
         protected FilterResults performFiltering(CharSequence charSequence) {
             List<User> filteredLists = new ArrayList<>();
             if (charSequence.length() == 0 || charSequence == null) {
-                filteredLists.addAll(mFilteredFriends);
+                filteredLists.addAll(mFriends);
             } else {
                 String pattern = charSequence.toString().toLowerCase().trim();
-                for (User user : mFilteredFriends) {
+                for (User user : mFriends) {
                     if (user.getFirstName().toLowerCase().contains(pattern) || user.getLastName().toLowerCase()
                             .contains(pattern)) {
                         filteredLists.add(user);
@@ -118,10 +118,10 @@ public class ChatClanAdapter extends RecyclerView.Adapter<ChatClanAdapter.ChatCl
 
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-            if(!mFriends.isEmpty()) {
-                mFriends.clear();
+            if(!mFilteredFriends.isEmpty()) {
+                mFilteredFriends.clear();
             }
-            mFriends.addAll((List)filterResults.values);
+            mFilteredFriends.addAll((List)filterResults.values);
             notifyDataSetChanged();
         }
     };

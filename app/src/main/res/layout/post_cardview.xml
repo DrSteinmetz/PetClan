@@ -59,20 +59,23 @@
                         android:textAllCaps="false"
                         android:textSize="13sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        android:text="@string/at"
-                        android:textAllCaps="false"
-                        android:textSize="13sp" />
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginEnd="5dp"-->
+<!--                        android:text="@string/at"-->
+<!--                        android:textAllCaps="false"-->
+<!--                        android:textSize="13sp"-->
+<!--                        app:drawableStartCompat="@drawable/ic_baseline_location_black_24" />-->
 
                     <TextView
                         android:id="@+id/location_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAllCaps="false"
-                        android:textSize="13sp" />
+                        android:textSize="13sp"
+                        app:drawableStartCompat="@drawable/ic_baseline_location_small_24"/>
+
                 </LinearLayout>
             </LinearLayout>
 

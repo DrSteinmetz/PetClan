@@ -59,11 +59,14 @@ public class ConversationFragment extends DialogFragment {
 
     public static String sConversationId = null;
 
+    private boolean isShown = false;
+
     private static final String RECIPIENT = "recipient";
 
     private final String TAG = "ConversationFragment";
 
-    public ConversationFragment() {}
+    public ConversationFragment() {
+    }
 
     public static ConversationFragment newInstance(User recipient) {
         ConversationFragment fragment = new ConversationFragment();
@@ -212,6 +215,7 @@ public class ConversationFragment extends DialogFragment {
             }
         });
 
+
         mChatBox.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -230,10 +234,12 @@ public class ConversationFragment extends DialogFragment {
                     }
 
                     @Override
-                    public void onAnimationEnd(Animation animation) {}
+                    public void onAnimationEnd(Animation animation) {
+                    }
 
                     @Override
-                    public void onAnimationRepeat(Animation animation) {}
+                    public void onAnimationRepeat(Animation animation) {
+                    }
                 });
 
                 Animation animBegone = new ScaleAnimation(1f, 0f, 1f, 0f,
@@ -242,7 +248,8 @@ public class ConversationFragment extends DialogFragment {
                 animBegone.setDuration(200);
                 animBegone.setAnimationListener(new Animation.AnimationListener() {
                     @Override
-                    public void onAnimationStart(Animation animation) {}
+                    public void onAnimationStart(Animation animation) {
+                    }
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
@@ -250,13 +257,16 @@ public class ConversationFragment extends DialogFragment {
                     }
 
                     @Override
-                    public void onAnimationRepeat(Animation animation) {}
+                    public void onAnimationRepeat(Animation animation) {
+                    }
                 });
 
-                if (s.length() > 0 && before < 1) {
+                if (s.length() > 0 && !isShown) {
                     mSendBtn.startAnimation(animShow);
-                } else if (s.length() < 1){
+                    isShown = true;
+                } else if (s.length() < 1) {
                     mSendBtn.startAnimation(animBegone);
+                    isShown = false;
                 }
             }
 
@@ -275,6 +285,13 @@ public class ConversationFragment extends DialogFragment {
         if (mViewModel != null) {
             mViewModel.getUploadMessageFailed().observe(this, mOnUploadMessageFailed);
         }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getDialog().getWindow()
+                .getAttributes().windowAnimations = R.style.ConversationDialogAnimation;
     }
 
     @Override

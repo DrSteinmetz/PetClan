@@ -229,4 +229,20 @@
     <string name="others">Others</string>
     <string name="help">Help</string>
     <string name="delete_your_account">Delete Your Account</string>
+    <string name="chatclan_tab_title">ChatClan</string>
+    <string name="sell">\" | Sell\"</string>
+    <string name="hand_hover">\" | Hand Over\"</string>
+    <string name="intro_slide1_title">Welcome To PetClan!</string>
+    <string name="intro_slide2_title">Our Feed</string>
+    <string name="intro_slide3_title">Our ChatClan</string>
+    <string name="intro_slide4_title">Our Marketplace</string>
+    <string name="intro_slide5_title">The Time Has Come</string>
+    <string name="intro_slide1_description">You are about to have a great time in here and find some new friends whom share the same love to their pets!</string>
+    <string name="intro_slide2_description">Share your thoughts,pets,questions and whatever you like in our feed</string>
+    <string name="intro_slide3_description">Talk with everyone you like</string>
+    <string name="intro_slide4_description">Sell and buy pets,products...</string>
+    <string name="intro_slide5_description">Just enjoy and have fun!</string>
+    <string name="continur_to_app">Move To App</string>
+    <string name="sell_ad_tv">Sell</string>
+    <string name="hand_over_ad_tv">Hand Over</string>
 </resources>

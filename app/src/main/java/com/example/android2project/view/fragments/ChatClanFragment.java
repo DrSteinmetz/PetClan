@@ -71,10 +71,10 @@ public class ChatClanFragment extends Fragment {
 
                 mAdapter.setFriendItemListener(new ChatClanAdapter.FriendItemListener() {
                     @Override
-                    public void onClicked(int position, View view) {
+                    public void onClicked(User user) {
                         if(!mCurrentUser.equals("a@gmail.com")) {
-                            User recipient = mViewModel.getUsers().get(position);
-                            ConversationFragment.newInstance(recipient)
+//                            User recipient = mViewModel.getUsers().get(position);
+                            ConversationFragment.newInstance(user)
                                     .show(getParentFragmentManager()
                                             .beginTransaction(), "fragment_conversation");
                         } else {

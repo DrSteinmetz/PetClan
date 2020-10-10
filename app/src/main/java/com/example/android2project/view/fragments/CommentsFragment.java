@@ -186,7 +186,9 @@ public class CommentsFragment extends DialogFragment {
         mCommentsAdapter.setCommentListener(new CommentsAdapter.CommentListener() {
             @Override
             public void onAuthorImageClicked(int position, View view) {
-                //TODO: Open the Author's Profile/big profile image
+                final String userEmail = mComments.get(position).getAuthorEmail();
+                UserProfileFragment.newInstance(userEmail)
+                        .show(getChildFragmentManager(), "profile_fragment");
             }
 
             @Override
@@ -198,7 +200,6 @@ public class CommentsFragment extends DialogFragment {
             @Override
             public void onDeleteOptionClicked(final int position, View view) {
                 mPosition = position;
-                //showDeleteCommentDialog(mComments.get(position));
                 final DeleteDialog deleteDialog = new DeleteDialog(getContext());
                 deleteDialog.setPromptText("Are You Sure You Want To Delete Your Comment?");
                 deleteDialog.setOnActionListener(new DeleteDialog.DeleteDialogActionListener() {
@@ -260,6 +261,13 @@ public class CommentsFragment extends DialogFragment {
         recyclerView.setAdapter(mCommentsAdapter);
 
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getDialog().getWindow()
+                .getAttributes().windowAnimations = R.style.ConversationDialogAnimation;
     }
 
     @Override
@@ -330,31 +338,4 @@ public class CommentsFragment extends DialogFragment {
         alertDialog.show();
     }
 
-//    private void showDeleteCommentDialog(final Comment commentToDelete) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
-//        ViewGroup root;
-//        View view = LayoutInflater.from(getContext())
-//                .inflate(R.layout.add_post_dialog,
-//                        (RelativeLayout) requireActivity().findViewById(R.id.layoutDialogContainer));
-//
-//        builder.setView(view);
-//        builder.setCancelable(true);
-//
-//        final EditText commentContentEt = view.findViewById(R.id.new_post_content_et);
-//        commentContentEt.setText(commentToDelete.getAuthorContent());
-//        final Button updateBtn = view.findViewById(R.id.post_btn);
-//
-//        final AlertDialog alertDialog = builder.create();
-//
-//        updateBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                final String commentId = commentToDelete.getCommentId();
-//                mViewModel.deleteComment(commentId);
-//                alertDialog.dismiss();
-//            }
-//        });
-//
-//        alertDialog.show();
-//    }
 }

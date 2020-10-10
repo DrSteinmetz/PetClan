@@ -64,22 +64,27 @@ public class MenuAdapter extends BaseAdapter {
         Drawable drawable = null;
         switch (option) {
             case "Feed":
-                 drawable = parent.getResources()
-                         .getDrawable(R.drawable.ic_petclan_logo_24, null);
+            case "לוח מודעות":
+                drawable = parent.getResources()
+                        .getDrawable(R.drawable.ic_petclan_logo_24, null);
                 break;
             case "Chats":
+            case "צ\'אטים":
                 drawable = parent.getResources()
                         .getDrawable(R.drawable.ic_chat_24, null);
                 break;
             case "MarketPlace":
+            case "חנות":
                 drawable = parent.getResources()
                         .getDrawable(R.drawable.ic_marketplace_24, null);
                 break;
             case "Profile":
+            case "פרופיל":
                 drawable = parent.getResources()
                         .getDrawable(R.drawable.ic_default_user_pic_24, null);
                 break;
             case "Settings":
+            case "הגדרות":
                 drawable = parent.getResources().
                         getDrawable(R.drawable.ic_round_settings_24, null);
                 break;
