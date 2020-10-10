@@ -64,7 +64,7 @@ public class MenuAdapter extends BaseAdapter {
         Drawable drawable = null;
         switch (option) {
             case "Feed":
-            case "לוח מודעות":
+            case "ראשי":
                 drawable = parent.getResources()
                         .getDrawable(R.drawable.ic_petclan_logo_24, null);
                 break;
