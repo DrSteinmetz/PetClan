@@ -389,10 +389,9 @@ public class FeedFragment extends Fragment {
         mPostsAdapter.notifyDataSetChanged();
 
         if (mUserEmail != null) {
-            int duration = postsCount * 5000;
-            //int length = requireActivity().getWindow().getAttributes().width * postsCount;
-            mRecyclerView.smoothScrollBy(2000, 0, null, duration);
-            // TODO: Improve this
+            int duration = postsCount * 10000;
+            int length = getResources().getDisplayMetrics().widthPixels * postsCount;
+            mRecyclerView.smoothScrollBy(length, 0, null, duration);
         }
     }
 

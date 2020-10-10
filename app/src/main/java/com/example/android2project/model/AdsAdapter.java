@@ -37,13 +37,6 @@ public class AdsAdapter extends RecyclerView.Adapter<AdsAdapter.AdViewHolder> {
         this.advertisementList = advertisementList;
     }
 
-    //    public AdsAdapter(final Context context, @NonNull FirestorePagingOptions<Advertisement> options) {
-//        super(options);
-//
-//        mContext = context;
-//        mUserEmail = AuthRepository.getInstance(context).getUserEmail();
-//    }
-
     public interface AdsAdapterInterface {
         void onAdClick(View view, int position);
         void onEditOptionClicked(int position, View view);
@@ -160,21 +153,4 @@ public class AdsAdapter extends RecyclerView.Adapter<AdsAdapter.AdViewHolder> {
             popupMenu.show();
         }
     }
-
-//    @Override
-//    protected void onBindViewHolder(@NonNull AdViewHolder holder, int position, @NonNull Advertisement ad) {
-//
-//    }
-
-//    public Advertisement getCurrentAd(int position) {
-//        DocumentSnapshot documentSnapshot = getItem(position);
-//
-//        if (documentSnapshot != null) {
-//            return documentSnapshot.toObject(Advertisement.class);
-//        }
-//
-//        return null;
-//    }
-
-
 }

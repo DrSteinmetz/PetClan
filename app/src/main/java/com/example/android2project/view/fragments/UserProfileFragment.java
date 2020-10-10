@@ -20,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -155,6 +156,7 @@ public class UserProfileFragment extends DialogFragment {
         mUserNameTv = rootView.findViewById(R.id.user_name_tv);
         mProfilePicIv = rootView.findViewById(R.id.profile_image_iv);
         mPetsRecyclerView = rootView.findViewById(R.id.pets_recyclerview);
+
         mPetsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mPetsRecyclerView.setHasFixedSize(true);
 
