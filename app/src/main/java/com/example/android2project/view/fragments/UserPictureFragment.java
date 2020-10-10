@@ -87,7 +87,6 @@ public class UserPictureFragment extends Fragment {
         mCreateUserSucceedObserver = new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean isDefaultPic) {
-                mLoadingDialog.dismiss();
                 MoveToApp();
             }
         };
@@ -148,7 +147,6 @@ public class UserPictureFragment extends Fragment {
             public void onClick(View v) {
                 showLoadingDialog();
                 mViewModel.createNewUser(mSelectedImage);
-                //TODO: Start loading animation
             }
         });
 
@@ -209,7 +207,7 @@ public class UserPictureFragment extends Fragment {
     }
 
     private void MoveToApp() {
-        //TODO: Finish loading animation
+        mLoadingDialog.dismiss();
         listener.onFinish();
     }
 

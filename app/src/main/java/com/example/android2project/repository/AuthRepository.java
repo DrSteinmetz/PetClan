@@ -227,8 +227,6 @@ public class AuthRepository {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
-                            // Sign in success, update UI with the signed-in user's information
-                            //TODO: Enter to the app's Feed
                             if (user != null) {
                                 if (mLoginListener != null) {
                                     mLoginListener.onLoginSucceed(user.getUid());

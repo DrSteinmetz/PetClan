@@ -7,7 +7,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,7 +76,7 @@ public class AddPetFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.pet_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_add_pet, container, false);
 
         photosPreviewRecyclerview = rootView.findViewById(R.id.photos_preview_recycler);
         final TextInputEditText petNameEt = rootView.findViewById(R.id.pet_name_et);
@@ -148,7 +147,6 @@ public class AddPetFragment extends DialogFragment {
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Todo : check edit texts not empty
                 final String petName = petNameEt.getText().toString().trim();
                 final String petType = petTypeEt.getText().toString().trim();
 
@@ -157,12 +155,12 @@ public class AddPetFragment extends DialogFragment {
                     mViewModel.uploadPetPhotos(photosPreviewRecyclerview.getSelectedImageList());
                 } else {
                     if (petName.length() < 1) {
-                        petNameEt.setError(getContext().getString(R.string.pet_name));
+                        petNameEt.setError(getContext().getString(R.string.enter_pet_name));
                     } else {
                         petNameEt.setError(null);
                     }
                     if (petType.length() < 1) {
-                        petTypeEt.setError(getContext().getString(R.string.pet_type));
+                        petTypeEt.setError(getContext().getString(R.string.enter_pet_type));
                     } else {
                         petTypeEt.setError(null);
                     }

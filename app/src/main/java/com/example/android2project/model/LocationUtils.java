@@ -152,11 +152,8 @@ public class LocationUtils extends BroadcastReceiver  {
 
             builder.setAlwaysShow(true);
 
-
             SettingsClient client = LocationServices.getSettingsClient(mActivity);
             Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
-
-
 
             task.addOnSuccessListener(mActivity, new OnSuccessListener<LocationSettingsResponse>() {
                 @Override
@@ -174,10 +171,6 @@ public class LocationUtils extends BroadcastReceiver  {
                         // Location preferences are not satisfied, but this can be fixed
                         // by showing the user a dialog.
                         try {
-
-                            //TODO:make a custom window.
-                            // Show the dialog by calling startResolutionForResult(),
-                            // and check the result in onActivityResult().
                             ResolvableApiException resolvable = (ResolvableApiException) e;
                             resolvable.startResolutionForResult(mActivity,
                                     REQUEST_CHECK_SETTINGS_CODE);

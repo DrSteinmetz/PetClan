@@ -52,12 +52,33 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="@string/others">
+        android:title="@string/notifications">
 
-        <Preference
-            android:key="help_pref"
-            android:title="@string/help"
-            android:textAllCaps="false" />
+        <SwitchPreferenceCompat
+            android:key="messages_notifications_sp"
+            android:title="@string/messages_notifications"
+            android:defaultValue="true"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off" />
+
+        <SwitchPreferenceCompat
+            android:key="comments_notifications_sp"
+            android:title="@string/comments_notifications"
+            android:defaultValue="true"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off" />
+
+        <SwitchPreferenceCompat
+            android:key="likes_notifications_sp"
+            android:title="@string/likes_notifications"
+            android:defaultValue="true"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/others">
 
         <Preference
             android:key="account_deletion_pref"

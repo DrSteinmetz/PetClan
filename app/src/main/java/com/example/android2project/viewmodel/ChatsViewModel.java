@@ -1,6 +1,7 @@
 package com.example.android2project.viewmodel;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -106,13 +107,26 @@ public class ChatsViewModel extends ViewModel {
         final String myEmail = mAuth.getUserEmail();
         final List<User> relevantUsers = new ArrayList<>();
 
+        Map<String, User> usersMap = new HashMap<>();
+
+        for (User user : mAllUsers) {
+            usersMap.put(user.getEmail(), user);
+        }
+
         for (Conversation conversation : mConversations) {
-            for (User user : mAllUsers) {
+            if (usersMap.containsKey(conversation.getRecipientEmail()) && !Objects.requireNonNull(usersMap.get(conversation.getRecipientEmail())).getEmail().equals(myEmail)) {
+                relevantUsers.add((User) usersMap.get(conversation.getRecipientEmail()));
+            } else if (usersMap.containsKey(conversation.getSenderEmail()) && !Objects.requireNonNull(usersMap.get(conversation.getSenderEmail())).getEmail().equals(myEmail)) {
+                relevantUsers.add((User) usersMap.get(conversation.getSenderEmail()));
+            }
+
+            //Old Version: O(n^2)
+            /*for (User user : mAllUsers) {
                 if ((conversation.getRecipientEmail().equals(user.getEmail()) && !myEmail.equals(user.getEmail())) ||
                         (conversation.getSenderEmail().equals(user.getEmail()) && !myEmail.equals(user.getEmail()))) {
                     relevantUsers.add(user);
                 }
-            }
+            }*/
         }
 
         if (!this.mActiveUsers.isEmpty()) {

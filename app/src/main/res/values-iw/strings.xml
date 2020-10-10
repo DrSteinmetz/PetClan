@@ -12,8 +12,8 @@
     <string name="enter_kind">הכנס זן</string>
     <string name="enter_first_name">הכנס שם פרטי</string>
     <string name="enter_last_name">הכנס שם משפחה</string>
-    <string name="pet_name">הכנס שם חיית מחמד</string>
-    <string name="pet_type">הכנס סוג חיית מחמד</string>
+    <string name="enter_pet_name">הכנס שם חיית מחמד</string>
+    <string name="enter_pet_type">הכנס סוג חיית מחמד</string>
     <string name="city_location">בחר עיר מרשימת הערים</string>
     <string name="price">הכנס מחיר</string>
     <string name="description">"הכנס תיאור "</string>
@@ -96,6 +96,7 @@
     <string name="On_Your_Mind">על מה אתם חושבים?</string>
     <string name="Enter_message">הקלידו הודעה</string>
     <string name="First_name">שם  פרטי</string>
+    <string name="pet_name">שם חיית המחמד</string>
     <string name="type">סוג</string>
     <string name="last_name">שם משפחה</string>
     <string name="registration_aborted">ההרשמה בוטלה</string>
@@ -134,4 +135,8 @@
     <string name="continur_to_app">המשך לאפליקציה</string>
     <string name="sell_ad_tv">מכירה</string>
     <string name="hand_over_ad_tv">מסירה</string>
+    <string name="notifications">התראות</string>
+    <string name="messages_notifications">התראה על הודעות</string>
+    <string name="comments_notifications">התראה על תגובות</string>
+    <string name="likes_notifications">התראה על לייקים</string>
 </resources>

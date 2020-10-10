@@ -26,19 +26,13 @@ import com.example.android2project.viewmodel.WelcomeViewModel;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
     private Context mContext;
-    //private Application mApplication;
 
     private ViewModelEnum mViewModelEnum;
 
-    public ViewModelFactory(Context mContext, ViewModelEnum viewModelEnum) {
-        this.mContext = mContext;
+    public ViewModelFactory(Context context, ViewModelEnum viewModelEnum) {
+        this.mContext = context;
         this.mViewModelEnum = viewModelEnum;
     }
-
-    /*public ViewModelFactory(Application mApplication, ViewModelEnum viewModelEnum) {
-        this.mApplication = mApplication;
-        this.mViewModelEnum = viewModelEnum;
-    }*/
 
     @NonNull
     @Override
@@ -131,7 +125,6 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     objToReturn = (T) new AddPostViewModel(mContext);
                 }
                 break;
-
         }
 
         return objToReturn;

@@ -93,7 +93,6 @@ public class LoginDetailsFragment extends Fragment {
         mLoginFailedObserver = new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                //TODO: Let the user know login failed
                 Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
             }
         };
