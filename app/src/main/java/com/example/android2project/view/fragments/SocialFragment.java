@@ -64,7 +64,6 @@ public class SocialFragment extends Fragment {
         };
 
         mViewModel.downloadAllUsers();
-
         mViewModel.getUserList().observe(this, mUserListObserver);
     }
 

@@ -60,9 +60,6 @@ public class ChatClanFragment extends Fragment {
 
         mCurrentUser = mViewModel.getUserEmail();
 
-//        mViewModel.getAllUsers();
-
-
         usersObserver = new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
@@ -73,7 +70,6 @@ public class ChatClanFragment extends Fragment {
                     @Override
                     public void onClicked(User user) {
                         if(!mCurrentUser.equals("a@gmail.com")) {
-//                            User recipient = mViewModel.getUsers().get(position);
                             ConversationFragment.newInstance(user)
                                     .show(getParentFragmentManager()
                                             .beginTransaction(), "fragment_conversation");
@@ -86,11 +82,8 @@ public class ChatClanFragment extends Fragment {
             }
         };
 
-
         mViewModel.getUsersLiveData().observe(this, usersObserver);
-
         mViewModel.getUsersLiveData().observe(this, usersObserver);
-
     }
 
     @Override
@@ -114,7 +107,6 @@ public class ChatClanFragment extends Fragment {
                 return false;
             }
         });
-
 
         return rootView;
     }
@@ -147,11 +139,9 @@ public class ChatClanFragment extends Fragment {
         guestDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
     }
 
-
     @Override
     public void onStop() {
         mViewModel.getUsersLiveData().removeObservers(this);
         super.onStop();
     }
 }
-

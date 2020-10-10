@@ -302,8 +302,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onAdUploadSucceed(Advertisement ad, AlertDialog loadingDialog) {
-        ((MarketPlaceFragment) fragmentList.get(2)).onUploadAdSucceed(ad, loadingDialog);
+    public void onAdUploadSucceed(Advertisement ad, AlertDialog loadingDialog, boolean isNewAd) {
+        ((MarketPlaceFragment) fragmentList.get(2)).onUploadAdSucceed(ad, loadingDialog, isNewAd);
     }
 
     @Override

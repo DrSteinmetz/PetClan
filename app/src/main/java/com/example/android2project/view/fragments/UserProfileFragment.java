@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,7 +114,8 @@ public class UserProfileFragment extends DialogFragment {
         mOnDownloadUserFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onChanged: " + error);
             }
         };
 

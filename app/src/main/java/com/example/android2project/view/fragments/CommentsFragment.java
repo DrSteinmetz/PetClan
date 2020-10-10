@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,7 +105,8 @@ public class CommentsFragment extends DialogFragment {
         mOnCommentsDownloadFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onChanged: " + error);
             }
         };
 
@@ -120,7 +122,8 @@ public class CommentsFragment extends DialogFragment {
         mOnCommentUploadFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onChanged: " + error);
             }
         };
 
@@ -135,7 +138,8 @@ public class CommentsFragment extends DialogFragment {
         mOnCommentUpdateFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onChanged: " + error);
             }
         };
 
@@ -155,7 +159,8 @@ public class CommentsFragment extends DialogFragment {
         mOnCommentDeletionFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onChanged: " + error);
             }
         };
 

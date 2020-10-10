@@ -91,14 +91,16 @@ public class SettingsFragment extends PreferenceFragmentCompat
         mOnUpdateUserNameInCloudFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onChanged: " + error);
             }
         };
 
         mOnUpdateUserNameInAuthFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
+                //Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
+                Log.d(TAG, "onChanged: " + error);
             }
         };
 
@@ -113,7 +115,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
         mOnUpdatePasswordFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onChanged: " + error);
             }
         };
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -135,7 +136,8 @@ public class FeedFragment extends Fragment {
         mOnPostDownloadFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onChanged: " + error);
             }
         };
 
@@ -149,7 +151,8 @@ public class FeedFragment extends Fragment {
         mOnUserPostDownloadFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onChanged: " + error);
             }
         };
 
@@ -164,7 +167,8 @@ public class FeedFragment extends Fragment {
         mOnPostUploadFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onChanged: " + error);
             }
         };
 
@@ -178,7 +182,8 @@ public class FeedFragment extends Fragment {
         mOnPostUpdateFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onChanged: " + error);
             }
         };
 
@@ -192,7 +197,8 @@ public class FeedFragment extends Fragment {
         mOnPostLikesUpdateFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onChanged: " + error);
             }
         };
 
@@ -206,7 +212,8 @@ public class FeedFragment extends Fragment {
         mOnPostDeletionFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onChanged: " + error);
             }
         };
 
@@ -217,6 +224,7 @@ public class FeedFragment extends Fragment {
                 mViewModel.updateUserLocation(address);
             }
         };
+
         mLocationUtils.getLocationLiveData().observe(this, mOnLocationChanged);
     }
 

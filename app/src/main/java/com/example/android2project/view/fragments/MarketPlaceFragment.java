@@ -3,6 +3,7 @@ package com.example.android2project.view.fragments;
 import android.app.AlertDialog;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,7 +84,8 @@ public class MarketPlaceFragment extends Fragment {
         mOnDownloadAdsFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onChanged: " + error);
             }
         };
 
@@ -97,7 +99,8 @@ public class MarketPlaceFragment extends Fragment {
         mOnAdDeletionFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onChanged: " + error);
             }
         };
 
@@ -230,9 +233,13 @@ public class MarketPlaceFragment extends Fragment {
         }
     }
 
-    public void onUploadAdSucceed(Advertisement ad, AlertDialog loadingDialog) {
-        mViewModel.getAdList().add(0, ad);
-        mAdsAdapter.notifyItemInserted(0);
+    public void onUploadAdSucceed(Advertisement ad, AlertDialog loadingDialog, boolean isNewAd) {
+        if (isNewAd) {
+            mViewModel.getAdList().add(0, ad);
+            mAdsAdapter.notifyItemInserted(0);
+        } else if (mCurrentAd != null) {
+            mAdsAdapter.notifyItemChanged(mViewModel.getAdList().indexOf(mCurrentAd));
+        }
         loadingDialog.dismiss();
     }
 

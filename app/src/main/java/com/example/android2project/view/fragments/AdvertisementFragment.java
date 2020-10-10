@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,7 +95,7 @@ public class AdvertisementFragment extends DialogFragment {
     private final int IMAGE_VIEW_SIZE = 8;
 
     public interface AdvertisementInterface {
-        void onAdUploadSucceed(Advertisement ad, AlertDialog loadingDialog);
+        void onAdUploadSucceed(Advertisement ad, AlertDialog loadingDialog, boolean isNewAd);
     }
 
     private AdvertisementInterface listener;
@@ -175,7 +176,8 @@ public class AdvertisementFragment extends DialogFragment {
         mOnUploadingAdPhotosFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onChanged: " + error);
             }
         };
 
@@ -183,7 +185,7 @@ public class AdvertisementFragment extends DialogFragment {
             @Override
             public void onChanged(Advertisement advertisement) {
                 if (listener != null) {
-                    listener.onAdUploadSucceed(advertisement, mLoadingDialog);
+                    listener.onAdUploadSucceed(advertisement, mLoadingDialog, mAdvertisement == null);
                     Objects.requireNonNull(getDialog()).dismiss();
                 }
             }
@@ -192,7 +194,8 @@ public class AdvertisementFragment extends DialogFragment {
         mOnUploadingAdFailed = new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onChanged: " + error);
             }
         };
 
