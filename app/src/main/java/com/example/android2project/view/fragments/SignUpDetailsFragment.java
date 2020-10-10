@@ -159,7 +159,6 @@ public class SignUpDetailsFragment extends Fragment {
                         passwordEt.setError(null);
 
                         if (mViewModel != null) {
-                            //Todo remove dots before the @
                             mViewModel.registerWithDetails(email, password);
                         }
                     } else {

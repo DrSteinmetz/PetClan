@@ -123,7 +123,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
             public void onChanged(String s) {
                 startActivity(new Intent(getActivity(), WelcomeActivity.class));
                 requireActivity().finish();
-                //SettingsFragment.this.onDestroy();
             }
         };
 
@@ -151,8 +150,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
         setPreferencesFromResource(R.xml.preferences, rootKey);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
-
         SeekBarPreference sbp = findPreference("distance_sb");
         if (sbp != null) {
             sbp.setSummary(sbp.getValue() + " Km");
@@ -171,12 +168,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
         GPSwitch = findPreference("gps_switch");
         if (GPSwitch != null && mLocationUtils != null) {
             GPSwitch.setChecked(mLocationUtils.isLocationEnabled());
-
-        }
-
-        Preference helpPref = findPreference("help_pref");
-        if (helpPref != null) {
-            //TODO: show help dialog
         }
 
         Preference accountDeletionPref = findPreference("account_deletion_pref");
@@ -235,7 +226,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 } else {
                     GPSwitch.setChecked(false);
                 }
-                Log.d(TAG, "onChanged: xpk");
             }
         };
 
@@ -253,7 +243,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     EditTextPreference etp = (EditTextPreference) pref;
                     final String username = etp.getText();
                     if (username.trim().length() > 0) {
-                        Log.d(TAG, "onSharedPreferenceChanged: " + username);
                         mViewModel.updateUserName(username);
                     }
                 }
@@ -263,7 +252,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     EditTextPreference etp = (EditTextPreference) pref;
                     final String password = etp.getText();
                     if (password.trim().length() > 0) {
-                        Log.d(TAG, "onSharedPreferenceChanged: " + password);
                         mViewModel.updatePassword(password);
                     }
                 }
@@ -278,17 +266,12 @@ public class SettingsFragment extends PreferenceFragmentCompat
                         }
                     });
 
-                    Log.d(TAG, "onSharedPreferenceChanged:" + mLocationMode);
-
                     if (GPSwitch.isChecked() && !mLocationUtils.isLocationEnabled()) {
-                        Log.d(TAG, "onSharedPreferenceChanged: xxx");
                         mLocationUtils.requestLocationPermissions();
                     } else if (mLocationMode != null && mLocationMode.equals("Off")) {
                         GPSwitch.setChecked(false);
                     } else if (mIsLocationDialogClicked && (mLocationMode != null && !mLocationMode.equals("On"))) {
-                        Log.d(TAG, "onSharedPreferenceChanged: xpk");
                         if (GPSwitch.isChecked()) { // if was manually - not with dialog
-                            Log.d(TAG, "onSharedPreferenceChanged: xpk");
                             mLocationUtils.turnGPSOff();
                         } else {
                             GPSwitch.setChecked(false);

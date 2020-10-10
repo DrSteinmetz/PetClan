@@ -15,8 +15,8 @@
     <string name="enter_kind">Please enter a pet kind</string>
     <string name="enter_first_name">You must enter your first name!</string>
     <string name="enter_last_name">You must enter your last name!</string>
-    <string name="pet_name">You must enter a pet name</string>
-    <string name="pet_type">You must enter a pet type</string>
+    <string name="enter_pet_name">You must enter a pet name</string>
+    <string name="enter_pet_type">You must enter a pet type</string>
     <string name="city_location">Please Enter a City from the list</string>
     <string name="price">Please enter price</string>
     <string name="description">Please enter description</string>
@@ -208,6 +208,7 @@
     <string name="cancel">Cancel</string>
     <string name="prompt_guest_tv">In order to proceed please Join Our Clan</string>
     <string name="last_name">Last Name</string>
+    <string name="pet_name">Pet Name</string>
     <string name="type">Type</string>
     <string name="registration_aborted">Your Registration has been Canceled</string>
     <string name="location_disabled">Location is Disabled</string>
@@ -229,4 +230,8 @@
     <string name="others">Others</string>
     <string name="help">Help</string>
     <string name="delete_your_account">Delete Your Account</string>
+    <string name="notifications">Notifications</string>
+    <string name="messages_notifications">Messages Notifications</string>
+    <string name="comments_notifications">Comments Notifications</string>
+    <string name="likes_notifications">Likes Notifications</string>
 </resources>

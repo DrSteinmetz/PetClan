@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.os.Build;
@@ -14,6 +15,7 @@ import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -56,29 +58,34 @@ public class FCM extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         final Map<String, String> dataMap = remoteMessage.getData();
-        // Do something with Token
+
         if (dataMap.size() > 0) {
             if (dataMap.containsKey("type")) {
                 switch (Objects.requireNonNull(dataMap.get("type"))) {
                     case CHAT_NOTIFICATION:
                         final String chatId = ConversationFragment.sConversationId;
                         if (!(chatId != null && chatId.equals(dataMap.get("chat_id")))) {
-                            createChatNotification(dataMap);
+                            if (sharedPreferences.getBoolean("messages_notifications_sp", true)) {
+                                createChatNotification(dataMap);
+                            }
                         }
                         break;
                     case COMMENT_NOTIFICATION:
-                        createCommentNotification(dataMap);
+                        if (sharedPreferences.getBoolean("comments_notifications_sp", true)) {
+                            createCommentNotification(dataMap);
+                        }
                         break;
                     case LIKE_NOTIFICATION:
-                        createLikeNotification(dataMap);
+                        if (sharedPreferences.getBoolean("likes_notifications_sp", true)) {
+                            createLikeNotification(dataMap);
+                        }
                         break;
                 }
             }
         }
 
-        // TODO(developer): Handle FCM messages here.
-        // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
         // Check if message contains a data payload.

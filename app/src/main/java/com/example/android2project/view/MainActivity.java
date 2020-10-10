@@ -247,7 +247,6 @@ public class MainActivity extends AppCompatActivity implements
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_REQUEST_CODE) {
             if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                //TODO alert dialog that explains that we need permissions.
                 Toast.makeText(this, getResources().getString(R.string.provide_location), Toast.LENGTH_SHORT).show();
             } else {
                 mLocationUtils.startLocation();

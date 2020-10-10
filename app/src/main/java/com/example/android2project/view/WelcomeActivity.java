@@ -222,7 +222,6 @@ public class WelcomeActivity extends AppCompatActivity implements
         /**<-------If the new user returned to the SignUpDetailsFragment, delete this user------->**/
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(SIGN_UP_FRAG);
         if (fragment != null && fragment.isVisible()) {
-            //TODO: add a dialog
             mViewModel.deleteUserFromAuth();
         }
     }
