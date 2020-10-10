@@ -94,7 +94,7 @@ public class AdsAdapter extends RecyclerView.Adapter<AdsAdapter.AdViewHolder> {
 
         holder.adLocationTv.setText(ad.getLocation());
 
-        holder.adTypeTv.setText(ad.getIsSell() ? " | Sell" : " | Hand Over");
+        holder.adTypeTv.setText(ad.getIsSell() ? mContext.getString(R.string.sell) : mContext.getString(R.string.hand_hover));
     }
 
     @Override

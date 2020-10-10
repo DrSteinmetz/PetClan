@@ -239,7 +239,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
         holder.postTimeAgo.setText(timestampToTimeAgo(post.getPostTime()));
 
-        holder.locationTv.setText(post.getLocation() == null ? "Unknown" : post.getLocation());
+        holder.locationTv.setText(post.getLocation() == null ? mContext.getResources().getString(R.string.Unknown) : post.getLocation());
 
         if (post.getAuthorEmail().equals(mMyEmail)) {
             holder.optionsBtn.setVisibility(View.VISIBLE);

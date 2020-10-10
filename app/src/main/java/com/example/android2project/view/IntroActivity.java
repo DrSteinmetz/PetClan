@@ -27,32 +27,32 @@ public class IntroActivity extends MaterialIntroActivity {
                 .backgroundColor(R.color.colorPrimary)
                 .buttonsColor(R.color.transparent)
                 .image(R.drawable.ic_cat)
-                .title("Welcome To PetClan!")
-                .description("You are about to have a great time in here and find some new friends whom share the same love to their pets!")
+                .title(getString(R.string.intro_slide1_title))
+                .description(getString(R.string.intro_slide1_description))
                 .build());
 
         addSlide(new SlideFragmentBuilder()
                 .backgroundColor(R.color.colorPrimaryDark)
                 .buttonsColor(R.color.transparent)
                 .image(R.drawable.ic_clown_fish)
-                .title("Our Feed")
-                .description("Share your thoughts,pets,questions and whatever you like in our feed")
+                .title(getString(R.string.intro_slide2_title))
+                .description(getString(R.string.intro_slide2_description))
                 .build());
 
         addSlide(new SlideFragmentBuilder()
                 .backgroundColor(R.color.colorPrimary)
                 .buttonsColor(R.color.transparent)
                 .image(R.drawable.ic_golden_retriever)
-                .title("Our ChatClan")
-                .description("Talk with everyone you like")
+                .title(getString(R.string.intro_slide3_title))
+                .description(getString(R.string.intro_slide3_description))
                 .build());
 
         addSlide(new SlideFragmentBuilder()
                 .backgroundColor(R.color.colorAccent)
                 .buttonsColor(R.color.transparent)
                 .image(R.drawable.ic_parrot)
-                .title("Our Marketplace")
-                .description("Sell and buy pets,products...")
+                .title(getString(R.string.intro_slide4_title))
+                .description(getString(R.string.intro_slide4_description))
                 .build());
 
 
@@ -60,8 +60,8 @@ public class IntroActivity extends MaterialIntroActivity {
                 .backgroundColor(R.color.colorPrimary)
                 .buttonsColor(R.color.transparent)
                 .image(R.drawable.ic_rabbit)
-                .title("The Time Has Come")
-                .description("Just enjoy and have fun!")
+                .title(getString(R.string.intro_slide5_title))
+                .description(getString(R.string.intro_slide5_description))
                 .build(), new MessageButtonBehaviour(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,7 +69,7 @@ public class IntroActivity extends MaterialIntroActivity {
                 startActivity(intent);
                 finish();
             }
-        }, "Move To App"));
+        }, getString(R.string.continur_to_app)));
 
     }
 

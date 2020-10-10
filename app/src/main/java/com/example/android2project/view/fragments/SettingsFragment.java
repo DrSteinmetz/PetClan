@@ -162,7 +162,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
         locationPref = findPreference("location_pref");
         if (locationPref != null) {
-            locationPref.setSummary(mUserLocation == null ? "Unknown" : mUserLocation.getLocality());
+            locationPref.setSummary(mUserLocation == null ? getContext().getResources().getString(R.string.Unknown) :
+                    mUserLocation.getLocality());
         }
 
         GPSwitch = findPreference("gps_switch");

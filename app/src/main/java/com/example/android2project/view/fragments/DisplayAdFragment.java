@@ -5,22 +5,29 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.DialogFragment;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.example.android2project.R;
 import com.example.android2project.model.Advertisement;
 import com.example.android2project.model.User;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class DisplayAdFragment extends DialogFragment {
 
@@ -56,19 +63,42 @@ public class DisplayAdFragment extends DialogFragment {
         View rootView = inflater.inflate(R.layout.fragment_display_ad, container, false);
 
         final ImageSlider imageSlider = rootView.findViewById(R.id.images_slider);
+        final ImageView authorPic = rootView.findViewById(R.id.author_pic_iv);
+        final TextView authorName = rootView.findViewById(R.id.author_name_tv);
         final ExtendedFloatingActionButton contactBtn  = rootView.findViewById(R.id.contact_btn);
-        final TextView itemNameTv = rootView.findViewById(R.id.item_name_tv);
+        final Chip itemNameTv = rootView.findViewById(R.id.item_name_tv);
+        final Chip isSellTv = rootView.findViewById(R.id.is_sell_tv);
         final TextView kindTv = rootView.findViewById(R.id.kind_tv);
+        final LinearLayout isPetLayout = rootView.findViewById(R.id.is_pet_layout);
         final TextView genderTv = rootView.findViewById(R.id.gender_tv);
         final TextView priceTv = rootView.findViewById(R.id.price_tv);
         final TextView publicDateTv = rootView.findViewById(R.id.date_tv);
         final TextView descriptionTv = rootView.findViewById(R.id.description_tv);
         final TextView locationTv = rootView.findViewById(R.id.location_tv);
 
+
+        RequestOptions options = new RequestOptions()
+                .circleCrop()
+                .placeholder(R.drawable.ic_default_user_pic)
+                .error(R.drawable.ic_default_user_pic);
+
+        Glide.with(requireContext())
+                .load(mAdvertisement.getUser().getPhotoUri())
+                .apply(options)
+                .into(authorPic);
+        if(mMyEmail.equals(mAdvertisement.getUser().getEmail())){
+            authorName.setVisibility(View.GONE);
+            authorPic.setVisibility(View.GONE);
+        }
+        authorName.setText(mAdvertisement.getUser().getFirstName()+"\n"+mAdvertisement.getUser().getLastName());
         itemNameTv.setText(mAdvertisement.getItemName());
+        isSellTv.setText(mAdvertisement.getIsSell() ? getResources().getString(R.string.sell_ad_tv) :
+                getResources().getString(R.string.hand_over_ad_tv));
         kindTv.setText(mAdvertisement.getPetKind());
-        genderTv.setText(mAdvertisement.getIsMale() ? "Male" : "Female");
-        priceTv.setText(mAdvertisement.getPrice() + "₪");
+        isPetLayout.setVisibility(mAdvertisement.getIsPet() ? View.VISIBLE : View.GONE);
+        genderTv.setText(mAdvertisement.getIsMale() ? getResources().getString(R.string.Male) :
+                getResources().getString(R.string.Female));
+        priceTv.setText(String.valueOf(mAdvertisement.getPrice()));
         publicDateTv.setText(dateToFormatDate(mAdvertisement.getPublishDate()));
         descriptionTv.setText(mAdvertisement.getDescription());
         locationTv.setText(mAdvertisement.getLocation());
@@ -98,5 +128,17 @@ public class DisplayAdFragment extends DialogFragment {
     private String dateToFormatDate(Date date) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         return simpleDateFormat.format(date);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getDialog() != null) {
+            Window window = Objects.requireNonNull(getDialog()).getWindow();
+            if (window != null) {
+                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+            }
+        }
     }
 }
