@@ -136,7 +136,11 @@ public class AddPostFragment extends DialogFragment {
             postBtn.setText(getString(R.string.update));
             postContentEt.setText(mCurrentPost.getAuthorContent());
             if (mCurrentPost.getPostImageUri() != null) {
-                Glide.with(requireContext()).load(mCurrentPost.getPostImageUri()).into(picPreview);
+                Glide.with(requireContext())
+                        .load(mCurrentPost.getPostImageUri())
+                        .into(picPreview);
+
+                picPreview.setVisibility(View.VISIBLE);
             }
         }
 

@@ -166,4 +166,8 @@
     <string name="leashes">רצועות</string>
     <string name="medicines">תרופות</string>
     <string name="hygiene_products">מוצרי הגיינה</string>
+    <string name="pet_deletion_prompt">האם אתם בטוחים כי ברצונכם למחוק חיה זו לצמיתות?</string>
+    <string name="post_deletion_prompt">האם אתם בטוחים כי ברצונכם למחוק פוסט זה?</string>
+    <string name="comment_deletion_prompt">האם אתם בטוחים כי ברצונכם למחוק תגובה זו?</string>
+    <string name="ad_deletion_prompt">האם אתם בטוחים כי ברצונכם למחוק מודעה זו?</string>
 </resources>

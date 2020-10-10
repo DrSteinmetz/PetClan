@@ -36,6 +36,7 @@ import com.example.android2project.model.PetsAdapter;
 import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.model.ViewModelFactory;
+import com.example.android2project.view.DeleteDialog;
 import com.example.android2project.viewmodel.UserProfileViewModel;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -180,7 +181,8 @@ public class UserProfileFragment extends DialogFragment {
                     .setQuery(mViewModel.getUserPets(mUserEmail), Pet.class).build();
         }
 
-        mPetsAdapter = new PetsAdapter(mRecyclerviewOptions);
+        mPetsAdapter = new PetsAdapter(requireContext(), mRecyclerviewOptions, mUserEmail);
+
         mPetsAdapter.setPetsAdapterListener(new PetsAdapter.PetsAdapterInterface() {
             @Override
             public void onEditOptionClicked(int position, View view) {
@@ -191,9 +193,24 @@ public class UserProfileFragment extends DialogFragment {
 
             @Override
             public void onDeleteOptionClicked(int position, View view) {
-                Pet pet = mPetsAdapter.getItem(position);
-                mViewModel.deletePet(pet);
+                final Pet pet = mPetsAdapter.getItem(position);
 
+                final DeleteDialog deleteDialog = new DeleteDialog(getContext());
+                deleteDialog.setPromptText(getString(R.string.pet_deletion_prompt));
+                deleteDialog.setOnActionListener(new DeleteDialog.DeleteDialogActionListener() {
+                    @Override
+                    public void onYesBtnClicked() {
+                        mViewModel.deletePet(pet);
+                        deleteDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onNoBtnClicked() {
+                        deleteDialog.dismiss();
+                    }
+                });
+
+                deleteDialog.show();
             }
         });
         mPetsRecyclerView.setAdapter(mPetsAdapter);

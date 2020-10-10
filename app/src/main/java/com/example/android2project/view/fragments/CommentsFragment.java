@@ -206,7 +206,7 @@ public class CommentsFragment extends DialogFragment {
             public void onDeleteOptionClicked(final int position, View view) {
                 mPosition = position;
                 final DeleteDialog deleteDialog = new DeleteDialog(getContext());
-                deleteDialog.setPromptText("Are You Sure You Want To Delete Your Comment?");
+                deleteDialog.setPromptText(getString(R.string.comment_deletion_prompt));
                 deleteDialog.setOnActionListener(new DeleteDialog.DeleteDialogActionListener() {
                     @Override
                     public void onYesBtnClicked() {

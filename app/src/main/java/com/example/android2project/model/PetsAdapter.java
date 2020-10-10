@@ -24,8 +24,12 @@ import java.util.List;
 
 public class PetsAdapter extends FirestoreRecyclerAdapter<Pet, PetsAdapter.PetViewHolder> {
 
-    public PetsAdapter(@NonNull FirestoreRecyclerOptions<Pet> options) {
+    private boolean mIsMyPet;
+
+    public PetsAdapter(final Context context, @NonNull FirestoreRecyclerOptions<Pet> options, String userEmail) {
         super(options);
+
+        mIsMyPet = userEmail == null;
     }
 
     public interface PetsAdapterInterface {
@@ -37,28 +41,6 @@ public class PetsAdapter extends FirestoreRecyclerAdapter<Pet, PetsAdapter.PetVi
 
     public void setPetsAdapterListener(PetsAdapterInterface listener) {
         this.listener = listener;
-    }
-
-    @NonNull
-    @Override
-    public PetViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.pet_cardview, parent, false);
-        return new PetViewHolder(view);
-    }
-
-    @Override
-    protected void onBindViewHolder(@NonNull PetViewHolder holder, int position, @NonNull Pet pet) {
-        List<SlideModel> imagesList = new ArrayList<>();
-
-        for (String uri : pet.getPhotoUri()) {
-            imagesList.add(new SlideModel(uri, ScaleTypes.CENTER_CROP));
-        }
-
-        holder.photoSlider.setImageList(imagesList, ScaleTypes.CENTER_CROP);
-        holder.petName_tv.setText(pet.getPetName());
-        holder.petDescription_tv.setText(pet.getPetDescription());
-
     }
 
     class PetViewHolder extends RecyclerView.ViewHolder {
@@ -105,5 +87,29 @@ public class PetsAdapter extends FirestoreRecyclerAdapter<Pet, PetsAdapter.PetVi
             });
             popupMenu.show();
         }
+    }
+
+    @NonNull
+    @Override
+    public PetViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.pet_cardview, parent, false);
+        return new PetViewHolder(view);
+    }
+
+    @Override
+    protected void onBindViewHolder(@NonNull PetViewHolder holder, int position, @NonNull Pet pet) {
+        List<SlideModel> imagesList = new ArrayList<>();
+
+        for (String uri : pet.getPhotoUri()) {
+            imagesList.add(new SlideModel(uri, ScaleTypes.CENTER_CROP));
+        }
+
+        holder.photoSlider.setImageList(imagesList, ScaleTypes.CENTER_CROP);
+        holder.petName_tv.setText(pet.getPetName());
+        holder.petDescription_tv.setText(pet.getPetDescription());
+
+
+        holder.optionsBtn.setVisibility(mIsMyPet ? View.VISIBLE : View.GONE);
     }
 }

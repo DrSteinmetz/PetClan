@@ -315,7 +315,7 @@ public class FeedFragment extends Fragment {
             public void onDeleteOptionClicked(final int position, View view) {
                 final Post postToDelete = mViewModel.getPosts().get(position);
                 final DeleteDialog deleteDialog = new DeleteDialog(getContext());
-                deleteDialog.setPromptText("Are You Sure You Want To Delete Your Post?");
+                deleteDialog.setPromptText(getString(R.string.post_deletion_prompt));
                 deleteDialog.setOnActionListener(new DeleteDialog.DeleteDialogActionListener() {
                     @Override
                     public void onYesBtnClicked() {

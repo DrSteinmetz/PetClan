@@ -276,4 +276,8 @@
     <string name="leashes">Leashes</string>
     <string name="medicines">Medicines</string>
     <string name="hygiene_products">Hygiene Products</string>
+    <string name="pet_deletion_prompt">Are You Sure You Want to Permanently Delete This Pet?</string>
+    <string name="post_deletion_prompt">Are You Sure You Want to Delete Your Post?</string>
+    <string name="comment_deletion_prompt">Are You Sure You Want to Delete Your Comment?</string>
+    <string name="ad_deletion_prompt">Are You Sure You Want to Delete Your Advertisement?</string>
 </resources>

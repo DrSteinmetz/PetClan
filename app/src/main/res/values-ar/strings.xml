@@ -114,7 +114,7 @@
     <string name="no_need_to_be_shy">אין צורך להיות ביישנים…</string>
     <string name="personal_details">פרטים אישיים</string>
     <string name="km">ק"מ</string>
-    <string name="account_deletion_dialog">האם אתם בטוחים שברצונכם למחוק חשבון זה לצמיתות?</string>
+    <string name="account_deletion_dialog">האם אתם בטוחים כי ברצונכם למחוק חשבון זה לצמיתות?</string>
     <string name="change_your_username">שנו את שם המשתמש שלכם</string>
     <string name="enter_username">הזינו שם משתמש:</string>
     <string name="change_your_password">שנו את סיסמתכם</string>
@@ -166,4 +166,8 @@
     <string name="leashes">רצועות</string>
     <string name="medicines">תרופות</string>
     <string name="hygiene_products">מוצרי הגיינה</string>
+    <string name="pet_deletion_prompt">האם אתם בטוחים כי ברצונכם למחוק חיה זו לצמיתות?</string>
+    <string name="post_deletion_prompt">האם אתם בטוחים כי ברצונכם למחוק פוסט זה?</string>
+    <string name="comment_deletion_prompt">האם אתם בטוחים כי ברצונכם למחוק תגובה זו?</string>
+    <string name="ad_deletion_prompt">האם אתם בטוחים כי ברצונכם למחוק מודעה זו?</string>
 </resources>
