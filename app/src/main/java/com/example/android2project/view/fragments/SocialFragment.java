@@ -78,7 +78,7 @@ public class SocialFragment extends Fragment {
 
         adapter = new SocialTabAdapter(getChildFragmentManager());
 
-        adapter.addFragment(new ChatsFragment(), getString(R.string.Chats));
+        adapter.addFragment(new ChatsFragment(), getString(R.string.chats));
         adapter.addFragment(new ChatClanFragment(), getString(R.string.chatclan_tab_title));
 
         viewPager.setAdapter(adapter);

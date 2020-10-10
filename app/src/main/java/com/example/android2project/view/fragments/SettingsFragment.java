@@ -20,7 +20,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceManager;
 import androidx.preference.SeekBarPreference;
 import androidx.preference.SwitchPreferenceCompat;
 
@@ -162,7 +161,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
         locationPref = findPreference("location_pref");
         if (locationPref != null) {
-            locationPref.setSummary(mUserLocation == null ? getContext().getResources().getString(R.string.Unknown) :
+            locationPref.setSummary(mUserLocation == null ? getContext().getResources().getString(R.string.unknown) :
                     mUserLocation.getLocality());
         }
 

@@ -35,7 +35,6 @@ import com.example.android2project.model.User;
 import com.example.android2project.model.ViewModelEnum;
 import com.example.android2project.model.ViewModelFactory;
 import com.example.android2project.model.ViewPagerAdapter;
-import com.example.android2project.repository.AuthRepository;
 import com.example.android2project.view.fragments.AdvertisementFragment;
 import com.example.android2project.view.fragments.CommentsFragment;
 import com.example.android2project.view.fragments.ConversationFragment;
@@ -195,11 +194,11 @@ public class MainActivity extends AppCompatActivity implements
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
 
-        mMenuOptions.add(getResources().getString(R.string.Feed));
-        mMenuOptions.add(getResources().getString(R.string.Chats));
-        mMenuOptions.add(getResources().getString(R.string.MarketPlace));
-        mMenuOptions.add(getResources().getString(R.string.Profile));
-        mMenuOptions.add(getResources().getString(R.string.Settings));
+        mMenuOptions.add(getResources().getString(R.string.feed));
+        mMenuOptions.add(getResources().getString(R.string.chats));
+        mMenuOptions.add(getResources().getString(R.string.marketplace));
+        mMenuOptions.add(getResources().getString(R.string.profile));
+        mMenuOptions.add(getResources().getString(R.string.settings));
 
         duoMenuView.setOnMenuClickListener(new DuoMenuView.OnMenuClickListener() {
             @Override

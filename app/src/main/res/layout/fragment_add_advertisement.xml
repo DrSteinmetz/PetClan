@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:text="@string/Add_An_Ad"
+            android:text="@string/add_an_ad"
             android:textSize="30sp"
             android:textStyle="bold"
             android:textColor="@color/colorPrimaryDark"
@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="@string/Choose_Action"
+                android:text="@string/choose_action"
                 android:textSize="15sp"
                 android:textColor="@color/colorBlack"
                 android:textAllCaps="false" />
@@ -61,7 +61,7 @@
                     android:gravity="center"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="3dp"
-                    android:text="@string/Sell"
+                    android:text="@string/sell"
                     android:textColor="@drawable/radio_button_text_selector" />
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
@@ -74,7 +74,7 @@
                     android:gravity="center"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="3dp"
-                    android:text="@string/Hand_Over"
+                    android:text="@string/hand_over"
                     android:textColor="@drawable/radio_button_text_selector" />
 
             </RadioGroup>
@@ -97,7 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="@string/Choose_Category"
+                android:text="@string/choose_category"
                 android:textSize="15sp"
                 android:textColor="@color/colorBlack"
                 android:textAllCaps="false" />
@@ -120,7 +120,7 @@
                     android:gravity="center"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="3dp"
-                    android:text="@string/Pet"
+                    android:text="@string/pet"
                     android:textColor="@drawable/radio_button_text_selector" />
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
@@ -133,7 +133,7 @@
                     android:gravity="center"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="3dp"
-                    android:text="@string/Product"
+                    android:text="@string/product"
                     android:textColor="@drawable/radio_button_text_selector" />
 
             </RadioGroup>
@@ -156,7 +156,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="@string/Gender"
+                android:text="@string/gender"
                 android:textSize="15sp"
                 android:textColor="@color/colorBlack"
                 android:textAllCaps="false" />
@@ -179,7 +179,7 @@
                     android:gravity="center"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="3dp"
-                    android:text="@string/Male"
+                    android:text="@string/male"
                     android:textColor="@drawable/radio_button_text_selector" />
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
@@ -192,7 +192,7 @@
                     android:gravity="center"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="3dp"
-                    android:text="@string/Female"
+                    android:text="@string/female"
                     android:textColor="@drawable/radio_button_text_selector" />
 
             </RadioGroup>
@@ -236,7 +236,7 @@
             android:layout_below="@+id/spinner_layout"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="5dp"
-            android:hint="@string/Kind"
+            android:hint="@string/kind"
             android:textColorHint="@color/colorPrimaryDark"
             android:visibility="gone"
             app:endIconMode="clear_text">
@@ -269,7 +269,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp"
                 android:layout_gravity="center_vertical"
-                android:hint="@string/Location"
+                android:hint="@string/location"
                 android:textColorHint="@color/colorPrimaryDark"
                 app:endIconMode="clear_text"
                 app:startIconDrawable="@drawable/ic_baseline_location_black_24">
@@ -300,7 +300,7 @@
             android:layout_below="@id/location_layout"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="10dp"
-            android:hint="@string/price"
+            android:hint="@string/enter_price"
             android:textColorHint="@color/colorPrimaryDark"
             android:visibility="gone"
             app:endIconMode="clear_text">
@@ -325,7 +325,7 @@
             android:layout_below="@id/pet_price_et_layout"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="10dp"
-            android:hint="@string/Description"
+            android:hint="@string/description"
             android:textColorHint="@color/colorPrimaryDark"
             android:visibility="gone"
             app:endIconMode="clear_text">
@@ -375,7 +375,7 @@
             android:layout_below="@id/photos_preview"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:text="@string/Publish"
+            android:text="@string/publish"
             android:textAllCaps="false"
             android:visibility="gone" />
 

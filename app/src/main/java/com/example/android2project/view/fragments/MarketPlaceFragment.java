@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -128,7 +130,7 @@ public class MarketPlaceFragment extends Fragment {
         mAdsAdapter.setAdsAdapterListener(new AdsAdapter.AdsAdapterInterface() {
             @Override
             public void onAdClick(View view, int position) {
-                if(!mCurrentUser.equals("a@gmail.com")) {
+                if (!mCurrentUser.equals("a@gmail.com")) {
                     mCurrentAd = mViewModel.getAdList().get(position);
                     DisplayAdFragment.newInstance(mCurrentAd, mViewModel.getCurrentUser().getEmail())
                             .show(getChildFragmentManager(), "");
@@ -161,17 +163,43 @@ public class MarketPlaceFragment extends Fragment {
                         deleteDialog.dismiss();
                     }
                 });
-                deleteDialog.show();
 
+                deleteDialog.show();
             }
         });
 
-        mMarketRecycler.setAdapter(mAdsAdapter);
+        optionsFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                final RadioButton highToLowRb = radioGroup.findViewById(R.id.filter_high_to_low_rb);
+                final RadioButton lowToHighRb = radioGroup.findViewById(R.id.filter_low_to_high_rb);
+
+                switch (position) {
+                    case 0:
+                    case 3:
+                        highToLowRb.setText(getResources().getString(R.string.newest));
+                        lowToHighRb.setText(getResources().getString(R.string.oldest));
+                        break;
+                    case 1:
+                        highToLowRb.setText(getResources().getString(R.string.most_expensive));
+                        lowToHighRb.setText(getResources().getString(R.string.cheapest));
+                        break;
+                    case 2:
+                        highToLowRb.setText(getResources().getString(R.string.furthest));
+                        lowToHighRb.setText(getResources().getString(R.string.closest));
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         addAdBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!mCurrentUser.equals("a@gmail.com")) {
+                if (!mCurrentUser.equals("a@gmail.com")) {
                     AdvertisementFragment.newInstance(null).show(getChildFragmentManager(), "advertisement_fragment");
                 } else {
                     showGuestDialog();
@@ -187,6 +215,8 @@ public class MarketPlaceFragment extends Fragment {
                 mViewModel.getFilteredAds(orderBy, isDes);
             }
         });
+
+        mMarketRecycler.setAdapter(mAdsAdapter);
 
         return rootView;
     }

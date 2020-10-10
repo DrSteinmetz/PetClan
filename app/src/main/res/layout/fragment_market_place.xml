@@ -63,12 +63,13 @@
 
             <Spinner
                 android:id="@+id/filter_option_spinner"
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_centerVertical="true"
                 android:layout_marginHorizontal="10dp"
                 android:layout_toStartOf="@id/radio_group_rg"
                 android:layout_toEndOf="@id/filter_btn"
+                android:textAlignment="center"
                 android:background="@drawable/spinner_bg"
                 android:entries="@array/filterItems" />
 
@@ -83,30 +84,32 @@
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/filter_high_to_low_rb"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:layout_weight="1"
                     android:background="@drawable/radio_button_selector"
                     android:button="@null"
                     android:gravity="center"
-                    android:paddingHorizontal="16dp"
+                    android:paddingHorizontal="12dp"
                     android:paddingVertical="3dp"
-                    android:text="@string/Hightolow"
-                    android:textColor="@drawable/radio_button_text_selector" />
+                    android:text="@string/newest"
+                    android:textColor="@drawable/radio_button_text_selector"
+                    android:textAllCaps="false" />
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/filter_low_to_high_rb"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:layout_weight="1"
                     android:background="@drawable/radio_button_selector"
                     android:button="@null"
                     android:gravity="center"
-                    android:paddingHorizontal="16dp"
+                    android:paddingHorizontal="12dp"
                     android:paddingVertical="3dp"
-                    android:text="@string/Lowtohigh"
-                    android:textColor="@drawable/radio_button_text_selector" />
+                    android:text="@string/oldest"
+                    android:textColor="@drawable/radio_button_text_selector"
+                    android:textAllCaps="false" />
+
             </RadioGroup>
+
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>

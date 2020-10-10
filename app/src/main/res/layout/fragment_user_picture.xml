@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:layout_centerHorizontal="true"
-            android:text="@string/About_You"
+            android:text="@string/about_you"
             android:textSize="20sp"
             android:textColor="@color/colorPrimary"
             android:textAllCaps="false" />
@@ -28,7 +28,7 @@
             android:layout_centerHorizontal="true"
             android:layout_margin="50dp"
             android:gravity="center"
-            android:text="@string/Choose_how_people_see_you"
+            android:text="@string/choose_how_people_see_you"
             android:textSize="30sp"
             android:textColor="@color/colorPrimary"
             android:textAllCaps="false" />
@@ -83,7 +83,7 @@
             android:layout_marginBottom="30dp"
             android:layout_marginHorizontal="30dp"
             style="@style/Widget.MaterialComponents.Button"
-            android:text="@string/Finish"
+            android:text="@string/finish"
             android:textSize="20sp"
             android:textAllCaps="false" />
 

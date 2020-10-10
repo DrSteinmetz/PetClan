@@ -1,7 +1,6 @@
 package com.example.android2project.model;
 
 import android.content.Context;
-import android.location.Geocoder;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,14 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.android2project.R;
-import com.example.android2project.repository.AuthRepository;
-import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
-import com.firebase.ui.firestore.paging.FirestorePagingOptions;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.GeoPoint;
 
 import java.util.List;
-import java.util.Locale;
 
 public class AdsAdapter extends RecyclerView.Adapter<AdsAdapter.AdViewHolder> {
 
@@ -94,7 +87,7 @@ public class AdsAdapter extends RecyclerView.Adapter<AdsAdapter.AdViewHolder> {
 
         holder.adLocationTv.setText(ad.getLocation());
 
-        holder.adTypeTv.setText(ad.getIsSell() ? mContext.getString(R.string.sell) : mContext.getString(R.string.hand_hover));
+        holder.adTypeTv.setText(ad.getIsSell() ? mContext.getString(R.string.ad_card_sell) : mContext.getString(R.string.ad_card_hand_hover));
     }
 
     @Override

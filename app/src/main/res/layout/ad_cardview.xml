@@ -46,7 +46,7 @@
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="@color/colorBlack"
-                android:text="@string/Price" />
+                android:text="@string/price" />
 
             <TextView
                 android:id="@+id/pet_description_tv"
@@ -55,7 +55,7 @@
                 android:layout_marginVertical="3dp"
                 android:singleLine="true"
                 android:ellipsize="end"
-                android:text="@string/Description"
+                android:text="@string/description"
                 android:textSize="13sp"
                 android:textColor="@color/colorBlack"
                 android:layout_below="@id/ad_price_tv"/>
@@ -64,7 +64,7 @@
                 android:id="@+id/location_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/Location"
+                android:text="@string/location"
                 android:textSize="12sp"
                 android:textColor="@color/colorBlack"
                 android:layout_below="@id/pet_description_tv"/>
@@ -73,7 +73,7 @@
                 android:id="@+id/ad_type_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/Sell_Adopt"
+                android:text="@string/sell_adopt"
                 android:textSize="12sp"
                 android:textColor="@color/colorBlack"
                 android:layout_below="@id/pet_description_tv"

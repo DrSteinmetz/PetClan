@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:maxLines="3"
             android:ellipsize="end"
-            android:text="@string/New_Message"
+            android:text="@string/new_message"
             android:textStyle="bold"
             android:textColor="@color/colorNotificationGrey"
             android:textSize="14sp"
@@ -61,7 +61,7 @@
             android:layout_below="@id/user_name_tv"
             android:maxLines="3"
             android:ellipsize="end"
-            android:text="@string/New_Message"
+            android:text="@string/new_message"
             android:textColor="@color/colorNotificationGrey"
             android:textSize="14sp"
             android:textAllCaps="false" />

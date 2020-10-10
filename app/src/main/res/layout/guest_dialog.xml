@@ -65,7 +65,7 @@
                     android:layout_marginHorizontal="10dp"
                     android:layout_marginTop="15dp"
                     android:layout_weight="1"
-                    android:text="@string/Join_Our_Clan"
+                    android:text="@string/join_our_clan"
                     android:textAllCaps="false" />
 
             </LinearLayout>

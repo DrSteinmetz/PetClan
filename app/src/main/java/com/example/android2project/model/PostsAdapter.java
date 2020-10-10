@@ -149,7 +149,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
                     if (listener != null) {
                         if (likeBtnTv.getText().toString()
-                                .equals(mContext.getString(R.string.Like))) {
+                                .equals(mContext.getString(R.string.like))) {
                             post.getLikesMap().put(mMyEmail, true);
                             isLike = true;
                         } else {
@@ -240,7 +240,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
         holder.postTimeAgo.setText(timestampToTimeAgo(post.getPostTime()));
 
-        holder.locationTv.setText(post.getLocation() == null ? mContext.getResources().getString(R.string.Unknown) : post.getLocation());
+        holder.locationTv.setText(post.getLocation() == null ? mContext.getResources().getString(R.string.unknown) : post.getLocation());
 
         if (post.getAuthorEmail().equals(mMyEmail)) {
             holder.optionsBtn.setVisibility(View.VISIBLE);
@@ -255,23 +255,25 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         }
 
         boolean isUserLikedPost = post.getLikesMap().containsKey(mMyEmail);
-        holder.likeBtnTv.setText(isUserLikedPost ? mContext.getString(R.string.Unlike) : mContext.getResources().getString(R.string.Like));
+        holder.likeBtnTv.setText(isUserLikedPost ? mContext.getString(R.string.Unlike) : mContext.getResources().getString(R.string.like));
         holder.likeBtnIv.setRotation(isUserLikedPost ? 180 : 0);
         if (post.getLikesCount() > 0) {
-            String likeString = post.getLikesCount() + " " + mContext.getString(R.string.Likes);
+            String likeString = post.getLikesCount() + " " + mContext.getString(R.string.likes);
             holder.likesAmountTv.setText(likeString);
             holder.likesAmountIv.setVisibility(View.VISIBLE);
             holder.likesAmountTv.setVisibility(View.VISIBLE);
         } else {
+            holder.likesAmountTv.setText(null);
             holder.likesAmountIv.setVisibility(View.GONE);
             holder.likesAmountTv.setVisibility(View.GONE);
         }
 
         if (post.getCommentsCount() > 0) {
-            String commentString = post.getCommentsCount() + " " + mContext.getString(R.string.Comments);
+            String commentString = post.getCommentsCount() + " " + mContext.getString(R.string.comments);
             holder.commentsAmountTv.setText(commentString);
             holder.commentsAmountTv.setVisibility(View.VISIBLE);
         } else {
+            holder.commentsAmountTv.setText(null);
             holder.commentsAmountTv.setVisibility(View.GONE);
         }
 
@@ -285,6 +287,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                     .placeholder(R.drawable.ic_default_user_pic)
                     .error(R.drawable.ic_default_user_pic)
                     .into(holder.postPicIv);
+        } else {
+            holder.postPicIv.setVisibility(View.GONE);
         }
 
         /**<-------In order to prevent double click------->**/

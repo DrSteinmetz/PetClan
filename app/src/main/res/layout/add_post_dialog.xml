@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-        android:hint="@string/On_Your_Mind"
+        android:hint="@string/on_your_mind"
         android:gravity="start|top">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_weight="1"
-            android:text="@string/Post"
+            android:text="@string/post"
             android:textSize="20sp"
             android:textColor="@color/colorBlack"
             android:textStyle="bold"

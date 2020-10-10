@@ -63,7 +63,7 @@
                     android:layout_marginHorizontal="10dp"
                     android:layout_marginTop="15dp"
                     android:layout_weight="1"
-                    android:text="@string/No"
+                    android:text="@string/no"
                     android:textAllCaps="false" />
 
                 <Button
@@ -73,7 +73,7 @@
                     android:layout_marginHorizontal="10dp"
                     android:layout_marginTop="15dp"
                     android:layout_weight="1"
-                    android:text="@string/Yes"
+                    android:text="@string/yes"
                     android:textAllCaps="false" />
 
             </LinearLayout>

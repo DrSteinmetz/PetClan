@@ -29,7 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="@string/Username"
+                android:text="@string/username"
                 android:textSize="15sp"
                 android:textColor="@color/colorBlack"
                 android:textAllCaps="false" />
@@ -54,7 +54,7 @@
             android:id="@+id/scroll_down_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/Unread_Messages"
+            android:text="@string/unread_messages"
             android:layout_centerHorizontal="true"
             android:layout_alignBottom="@id/line_divider"
             android:layout_marginBottom="10dp"
@@ -85,7 +85,7 @@
                 android:layout_gravity="center"
                 android:layout_marginHorizontal="15dp"
                 android:layout_weight="1"    
-                android:hint="@string/Enter_message"
+                android:hint="@string/enter_message"
                 android:maxLines="6"
                 android:padding="10dp"
                 android:background="@drawable/chat_et_shape" />

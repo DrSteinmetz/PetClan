@@ -394,19 +394,19 @@ public class AdvertisementFragment extends DialogFragment {
                 }
 
                 if (!mCityNames.contains(cityName)) {
-                    locationAutoCompleteTv.setError(getContext().getString(R.string.city_location));
+                    locationAutoCompleteTv.setError(getContext().getString(R.string.enter_city_location));
                 } else {
                     locationAutoCompleteTv.setError(null);
                 }
 
                 if (price.isEmpty()) {
-                    priceEt.setError(getContext().getString(R.string.price));
+                    priceEt.setError(getContext().getString(R.string.enter_price));
                 } else {
                     priceEt.setError(null);
                 }
 
                 if (description.isEmpty()) {
-                    descriptionEt.setError(getContext().getString(R.string.description));
+                    descriptionEt.setError(getContext().getString(R.string.enter_description));
                 } else {
                     descriptionEt.setError(null);
                 }

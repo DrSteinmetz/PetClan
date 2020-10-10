@@ -96,8 +96,8 @@ public class DisplayAdFragment extends DialogFragment {
                 getResources().getString(R.string.hand_over_ad_tv));
         kindTv.setText(mAdvertisement.getPetKind());
         isPetLayout.setVisibility(mAdvertisement.getIsPet() ? View.VISIBLE : View.GONE);
-        genderTv.setText(mAdvertisement.getIsMale() ? getResources().getString(R.string.Male) :
-                getResources().getString(R.string.Female));
+        genderTv.setText(mAdvertisement.getIsMale() ? getResources().getString(R.string.male) :
+                getResources().getString(R.string.female));
         priceTv.setText(String.valueOf(mAdvertisement.getPrice()));
         publicDateTv.setText(dateToFormatDate(mAdvertisement.getPublishDate()));
         descriptionTv.setText(mAdvertisement.getDescription());

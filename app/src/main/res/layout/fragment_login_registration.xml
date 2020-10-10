@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_margin="20dp"
-            android:text="@string/Sign_In"
+            android:text="@string/sign_in"
             android:textColor="@color/colorPrimary"
             android:textSize="20sp" />
 
@@ -77,7 +77,7 @@
             android:layout_marginTop="15dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginBottom="50dp"
-            android:text="@string/Join_Our_Clan"
+            android:text="@string/join_our_clan"
             android:textAllCaps="false"
             android:textSize="20sp" />
 

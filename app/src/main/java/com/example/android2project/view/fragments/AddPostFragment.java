@@ -177,7 +177,7 @@ public class AddPostFragment extends DialogFragment {
                 if (mCurrentPost == null) {
                     mCurrentPost = new Post(mViewModel.getMyEmail(), mViewModel.getMyName(),
                             mViewModel.getMyPhotoUri(), postContentEt.getText().toString());
-                    mCurrentPost.setLocation(mUserLocation == null ? getContext().getResources().getString(R.string.Unknown) :
+                    mCurrentPost.setLocation(mUserLocation == null ? getContext().getResources().getString(R.string.unknown) :
                             mUserLocation.getLocality());
                     mCurrentPost.setGeoPoint(mUserLocation == null ? null :
                             new GeoPoint(mUserLocation.getLatitude(), mUserLocation.getLongitude()));

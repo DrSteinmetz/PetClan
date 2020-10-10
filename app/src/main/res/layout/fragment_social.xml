@@ -24,13 +24,13 @@
             android:id="@+id/chat_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/Chat"/>
+            android:text="@string/chat"/>
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/friends"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/Friends"/>
+            android:text="@string/friends"/>
 
 
     </com.google.android.material.tabs.TabLayout>

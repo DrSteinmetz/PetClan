@@ -7,10 +7,10 @@
 
         <EditTextPreference
             android:key="username_et"
-            android:title="@string/Username"
+            android:title="@string/username"
             android:summary="@string/change_your_username"
             android:textAllCaps="false"
-            android:dialogTitle="@string/Username"
+            android:dialogTitle="@string/username"
             android:dialogMessage="@string/enter_username" />
 
         <EditTextPreference
@@ -24,15 +24,15 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="@string/Location"
+        android:title="@string/location"
         android:icon="@drawable/ic_baseline_location_accent_24">
 
         <Preference
             android:key="location_pref"
             android:title="Where are you?"
-            android:summary="@string/Unknown"
+            android:summary="@string/unknown"
             android:textAllCaps="false"
-            android:dialogTitle="@string/Location"
+            android:dialogTitle="@string/location"
             android:dialogMessage="Enter your Location:" />
 
         <SwitchPreferenceCompat

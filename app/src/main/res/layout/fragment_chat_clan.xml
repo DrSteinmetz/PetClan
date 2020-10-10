@@ -23,7 +23,7 @@
          android:layout_margin="2dp"
          android:layout_alignParentTop="true"
          android:background="@color/colorWhite"
-         android:queryHint="@string/Search_Here"
+         android:queryHint="@string/search_here"
          android:iconifiedByDefault="false"
          android:queryBackground="@android:color/transparent" />
 

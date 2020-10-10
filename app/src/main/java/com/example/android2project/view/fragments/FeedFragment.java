@@ -185,7 +185,7 @@ public class FeedFragment extends Fragment {
         mOnPostLikesUpdateSucceed = new Observer<Integer>() {
             @Override
             public void onChanged(Integer position) {
-                mPostsAdapter.notifyDataSetChanged();
+                mPostsAdapter.notifyItemChanged(position);
             }
         };
 
