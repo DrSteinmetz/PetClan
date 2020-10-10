@@ -93,8 +93,7 @@ public class LoginDetailsFragment extends Fragment {
         mLoginFailedObserver = new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                //Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "onChanged: " + error);
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
             }
         };
 
@@ -114,8 +113,7 @@ public class LoginDetailsFragment extends Fragment {
         mRegisterFailedObserver = new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                //Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "onChanged: " + error);
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
             }
         };
     }
