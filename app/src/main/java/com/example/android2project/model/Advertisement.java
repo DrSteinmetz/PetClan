@@ -42,7 +42,7 @@ public class Advertisement implements Serializable, Parcelable, Comparable<Adver
     protected Advertisement(Parcel in) {
         double latitude = in.readDouble();
         double longitude = in.readDouble();
-        this.mGeoPoint = new GeoPoint(latitude,longitude);
+        this.mGeoPoint = new GeoPoint(latitude, longitude);
     }
 
     public static final Creator<Advertisement> CREATOR = new Creator<Advertisement>() {

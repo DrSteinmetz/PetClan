@@ -323,7 +323,7 @@ public class MainActivity extends AppCompatActivity implements
                     }
                     break;
                 case "open_comments":
-                    final Post post = (Post) bundle.getSerializable("post");
+                    final Post post = (Post) bundle.getParcelable("post");
                     if (post != null) {
                         CommentsFragment.newInstance(post)
                                 .show(getSupportFragmentManager()

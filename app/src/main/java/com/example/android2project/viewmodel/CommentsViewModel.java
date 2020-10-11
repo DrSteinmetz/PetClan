@@ -97,7 +97,6 @@ public class CommentsViewModel extends ViewModel {
             public void onCommentUploadSucceed(final Comment comment) {
                 if (!comment.getAuthorEmail().equals(mPost.getAuthorEmail())) {
                     sendCommentNotification(comment);
-                    Log.d(TAG, "onCommentUploadSucceed: iop comment notification sent");
                 }
                 mCommentUploadSucceed.setValue(comment);
             }
@@ -199,7 +198,7 @@ public class CommentsViewModel extends ViewModel {
         final JSONObject dataObject = new JSONObject();
         try {
             rootObject.put("to", mPost.getAuthorToken());
-            Log.d(TAG, "sendCommentNotification: iop token comment " + mPost.getAuthorToken());
+
             dataObject.put("type", "comment");
             dataObject.put("post_id", mPost.getPostId());
             dataObject.put("email", mPost.getAuthorEmail());

@@ -25,7 +25,8 @@ public class Post implements Serializable, Comparable<Post>, Parcelable {
     private String mLocation;
     private GeoPoint mGeoPoint;
 
-    public Post() {}
+    public Post() {
+    }
 
     public Post(String authorEmail, String authorName, String authorImageUri, String authorContent) {
         this.mPostId = authorEmail + System.nanoTime();
@@ -50,8 +51,19 @@ public class Post implements Serializable, Comparable<Post>, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeDouble(mGeoPoint.getLatitude());
-        dest.writeDouble(mGeoPoint.getLongitude());
+        dest.writeString(mPostId);
+        dest.writeString(mAuthorEmail);
+        dest.writeString(mAuthorName);
+        dest.writeString(mAuthorImageUri);
+        dest.writeString(mAuthorToken);
+        dest.writeSerializable(mPostTime);
+        dest.writeString(mPostImageUri);
+        dest.writeString(mAuthorContent);
+        dest.writeInt(mCommentsCount);
+        dest.writeInt(mLikesCount);
+        dest.writeString(mLocation);
+        dest.writeDouble(mGeoPoint != null ? mGeoPoint.getLatitude() : 0);
+        dest.writeDouble(mGeoPoint != null ? mGeoPoint.getLongitude() : 0);
     }
 
     @Override
@@ -59,10 +71,21 @@ public class Post implements Serializable, Comparable<Post>, Parcelable {
         return 0;
     }
 
-    public Post(Parcel in){
+    public Post(Parcel in) {
+        this.mPostId = in.readString();
+        this.mAuthorEmail = in.readString();
+        this.mAuthorName = in.readString();
+        this.mAuthorImageUri = in.readString();
+        this.mAuthorToken = in.readString();
+        this.mPostTime = (Date) in.readSerializable();
+        this.mPostImageUri = in.readString();
+        this.mAuthorContent = in.readString();
+        this.mCommentsCount = in.readInt();
+        this.mLikesCount = in.readInt();
+        this.mLocation = in.readString();
         double latitude = in.readDouble();
         double longitude = in.readDouble();
-        this.mGeoPoint = new GeoPoint(latitude,longitude);
+        this.mGeoPoint = new GeoPoint(latitude, longitude);
     }
 
     public String getPostId() {

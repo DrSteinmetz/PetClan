@@ -245,7 +245,6 @@ public class FeedViewModel extends ViewModel {
                 final String myEmail = mAuthRepository.getUserEmail();
                 if (!post.getAuthorEmail().equals(myEmail) && mIsLike) {
                     sendLikeNotification(post);
-                    Log.d(TAG, "onChanged: iop like notification sent");
                 }
                 mPostLikesUpdateSucceed.setValue(mPosition);
             }
@@ -356,7 +355,7 @@ public class FeedViewModel extends ViewModel {
         final JSONObject dataObject = new JSONObject();
         try {
             rootObject.put("to", post.getAuthorToken());
-            Log.d(TAG, "sendLikeNotification: iop token like " + post.getAuthorToken());
+
             dataObject.put("type", "like");
             dataObject.put("name", mAuthRepository.getUserName());
 
