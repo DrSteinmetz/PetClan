@@ -242,6 +242,7 @@ public class FeedFragment extends Fragment {
             addPostBtn.setVisibility(mViewModel.getMyEmail().equals(mUserEmail) ?
                     View.VISIBLE : View.GONE);
         }
+
         addPostBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -275,6 +276,7 @@ public class FeedFragment extends Fragment {
                 if (listener != null) {
                     if (!mCurrentUser.equals("a@gmail.com")) {
                         final Post post = mViewModel.getPosts().get(position);
+                        mViewModel.setPosition(position);
                         listener.onComment(post);
                     } else {
                         showGuestDialog();
@@ -296,6 +298,7 @@ public class FeedFragment extends Fragment {
                 if (listener != null) {
                     if (!mCurrentUser.equals("a@gmail.com")) {
                         final Post post = mViewModel.getPosts().get(position);
+                        mViewModel.setPosition(position);
                         listener.onComment(post);
                     } else {
                         showGuestDialog();
@@ -306,6 +309,7 @@ public class FeedFragment extends Fragment {
             @Override
             public void onEditOptionClicked(int position, View view) {
                 final Post post = mViewModel.getPosts().get(position);
+                mViewModel.setPosition(position);
                 AddPostFragment.newInstance(null, post)
                         .show(getParentFragmentManager()
                                 .beginTransaction(), "fragment_edit_post");

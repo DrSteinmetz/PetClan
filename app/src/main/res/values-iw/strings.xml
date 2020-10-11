@@ -170,4 +170,6 @@
     <string name="post_deletion_prompt">האם אתם בטוחים כי ברצונכם למחוק פוסט זה?</string>
     <string name="comment_deletion_prompt">האם אתם בטוחים כי ברצונכם למחוק תגובה זו?</string>
     <string name="ad_deletion_prompt">האם אתם בטוחים כי ברצונכם למחוק מודעה זו?</string>
+    <string name="edit">עריכה</string>
+    <string name="delete">מחיקה</string>
 </resources>

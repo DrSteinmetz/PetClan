@@ -280,4 +280,6 @@
     <string name="post_deletion_prompt">Are You Sure You Want to Delete Your Post?</string>
     <string name="comment_deletion_prompt">Are You Sure You Want to Delete Your Comment?</string>
     <string name="ad_deletion_prompt">Are You Sure You Want to Delete Your Advertisement?</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 </resources>

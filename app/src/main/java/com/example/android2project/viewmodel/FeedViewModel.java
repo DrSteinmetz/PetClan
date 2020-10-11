@@ -301,6 +301,10 @@ public class FeedViewModel extends ViewModel {
         return mPosts;
     }
 
+    public void setPosition(int mPosition) {
+        this.mPosition = mPosition;
+    }
+
     public void setUserEmail(final String userEmail) {
         this.mUserEmail = userEmail;
     }

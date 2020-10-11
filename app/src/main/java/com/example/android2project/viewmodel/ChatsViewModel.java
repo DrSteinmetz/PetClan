@@ -25,6 +25,7 @@ public class ChatsViewModel extends ViewModel {
 
     private List<User> mAllUsers = new ArrayList<>();
     private List<User> mActiveUsers = new ArrayList<>();
+    private Map<String, User> mUsersMap = new HashMap<>();
     private List<Conversation> mConversations = new ArrayList<>();
 
     private MutableLiveData<List<User>> mUsersLiveData;
@@ -108,17 +109,19 @@ public class ChatsViewModel extends ViewModel {
         final String myEmail = mAuth.getUserEmail();
         final List<User> relevantUsers = new ArrayList<>();
 
-        Map<String, User> usersMap = new HashMap<>();
+        if (!mUsersMap.isEmpty()) {
+            mUsersMap.clear();
+        }
 
         for (User user : mAllUsers) {
-            usersMap.put(user.getEmail(), user);
+            mUsersMap.put(user.getEmail(), user);
         }
 
         for (Conversation conversation : mConversations) {
-            if (usersMap.containsKey(conversation.getRecipientEmail()) && !Objects.requireNonNull(usersMap.get(conversation.getRecipientEmail())).getEmail().equals(myEmail)) {
-                relevantUsers.add((User) usersMap.get(conversation.getRecipientEmail()));
-            } else if (usersMap.containsKey(conversation.getSenderEmail()) && !Objects.requireNonNull(usersMap.get(conversation.getSenderEmail())).getEmail().equals(myEmail)) {
-                relevantUsers.add((User) usersMap.get(conversation.getSenderEmail()));
+            if (mUsersMap.containsKey(conversation.getRecipientEmail()) && !Objects.requireNonNull(mUsersMap.get(conversation.getRecipientEmail())).getEmail().equals(myEmail)) {
+                relevantUsers.add((User) mUsersMap.get(conversation.getRecipientEmail()));
+            } else if (mUsersMap.containsKey(conversation.getSenderEmail()) && !Objects.requireNonNull(mUsersMap.get(conversation.getSenderEmail())).getEmail().equals(myEmail)) {
+                relevantUsers.add((User) mUsersMap.get(conversation.getSenderEmail()));
             }
 
             //Old Version: O(n^2)

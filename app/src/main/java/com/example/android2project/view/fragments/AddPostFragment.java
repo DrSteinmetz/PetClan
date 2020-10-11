@@ -66,6 +66,7 @@ public class AddPostFragment extends DialogFragment {
     private Observer<String> mOnUploadingPostPhotoFailed;
 
     private final int WRITE_PERMISSION_REQUEST = 7;
+
     public AddPostFragment() {
     }
 
@@ -93,9 +94,9 @@ public class AddPostFragment extends DialogFragment {
             @Override
             public void onChanged(String imageUri) {
                 mCurrentPost.setPostImageUri(imageUri);
-                if(!mIsEdit) {
+                if (!mIsEdit) {
                     mViewModel.uploadNewPost(mCurrentPost);
-                }else{
+                } else {
                     mViewModel.updatePost(mCurrentPost);
                 }
                 mLoadingDialog.dismiss();
@@ -198,9 +199,9 @@ public class AddPostFragment extends DialogFragment {
                     mCurrentPost.setAuthorContent(postContentEt.getText().toString());
                     if (mPicUri != null) {
                         showLoadingDialog();
-                        mViewModel.uploadPostPhoto(mCurrentPost,mPicUri);
+                        mViewModel.uploadPostPhoto(mCurrentPost, mPicUri);
                         mIsEdit = true;
-                    }else{
+                    } else {
                         mViewModel.updatePost(mCurrentPost);
                         dismiss();
                     }

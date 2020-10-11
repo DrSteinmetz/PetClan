@@ -1,5 +1,6 @@
 package com.example.android2project.viewmodel;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
@@ -19,6 +20,7 @@ import java.util.List;
 
 public class CommentsViewModel extends ViewModel {
 
+    @SuppressLint("StaticFieldLeak")
     private Context mContext;
     private Repository mRepository;
 
