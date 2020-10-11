@@ -1174,6 +1174,7 @@ public class Repository {
         if (user != null) {
             userEmail = Objects.requireNonNull(user.getEmail()).replace(".", "");
         }
+
         mDBChats.orderByChild(userEmail).equalTo(true)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
@@ -1183,12 +1184,14 @@ public class Repository {
                             if (!conversations.isEmpty()) {
                                 conversations.clear();
                             }
+
                             for (DataSnapshot ds : snapshot.getChildren()) {
                                 conversation = ds.child(CONVERSATION).getValue(Conversation.class);
                                 if (conversation != null) {
                                     conversations.add(conversation);
                                 }
                             }
+
                             if (mDownloadActiveChatsListener != null) {
                                 mDownloadActiveChatsListener.onDownloadActiveChatsSucceed(conversations);
                             }
