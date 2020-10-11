@@ -32,6 +32,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -661,22 +662,35 @@ public class Repository {
             mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
                     .collection(POSTS)
                     .document(postId)
-                    .delete()
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
-                        public void onSuccess(Void aVoid) {
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                final DocumentSnapshot document = task.getResult();
+                                document.getReference()
+                                        .collection("comments")
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (QueryDocumentSnapshot document2 : task.getResult()) {
+                                                        document2.getReference().delete();
+                                                    }
+                                                }
+                                                document.getReference().delete();
 
-                            if (mRepositoryPostDeletionSucceedMLD != null) {
-                                mRepositoryPostDeletionSucceedMLD.setValue(postId);
-                            }
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-
-                            if (mRepositoryPostDeletionFailedMLD != null) {
-                                mRepositoryPostDeletionFailedMLD.setValue(e.getMessage());
+                                                if (mRepositoryPostDeletionSucceedMLD != null) {
+                                                    mRepositoryPostDeletionSucceedMLD.setValue(postId);
+                                                }
+                                            }
+                                        });
+                            } else {
+                                if (mRepositoryPostDeletionFailedMLD != null) {
+                                    mRepositoryPostDeletionFailedMLD.setValue(Objects.
+                                            requireNonNull(task.getException()).getMessage());
+                                }
                             }
                         }
                     });
@@ -1001,6 +1015,60 @@ public class Repository {
 
         if (user != null) {
             mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
+                    .collection("posts")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (final QueryDocumentSnapshot document : task.getResult()) {
+                                    document.getReference()
+                                            .collection("comments")
+                                            .get()
+                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        for (QueryDocumentSnapshot document2 : task.getResult()) {
+                                                            document2.getReference().delete();
+                                                        }
+                                                    }
+                                                    document.getReference().delete();
+                                                }
+                                            });
+                                }
+                            }
+                        }
+                    });
+
+            mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
+                    .collection("pets")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    document.getReference().delete();
+                                }
+                            }
+                        }
+                    });
+
+            mCloudAds.whereEqualTo(FieldPath.of("user", "email"), user.getEmail())
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    document.getReference().delete();
+                                }
+                            }
+                        }
+                    });
+
+            mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
                     .delete()
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -1025,23 +1093,28 @@ public class Repository {
      * <-------Chat methods------->
      **/
     public void downloadAllUsers() {
-        final ArrayList<User> users = new ArrayList<>();
-        mCloudUsers.get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                                if (!Objects.equals(document.getData().get("email"),
-                                        Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()))
-                                    users.add(document.toObject(User.class));
-                            }
-                            if (mDownloadAllUsersListener != null) {
-                                mDownloadAllUsersListener.onDownloadAllUsersSucceed(users);
+        final FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user != null) {
+            final ArrayList<User> users = new ArrayList<>();
+
+            mCloudUsers.get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+                                    if (!Objects.equals(document.getData().get("email"), user.getEmail())) {
+                                        users.add(document.toObject(User.class));
+                                    }
+                                }
+                                if (mDownloadAllUsersListener != null) {
+                                    mDownloadAllUsersListener.onDownloadAllUsersSucceed(users);
+                                }
                             }
                         }
-                    }
-                });
+                    });
+        }
     }
 
     public void uploadMessageToDB(final String messageContent,
@@ -1190,8 +1263,6 @@ public class Repository {
     }
 
     public void updateAdLocation(final Address address, final Advertisement advertisement) {
-
-        Log.d(TAG, "updateAdLocation: momo");
         final FirebaseUser user = mAuth.getCurrentUser();
         Map<String, Object> updateAdMap = new HashMap<>();
         final GeoPoint geoPoint = new GeoPoint(address.getLatitude(), address.getLongitude());

@@ -68,12 +68,9 @@ public class AdvertisementViewModel extends ViewModel implements LocationUtils.L
             public void onAdUploadPicSuccess(String imagePath, int iteration) {
                 mIterationCount += iteration;
                 mPhotosDownloadString.add(imagePath);
-                Log.d(TAG, "onAdUploadPicSuccess: qwerty" + imagePath);
                 if (mIterationCount == mTotalCount) {
                     onAdUploadPhotoSucceed.setValue(mIterationCount);
-                    Log.d(TAG, "onAdUploadPicSuccess: qwerty " + mIterationCount);
                 }
-
             }
 
             @Override
@@ -103,7 +100,6 @@ public class AdvertisementViewModel extends ViewModel implements LocationUtils.L
         mRepository.setUploadAdListener(new Repository.RepositoryUploadAdInterface() {
             @Override
             public void onUploadAdSucceed(Advertisement advertisement) {
-                Log.d(TAG, "onUploadAdSucceed: zxc");
                 mLocationUtils.getGeoPointFromCity(advertisement);
                 onAdUploadSucceed.setValue(advertisement);
             }
@@ -119,7 +115,7 @@ public class AdvertisementViewModel extends ViewModel implements LocationUtils.L
     public void uploadAdPhotos(List<String> imageList) {
         final String userEmail = mAuth.getUserEmail();
         mTotalCount = numberOfImages(imageList);
-        Log.d(TAG, "uploadAdPhotos: image list zxc" + imageList);
+
         for (String str : imageList) {
             if (str != null && !str.contains("https://firebasestorage.googleapis.com/v0/b/petclan-2fdce.appspot.com")) {
                 Uri uri = Uri.parse(str);
@@ -128,10 +124,11 @@ public class AdvertisementViewModel extends ViewModel implements LocationUtils.L
                 mPhotosDownloadString.add(str);
                 mIterationCount++;
             }
+
             if (mIterationCount == mTotalCount) {
                 onAdUploadPhotoSucceed.setValue(mIterationCount);
+                break;
             }
-            Log.d(TAG, "uploadAdPhotos: counter zxc" + mIterationCount);
         }
     }
 
@@ -153,25 +150,24 @@ public class AdvertisementViewModel extends ViewModel implements LocationUtils.L
         return new User(email, firstName, lastName, photoUri, token);
     }
 
-
     public void deletePhotoFromStorage(String photoUri) {
         mStorageRepository.deletePhotoFromStorage(photoUri);
     }
 
     private int numberOfImages(List<String> imageList) {
         int counter = 0;
+
         for (String uri : imageList) {
             if (uri != null) {
                 counter++;
             }
         }
-        Log.d(TAG, "numberOfImages: zxc " + counter);
+
         return counter;
     }
 
     @Override
     public void onLocationChange(Address address,Advertisement advertisement) {
-        Log.d(TAG, "onLocationChange: momo");
         mRepository.updateAdLocation(address,advertisement);
     }
 }

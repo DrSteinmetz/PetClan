@@ -21,7 +21,8 @@
             android:layout_height="150dp"
             android:background="@drawable/rounded_image_shape"
             android:scaleType="centerCrop"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/ic_marketplace_cover" />
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/ad_options_menu_btn"
             android:layout_width="wrap_content"
@@ -36,7 +37,6 @@
             android:layout_below="@id/ad_image"
             android:layout_alignStart="@id/ad_image"
             android:layout_marginHorizontal="10dp">
-
 
             <TextView
                 android:id="@+id/ad_price_tv"

@@ -273,7 +273,6 @@ public class ConversationFragment extends DialogFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
 
@@ -291,7 +290,7 @@ public class ConversationFragment extends DialogFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getDialog().getWindow()
+        requireDialog().getWindow()
                 .getAttributes().windowAnimations = R.style.ConversationDialogAnimation;
     }
 

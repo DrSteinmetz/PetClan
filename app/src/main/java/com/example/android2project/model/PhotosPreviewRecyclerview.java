@@ -1,6 +1,5 @@
 package com.example.android2project.model;
 
-import android.bluetooth.le.AdvertiseData;
 import android.content.Context;
 import android.net.Uri;
 import android.util.AttributeSet;
@@ -43,9 +42,11 @@ public class PhotosPreviewRecyclerview extends RecyclerView {
 
     public void init(int size){
         IMAGE_VIEW_SIZE = size;
+
         for (int i = 0; i < IMAGE_VIEW_SIZE; i++) {
             mSelectedImageList.add(null);
         }
+
         mImagePreviewAdapter = new PreviewImagesAdapter(getContext(),mSelectedImageList);
         setHasFixedSize(true);
         setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
@@ -101,6 +102,7 @@ public class PhotosPreviewRecyclerview extends RecyclerView {
 
         } else if (object instanceof Pet){
             final Pet pet = (Pet) object;
+
             IMAGE_VIEW_SIZE = size;
             for (int i = 0; i < IMAGE_VIEW_SIZE; i++) {
                 if (i < pet.getPhotoUri().size()) {
@@ -140,7 +142,7 @@ public class PhotosPreviewRecyclerview extends RecyclerView {
         mSelectedImageList.remove(mImageViewCounter);
         mSelectedImageList.add(mImageViewCounter, uri.toString());
         mImagePreviewAdapter.notifyItemChanged(mImageViewCounter++);
-        Log.d(TAG, "addPhoto: "+uri.toString());
+        Log.d(TAG, "addPhoto: " + uri.toString());
     }
 
     public List<String> getSelectedImageList(){

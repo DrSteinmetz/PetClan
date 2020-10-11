@@ -3,7 +3,6 @@ package com.example.android2project.viewmodel;
 import android.content.Context;
 import android.location.Address;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -24,7 +23,7 @@ public class SettingsViewModel extends ViewModel {
     private MutableLiveData<String> mUpdatePasswordSucceed;
     private MutableLiveData<String> mUpdatePasswordFailed;
 
-    private MutableLiveData<String> mUserDeletionSucceed;
+    private MutableLiveData<Boolean> mAuthUserDeletionSucceed;
 
     private final String TAG = "SettingsViewModel";
 
@@ -124,15 +123,7 @@ public class SettingsViewModel extends ViewModel {
         });
     }
 
-    public MutableLiveData<String> getUserDeletionSucceed() {
-        if (mUserDeletionSucceed == null) {
-            mUserDeletionSucceed = new MutableLiveData<>();
-            attachSetOnUserDeletionListener();
-        }
-        return mUserDeletionSucceed;
-    }
-
-    private void attachSetOnUserDeletionListener() {
+    private void attachSetOnCloudUserDeletionListener() {
         mRepository.setUserDeletionListener(new Repository.RepositoryUserDeletionInterface() {
             @Override
             public void onUserDeletionSucceed(String userId) {
@@ -145,6 +136,24 @@ public class SettingsViewModel extends ViewModel {
             }
         });
     }
+
+    public MutableLiveData<Boolean> getAuthUserDeletionSucceed() {
+        if (mAuthUserDeletionSucceed == null) {
+            mAuthUserDeletionSucceed = new MutableLiveData<>();
+            attachSetOnAuthUserDeletionListener();
+        }
+        return mAuthUserDeletionSucceed;
+    }
+
+    private void attachSetOnAuthUserDeletionListener() {
+        mAuthRepository.setDeleteUserListener(new AuthRepository.RepositoryDeleteUserInterface() {
+            @Override
+            public void onDeleteUserSucceed(boolean value) {
+                mAuthUserDeletionSucceed.setValue(value);
+            }
+        });
+    }
+
 
     public String getUsername() {
         return mAuthRepository.getUserName();
@@ -162,8 +171,8 @@ public class SettingsViewModel extends ViewModel {
         mRepository.updateUserLocation(address);
     }
 
-
     public void deleteUser() {
+        attachSetOnCloudUserDeletionListener();
         mRepository.deleteUserFromCloud();
     }
 }

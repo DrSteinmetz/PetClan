@@ -217,7 +217,7 @@
     <string name="type">Type</string>
     <string name="registration_aborted">Your Registration has been Canceled</string>
     <string name="location_disabled">Location is Disabled</string>
-    <string name="user_name_change">Your username has changed to </string>
+    <string name="user_name_change">Your username has changed to</string>
     <string name="password_changed">Password changed successfully</string>
     <string name="please_enable_location">Please enable Location</string>
     <string name="Unlike">Unlike</string>

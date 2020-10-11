@@ -56,7 +56,6 @@ import java.util.Objects;
 
 public class AdvertisementFragment extends DialogFragment {
 
-    private static final String TAG = "AdvertisementFragment";
     private AdvertisementViewModel mViewModel;
     private Advertisement mAdvertisement;
     private File mFile;
@@ -93,6 +92,8 @@ public class AdvertisementFragment extends DialogFragment {
 
     private final int WRITE_PERMISSION_REQUEST = 7;
     private final int IMAGE_VIEW_SIZE = 8;
+
+    private static final String TAG = "AdvertisementFragment";
 
     public interface AdvertisementInterface {
         void onAdUploadSucceed(Advertisement ad, AlertDialog loadingDialog, boolean isNewAd);
@@ -205,7 +206,6 @@ public class AdvertisementFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
         View rootView = inflater.inflate(R.layout.fragment_add_advertisement, container, false);
 
         categoryLayout = rootView.findViewById(R.id.category_layout);
@@ -387,29 +387,29 @@ public class AdvertisementFragment extends DialogFragment {
 
                 if (isPet) {
                     if (genderRg.getCheckedRadioButtonId() == -1) {
-                        Toast.makeText(getContext(), getContext().getResources().getString(R.string.select_gender), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), requireContext().getResources().getString(R.string.select_gender), Toast.LENGTH_SHORT).show();
                     }
                     if (kind.isEmpty()) {
-                        kindEt.setError(getContext().getString(R.string.enter_kind));
+                        kindEt.setError(requireContext().getString(R.string.enter_kind));
                     } else {
                         kindEt.setError(null);
                     }
                 }
 
                 if (!mCityNames.contains(cityName)) {
-                    locationAutoCompleteTv.setError(getContext().getString(R.string.enter_city_location));
+                    locationAutoCompleteTv.setError(requireContext().getString(R.string.enter_city_location));
                 } else {
                     locationAutoCompleteTv.setError(null);
                 }
 
                 if (price.isEmpty()) {
-                    priceEt.setError(getContext().getString(R.string.enter_price));
+                    priceEt.setError(requireContext().getString(R.string.enter_price));
                 } else {
                     priceEt.setError(null);
                 }
 
                 if (description.isEmpty()) {
-                    descriptionEt.setError(getContext().getString(R.string.enter_description));
+                    descriptionEt.setError(requireContext().getString(R.string.enter_description));
                 } else {
                     descriptionEt.setError(null);
                 }

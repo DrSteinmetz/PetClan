@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,7 +47,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
     private Observer<String> mOnUpdatePasswordSucceed;
     private Observer<String> mOnUpdatePasswordFailed;
 
-    private Observer<String> mOnUserDeletionSucceed;
+    private Observer<Boolean> mOnUserDeletionSucceed;
 
     private Observer<Address> mOnLocationChanged;
     private Observer<String> mOnLocationTriggred;
@@ -81,8 +80,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
         mOnUpdateUserNameInCloudSucceed = new Observer<String>() {
             @Override
             public void onChanged(String newUsername) {
-                Snackbar.make(requireView(), getResources().getString(R.string.user_name_change) + newUsername,
-                        Snackbar.LENGTH_LONG).show();
+                Snackbar.make(requireView(), getResources().getString(R.string.user_name_change)
+                        + " " + newUsername, Snackbar.LENGTH_LONG).show();
                 ((TextView) requireActivity().findViewById(R.id.user_name_tv)).setText(newUsername);
             }
         };
@@ -120,11 +119,13 @@ public class SettingsFragment extends PreferenceFragmentCompat
             }
         };
 
-        mOnUserDeletionSucceed = new Observer<String>() {
+        mOnUserDeletionSucceed = new Observer<Boolean>() {
             @Override
-            public void onChanged(String s) {
-                startActivity(new Intent(getActivity(), WelcomeActivity.class));
-                requireActivity().finish();
+            public void onChanged(Boolean bool) {
+                if (bool) {
+                    startActivity(new Intent(getActivity(), WelcomeActivity.class));
+                    requireActivity().finish();
+                }
             }
         };
 
@@ -304,7 +305,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
             mViewModel.getUpdateUserNameInAuthFailed().observe(this, mOnUpdateUserNameInAuthFailed);
             mViewModel.getUpdatePasswordSucceed().observe(this, mOnUpdatePasswordSucceed);
             mViewModel.getUpdatePasswordFailed().observe(this, mOnUpdatePasswordFailed);
-            mViewModel.getUserDeletionSucceed().observe(this, mOnUserDeletionSucceed);
+            mViewModel.getAuthUserDeletionSucceed().observe(this, mOnUserDeletionSucceed);
         }
     }
 
