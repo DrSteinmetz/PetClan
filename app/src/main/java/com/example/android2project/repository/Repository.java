@@ -590,6 +590,7 @@ public class Repository {
             Map<String, Object> updatePostMap = new HashMap<>();
             updatePostMap.put("authorContent", updatedPostContent);
             updatePostMap.put("postImageUri", updatesPostImage);
+            updatePostMap.put("authorToken", updatedPost.getAuthorToken());
 
             mCloudUsers.document(Objects.requireNonNull(user.getEmail()))
                     .collection(POSTS)
