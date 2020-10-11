@@ -63,6 +63,7 @@ public class FCM extends FirebaseMessagingService {
 
         if (dataMap.size() > 0) {
             if (dataMap.containsKey("type")) {
+                Log.d(TAG, "onMessageReceived: iop " + dataMap.get("type"));
                 switch (Objects.requireNonNull(dataMap.get("type"))) {
                     case CHAT_NOTIFICATION:
                         final String chatId = ConversationFragment.sConversationId;
@@ -73,11 +74,13 @@ public class FCM extends FirebaseMessagingService {
                         }
                         break;
                     case COMMENT_NOTIFICATION:
+                        Log.d(TAG, "onMessageReceived: iop FCM comment " + sharedPreferences.getBoolean("comments_notifications_sp", true));
                         if (sharedPreferences.getBoolean("comments_notifications_sp", true)) {
                             createCommentNotification(dataMap);
                         }
                         break;
                     case LIKE_NOTIFICATION:
+                        Log.d(TAG, "onMessageReceived: iop FCM like " + sharedPreferences.getBoolean("likes_notifications_sp", true));
                         if (sharedPreferences.getBoolean("likes_notifications_sp", true)) {
                             createLikeNotification(dataMap);
                         }

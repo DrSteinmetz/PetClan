@@ -69,6 +69,10 @@ public class AddPostViewModel extends ViewModel {
         return mAuthRepository.getUserImageUri();
     }
 
+    public String getMyToken() {
+        return mAuthRepository.getUserToken();
+    }
+
     public void uploadPostPhoto(Post post, Uri mPicUri) {
         mStorageRepository.uploadPostFile(mPicUri,post.getAuthorEmail(),post.getPostId());
     }
@@ -78,6 +82,7 @@ public class AddPostViewModel extends ViewModel {
     }
 
     public void updatePost(Post post) {
+        post.setAuthorToken(mAuthRepository.getUserToken());
         mRepository.updatePost(post);
     }
 }
