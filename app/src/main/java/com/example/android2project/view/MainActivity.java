@@ -59,7 +59,7 @@ import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 public class MainActivity extends AppCompatActivity implements
         FeedFragment.FeedInterface,
         AdvertisementFragment.AdvertisementInterface {
-  
+
     private DuoDrawerLayout mDrawerLayout;
 
     private MainViewModel mViewModel;
@@ -95,8 +95,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private LocationBuilderDeniedInterface mLocationListener;
 
-    public void setLocationBuilderDeniedInterface(LocationBuilderDeniedInterface locationBuilderDeniedInterface){
-        this.mLocationListener =locationBuilderDeniedInterface;
+    public void setLocationBuilderDeniedInterface(LocationBuilderDeniedInterface locationBuilderDeniedInterface) {
+        this.mLocationListener = locationBuilderDeniedInterface;
     }
 
     @Override
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements
                 ViewModelEnum.Picture)).get(UserPictureViewModel.class);
 
         mLocationUtils = LocationUtils.getInstance(this);
-        registerReceiver(mLocationUtils,new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+        registerReceiver(mLocationUtils, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
         mOnLocationChanged = new Observer<Address>() {
             @Override
             public void onChanged(Address address) {
@@ -151,10 +151,12 @@ public class MainActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void onPageSelected(int position) {}
+            public void onPageSelected(int position) {
+            }
 
             @Override
-            public void onPageScrollStateChanged(int state) {}
+            public void onPageScrollStateChanged(int state) {
+            }
         });
 
         mViewPager.setOffscreenPageLimit(2);
@@ -202,10 +204,12 @@ public class MainActivity extends AppCompatActivity implements
 
         duoMenuView.setOnMenuClickListener(new DuoMenuView.OnMenuClickListener() {
             @Override
-            public void onFooterClicked() {}
+            public void onFooterClicked() {
+            }
 
             @Override
-            public void onHeaderClicked() {}
+            public void onHeaderClicked() {
+            }
 
             @Override
             public void onOptionClicked(int position, Object objectClicked) {
@@ -221,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements
                                 .addToBackStack(null)
                                 .commit();
                     } else {
-                        Toast.makeText(MainActivity.this,getString(R.string.prompt_guest_tv) , Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, getString(R.string.prompt_guest_tv), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -245,8 +249,11 @@ public class MainActivity extends AppCompatActivity implements
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_REQUEST_CODE) {
-            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, getResources().getString(R.string.provide_location), Toast.LENGTH_SHORT).show();
+            if (grantResults.length > 0) {
+                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, getResources().getString(R.string.provide_location), Toast.LENGTH_SHORT).show();
+                }
+
             } else {
                 mLocationUtils.startLocation();
             }
@@ -258,11 +265,11 @@ public class MainActivity extends AppCompatActivity implements
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CHECK_SETTINGS_CODE && resultCode == RESULT_OK) {
             mLocationUtils.startLocation();
-            if (mLocationListener!=null) {
+            if (mLocationListener != null) {
                 mLocationListener.onLocationDenied(false);
             }
-        }else if(resultCode==RESULT_CANCELED){
-            if (mLocationListener!=null) {
+        } else if (resultCode == RESULT_CANCELED) {
+            if (mLocationListener != null) {
                 mLocationListener.onLocationDenied(true);
                 Snackbar.make(findViewById(android.R.id.content), R.string.locatio_disabled, Snackbar.LENGTH_LONG).show();
             }
@@ -337,7 +344,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         unregisterReceiver(mLocationUtils);
     }
 }
